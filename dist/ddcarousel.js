@@ -488,4 +488,8 @@ function () {
   return DDCarousel;
 }();
 
+Number.isInteger = Number.isInteger || function (value) {
+  return typeof value === "number" && isFinite(value) && Math.floor(value) === value;
+};
+
 //# sourceMappingURL=ddcarousel.js.map
