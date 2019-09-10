@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html lang="en">
+	<head>
+		<meta charset="UTF-8" />
+		<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+		<meta http-equiv="X-UA-Compatible" content="ie=edge" />
+		<title>DDCarousel: Developement tests</title>
+		<link rel="stylesheet" href="css/ddcarousel.css" />
+		<style>
+			body {
+				margin: 0;
+				padding: 0;
+				font-family: sans-serif;
+			}
+			section {
+				margin: 40px;
+			}
+			textarea {
+				font-family: Consolas, monospace;
+				font-size: 13px;
+			}
+			.options {
+				margin-top: 280px;
+				display: none;
+			}
+		</style>
+	</head>
+	<body>
+		<section>
+			<h1>DDCarousel: Developement tests</h1>
+			<div class="ddcarousel home">
+				<div>
+					Lorem ipsum dolor sit amet, consectetur adipisicing elit. Placeat corrupti minus quia alias ullam
+					error commodi recusandae dolores, accusantium minima natus necessitatibus magni voluptates nisi
+					illum saepe culpa earum quasi!
+				</div>
+				<div>
+					Lorem ipsum dolor sit, amet consectetur adipisicing elit. In aspernatur at reiciendis distinctio ab.
+					Veritatis sed laborum et eaque velit nam expedita, fugit minus laudantium optio commodi incidunt,
+					voluptatem in. Lorem ipsum dolor sit amet, consectetur adipisicing elit. Placeat corrupti minus quia
+					alias ullam error commodi recusandae dolores, accusantium minima natus necessitatibus magni
+					voluptates nisi illum saepe culpa earum quasi! Lorem ipsum dolor sit, amet consectetur adipisicing
+					elit. In aspernatur at reiciendis distinctio ab. Veritatis sed laborum et eaque velit nam expedita,
+					fugit minus laudantium optio commodi incidunt, voluptatem in.
+				</div>
+				<div>
+					Lorem ipsum dolor sit, amet consectetur adipisicing elit.
+				</div>
+				<div>
+					Lorem ipsum dolor sit amet consectetur adipisicing elit. Perspiciatis veritatis ex adipisci nobis
+					deleniti velit minus sint.
+				</div>
+				<div>
+					Lorem ipsum dolor sit amet, consectetur adipisicing elit. Placeat corrupti minus quia alias ullam
+					error commodi recusandae dolores, accusantium minima natus necessitatibus magni voluptates nisi
+					illum saepe culpa earum quasi!
+				</div>
+				<div>
+					Lorem ipsum dolor sit, amet consectetur adipisicing elit. In aspernatur at reiciendis distinctio ab.
+					Veritatis sed laborum et eaque velit nam expedita, fugit minus laudantium optio commodi incidunt,
+					voluptatem in. Lorem ipsum dolor sit amet, consectetur adipisicing elit. Placeat corrupti minus quia
+					alias ullam error commodi recusandae dolores, accusantium minima natus necessitatibus magni
+					voluptates nisi illum saepe culpa earum quasi! Lorem ipsum dolor sit, amet consectetur adipisicing
+					elit.
+				</div>
+				<div>
+					END!
+				</div>
+			</div>
+			<div class="options">
+				<input id="slideNum" type="number" value="2" />
+				<button id="go">go to selected</button>
+				<button id="prev">prev slide</button>
+				<button id="next">next slide</button>
+				<button id="calc">recalculate stage</button>
+				<button id="getDetails">Get carousel info</button>
+				<button id="resizeContainer">Reize random from 10-100%</button>
+				<p>
+					<textarea id="console" cols="100" rows="10" readonly></textarea>
+				</p>
+			</div>
+		</section>
+	</body>
+	<script src="js/ddcarousel.js"></script>
+	<script src="js/main.js"></script>
+</html>

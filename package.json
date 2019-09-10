@@ -1,0 +1,44 @@
+{
+	"name": "ddcarousel",
+	"version": "1.0.0",
+	"description": "Vanilla JS Carousel slider",
+	"main": "index.js",
+	"scripts": {
+		"dist": "npm-run-all babeljs minifyjs minifycss",
+		"dist+demo": "npm-run-all dist demojs democss",
+		"demo": "npm-run-all demojs democss",
+		"-----------------": "",
+		"babeljs": "babel src/js/ddcarousel.js --out-file dist/ddcarousel.js --source-maps --presets=@babel/preset-env",
+		"minifyjs": "uglifyjs --compress --mangle --comments /^!/ --output dist/ddcarousel.min.js -- dist/ddcarousel.js",
+		"minifycss": "uglifycss src/css/ddcarousel.css > dist/ddcarousel.min.css",
+		"demojs": "copyfiles -u 1 dist/ddcarousel.min.js demo/js/ && echo 'JS copied to demo!'",
+		"democss": "copyfiles -u 1 dist/ddcarousel.min.css demo/css/ && echo 'CSS copied to demo!'"
+	},
+	"repository": {
+		"type": "git",
+		"url": "git+https://github.com/danaildinev/ddcarousel.git"
+	},
+	"keywords": [
+		"js",
+		"carousel",
+		"slider",
+		"vanilla",
+		"free"
+	],
+	"author": "Danail Dinev",
+	"license": "MIT",
+	"bugs": {
+		"url": "https://github.com/danaildinev/ddcarousel/issues"
+	},
+	"homepage": "https://github.com/danaildinev/ddcarousel#readme",
+	"devDependencies": {
+		"@babel/cli": "^7.0.0",
+		"@babel/core": "^7.0.0",
+		"@babel/plugin-proposal-class-properties": "^7.5.5",
+		"@babel/preset-env": "^7.5.5",
+		"copyfiles": "^2.1.1",
+		"npm-run-all": "^4.1.5",
+		"uglify-js": "^3.6.0",
+		"uglifycss": "0.0.29"
+	}
+}
