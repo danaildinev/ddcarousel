@@ -25,6 +25,11 @@
 	flex: 0 0 auto;
 	height: 100%;
 	pointer-events: none;
+	-webkit-touch-callout: none;
+	-webkit-user-select: none;
+	-moz-user-select: none;
+	-ms-user-select: none;
+	user-select: none;
 }
 .ddcarousel .ddcarousel-stage > div img {
 	width: 100%;
