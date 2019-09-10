@@ -104,8 +104,7 @@ class DDCarousel {
 		stageContainer.appendChild(stageDiv);
 
 		//get stage DOM
-		this.stage = document.querySelector(`${this.containerName} .${stageDiv.classList[0]}`);
-
+		this.stage = document.querySelector(`${this.containerName} .ddcarousel-stage`);
 		//set width to 100% if responsive is enabled and change container width
 		if (this.responsive) {
 			this.container.classList.add("ddcarousel-responsive");
@@ -170,8 +169,8 @@ class DDCarousel {
 
 			this.container.appendChild(navContainer);
 
-			this.navPrevBtn = document.querySelector(`${this.containerName} .${leftBtn.classList[0]}`);
-			this.navNextBtn = document.querySelector(`${this.containerName} .${rightBtn.classList[0]}`);
+			this.navPrevBtn = document.querySelector(`${this.containerName} .ddcarousel-prev`);
+			this.navNextBtn = document.querySelector(`${this.containerName} .ddcarousel-next`);
 		}
 	}
 
@@ -457,3 +456,46 @@ Number.isInteger =
 	function(value) {
 		return typeof value === "number" && isFinite(value) && Math.floor(value) === value;
 	};
+
+if (!("classList" in document.documentElement) && Object.defineProperty && typeof HTMLElement !== "undefined") {
+	Object.defineProperty(HTMLElement.prototype, "classList", {
+		get: function() {
+			var self = this;
+			function update(fn) {
+				return function(value) {
+					var classes = self.className.split(/\s+/),
+						index = classes.indexOf(value);
+
+					fn(classes, index, value);
+					self.className = classes.join(" ");
+				};
+			}
+
+			var ret = {
+				add: update(function(classes, index, value) {
+					~index || classes.push(value);
+				}),
+
+				remove: update(function(classes, index) {
+					~index && classes.splice(index, 1);
+				}),
+
+				contains: function(value) {
+					return !!~self.className.split(/\s+/).indexOf(value);
+				},
+
+				item: function(i) {
+					return self.className.split(/\s+/)[i] || null;
+				}
+			};
+
+			Object.defineProperty(ret, "length", {
+				get: function() {
+					return self.className.split(/\s+/).length;
+				}
+			});
+
+			return ret;
+		}
+	});
+}
