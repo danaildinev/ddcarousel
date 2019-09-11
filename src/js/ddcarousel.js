@@ -128,6 +128,7 @@ class DDCarousel {
 			slideWidth = this.slides[0].style.width,
 			containerWidth = parseInt(window.getComputedStyle(this.container).width);
 
+		this.slidesHeights = [];
 		for (i = 0; i < this.slides.length; i++) {
 			//set current slide size
 			if (this.itemsPerPage == null) {
@@ -143,7 +144,7 @@ class DDCarousel {
 		if (this.autoHeight) {
 			this.calculateContainerHeight(this.currentSlide);
 		}
-		this.slideToPosition(this.getCurrentSlideDom());
+		this.scrollToSlide(this.getCurrentSlideDom());
 
 		//fire event
 		if (slideWidth != this.slides[0].style.width) this.triggerHandler("resized");
@@ -316,7 +317,7 @@ class DDCarousel {
 
 					//move slider until max swipe lenght is reached
 					if (swipeDistance <= this.touchMaxSlideDist) {
-						this.stage.style.transform = "translateX(" + currentTouch + "px)";
+						this.scrollToPos(currentTouch);
 					} else {
 						dontChange = true;
 						currentTouch = input - touchStart;
@@ -338,9 +339,13 @@ class DDCarousel {
 		}
 	}
 
-	slideToPosition(slide) {
+	scrollToSlide(slide) {
 		this.currentTranslate = -(slide.getBoundingClientRect().left - this.stage.getBoundingClientRect().left);
-		this.stage.style.transform = `translateX(${this.currentTranslate}px)`;
+		this.scrollToPos(this.currentTranslate);
+	}
+
+	scrollToPos(int) {
+		this.stage.style.transform = `translateX(${int}px)`;
 	}
 
 	calculateContainerHeight() {
@@ -398,7 +403,7 @@ class DDCarousel {
 		}
 
 		//slide to specified slide position
-		this.slideToPosition(this.getCurrentSlideDom());
+		this.scrollToSlide(this.getCurrentSlideDom());
 
 		//set active slide class
 		this.getSlideDom(this.currentSlide).classList.add("active");
