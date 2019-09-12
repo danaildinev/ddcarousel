@@ -1,4 +1,4 @@
-/*! DDCarousel 1.0 by Danail Dinev 2019 | License: https://github.com/danaildinev/ddcarousel/blob/master/LICENSE */
+/*! DDCarousel 1.0.1 by Danail Dinev 2019 | License: https://github.com/danaildinev/ddcarousel/blob/master/LICENSE */
 class DDCarousel {
 	appName = "DDCarousel";
 	containerName = null; //full container name
@@ -9,6 +9,16 @@ class DDCarousel {
 	slideDiff = 0;
 	slidesHeights = []; //use dot store slides heights when using autoHeight
 	triggers = [];
+
+	cCont = "ddcarousel-container";
+	cStage = "ddcarousel-stage";
+	cNav = "ddcarousel-nav";
+	cItem = "ddcarousel-item";
+	cResp = "ddcarousel-responsive";
+	cDSlide = "data-slide";
+	cContDots = "ddcarousel-dots";
+	cDot = "ddcarousel-dot";
+	cPrev = "ddcarousel-prev";
 
 	constructor({
 		container = ".ddcarousel",
@@ -93,8 +103,8 @@ class DDCarousel {
 			stageContainer = document.createElement("div"),
 			stageDiv = document.createElement("div");
 
-		stageContainer.classList.add("ddcarousel-container");
-		stageDiv.classList.add("ddcarousel-stage");
+		stageContainer.classList.add(this.cCont);
+		stageDiv.classList.add(this.cStage);
 
 		//get all slides from user
 		this.slidesSource = document.querySelectorAll(`${this.containerName} > div`);
@@ -104,24 +114,23 @@ class DDCarousel {
 		stageContainer.appendChild(stageDiv);
 
 		//get stage DOM
-		this.stage = document.querySelector(`${this.containerName} .${stageDiv.classList[0]}`);
-
+		this.stage = document.querySelector(`${this.containerName} .${this.cStage}`);
 		//set width to 100% if responsive is enabled and change container width
 		if (this.responsive) {
-			this.container.classList.add("ddcarousel-responsive");
+			this.container.classList.add(this.cResp);
 		}
 
 		//set parameters to slides and add them in the new ddcarousel-item container with some params
 		for (i = 0; i < this.slidesSource.length; i++) {
 			var s = document.createElement("div");
-			s.classList.add("ddcarousel-item");
-			s.setAttribute("data-slide", i);
+			s.classList.add(this.cItem);
+			s.setAttribute(this.cDSlide, i);
 			s.appendChild(this.slidesSource[i]);
 			stageDiv.appendChild(s);
 		}
 
 		//get all slides
-		this.slides = document.querySelectorAll(`${this.containerName} .ddcarousel-item`);
+		this.slides = document.querySelectorAll(`${this.containerName} .${this.cItem}`);
 	}
 
 	calculateStage() {
@@ -129,6 +138,7 @@ class DDCarousel {
 			slideWidth = this.slides[0].style.width,
 			containerWidth = parseInt(window.getComputedStyle(this.container).width);
 
+		this.slidesHeights = [];
 		for (i = 0; i < this.slides.length; i++) {
 			//set current slide size
 			if (this.itemsPerPage == null) {
@@ -137,14 +147,14 @@ class DDCarousel {
 				this.slides[i].style.width = containerWidth / this.itemsPerPage + "px";
 			}
 			this.slidesHeights.push(
-				document.querySelector(`${this.containerName} [data-slide="${i}"] > div`).scrollHeight
+				document.querySelector(`${this.containerName} [${this.cDSlide}="${i}"] > div`).scrollHeight
 			);
 		}
 
 		if (this.autoHeight) {
 			this.calculateContainerHeight(this.currentSlide);
 		}
-		this.slideToPosition(this.getCurrentSlideDom());
+		this.scrollToSlide(this.getCurrentSlideDom());
 
 		//fire event
 		if (slideWidth != this.slides[0].style.width) this.triggerHandler("resized");
@@ -156,12 +166,12 @@ class DDCarousel {
 				leftBtn = document.createElement("button"),
 				rightBtn = document.createElement("button");
 
-			navContainer.classList.add("ddcarousel-nav");
+			navContainer.classList.add(this.cNav);
 
-			leftBtn.classList.add("ddcarousel-prev");
+			leftBtn.classList.add(this.cPrev);
 			leftBtn.innerHTML = this.labelNavPrev;
 
-			rightBtn.classList.add("ddcarousel-next");
+			rightBtn.classList.add(this.cNext);
 			rightBtn.innerHTML = this.labelNavNext;
 
 			//add buttons in nav container
@@ -170,8 +180,8 @@ class DDCarousel {
 
 			this.container.appendChild(navContainer);
 
-			this.navPrevBtn = document.querySelector(`${this.containerName} .${leftBtn.classList[0]}`);
-			this.navNextBtn = document.querySelector(`${this.containerName} .${rightBtn.classList[0]}`);
+			this.navPrevBtn = document.querySelector(`${this.containerName} .${this.cPrev}`);
+			this.navNextBtn = document.querySelector(`${this.containerName} .${this.cNext}`);
 		}
 	}
 
@@ -181,7 +191,7 @@ class DDCarousel {
 				dot,
 				targetSlidesLenght,
 				navContainer = document.createElement("div");
-			navContainer.classList.add("ddcarousel-dots");
+			navContainer.classList.add(this.cContDots);
 
 			if (this.itemsPerPage > 1) {
 				targetSlidesLenght = this.slides.length - this.itemsPerPage + 1;
@@ -191,9 +201,9 @@ class DDCarousel {
 
 			for (i = 0; i < targetSlidesLenght; i++) {
 				dot = document.createElement("button");
-				dot.classList.add("ddcarousel-dot");
-				dot.setAttribute("data-slide", i);
-				dot.addEventListener("click", e => this.changeSlide(parseInt(e.target.getAttribute("data-slide"))));
+				dot.classList.add(this.cDot);
+				dot.setAttribute(this.cDSlide, i);
+				dot.addEventListener("click", e => this.changeSlide(parseInt(e.target.getAttribute(this.cDSlide))));
 
 				navContainer.appendChild(dot);
 			}
@@ -317,7 +327,7 @@ class DDCarousel {
 
 					//move slider until max swipe lenght is reached
 					if (swipeDistance <= this.touchMaxSlideDist) {
-						this.stage.style.transform = "translateX(" + currentTouch + "px)";
+						this.scrollToPos(currentTouch);
 					} else {
 						dontChange = true;
 						currentTouch = input - touchStart;
@@ -339,9 +349,13 @@ class DDCarousel {
 		}
 	}
 
-	slideToPosition(slide) {
+	scrollToSlide(slide) {
 		this.currentTranslate = -(slide.getBoundingClientRect().left - this.stage.getBoundingClientRect().left);
-		this.stage.style.transform = `translateX(${this.currentTranslate}px)`;
+		this.scrollToPos(this.currentTranslate);
+	}
+
+	scrollToPos(int) {
+		this.stage.style.transform = `translateX(${int}px)`;
 	}
 
 	calculateContainerHeight() {
@@ -367,7 +381,7 @@ class DDCarousel {
 		//remove some classes bedore adding new one
 		if (this.dots) {
 			document
-				.querySelector(`${this.containerName} .ddcarousel-dot[data-slide="${this.currentSlide}"]`)
+				.querySelector(`${this.containerName} .${this.cDot}[${this.cDSlide}="${this.currentSlide}"]`)
 				.classList.remove("active");
 		}
 		this.getSlideDom(this.currentSlide).classList.remove("active");
@@ -399,7 +413,7 @@ class DDCarousel {
 		}
 
 		//slide to specified slide position
-		this.slideToPosition(this.getCurrentSlideDom());
+		this.scrollToSlide(this.getCurrentSlideDom());
 
 		//set active slide class
 		this.getSlideDom(this.currentSlide).classList.add("active");
@@ -408,7 +422,7 @@ class DDCarousel {
 		if (this.dots) {
 			//add class to the current dot
 			document
-				.querySelector(`${this.containerName} .ddcarousel-dot[data-slide="${this.currentSlide}"]`)
+				.querySelector(`${this.containerName} .${this.cDot}[${this.cDSlide}="${this.currentSlide}"]`)
 				.classList.add("active");
 		}
 
@@ -434,13 +448,13 @@ class DDCarousel {
 	}
 
 	getCurrentSlideDom() {
-		return document.querySelector(`${this.containerName} [data-slide="${this.currentSlide}"]`);
+		return document.querySelector(`${this.containerName} [${this.cDSlide}="${this.currentSlide}"]`);
 	}
 
 	getCurrentPage() {
 		return document
-			.querySelector(`${this.containerName} [data-slide="${this.currentSlide}"].active`)
-			.getAttribute("data-slide");
+			.querySelector(`${this.containerName} [${this.cDSlide}="${this.currentSlide}"].active`)
+			.getAttribute(this.this.cDSlide);
 	}
 
 	getTotalSlides() {
@@ -448,6 +462,55 @@ class DDCarousel {
 	}
 
 	getSlideDom(id) {
-		return document.querySelector(`${this.containerName} .ddcarousel-item[data-slide="${id}"]`);
+		return document.querySelector(`${this.containerName} .${this.cItem}[${this.cDSlide}="${id}"]`);
 	}
+}
+
+Number.isInteger =
+	Number.isInteger ||
+	function(value) {
+		return typeof value === "number" && isFinite(value) && Math.floor(value) === value;
+	};
+
+if (!("classList" in document.documentElement) && Object.defineProperty && typeof HTMLElement !== "undefined") {
+	Object.defineProperty(HTMLElement.prototype, "classList", {
+		get: function() {
+			var self = this;
+			function update(fn) {
+				return function(value) {
+					var classes = self.className.split(/\s+/),
+						index = classes.indexOf(value);
+
+					fn(classes, index, value);
+					self.className = classes.join(" ");
+				};
+			}
+
+			var ret = {
+				add: update(function(classes, index, value) {
+					~index || classes.push(value);
+				}),
+
+				remove: update(function(classes, index) {
+					~index && classes.splice(index, 1);
+				}),
+
+				contains: function(value) {
+					return !!~self.className.split(/\s+/).indexOf(value);
+				},
+
+				item: function(i) {
+					return self.className.split(/\s+/)[i] || null;
+				}
+			};
+
+			Object.defineProperty(ret, "length", {
+				get: function() {
+					return self.className.split(/\s+/).length;
+				}
+			});
+
+			return ret;
+		}
+	});
 }

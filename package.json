@@ -1,6 +1,6 @@
 {
 	"name": "ddcarousel",
-	"version": "1.0.0",
+	"version": "1.0.1",
 	"description": "Vanilla JS Carousel slider",
 	"main": "index.js",
 	"scripts": {
@@ -9,7 +9,7 @@
 		"demo": "npm-run-all demojs democss",
 		"-----------------": "",
 		"babeljs": "babel src/js/ddcarousel.js --out-file dist/ddcarousel.js --source-maps --presets=@babel/preset-env",
-		"minifyjs": "uglifyjs --compress --mangle --comments /^!/ --output dist/ddcarousel.min.js -- dist/ddcarousel.js",
+		"minifyjs": "uglifyjs --compress --comments /^!/ --output dist/ddcarousel.min.js -- dist/ddcarousel.js",
 		"minifycss": "uglifycss src/css/ddcarousel.css > dist/ddcarousel.min.css",
 		"demojs": "copyfiles -u 1 dist/ddcarousel.min.js demo/js/ && echo 'JS copied to demo!'",
 		"democss": "copyfiles -u 1 dist/ddcarousel.min.css demo/css/ && echo 'CSS copied to demo!'"
@@ -36,6 +36,9 @@
 		"@babel/core": "^7.0.0",
 		"@babel/plugin-proposal-class-properties": "^7.5.5",
 		"@babel/preset-env": "^7.5.5",
+		"babel-plugin-minify-mangle-names": "^0.5.0",
+		"babel-plugin-minify-simplify": "^0.5.1",
+		"babel-plugin-transform-minify-booleans": "^6.9.4",
 		"copyfiles": "^2.1.1",
 		"npm-run-all": "^4.1.5",
 		"uglify-js": "^3.6.0",
