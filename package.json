@@ -1,15 +1,16 @@
 {
 	"name": "ddcarousel",
-	"version": "1.0.1",
+	"version": "1.0.2",
 	"description": "Vanilla JS Carousel slider",
 	"main": "index.js",
 	"scripts": {
-		"dist": "npm-run-all babeljs minifyjs minifycss",
+		"dist": "npm-run-all babeljs minifyjs buildcss minifycss",
 		"dist+demo": "npm-run-all dist demojs democss",
 		"demo": "npm-run-all demojs democss",
 		"-----------------": "",
 		"babeljs": "babel src/js/ddcarousel.js --out-file dist/ddcarousel.js --source-maps --presets=@babel/preset-env",
 		"minifyjs": "uglifyjs --compress --comments /^!/ --output dist/ddcarousel.min.js -- dist/ddcarousel.js",
+		"watchsass": "node-sass -w --output-style compact --include-path scss src/css/ddcarousel.scss   src/css/ddcarousel.css",
 		"buildcss": "node-sass --output-style compact --include-path scss src/css/ddcarousel.scss   src/css/ddcarousel.css",
 		"minifycss": "uglifycss src/css/ddcarousel.css > dist/ddcarousel.min.css",
 		"demojs": "copyfiles -u 1 dist/ddcarousel.min.js demo/js/ && echo 'JS copied to demo!'",

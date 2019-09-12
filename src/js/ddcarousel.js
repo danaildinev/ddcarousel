@@ -1,4 +1,4 @@
-/*! DDCarousel 1.0.1 by Danail Dinev 2019 | License: https://github.com/danaildinev/ddcarousel/blob/master/LICENSE */
+/*! DDCarousel 1.0.2 by Danail Dinev 2019 | License: https://github.com/danaildinev/ddcarousel/blob/master/LICENSE */
 class DDCarousel {
 	appName = "DDCarousel";
 	containerName = null; //full container name
