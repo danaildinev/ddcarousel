@@ -454,7 +454,7 @@ class DDCarousel {
 	getCurrentPage() {
 		return document
 			.querySelector(`${this.containerName} [${this.cDSlide}="${this.currentSlide}"].active`)
-			.getAttribute(this.this.cDSlide);
+			.getAttribute(this.cDSlide);
 	}
 
 	getTotalSlides() {
