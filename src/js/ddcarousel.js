@@ -295,7 +295,7 @@ class DDCarousel {
 						this.nextSlide();
 					}
 				} else {
-					this.stage.style.transform = "translateX(" + origPosition + "px)";
+					this.scrollToPos(origPosition);
 				}
 
 				this.stage.style.transitionDuration = this.slideChangeDuration + "s";
@@ -355,7 +355,13 @@ class DDCarousel {
 	}
 
 	scrollToPos(int) {
-		this.stage.style.transform = `translateX(${int}px)`;
+		const isSafari8 = /^((?!chrome|android).)*safari/i.test(navigator.userAgent);
+		var output = `translateX(${int}px)`;
+		if (isSafari8) {
+			this.stage.style.webkitTransform = output;
+		} else {
+			this.stage.style.transform = output;
+		}
 	}
 
 	calculateContainerHeight() {

@@ -15,6 +15,7 @@
 }
 .ddcarousel .ddcarousel-stage {
 	display: flex;
+	display: -webkit-flex;
 	position: absolute;
 	height: 100%;
 	transition: all 0.7s cubic-bezier(0.19, 1, 0.22, 1);
@@ -25,6 +26,7 @@
 .ddcarousel .ddcarousel-stage > div {
 	box-sizing: border-box;
 	flex: 0 0 auto;
+	-webkit-flex: 0 0 auto;
 	height: 100%;
 	pointer-events: none;
 	-webkit-touch-callout: none;

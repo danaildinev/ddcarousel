@@ -76,8 +76,11 @@ strong {
 
 .carousel-demo .container {
 	display: flex;
+	display: -webkit-flex;
 	flex-direction: column;
+	-webkit-flex-direction: column;
 	align-items: center;
+	-webkit-align-items: center;
 }
 
 .carousel-demo:nth-of-type(2n + 1) {
@@ -88,11 +91,13 @@ strong {
 	width: 100%;
 	display: flex;
 	flex-direction: row;
+	-webkit-flex-direction: row;
 }
 
 .code-container > div {
 	padding: 0 12px;
 	flex: 0 0 50%;
+	-webkit-flex: 0 0 50%;
 }
 
 .code-container textarea {
@@ -108,8 +113,11 @@ strong {
 	width: 100%;
 	height: 100%;
 	display: flex;
+	display: -webkit-flex;
 	justify-content: center;
+	-webkit-justify-content: center;
 	align-items: center;
+	-webkit-align-items: center;
 	font-size: 48px;
 	color: #fff;
 	padding: 40px 0;
