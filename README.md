@@ -2,8 +2,9 @@
 
 Simple and fast carousel slider written in vannila JS.
 
-<!--**Browser compatibility:** IE11, Edge 15+, Chrome 37+, Firefox 32+, Safari 9.1+, Safari iOS 9+, Chrome Android 4.4+
-(May work on older browsers but these are minimum versions tested.)-->
+**Browser compatibility:** IE10+, Edge 15+, Chrome 37+, Firefox 32+, Safari 8+, Safari iOS 9+
+
+(May work on older browsers but these are minimum versions tested.)
 
 **Current status:** Alpha version (not stable and ready for using in real projects)
 
@@ -17,11 +18,11 @@ Two simple steps - download/clone repository and copy css and js from `dist` fol
 
 Put the required base style and script:
 
-```
+```html
 <link rel="stylesheet" href="css/ddcarousel.min.css" />
 ```
 
-```
+```html
 <script src="js/ddcarousel.min.js"></script>
 ```
 
@@ -29,16 +30,16 @@ Put the required base style and script:
 
 Wrap all items in container element with id/class:
 
-```
+```html
 <div class="ddcarousel">
-    <div>Lorem ipsum dolor sit amet consectetur adipisicing elit.</div>
-    <div>Lorem ipsum Placeat corrupti minus quia alias ullam error commodi recusandae dolores.</div>
+	<div>Lorem ipsum dolor sit amet consectetur adipisicing elit.</div>
+	<div>Lorem ipsum Placeat corrupti minus quia alias ullam error commodi recusandae dolores.</div>
 </div>
 ```
 
 Give the container some height and width or leave them by default:
 
-```
+```css
 .ddcarousel {
 	width: 100%;
 	height: 300px;
@@ -47,7 +48,7 @@ Give the container some height and width or leave them by default:
 
 Call the plugin when page is ready:
 
-```
+```js
 document.addEventListener("DOMContentLoaded", function(event) {
 	var slider = new DDCarousel({
 		container: ".ddcarousel"
@@ -57,33 +58,33 @@ document.addEventListener("DOMContentLoaded", function(event) {
 
 ## Options
 
-`container: "ddcarousel"` Slider container ID or class (string, required)
+`container` Slider container ID or class (string, required)
 
-`items: 1` Items per page (int, default: 1)
+`items` Items per page (int, default: 1)
 
-`nav: false` Show prev/next text (boolean, default: false)
+`nav` Show prev/next text (boolean, default: false)
 
-`dots: true` Show dots (boolean, default: true)
+`dots` Show dots (boolean, default: true)
 
-`autoHeight: false` Change height based on current slide (boolean, default: false)
+`autoHeight` Change height based on current slide (boolean, default: false)
 
-`responsive: false` Responsive slider - overrides width given in css (boolean, default: false)
+`responsive` Responsive slider - overrides width given in css (boolean, default: false)
 
-`touch: true` Toggle touch swiping (boolean, default: true)
+`touch` Toggle touch swiping (boolean, default: true)
 
-`touchMouse: true` Toggle mouse swiping (boolean, default: true)
+`touchMouse` Toggle mouse swiping (boolean, default: true)
 
-`labelNavPrev: "< Prev"` Label for nav previous button (string)
+`labelNavPrev` Label for nav previous button (string, default: "< Prev")
 
-`labelNavNext: "Next >"` Label for nav next button (string)
+`labelNavNext` Label for nav next button (string, default: "Next >")
 
-`touchSwipeThreshold: 60` Changing slide sensitivity (int, default: 60)
+`touchSwipeThreshold` Changing slide sensitivity (int, default: 60)
 
-`touchMaxSlideDist: 500` Max swiping distance (int, default: 500)
+`touchMaxSlideDist` Max swiping distance (int, default: 500)
 
-`slideChangeDuration: 0.3` Animation speed when changin slide (int, default: 0.3)
+`slideChangeDuration` Animation speed when changin slide (int, default: 0.3)
 
-`swipeSmooth: 0.3` Swiping smoothness (int, default: 0.3)
+`swipeSmooth` Swiping smoothness (int, default: 0.3)
 
 ## Methods
 
@@ -105,7 +106,7 @@ document.addEventListener("DOMContentLoaded", function(event) {
 
 Using example:
 
-```
+```js
 ddcarusel.on("resized", () => {
 	console.log("Carousel resized!");
 });
@@ -128,4 +129,4 @@ Run these two commands in the root dir:
 
 ## License
 
-The code is released under the MIT License.
+The code is released under the [MIT License](https://github.com/danaildinev/ddcarousel/blob/master/LICENSE).

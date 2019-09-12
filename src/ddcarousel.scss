@@ -1,0 +1,83 @@
+.ddcarousel {
+	width: 800px;
+	height: 200px;
+	transition: height 0.3s ease-in-out;
+	margin-bottom: 50px;
+	&.ddcarousel-responsive {
+		width: 100% !important;
+	}
+	.ddcarousel-container {
+		position: relative;
+		width: 100%;
+		height: 100%;
+		overflow: hidden;
+	}
+	.ddcarousel-stage {
+		display: flex;
+		position: absolute;
+		height: 100%;
+		transition: all 0.7s cubic-bezier(0.19, 1, 0.22, 1);
+		backface-visibility: hidden;
+		-moz-user-select: none;
+		& > div {
+			height: 100%;
+			box-sizing: border-box;
+			flex: 0 0 auto;
+			-webkit-flex: 0 0 auto;
+			pointer-events: none;
+			-webkit-touch-callout: none;
+			-webkit-user-select: none;
+			-moz-user-select: none;
+			-ms-user-select: none;
+			user-select: none;
+
+			img {
+				width: 100%;
+				height: auto;
+			}
+		}
+	}
+	button {
+		display: inline-block;
+		text-decoration: none;
+		background: transparent;
+		border: 0;
+		font-size: 100%;
+		font-family: inherit;
+		cursor: pointer;
+		overflow: visible;
+		margin: 0;
+		padding: 4px 8px;
+		appearance: button;
+		-webkit-appearance: button;
+		&:focus,
+		&:active {
+			outline: 0;
+		}
+	}
+	.ddcarousel-dots {
+		text-align: center;
+		margin: 16px 0;
+		button {
+			background: #ccc;
+			width: 14px;
+			height: 14px;
+			border-radius: 50%;
+			margin: 0 6px;
+			opacity: 0.4;
+			transition: 0.1s all ease-in-out;
+			padding: 0;
+			&.active {
+				opacity: 1;
+			}
+		}
+	}
+	.ddcarousel-nav {
+		text-align: center;
+		margin: 16px 0;
+		.ddcarousel-prev,
+		.ddcarousel-next {
+			visibility: hidden;
+		}
+	}
+}
