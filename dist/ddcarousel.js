@@ -8,7 +8,7 @@ function _createClass(a, b, c) { return b && _defineProperties(a.prototype, b), 
 
 function _defineProperty(a, b, c) { return b in a ? Object.defineProperty(a, b, { value: c, enumerable: !0, configurable: !0, writable: !0 }) : a[b] = c, a; }
 
-/*! DDCarousel 1.0 by Danail Dinev 2019 | License: https://github.com/danaildinev/ddcarousel/blob/master/LICENSE */
+/*! DDCarousel 1.0.1 by Danail Dinev 2019 | License: https://github.com/danaildinev/ddcarousel/blob/master/LICENSE */
 var DDCarousel =
 /*#__PURE__*/
 function () {
