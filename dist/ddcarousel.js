@@ -8,7 +8,7 @@ function _createClass(a, b, c) { return b && _defineProperties(a.prototype, b), 
 
 function _defineProperty(a, b, c) { return b in a ? Object.defineProperty(a, b, { value: c, enumerable: !0, configurable: !0, writable: !0 }) : a[b] = c, a; }
 
-/*! DDCarousel 1.0.1 by Danail Dinev 2019 | License: https://github.com/danaildinev/ddcarousel/blob/master/LICENSE */
+/*! DDCarousel 1.0.2 by Danail Dinev 2019 | License: https://github.com/danaildinev/ddcarousel/blob/master/LICENSE */
 var DDCarousel =
 /*#__PURE__*/
 function () {
@@ -157,7 +157,7 @@ function () {
         });
       }), l.forEach(function (b) {
         a.stage.addEventListener(b, function () {
-          a.triggerHandler("dragged"), g >= a.touchSwipeThreshold && !h ? d > f ? a.prevSlide() : a.nextSlide() : a.stage.style.transform = "translateX(" + f + "px)", a.stage.style.transitionDuration = a.slideChangeDuration + "s", i = !1;
+          a.triggerHandler("dragged"), g >= a.touchSwipeThreshold && !h ? d > f ? a.prevSlide() : a.nextSlide() : a.scrollToPos(f), a.stage.style.transitionDuration = a.slideChangeDuration + "s", i = !1;
         });
       }), k.forEach(function (e) {
         a.stage.addEventListener(e, function (f) {
@@ -181,7 +181,9 @@ function () {
   }, {
     key: "scrollToPos",
     value: function scrollToPos(a) {
-      this.stage.style.transform = "translateX(".concat(a, "px)");
+      var b = /^((?!chrome|android).)*safari/i.test(navigator.userAgent);
+      var c = "translateX(".concat(a, "px)");
+      b ? this.stage.style.webkitTransform = c : this.stage.style.transform = c;
     }
   }, {
     key: "calculateContainerHeight",
@@ -222,7 +224,7 @@ function () {
   }, {
     key: "getCurrentPage",
     value: function getCurrentPage() {
-      return document.querySelector("".concat(this.containerName, " [").concat(this.cDSlide, "=\"").concat(this.currentSlide, "\"].active")).getAttribute(this["this"].cDSlide);
+      return document.querySelector("".concat(this.containerName, " [").concat(this.cDSlide, "=\"").concat(this.currentSlide, "\"].active")).getAttribute(this.cDSlide);
     }
   }, {
     key: "getTotalSlides",
