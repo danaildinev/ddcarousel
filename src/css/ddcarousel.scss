@@ -12,17 +12,13 @@
 		height: 100%;
 		overflow: hidden;
 	}
-	.ddcarousel-container {
+	.ddcarousel-stage {
 		display: flex;
-		display: -webkit-flex;
 		position: absolute;
 		height: 100%;
 		transition: all 0.7s cubic-bezier(0.19, 1, 0.22, 1);
 		backface-visibility: hidden;
 		-moz-user-select: none;
-		user-select: none;
-	}
-	.ddcarousel-stage {
 		& > div {
 			height: 100%;
 			box-sizing: border-box;

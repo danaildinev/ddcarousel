@@ -4,7 +4,7 @@
 
 .ddcarousel .ddcarousel-container { position: relative; width: 100%; height: 100%; overflow: hidden; }
 
-.ddcarousel .ddcarousel-container { display: flex; display: -webkit-flex; position: absolute; height: 100%; transition: all 0.7s cubic-bezier(0.19, 1, 0.22, 1); backface-visibility: hidden; -moz-user-select: none; user-select: none; }
+.ddcarousel .ddcarousel-stage { display: flex; position: absolute; height: 100%; transition: all 0.7s cubic-bezier(0.19, 1, 0.22, 1); backface-visibility: hidden; -moz-user-select: none; }
 
 .ddcarousel .ddcarousel-stage > div { height: 100%; box-sizing: border-box; flex: 0 0 auto; -webkit-flex: 0 0 auto; pointer-events: none; -webkit-touch-callout: none; -webkit-user-select: none; -moz-user-select: none; -ms-user-select: none; user-select: none; }
 
