@@ -19,6 +19,7 @@ class DDCarousel {
 	cContDots = "ddcarousel-dots";
 	cDot = "ddcarousel-dot";
 	cPrev = "ddcarousel-prev";
+	cNext = "ddcarousel-next";
 
 	constructor({
 		container = ".ddcarousel",
@@ -29,6 +30,7 @@ class DDCarousel {
 		responsive = false,
 		touch = true,
 		touchMouse = true,
+		centerSlide = false,
 		touchSwipeThreshold = 60,
 		touchMaxSlideDist = 500,
 		swipeSmooth = 0.1,
@@ -44,6 +46,7 @@ class DDCarousel {
 			this.nav = nav;
 			this.dots = dots;
 			this.touch = touch;
+			this.centerSlide = centerSlide;
 			this.touchMouse = touchMouse;
 			this.touchSwipeThreshold = touchSwipeThreshold;
 			this.touchMaxSlideDist = touchMaxSlideDist;
@@ -154,7 +157,6 @@ class DDCarousel {
 		if (this.autoHeight) {
 			this.calculateContainerHeight(this.currentSlide);
 		}
-		this.scrollToSlide(this.getCurrentSlideDom());
 
 		//fire event
 		if (slideWidth != this.slides[0].style.width) this.triggerHandler("resized");
@@ -194,7 +196,11 @@ class DDCarousel {
 			navContainer.classList.add(this.cContDots);
 
 			if (this.itemsPerPage > 1) {
-				targetSlidesLenght = this.slides.length - this.itemsPerPage + 1;
+				if (this.centerSlide) {
+					targetSlidesLenght = this.slides.length - this.itemsPerPage + 3;
+				} else {
+					targetSlidesLenght = this.slides.length - this.itemsPerPage + 1;
+				}
 			} else {
 				targetSlidesLenght = this.slides.length;
 			}
@@ -226,6 +232,7 @@ class DDCarousel {
 		if (this.responsive) {
 			window.addEventListener("resize", () => {
 				this.calculateStage();
+				this.scrollToSlide(this.getCurrentSlideDom());
 			});
 		}
 
@@ -350,7 +357,7 @@ class DDCarousel {
 	}
 
 	scrollToSlide(slide) {
-		this.currentTranslate = -(slide.getBoundingClientRect().left - this.stage.getBoundingClientRect().left);
+		this.currentTranslate = -this.getSlideDomSize(slide);
 		this.scrollToPos(this.currentTranslate);
 	}
 
@@ -390,7 +397,6 @@ class DDCarousel {
 				.querySelector(`${this.containerName} .${this.cDot}[${this.cDSlide}="${this.currentSlide}"]`)
 				.classList.remove("active");
 		}
-		this.getSlideDom(this.currentSlide).classList.remove("active");
 
 		//change slide based on parameter
 		if (index == "prev") {
@@ -417,9 +423,20 @@ class DDCarousel {
 				this.currentSlide = 0;
 			}
 		}
+		console.log(this.currentSlide);
 
 		//slide to specified slide position
-		this.scrollToSlide(this.getCurrentSlideDom());
+		if (this.centerSlide) {
+			//console.log(this.getSlideDomSize(this.getCurrentSlideDom()));
+
+			var output =
+				-this.getSlideDomSize(this.getCurrentSlideDom()) +
+				this.getCurrentSlideDom().getBoundingClientRect().width;
+			this.currentTranslate = output;
+			this.scrollToPos(output);
+		} else {
+			this.scrollToSlide(this.getCurrentSlideDom());
+		}
 
 		//set active slide class
 		this.getSlideDom(this.currentSlide).classList.add("active");
@@ -469,6 +486,10 @@ class DDCarousel {
 
 	getSlideDom(id) {
 		return document.querySelector(`${this.containerName} .${this.cItem}[${this.cDSlide}="${id}"]`);
+	}
+
+	getSlideDomSize(slide) {
+		return slide.getBoundingClientRect().left - this.stage.getBoundingClientRect().left;
 	}
 }
 

@@ -75,8 +75,8 @@
 	.ddcarousel-nav {
 		text-align: center;
 		margin: 16px 0;
-		.ddcarousel-prev,
-		.ddcarousel-next {
+		.ddcarousel-prev.inactive,
+		.ddcarousel-next.inactive {
 			visibility: hidden;
 		}
 	}

@@ -22,4 +22,4 @@
 
 .ddcarousel .ddcarousel-nav { text-align: center; margin: 16px 0; }
 
-.ddcarousel .ddcarousel-nav .ddcarousel-prev, .ddcarousel .ddcarousel-nav .ddcarousel-next { visibility: hidden; }
+.ddcarousel .ddcarousel-nav .ddcarousel-prev.inactive, .ddcarousel .ddcarousel-nav .ddcarousel-next.inactive { visibility: hidden; }
