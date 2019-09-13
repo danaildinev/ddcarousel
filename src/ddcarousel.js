@@ -196,11 +196,7 @@ class DDCarousel {
 			navContainer.classList.add(this.cContDots);
 
 			if (this.itemsPerPage > 1) {
-				if (this.centerSlide) {
-					targetSlidesLenght = this.slides.length - this.itemsPerPage + 3;
-				} else {
-					targetSlidesLenght = this.slides.length - this.itemsPerPage + 1;
-				}
+				targetSlidesLenght = this.slides.length - this.itemsPerPage + 1 + this.slideDiff + this.itemsPerPage;
 			} else {
 				targetSlidesLenght = this.slides.length;
 			}
@@ -348,9 +344,15 @@ class DDCarousel {
 	refreshNav() {
 		if (this.currentSlide == 0) {
 			this.navPrevBtn.classList.add("inactive");
-		} else if (this.currentSlide === this.slides.length - 1 || this.currentSlide == this.slideDiff) {
+		} else if (
+			this.currentSlide === this.slides.length - 1 + this.slideDiff + this.itemsPerPage ||
+			this.currentSlide == this.slideDiff + this.slideDiff + this.itemsPerPage
+		) {
 			this.navNextBtn.classList.add("inactive");
-		} else if (this.currentSlide > 0 && this.currentSlide < this.slides.length) {
+		} else if (
+			this.currentSlide > 0 &&
+			this.currentSlide < this.slides.length + this.slideDiff + this.itemsPerPage
+		) {
 			this.navPrevBtn.classList.remove("inactive");
 			this.navNextBtn.classList.remove("inactive");
 		}
@@ -397,6 +399,7 @@ class DDCarousel {
 				.querySelector(`${this.containerName} .${this.cDot}[${this.cDSlide}="${this.currentSlide}"]`)
 				.classList.remove("active");
 		}
+		this.getSlideDom(this.currentSlide).classList.remove("active");
 
 		//change slide based on parameter
 		if (index == "prev") {
@@ -409,10 +412,11 @@ class DDCarousel {
 
 		//get difference between all slides and slider per page
 		this.slideDiff = this.slides.length - this.itemsPerPage;
+		this.centeredSlideDiff = this.currentSlide ? this.slideDiff + this.itemsPerPage : 0;
 
 		//set the correct slide index if there is specified items per row
-		if (this.itemsPerPage > 1 && this.currentSlide >= this.slideDiff) {
-			this.currentSlide = this.slideDiff;
+		if (this.itemsPerPage > 1 && this.currentSlide >= this.slideDiff + this.centeredSlideDiff) {
+			this.currentSlide = this.slideDiff + this.centeredSlideDiff;
 		} else {
 			//check if index is larger than slides count -> then change to the last slide
 			if (this.currentSlide >= this.slides.length) {
@@ -423,15 +427,14 @@ class DDCarousel {
 				this.currentSlide = 0;
 			}
 		}
-		console.log(this.currentSlide);
+
+		this.centeredSlidePosOffset = this.itemsPerPage / 2;
 
 		//slide to specified slide position
 		if (this.centerSlide) {
-			//console.log(this.getSlideDomSize(this.getCurrentSlideDom()));
-
 			var output =
 				-this.getSlideDomSize(this.getCurrentSlideDom()) +
-				this.getCurrentSlideDom().getBoundingClientRect().width;
+				this.getCurrentSlideDom().getBoundingClientRect().width * (this.itemsPerPage / 2);
 			this.currentTranslate = output;
 			this.scrollToPos(output);
 		} else {
