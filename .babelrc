@@ -4,6 +4,7 @@
 		"@babel/plugin-proposal-class-properties",
 		"transform-minify-booleans",
 		"minify-simplify",
-		"minify-mangle-names"
+		"minify-mangle-names",
+		["transform-remove-console", { "exclude": ["error", "warn"] }]
 	]
 }

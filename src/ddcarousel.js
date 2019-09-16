@@ -74,6 +74,7 @@ class DDCarousel {
 
 			this.setActiveSlides();
 			this.setActiveDot();
+			this.updateSlide();
 
 			if (this.nav) this.refreshNav();
 		}
@@ -148,8 +149,7 @@ class DDCarousel {
 		//get all slides and total pages
 		this.slides = document.querySelectorAll(`${this.containerName} .${this.cItem}`);
 
-		this.totalPages = Math.ceil(this.slides.length / this.itemsPerPage);
-
+		this.totalPages = this.centerSlide ? this.slides.length : Math.ceil(this.slides.length / this.itemsPerPage) - 1;
 		//get difference between all slides and slider per page
 		this.slideDiff = this.slides.length - this.itemsPerPage;
 
@@ -219,7 +219,7 @@ class DDCarousel {
 				if (this.centerSlide) {
 					targetSlidesLenght = this.centeredSlideDiff;
 				} else {
-					targetSlidesLenght = this.totalPages;
+					targetSlidesLenght = this.totalPages + 1;
 				}
 			} else {
 				targetSlidesLenght = this.slides.length;
@@ -229,7 +229,7 @@ class DDCarousel {
 				dot = document.createElement("button");
 				dot.classList.add(this.cDot);
 				dot.setAttribute(this.cDSlide, i);
-				dot.addEventListener("click", e => this.changePage(parseInt(e.target.getAttribute(this.cDSlide))));
+				dot.addEventListener("click", e => this.goToPage(parseInt(e.target.getAttribute(this.cDSlide))));
 
 				navContainer.appendChild(dot);
 			}
@@ -366,14 +366,18 @@ class DDCarousel {
 	}
 
 	refreshNav() {
-		/*if (this.currentPage == 0) {
+		console.log(this.currentPage + "/" + this.totalPages);
+
+		if (this.currentPage == 0) {
 			this.navPrevBtn.classList.add("inactive");
-		} else if (this.currentPage == this.slideDiff) {
+			this.navNextBtn.classList.remove("inactive");
+		} else if (this.currentPage == this.totalPages) {
+			this.navPrevBtn.classList.remove("inactive");
 			this.navNextBtn.classList.add("inactive");
-		} else {
+		} else if (this.currentPage < this.totalPages && this.currentPage > 0) {
 			this.navPrevBtn.classList.remove("inactive");
 			this.navNextBtn.classList.remove("inactive");
-		}*/
+		}
 	}
 
 	scrollToSlide(slide) {
@@ -406,49 +410,55 @@ class DDCarousel {
 		}
 	}
 	changePage(index) {
-		//change pages
-
 		var origSlide = this.currentPage;
 
 		this.stage.style.transitionDuration = this.slideChangeDuration + "s";
 
+		//may need some refactoring .. but it works!
+
 		if (index == "prev") {
 			if (this.currentSlide - this.itemsPerPage <= 0) {
-				this.currentSlide = 0;
-				this.currentPage = 0;
+				if (this.centerSlide) {
+					this.currentSlide--;
+					this.currentPage--;
+				} else {
+					this.currentSlide = 0;
+					this.currentPage = 0;
+				}
 			} else {
-				this.currentSlide -= this.itemsPerPage;
-				this.currentPage -= 1;
+				if (this.centerSlide) {
+					this.currentSlide--;
+				} else {
+					this.currentSlide -= this.itemsPerPage;
+				}
+				this.currentPage--;
 			}
 		} else if (index == "next") {
 			if (this.currentSlide + this.itemsPerPage + this.itemsPerPage >= this.slides.length) {
-				//if (this.currentPage + this.currentPage >= this.totalPages - 1) {
-				this.currentSlide = this.slides.length - this.itemsPerPage;
-				this.currentPage = this.totalPages - 1;
+				if (this.centerSlide) {
+					this.currentSlide++;
+					this.currentPage++;
+				} else {
+					this.currentSlide = this.slides.length - this.itemsPerPage;
+					this.currentPage = this.totalPages;
+				}
 			} else {
 				this.currentSlide += this.itemsPerPage;
 				this.currentPage++;
 			}
-		} /*else if (Number.isInteger(index)) {
-			this.currentSlide = index;
-		}*/
+		} else if (Number.isInteger(index)) {
+			//console.log(this.currentPage + "/" + this.currentSlide);
+			this.currentPage = index;
+		}
 
 		//set active slides
 		this.setActiveSlides();
 
-		//slide to specified slide position
-		if (this.centerSlide) {
-			var output =
-				-this.getSlideDomSize(this.getCurrentSlideDom()) -
-				-this.getCurrentSlideDom().getBoundingClientRect().width * this.centeredSlideOffset;
-			this.currentTranslate = output;
-			this.scrollToPos(output);
-		} else {
-			this.scrollToSlide(this.getCurrentSlideDom());
-		}
-
 		//set active dots
 		this.setActiveDot();
+
+		//slide to specified slide position
+		this.updateSlide();
 
 		//change stage height if this options is enabled
 		if (this.autoHeight) {
@@ -459,15 +469,31 @@ class DDCarousel {
 		if (origSlide != this.currentPage) this.triggerHandler("changed");
 	}
 
+	updateSlide() {
+		if (this.centerSlide) {
+			var output =
+				-this.getSlideDomSize(this.getCurrentSlideDom()) -
+				-this.getCurrentSlideDom().getBoundingClientRect().width * this.centeredSlideOffset;
+			this.currentTranslate = output;
+			this.scrollToPos(output);
+		} else {
+			this.scrollToSlide(this.getCurrentSlideDom());
+		}
+	}
+
 	setActiveSlides() {
 		this.activeSlides.forEach(i => {
 			document.querySelector(`${this.containerName} [${this.cDSlide}="${i}"]`).classList.remove("active");
 		});
 
 		this.activeSlides = [];
-		for (let index = this.currentSlide; index < this.itemsPerPage + this.currentSlide; index++) {
-			if (index < this.slides.length && index >= 0) {
-				this.activeSlides.push(index);
+		if (this.centerSlide) {
+			this.activeSlides.push(this.currentSlide);
+		} else {
+			for (let index = this.currentSlide; index < this.itemsPerPage + this.currentSlide; index++) {
+				if (index < this.slides.length && index >= 0) {
+					this.activeSlides.push(index);
+				}
 			}
 		}
 
@@ -477,6 +503,9 @@ class DDCarousel {
 	}
 
 	setActiveDot() {
+		var a = document.querySelector(`${this.containerName} .${this.cDot}[${this.cDSlide}].active`);
+		if (a != null) a.classList.remove("active");
+
 		document
 			.querySelector(`${this.containerName} .${this.cDot}[${this.cDSlide}="${this.currentPage}"]`)
 			.classList.add("active");
@@ -488,6 +517,10 @@ class DDCarousel {
 
 	prevPage() {
 		this.changePage("prev");
+	}
+
+	goToPage(index) {
+		if (index >= 0 && index <= this.totalPages) this.changePage(index);
 	}
 
 	getCurrentSlide() {
