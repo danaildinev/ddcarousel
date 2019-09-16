@@ -49,7 +49,6 @@ class DDCarousel {
 			this.nav = nav;
 			this.dots = dots;
 			this.touch = touch;
-
 			this.touchMouse = touchMouse;
 			this.touchSwipeThreshold = touchSwipeThreshold;
 			this.touchMaxSlideDist = touchMaxSlideDist;
@@ -58,6 +57,7 @@ class DDCarousel {
 			this.labelNavPrev = labelNavPrev;
 			this.labelNavNext = labelNavNext;
 
+			//centered slides scrolls one slide per swipe = one page per swipe and activates only when itemsPerRow are not dividable by 2
 			if (items > 1 && items % 2 && centerSlide) {
 				this.centeredSlideOffset = Math.floor(items / 2);
 				this.centerSlide = true;
@@ -317,9 +317,9 @@ class DDCarousel {
 
 				if (swipeDistance >= this.touchSwipeThreshold && !dontChange) {
 					if (currentTouch > origPosition) {
-						this.prevSlide();
+						this.prevPage();
 					} else {
-						this.nextSlide();
+						this.nextPage();
 					}
 				} else {
 					this.scrollToPos(origPosition);
@@ -416,43 +416,37 @@ class DDCarousel {
 
 		this.stage.style.transitionDuration = this.slideChangeDuration + "s";
 
-		//may need some refactoring .. but it works!
+		//change slide based on parameter
 		if (index == "prev") {
-			if (this.currentSlide - this.itemsPerPage <= 0) {
-				if (this.centerSlide) {
-					this.currentSlide--;
-					this.currentPage--;
-				} else {
-					this.currentSlide = 0;
-					this.currentPage = 0;
-				}
-			} else {
-				if (this.centerSlide) {
-					this.currentSlide--;
-				} else {
-					this.currentSlide -= this.itemsPerPage;
-				}
-				this.currentPage--;
-			}
+			this.currentSlide = this.centerSlide ? this.currentSlide - 1 : this.currentSlide - this.itemsPerPage;
+			this.currentPage--;
 		} else if (index == "next") {
-			if (this.currentSlide + this.itemsPerPage + this.itemsPerPage >= this.slides.length) {
-				if (this.centerSlide) {
+			this.currentSlide = this.centerSlide ? this.currentSlide + 1 : this.currentSlide + this.itemsPerPage;
+			this.currentPage++;
+		} else if (Number.isInteger(index)) {
+			this.currentSlide = index;
+		}
+
+		//make some validations with the new value
+		if (index == "prev" && this.currentSlide < 0) {
+			if (this.centerSlide) {
+				this.currentSlide--;
+				this.currentPage--;
+			} else {
+				this.currentSlide = 0;
+				this.currentPage = 0;
+			}
+		} else if (index == "next" && this.currentSlide + this.itemsPerPage >= this.slides.length) {
+			console.log("ha!");
+			if (this.centerSlide) {
+				if (this.currentSlide > this.slides.length) {
 					this.currentSlide++;
 					this.currentPage++;
-				} else {
-					this.currentSlide = this.slides.length - this.itemsPerPage;
-					this.currentPage = this.totalPages;
 				}
 			} else {
-				if (this.centerSlide) {
-					this.currentSlide++;
-				} else {
-					this.currentSlide += this.itemsPerPage;
-				}
-				this.currentPage++;
+				this.currentSlide = this.slides.length - this.itemsPerPage;
+				this.currentPage = this.totalPages;
 			}
-		} else if (Number.isInteger(index)) {
-			this.currentPage = index;
 		}
 
 		//update frontend
