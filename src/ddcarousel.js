@@ -285,79 +285,86 @@ class DDCarousel {
 		}
 
 		eventsStart.forEach(el => {
-			this.stage.addEventListener(
+			window.addEventListener(
 				el,
 				e => {
-					isDragging = true;
+					if (e.target == this.stage) {
+						isDragging = true;
 
-					//set some starting values
-					touchStartRaw =
-						e.type == "mousedown" || (e.type == "mousedown" && this.touchMouse)
-							? e.clientX
-							: e.targetTouches[0].clientX;
-					touchStart =
-						e.type == "mousedown" || (e.type == "mousedown" && this.touchMouse)
-							? e.clientX + -this.currentTranslate
-							: e.targetTouches[0].clientX + -this.currentTranslate;
+						//set some starting values
+						touchStartRaw =
+							e.type == "mousedown" || (e.type == "mousedown" && this.touchMouse)
+								? e.clientX
+								: e.targetTouches[0].clientX;
+						touchStart =
+							e.type == "mousedown" || (e.type == "mousedown" && this.touchMouse)
+								? e.clientX + -this.currentTranslate
+								: e.targetTouches[0].clientX + -this.currentTranslate;
 
-					//remember orig position
-					origPosition = this.currentTranslate;
-					dontChange = false;
+						//remember orig position
+						origPosition = this.currentTranslate;
+						dontChange = false;
 
-					this.triggerHandler("drag");
+						this.triggerHandler("drag");
+					}
 				},
 				{ passive: true }
 			);
 		});
 
 		eventsEnd.forEach(el => {
-			this.stage.addEventListener(el, () => {
-				//check if swipe distance is enough to change slide or stay on the same
-				this.triggerHandler("dragged");
+			window.addEventListener(el, () => {
+				if (isDragging) {
+					//check if swipe distance is enough to change slide or stay on the same
+					this.triggerHandler("dragged");
 
-				if (swipeDistance >= this.touchSwipeThreshold && !dontChange) {
-					if (currentTouch > origPosition) {
-						this.prevPage();
+					if (swipeDistance >= this.touchSwipeThreshold && !dontChange) {
+						if (currentTouch > origPosition) {
+							this.prevPage();
+						} else {
+							this.nextPage();
+						}
 					} else {
-						this.nextPage();
+						this.scrollToPos(origPosition);
 					}
-				} else {
-					this.scrollToPos(origPosition);
-				}
 
-				this.stage.style.transitionDuration = this.slideChangeDuration + "s";
-				isDragging = false;
+					this.stage.style.transitionDuration = this.slideChangeDuration + "s";
+					isDragging = false;
+					console.log("touch end");
+				}
 			});
 		});
 
 		eventsMove.forEach(el => {
-			this.stage.addEventListener(
+			window.addEventListener(
 				el,
 				e => {
-					var input;
-					if (e.type == "mousemove" && this.touchMouse) {
-						if (isDragging) {
-							input = e.clientX;
+					if (isDragging) {
+						var input;
+						if (e.type == "mousemove" && this.touchMouse) {
+							if (isDragging) {
+								input = e.clientX;
+							}
+						} else if (e.type == "touchmove") {
+							input = e.targetTouches[0].pageX;
 						}
-					} else if (e.type == "touchmove") {
-						input = e.targetTouches[0].pageX;
-					}
 
-					//disable transition to get more responsive dragging
-					this.stage.style.transitionDuration = this.swipeSmooth + "s";
+						//disable transition to get more responsive dragging
+						this.stage.style.transitionDuration = this.swipeSmooth + "s";
 
-					//calcualte swipe distance between starging value cnd current value
-					swipeDistance = Math.abs(input - touchStartRaw);
+						//calcualte swipe distance between starging value cnd current value
+						swipeDistance = Math.abs(input - touchStartRaw);
 
-					//get the current touch
-					currentTouch = input - touchStart;
-
-					//move slider until max swipe lenght is reached
-					if (swipeDistance <= this.touchMaxSlideDist) {
-						this.scrollToPos(currentTouch);
-					} else {
-						dontChange = true;
+						//get the current touch
 						currentTouch = input - touchStart;
+
+						//move slider until max swipe lenght is reached
+						if (swipeDistance <= this.touchMaxSlideDist) {
+							this.scrollToPos(currentTouch);
+						} else {
+							dontChange = true;
+							currentTouch = input - touchStart;
+						}
 					}
 				},
 				{ passive: true }

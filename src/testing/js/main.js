@@ -5,7 +5,7 @@ document.addEventListener("DOMContentLoaded", function(event) {
 		nav: true,
 		dots: true,
 		autoHeight: false,
-		responsive: true,
+		responsive: false,
 		touch: true,
 		touchMouse: true,
 		centerSlide: false
