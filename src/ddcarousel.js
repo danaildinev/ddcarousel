@@ -12,6 +12,8 @@ class DDCarousel {
 	triggers = [];
 	activeSlides = [];
 	totalPages = [];
+	isDragging = false;
+	init = false;
 
 	cCont = "ddcarousel-container";
 	cStage = "ddcarousel-stage";
@@ -36,11 +38,13 @@ class DDCarousel {
 		centerSlide = false,
 		touchSwipeThreshold = 60,
 		touchMaxSlideDist = 500,
-		swipeSmooth = 0.1,
-		slideChangeDuration = 0.3,
+		swipeSmooth = 0,
+		slideChangeDuration = 0.9,
 		labelNavPrev = "< Prev",
 		labelNavNext = "Next >"
 	}) {
+		this.triggerHandler("initializing");
+		console.log("initializing");
 		if (this.checkContainer(container)) {
 			this.containerName = container;
 			this.autoHeight = autoHeight;
@@ -95,7 +99,7 @@ class DDCarousel {
 		var contName = name.substring(1);
 		if (name.substring(0, 1) == "#") {
 			if (document.getElementById(contName) == null) {
-				console.log(`${this.appName}: Invalid container ID!`);
+				console.error(`${this.appName}: Invalid container ID!`);
 				return false;
 			} else {
 				this.container = document.getElementById(containerNameClear);
@@ -103,14 +107,14 @@ class DDCarousel {
 			}
 		} else if (name.substring(0, 1) == ".") {
 			if (document.getElementsByClassName(contName)[0] == null) {
-				console.log(`${this.appName}: Invalid container class!`);
+				console.error(`${this.appName}: Invalid container class!`);
 				return false;
 			} else {
 				this.container = document.getElementsByClassName(contName)[0];
 				return true;
 			}
 		} else {
-			console.log(`${this.appName}: Invalid container!`);
+			console.error(`${this.appName}: Invalid container!`);
 			return false;
 		}
 	}
@@ -150,6 +154,7 @@ class DDCarousel {
 		this.slides = document.querySelectorAll(`${this.containerName} .${this.cItem}`);
 
 		this.totalPages = this.centerSlide ? this.slides.length : Math.ceil(this.slides.length / this.itemsPerPage) - 1;
+
 		//get difference between all slides and slider per page
 		this.slideDiff = this.slides.length - this.itemsPerPage;
 
@@ -178,8 +183,18 @@ class DDCarousel {
 			this.calculateContainerHeight(this.currentPage);
 		}
 
-		//fire event
 		if (slideWidth != this.slides[0].style.width) this.triggerHandler("resized");
+
+		if (!this.init) {
+			if (
+				this.slides.length == this.slidesSource.length &&
+				document.querySelectorAll(`${this.containerName} .${this.cStage} [${this.cDSlide}]`).length > 0
+			) {
+				this.triggerHandler("initialized");
+				console.log("initialized");
+				this.init = true;
+			}
+		}
 	}
 
 	createNav() {
@@ -256,6 +271,14 @@ class DDCarousel {
 			});
 		}
 
+		//anim
+		var transitionEvent = this.whichTransitionEvent();
+		transitionEvent &&
+			this.stage.addEventListener(transitionEvent, () => {
+				this.triggerHandler("traisitioned");
+				console.log("traisitioned");
+			});
+
 		//touch events
 		this.attachTouchEvents();
 	}
@@ -269,8 +292,7 @@ class DDCarousel {
 			currentTouch,
 			origPosition,
 			swipeDistance,
-			dontChange,
-			isDragging;
+			dontChange;
 
 		//add events based on options
 		if (this.touch) {
@@ -289,7 +311,7 @@ class DDCarousel {
 				el,
 				e => {
 					if (e.target == this.stage) {
-						isDragging = true;
+						this.isDragging = true;
 
 						//set some starting values
 						touchStartRaw =
@@ -306,6 +328,7 @@ class DDCarousel {
 						dontChange = false;
 
 						this.triggerHandler("drag");
+						console.log("drag");
 					}
 				},
 				{ passive: true }
@@ -314,9 +337,10 @@ class DDCarousel {
 
 		eventsEnd.forEach(el => {
 			window.addEventListener(el, () => {
-				if (isDragging) {
+				if (this.isDragging) {
 					//check if swipe distance is enough to change slide or stay on the same
 					this.triggerHandler("dragged");
+					console.log("dragged");
 
 					if (swipeDistance >= this.touchSwipeThreshold && !dontChange) {
 						if (currentTouch > origPosition) {
@@ -329,8 +353,7 @@ class DDCarousel {
 					}
 
 					this.stage.style.transitionDuration = this.slideChangeDuration + "s";
-					isDragging = false;
-					console.log("touch end");
+					this.isDragging = false;
 				}
 			});
 		});
@@ -339,12 +362,10 @@ class DDCarousel {
 			window.addEventListener(
 				el,
 				e => {
-					if (isDragging) {
+					if (this.isDragging) {
 						var input;
 						if (e.type == "mousemove" && this.touchMouse) {
-							if (isDragging) {
-								input = e.clientX;
-							}
+							input = e.clientX;
 						} else if (e.type == "touchmove") {
 							input = e.targetTouches[0].pageX;
 						}
@@ -360,6 +381,8 @@ class DDCarousel {
 
 						//move slider until max swipe lenght is reached
 						if (swipeDistance <= this.touchMaxSlideDist) {
+							this.triggerHandler("dragging");
+							console.log("dragging");
 							this.scrollToPos(currentTouch);
 						} else {
 							dontChange = true;
@@ -469,7 +492,10 @@ class DDCarousel {
 		}
 
 		//fire change trigger
-		if (origSlide != this.currentPage) this.triggerHandler("changed");
+		if (origSlide != this.currentPage) {
+			this.triggerHandler("changed");
+			console.log("changed");
+		}
 	}
 
 	updateSlide() {
@@ -554,6 +580,22 @@ class DDCarousel {
 
 	getTotalPages() {
 		return this.totalPages;
+	}
+
+	whichTransitionEvent() {
+		var t;
+		var el = document.createElement("fakeelement");
+		var transitions = {
+			transition: "transitionend",
+			MozTransition: "transitionend",
+			WebkitTransition: "webkitTransitionEnd"
+		};
+
+		for (t in transitions) {
+			if (el.style[t] !== undefined) {
+				return transitions[t];
+			}
+		}
 	}
 }
 
