@@ -366,15 +366,17 @@ class DDCarousel {
 	}
 
 	refreshNav() {
-		console.log(this.currentPage + "/" + this.totalPages);
-
-		if (this.currentPage == 0) {
+		if (this.getCurrentPage() == 0) {
 			this.navPrevBtn.classList.add("inactive");
 			this.navNextBtn.classList.remove("inactive");
-		} else if (this.currentPage == this.totalPages) {
+		} else if (
+			this.centerSlide
+				? this.getActiveSlides() == this.getTotalSlides()
+				: this.currentPage == this.getTotalPages()
+		) {
 			this.navPrevBtn.classList.remove("inactive");
 			this.navNextBtn.classList.add("inactive");
-		} else if (this.currentPage < this.totalPages && this.currentPage > 0) {
+		} else {
 			this.navPrevBtn.classList.remove("inactive");
 			this.navNextBtn.classList.remove("inactive");
 		}
@@ -415,7 +417,6 @@ class DDCarousel {
 		this.stage.style.transitionDuration = this.slideChangeDuration + "s";
 
 		//may need some refactoring .. but it works!
-
 		if (index == "prev") {
 			if (this.currentSlide - this.itemsPerPage <= 0) {
 				if (this.centerSlide) {
@@ -443,18 +444,19 @@ class DDCarousel {
 					this.currentPage = this.totalPages;
 				}
 			} else {
-				this.currentSlide += this.itemsPerPage;
+				if (this.centerSlide) {
+					this.currentSlide++;
+				} else {
+					this.currentSlide += this.itemsPerPage;
+				}
 				this.currentPage++;
 			}
 		} else if (Number.isInteger(index)) {
-			//console.log(this.currentPage + "/" + this.currentSlide);
 			this.currentPage = index;
 		}
 
-		//set active slides
+		//update frontend
 		this.setActiveSlides();
-
-		//set active dots
 		this.setActiveDot();
 
 		//slide to specified slide position
@@ -523,10 +525,6 @@ class DDCarousel {
 		if (index >= 0 && index <= this.totalPages) this.changePage(index);
 	}
 
-	getCurrentSlide() {
-		return this.currentPage;
-	}
-
 	getCurrentSlideDom() {
 		return document.querySelector(`${this.containerName} [${this.cDSlide}].active`);
 	}
@@ -538,7 +536,7 @@ class DDCarousel {
 	}
 
 	getTotalSlides() {
-		return this.slides.length;
+		return this.slides.length - 1;
 	}
 
 	getSlideDom(id) {
