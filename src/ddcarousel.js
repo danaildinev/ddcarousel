@@ -5,10 +5,13 @@ class DDCarousel {
 	container = null; //DOM element: container
 	stage = null; //DOM element: stage
 	currentSlide = 0; //current slide
+	currentPage = 0;
 	currentTranslate = 0;
 	slideDiff = 0;
 	slidesHeights = []; //use dot store slides heights when using autoHeight
 	triggers = [];
+	activeSlides = [];
+	totalPages = [];
 
 	cCont = "ddcarousel-container";
 	cStage = "ddcarousel-stage";
@@ -68,7 +71,9 @@ class DDCarousel {
 			this.createNav();
 			this.createDots();
 			this.attachEvents();
-			this.changeSlide(this.changeSlide);
+
+			this.setActiveSlides();
+			this.setActiveDot();
 
 			if (this.nav) this.refreshNav();
 		}
@@ -140,8 +145,10 @@ class DDCarousel {
 			stageDiv.appendChild(s);
 		}
 
-		//get all slides
+		//get all slides and total pages
 		this.slides = document.querySelectorAll(`${this.containerName} .${this.cItem}`);
+
+		this.totalPages = Math.ceil(this.slides.length / this.itemsPerPage);
 
 		//get difference between all slides and slider per page
 		this.slideDiff = this.slides.length - this.itemsPerPage;
@@ -168,7 +175,7 @@ class DDCarousel {
 		}
 
 		if (this.autoHeight) {
-			this.calculateContainerHeight(this.currentSlide);
+			this.calculateContainerHeight(this.currentPage);
 		}
 
 		//fire event
@@ -212,17 +219,17 @@ class DDCarousel {
 				if (this.centerSlide) {
 					targetSlidesLenght = this.centeredSlideDiff;
 				} else {
-					targetSlidesLenght = this.slides.length - this.itemsPerPage + 1;
+					targetSlidesLenght = this.totalPages;
 				}
 			} else {
 				targetSlidesLenght = this.slides.length;
 			}
-			console.log(targetSlidesLenght);
+
 			for (i = 0; i < targetSlidesLenght; i++) {
 				dot = document.createElement("button");
 				dot.classList.add(this.cDot);
 				dot.setAttribute(this.cDSlide, i);
-				dot.addEventListener("click", e => this.changeSlide(parseInt(e.target.getAttribute(this.cDSlide))));
+				dot.addEventListener("click", e => this.changePage(parseInt(e.target.getAttribute(this.cDSlide))));
 
 				navContainer.appendChild(dot);
 			}
@@ -234,8 +241,8 @@ class DDCarousel {
 	attachEvents() {
 		//nav buttons
 		if (this.nav) {
-			this.navPrevBtn.addEventListener("click", () => this.prevSlide());
-			this.navNextBtn.addEventListener("click", () => this.nextSlide());
+			this.navPrevBtn.addEventListener("click", () => this.prevPage());
+			this.navNextBtn.addEventListener("click", () => this.nextPage());
 			this.on("changed", () => {
 				this.refreshNav();
 			});
@@ -359,15 +366,14 @@ class DDCarousel {
 	}
 
 	refreshNav() {
-		if (this.currentSlide == 0) {
+		/*if (this.currentPage == 0) {
 			this.navPrevBtn.classList.add("inactive");
-		} else if (this.currentSlide == this.slideDiff) {
+		} else if (this.currentPage == this.slideDiff) {
 			this.navNextBtn.classList.add("inactive");
 		} else {
 			this.navPrevBtn.classList.remove("inactive");
 			this.navNextBtn.classList.remove("inactive");
-		}
-		console.log(this.slideDiff);
+		}*/
 	}
 
 	scrollToSlide(slide) {
@@ -387,54 +393,48 @@ class DDCarousel {
 
 	calculateContainerHeight() {
 		if (this.itemsPerPage == 1) {
-			this.container.style.height = this.slidesHeights[this.currentSlide] + "px";
+			this.container.style.height = this.slidesHeights[this.currentPage] + "px";
 		} else {
 			var i,
 				heights = [];
 
 			//get specified slides from global array with heights and then get the highest of it
-			for (i = this.currentSlide; i <= this.currentSlide + this.itemsPerPage - 1; i++) {
+			for (i = this.currentPage; i <= this.currentPage + this.itemsPerPage - 1; i++) {
 				heights.push(this.slidesHeights[i]);
 				this.container.style.height = Math.max(...heights) + "px";
 			}
 		}
 	}
+	changePage(index) {
+		//change pages
 
-	changeSlide(index) {
-		var origSlide = this.currentSlide;
+		var origSlide = this.currentPage;
 
 		this.stage.style.transitionDuration = this.slideChangeDuration + "s";
 
-		//remove some classes bedore adding new one
-		if (this.dots) {
-			document
-				.querySelector(`${this.containerName} .${this.cDot}[${this.cDSlide}="${this.currentSlide}"]`)
-				.classList.remove("active");
-		}
-		this.getSlideDom(this.currentSlide).classList.remove("active");
-
-		//change slide based on parameter
 		if (index == "prev") {
-			this.currentSlide--;
-		} else if (index == "next") {
-			this.currentSlide++;
-		} else if (Number.isInteger(index)) {
-			this.currentSlide = index;
-		}
-
-		//set the correct slide index if there is specified items per row
-		if (this.itemsPerPage > 1 && this.currentSlide >= this.slideDiff + this.centeredSlideDiff) {
-			this.currentSlide = this.slideDiff + this.centeredSlideDiff;
-		} else {
-			//check if index is larger than slides count -> then change to the last slide
-			if (this.currentSlide >= this.slides.length) {
-				this.currentSlide = this.slides.length - 1;
-			}
-			//check if index is smaller than slides count -> then change to the first slide
-			else if (this.currentSlide < 0) {
+			if (this.currentSlide - this.itemsPerPage <= 0) {
 				this.currentSlide = 0;
+				this.currentPage = 0;
+			} else {
+				this.currentSlide -= this.itemsPerPage;
+				this.currentPage -= 1;
 			}
-		}
+		} else if (index == "next") {
+			if (this.currentSlide + this.itemsPerPage + this.itemsPerPage >= this.slides.length) {
+				//if (this.currentPage + this.currentPage >= this.totalPages - 1) {
+				this.currentSlide = this.slides.length - this.itemsPerPage;
+				this.currentPage = this.totalPages - 1;
+			} else {
+				this.currentSlide += this.itemsPerPage;
+				this.currentPage++;
+			}
+		} /*else if (Number.isInteger(index)) {
+			this.currentSlide = index;
+		}*/
+
+		//set active slides
+		this.setActiveSlides();
 
 		//slide to specified slide position
 		if (this.centerSlide) {
@@ -447,16 +447,8 @@ class DDCarousel {
 			this.scrollToSlide(this.getCurrentSlideDom());
 		}
 
-		//set active slide class
-		this.getSlideDom(this.currentSlide).classList.add("active");
-
 		//set active dots
-		if (this.dots) {
-			//add class to the current dot
-			document
-				.querySelector(`${this.containerName} .${this.cDot}[${this.cDSlide}="${this.currentSlide}"]`)
-				.classList.add("active");
-		}
+		this.setActiveDot();
 
 		//change stage height if this options is enabled
 		if (this.autoHeight) {
@@ -464,28 +456,51 @@ class DDCarousel {
 		}
 
 		//fire change trigger
-		if (origSlide != this.currentSlide) this.triggerHandler("changed");
+		if (origSlide != this.currentPage) this.triggerHandler("changed");
 	}
 
-	nextSlide() {
-		this.changeSlide("next");
+	setActiveSlides() {
+		this.activeSlides.forEach(i => {
+			document.querySelector(`${this.containerName} [${this.cDSlide}="${i}"]`).classList.remove("active");
+		});
+
+		this.activeSlides = [];
+		for (let index = this.currentSlide; index < this.itemsPerPage + this.currentSlide; index++) {
+			if (index < this.slides.length && index >= 0) {
+				this.activeSlides.push(index);
+			}
+		}
+
+		this.activeSlides.forEach(i => {
+			document.querySelector(`${this.containerName} [${this.cDSlide}="${i}"]`).classList.add("active");
+		});
 	}
 
-	prevSlide() {
-		this.changeSlide("prev");
+	setActiveDot() {
+		document
+			.querySelector(`${this.containerName} .${this.cDot}[${this.cDSlide}="${this.currentPage}"]`)
+			.classList.add("active");
+	}
+
+	nextPage() {
+		this.changePage("next");
+	}
+
+	prevPage() {
+		this.changePage("prev");
 	}
 
 	getCurrentSlide() {
-		return this.currentSlide;
+		return this.currentPage;
 	}
 
 	getCurrentSlideDom() {
-		return document.querySelector(`${this.containerName} [${this.cDSlide}="${this.currentSlide}"]`);
+		return document.querySelector(`${this.containerName} [${this.cDSlide}].active`);
 	}
 
 	getCurrentPage() {
 		return document
-			.querySelector(`${this.containerName} [${this.cDSlide}="${this.currentSlide}"].active`)
+			.querySelector(`${this.containerName} [${this.cDSlide}="${this.currentPage}"].active`)
 			.getAttribute(this.cDSlide);
 	}
 
@@ -499,6 +514,14 @@ class DDCarousel {
 
 	getSlideDomSize(slide) {
 		return slide.getBoundingClientRect().left - this.stage.getBoundingClientRect().left;
+	}
+
+	getActiveSlides() {
+		return this.activeSlides;
+	}
+
+	getTotalPages() {
+		return this.totalPages;
 	}
 }
 

@@ -8,7 +8,7 @@ document.addEventListener("DOMContentLoaded", function(event) {
 		responsive: true,
 		touch: true,
 		touchMouse: true,
-		centerSlide: true
+		centerSlide: false
 
 		//touchSwipeThreshold: 10
 		//touchMaxSlideDist: 100
