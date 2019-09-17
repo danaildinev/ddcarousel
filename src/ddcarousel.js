@@ -39,7 +39,7 @@ class DDCarousel {
 		touchSwipeThreshold = 60,
 		touchMaxSlideDist = 500,
 		swipeSmooth = 0,
-		slideChangeDuration = 0.9,
+		slideChangeDuration = 0.5,
 		labelNavPrev = "< Prev",
 		labelNavNext = "Next >"
 	}) {
@@ -71,12 +71,12 @@ class DDCarousel {
 			}
 
 			this.createStage();
+			this.setActiveSlides();
 			this.calculateStage();
 			this.createNav();
 			this.createDots();
 			this.attachEvents();
 
-			this.setActiveSlides();
 			this.setActiveDot();
 			this.updateSlide();
 
@@ -396,7 +396,7 @@ class DDCarousel {
 	}
 
 	refreshNav() {
-		if (this.getCurrentPage() == 0) {
+		if (this.currentPage == 0) {
 			this.navPrevBtn.classList.add("inactive");
 			this.navNextBtn.classList.remove("inactive");
 		} else if (
@@ -534,12 +534,14 @@ class DDCarousel {
 	}
 
 	setActiveDot() {
-		var a = document.querySelector(`${this.containerName} .${this.cDot}[${this.cDSlide}].active`);
-		if (a != null) a.classList.remove("active");
+		if (this.dots) {
+			var a = document.querySelector(`${this.containerName} .${this.cDot}[${this.cDSlide}].active`);
+			if (a != null) a.classList.remove("active");
 
-		document
-			.querySelector(`${this.containerName} .${this.cDot}[${this.cDSlide}="${this.currentPage}"]`)
-			.classList.add("active");
+			document
+				.querySelector(`${this.containerName} .${this.cDot}[${this.cDSlide}="${this.currentPage}"]`)
+				.classList.add("active");
+		}
 	}
 
 	nextPage() {

@@ -34,19 +34,21 @@ function () {
         p = o === void 0 || o,
         q = b.touchMouse,
         r = q === void 0 || q,
-        s = b.touchSwipeThreshold,
-        t = s === void 0 ? 60 : s,
-        u = b.touchMaxSlideDist,
-        v = u === void 0 ? 500 : u,
-        w = b.swipeSmooth,
-        x = w === void 0 ? 0.1 : w,
-        y = b.slideChangeDuration,
-        z = y === void 0 ? 0.3 : y,
-        A = b.labelNavPrev,
-        B = A === void 0 ? "< Prev" : A,
-        C = b.labelNavNext,
-        D = C === void 0 ? "Next >" : C;
-    _classCallCheck(this, a), _defineProperty(this, "appName", "DDCarousel"), _defineProperty(this, "containerName", null), _defineProperty(this, "container", null), _defineProperty(this, "stage", null), _defineProperty(this, "currentSlide", 0), _defineProperty(this, "currentTranslate", 0), _defineProperty(this, "slideDiff", 0), _defineProperty(this, "slidesHeights", []), _defineProperty(this, "triggers", []), _defineProperty(this, "cCont", "ddcarousel-container"), _defineProperty(this, "cStage", "ddcarousel-stage"), _defineProperty(this, "cNav", "ddcarousel-nav"), _defineProperty(this, "cItem", "ddcarousel-item"), _defineProperty(this, "cResp", "ddcarousel-responsive"), _defineProperty(this, "cDSlide", "data-slide"), _defineProperty(this, "cContDots", "ddcarousel-dots"), _defineProperty(this, "cDot", "ddcarousel-dot"), _defineProperty(this, "cPrev", "ddcarousel-prev"), this.checkContainer(d) && (this.containerName = d, this.autoHeight = j, this.itemsPerPage = l, this.responsive = n, this.nav = f, this.dots = h, this.touch = p, this.touchMouse = r, this.touchSwipeThreshold = t, this.touchMaxSlideDist = v, this.swipeSmooth = x, this.slideChangeDuration = z, this.labelNavPrev = B, this.labelNavNext = D, this.createStage(), this.calculateStage(), this.createNav(), this.createDots(), this.attachEvents(), this.changeSlide(this.changeSlide), this.nav && this.refreshNav());
+        s = b.centerSlide,
+        t = s !== void 0 && s,
+        u = b.touchSwipeThreshold,
+        v = u === void 0 ? 60 : u,
+        w = b.touchMaxSlideDist,
+        x = w === void 0 ? 500 : w,
+        y = b.swipeSmooth,
+        z = y === void 0 ? 0 : y,
+        A = b.slideChangeDuration,
+        B = A === void 0 ? 0.5 : A,
+        C = b.labelNavPrev,
+        D = C === void 0 ? "< Prev" : C,
+        E = b.labelNavNext,
+        F = E === void 0 ? "Next >" : E;
+    _classCallCheck(this, a), _defineProperty(this, "appName", "DDCarousel"), _defineProperty(this, "containerName", null), _defineProperty(this, "container", null), _defineProperty(this, "stage", null), _defineProperty(this, "currentSlide", 0), _defineProperty(this, "currentPage", 0), _defineProperty(this, "currentTranslate", 0), _defineProperty(this, "slideDiff", 0), _defineProperty(this, "slidesHeights", []), _defineProperty(this, "triggers", []), _defineProperty(this, "activeSlides", []), _defineProperty(this, "totalPages", []), _defineProperty(this, "isDragging", !1), _defineProperty(this, "init", !1), _defineProperty(this, "cCont", "ddcarousel-container"), _defineProperty(this, "cStage", "ddcarousel-stage"), _defineProperty(this, "cNav", "ddcarousel-nav"), _defineProperty(this, "cItem", "ddcarousel-item"), _defineProperty(this, "cResp", "ddcarousel-responsive"), _defineProperty(this, "cDSlide", "data-slide"), _defineProperty(this, "cContDots", "ddcarousel-dots"), _defineProperty(this, "cDot", "ddcarousel-dot"), _defineProperty(this, "cPrev", "ddcarousel-prev"), _defineProperty(this, "cNext", "ddcarousel-next"), this.triggerHandler("initializing"), void 0, this.checkContainer(d) && (this.containerName = d, this.autoHeight = j, this.itemsPerPage = l, this.responsive = n, this.nav = f, this.dots = h, this.touch = p, this.touchMouse = r, this.touchSwipeThreshold = v, this.touchMaxSlideDist = x, this.swipeSmooth = z, this.slideChangeDuration = B, this.labelNavPrev = D, this.labelNavNext = F, l > 1 && l % 2 && t ? (this.centeredSlideOffset = Math.floor(l / 2), this.centerSlide = !0) : (this.centeredSlideOffset = 0, this.centerSlide = !1), this.createStage(), this.setActiveSlides(), this.calculateStage(), this.createNav(), this.createDots(), this.attachEvents(), this.setActiveDot(), this.updateSlide(), this.nav && this.refreshNav());
   }
 
   return _createClass(a, [{
@@ -63,7 +65,7 @@ function () {
     key: "checkContainer",
     value: function checkContainer(a) {
       var b = a.substring(1);
-      return a.substring(0, 1) == "#" ? document.getElementById(b) == null ? (console.log("".concat(this.appName, ": Invalid container ID!")), !1) : (this.container = document.getElementById(containerNameClear), !0) : a.substring(0, 1) == "." ? document.getElementsByClassName(b)[0] == null ? (console.log("".concat(this.appName, ": Invalid container class!")), !1) : (this.container = document.getElementsByClassName(b)[0], !0) : (console.log("".concat(this.appName, ": Invalid container!")), !1);
+      return a.substring(0, 1) == "#" ? document.getElementById(b) == null ? (console.error("".concat(this.appName, ": Invalid container ID!")), !1) : (this.container = document.getElementById(containerNameClear), !0) : a.substring(0, 1) == "." ? document.getElementsByClassName(b)[0] == null ? (console.error("".concat(this.appName, ": Invalid container class!")), !1) : (this.container = document.getElementsByClassName(b)[0], !0) : (console.error("".concat(this.appName, ": Invalid container!")), !1);
     }
   }, {
     key: "createStage",
@@ -76,10 +78,10 @@ function () {
       for (b.classList.add(this.cCont), c.classList.add(this.cStage), this.slidesSource = document.querySelectorAll("".concat(this.containerName, " > div")), this.container.appendChild(b), b.appendChild(c), this.stage = document.querySelector("".concat(this.containerName, " .").concat(this.cStage)), this.responsive && this.container.classList.add(this.cResp), a = 0; a < this.slidesSource.length; a++) {
         var d = document.createElement("div");
         d.classList.add(this.cItem), d.setAttribute(this.cDSlide, a), d.appendChild(this.slidesSource[a]), c.appendChild(d);
-      } //get all slides
+      } //get all slides and total pages
 
 
-      this.slides = document.querySelectorAll("".concat(this.containerName, " .").concat(this.cItem));
+      this.slides = document.querySelectorAll("".concat(this.containerName, " .").concat(this.cItem)), this.totalPages = this.centerSlide ? this.slides.length : Math.ceil(this.slides.length / this.itemsPerPage) - 1, this.slideDiff = this.slides.length - this.itemsPerPage, this.centeredSlideDiff = this.centerSlide ? this.slideDiff + this.itemsPerPage : 0;
     }
   }, {
     key: "calculateStage",
@@ -90,7 +92,7 @@ function () {
 
       for (this.slidesHeights = [], a = 0; a < this.slides.length; a++) this.slides[a].style.width = this.itemsPerPage == null ? c + "px" : c / this.itemsPerPage + "px", this.slidesHeights.push(document.querySelector("".concat(this.containerName, " [").concat(this.cDSlide, "=\"").concat(a, "\"] > div")).scrollHeight);
 
-      this.autoHeight && this.calculateContainerHeight(this.currentSlide), this.scrollToSlide(this.getCurrentSlideDom()), b != this.slides[0].style.width && this.triggerHandler("resized");
+      this.autoHeight && this.calculateContainerHeight(this.currentPage), b != this.slides[0].style.width && this.triggerHandler("resized"), !this.init && this.slides.length == this.slidesSource.length && document.querySelectorAll("".concat(this.containerName, " .").concat(this.cStage, " [").concat(this.cDSlide, "]")).length > 0 && (this.triggerHandler("initialized"), void 0, this.init = !0);
     }
   }, {
     key: "createNav",
@@ -113,8 +115,8 @@ function () {
             d,
             e = document.createElement("div");
 
-        for (e.classList.add(this.cContDots), d = this.itemsPerPage > 1 ? this.slides.length - this.itemsPerPage + 1 : this.slides.length, b = 0; b < d; b++) c = document.createElement("button"), c.classList.add(this.cDot), c.setAttribute(this.cDSlide, b), c.addEventListener("click", function (b) {
-          return a.changeSlide(parseInt(b.target.getAttribute(a.cDSlide)));
+        for (e.classList.add(this.cContDots), d = this.itemsPerPage > 1 ? this.centerSlide ? this.centeredSlideDiff : this.totalPages + 1 : this.slides.length, b = 0; b < d; b++) c = document.createElement("button"), c.classList.add(this.cDot), c.setAttribute(this.cDSlide, b), c.addEventListener("click", function (b) {
+          return a.goToPage(parseInt(b.target.getAttribute(a.cDSlide)));
         }), e.appendChild(c);
 
         this.container.appendChild(e);
@@ -125,13 +127,18 @@ function () {
     value: function attachEvents() {
       var a = this;
       this.nav && (this.navPrevBtn.addEventListener("click", function () {
-        return a.prevSlide();
+        return a.prevPage();
       }), this.navNextBtn.addEventListener("click", function () {
-        return a.nextSlide();
+        return a.nextPage();
       }), this.on("changed", function () {
         a.refreshNav();
       })), this.responsive && window.addEventListener("resize", function () {
-        a.calculateStage();
+        a.calculateStage(), a.scrollToSlide(a.getCurrentSlideDom());
+      });
+      //anim
+      var b = this.whichTransitionEvent();
+      b && this.stage.addEventListener(b, function () {
+        a.triggerHandler("traisitioned"), void 0;
       }), this.attachTouchEvents();
     }
   }, {
@@ -144,25 +151,26 @@ function () {
           f,
           g,
           h,
-          i,
+          i = [],
           j = [],
-          k = [],
-          l = []; //add events based on options
+          k = []; //add events based on options
 
-      this.touch && (j.push("touchstart"), k.push("touchmove"), l.push("touchend")), this.touchMouse && (j.push("mousedown"), k.push("mousemove"), l.push("mouseup")), j.forEach(function (d) {
-        a.stage.addEventListener(d, function (d) {
-          i = !0, c = d.type == "mousedown" || d.type == "mousedown" && a.touchMouse ? d.clientX : d.targetTouches[0].clientX, b = d.type == "mousedown" || d.type == "mousedown" && a.touchMouse ? d.clientX + -a.currentTranslate : d.targetTouches[0].clientX + -a.currentTranslate, f = a.currentTranslate, h = !1, a.triggerHandler("drag");
+      this.touch && (i.push("touchstart"), j.push("touchmove"), k.push("touchend")), this.touchMouse && (i.push("mousedown"), j.push("mousemove"), k.push("mouseup")), i.forEach(function (d) {
+        window.addEventListener(d, function (d) {
+          d.target == a.stage && (a.isDragging = !0, c = d.type == "mousedown" || d.type == "mousedown" && a.touchMouse ? d.clientX : d.targetTouches[0].clientX, b = d.type == "mousedown" || d.type == "mousedown" && a.touchMouse ? d.clientX + -a.currentTranslate : d.targetTouches[0].clientX + -a.currentTranslate, f = a.currentTranslate, h = !1, a.triggerHandler("drag"), void 0);
         }, {
           passive: !0
         });
-      }), l.forEach(function (b) {
-        a.stage.addEventListener(b, function () {
-          a.triggerHandler("dragged"), g >= a.touchSwipeThreshold && !h ? d > f ? a.prevSlide() : a.nextSlide() : a.scrollToPos(f), a.stage.style.transitionDuration = a.slideChangeDuration + "s", i = !1;
+      }), k.forEach(function (b) {
+        window.addEventListener(b, function () {
+          a.isDragging && (a.triggerHandler("dragged"), void 0, g >= a.touchSwipeThreshold && !h ? d > f ? a.prevPage() : a.nextPage() : a.scrollToPos(f), a.stage.style.transitionDuration = a.slideChangeDuration + "s", a.isDragging = !1);
         });
-      }), k.forEach(function (e) {
-        a.stage.addEventListener(e, function (f) {
-          var e;
-          f.type == "mousemove" && a.touchMouse ? i && (e = f.clientX) : f.type == "touchmove" && (e = f.targetTouches[0].pageX), a.stage.style.transitionDuration = a.swipeSmooth + "s", g = Math.abs(e - c), d = e - b, g <= a.touchMaxSlideDist ? a.scrollToPos(d) : (h = !0, d = e - b);
+      }), j.forEach(function (e) {
+        window.addEventListener(e, function (f) {
+          if (a.isDragging) {
+            var e;
+            f.type == "mousemove" && a.touchMouse ? e = f.clientX : f.type == "touchmove" && (e = f.targetTouches[0].pageX), a.stage.style.transitionDuration = a.swipeSmooth + "s", g = Math.abs(e - c), d = e - b, g <= a.touchMaxSlideDist ? (a.triggerHandler("dragging"), void 0, a.scrollToPos(d)) : (h = !0, d = e - b);
+          }
         }, {
           passive: !0
         });
@@ -171,12 +179,12 @@ function () {
   }, {
     key: "refreshNav",
     value: function refreshNav() {
-      this.currentSlide == 0 ? this.navPrevBtn.classList.add("inactive") : this.currentSlide === this.slides.length - 1 || this.currentSlide == this.slideDiff ? this.navNextBtn.classList.add("inactive") : this.currentSlide > 0 && this.currentSlide < this.slides.length && (this.navPrevBtn.classList.remove("inactive"), this.navNextBtn.classList.remove("inactive"));
+      this.currentPage == 0 ? (this.navPrevBtn.classList.add("inactive"), this.navNextBtn.classList.remove("inactive")) : (this.centerSlide ? this.getActiveSlides() == this.getTotalSlides() : this.currentPage == this.getTotalPages()) ? (this.navPrevBtn.classList.remove("inactive"), this.navNextBtn.classList.add("inactive")) : (this.navPrevBtn.classList.remove("inactive"), this.navNextBtn.classList.remove("inactive"));
     }
   }, {
     key: "scrollToSlide",
     value: function scrollToSlide(a) {
-      this.currentTranslate = -(a.getBoundingClientRect().left - this.stage.getBoundingClientRect().left), this.scrollToPos(this.currentTranslate);
+      this.currentTranslate = -this.getSlideDomSize(a), this.scrollToPos(this.currentTranslate);
     }
   }, {
     key: "scrollToPos",
@@ -188,53 +196,110 @@ function () {
   }, {
     key: "calculateContainerHeight",
     value: function calculateContainerHeight() {
-      if (this.itemsPerPage == 1) this.container.style.height = this.slidesHeights[this.currentSlide] + "px";else {
+      if (this.itemsPerPage == 1) this.container.style.height = this.slidesHeights[this.currentPage] + "px";else {
         var a,
             b = []; //get specified slides from global array with heights and then get the highest of it
 
-        for (a = this.currentSlide; a <= this.currentSlide + this.itemsPerPage - 1; a++) b.push(this.slidesHeights[a]), this.container.style.height = Math.max.apply(Math, b) + "px";
+        for (a = this.getActiveSlides()[0]; a <= this.getActiveSlides()[this.getActiveSlides().length - 1]; a++) b.push(this.slidesHeights[a]);
+
+        void 0, this.container.style.height = Math.max.apply(Math, b) + "px";
       }
     }
   }, {
-    key: "changeSlide",
-    value: function changeSlide(a) {
-      var b = this.currentSlide;
-      this.stage.style.transitionDuration = this.slideChangeDuration + "s", this.dots && document.querySelector("".concat(this.containerName, " .").concat(this.cDot, "[").concat(this.cDSlide, "=\"").concat(this.currentSlide, "\"]")).classList.remove("active"), this.getSlideDom(this.currentSlide).classList.remove("active"), a == "prev" ? this.currentSlide-- : a == "next" ? this.currentSlide++ : Number.isInteger(a) && (this.currentSlide = a), this.slideDiff = this.slides.length - this.itemsPerPage, this.itemsPerPage > 1 && this.currentSlide >= this.slideDiff ? this.currentSlide = this.slideDiff : this.currentSlide >= this.slides.length ? this.currentSlide = this.slides.length - 1 : this.currentSlide < 0 && (this.currentSlide = 0), this.scrollToSlide(this.getCurrentSlideDom()), this.getSlideDom(this.currentSlide).classList.add("active"), this.dots && document.querySelector("".concat(this.containerName, " .").concat(this.cDot, "[").concat(this.cDSlide, "=\"").concat(this.currentSlide, "\"]")).classList.add("active"), this.autoHeight && this.calculateContainerHeight(this.getCurrentSlideDom()), b != this.currentSlide && this.triggerHandler("changed");
+    key: "changePage",
+    value: function changePage(a) {
+      var b = this.currentPage;
+      this.stage.style.transitionDuration = this.slideChangeDuration + "s", a == "prev" ? (this.currentSlide = this.centerSlide ? this.currentSlide - 1 : this.currentSlide - this.itemsPerPage, this.currentPage--) : a == "next" ? (this.currentSlide = this.centerSlide ? this.currentSlide + 1 : this.currentSlide + this.itemsPerPage, this.currentPage++) : Number.isInteger(a) && (this.currentSlide = a), a == "prev" && this.currentSlide < 0 ? this.centerSlide ? (this.currentSlide--, this.currentPage--) : (this.currentSlide = 0, this.currentPage = 0) : a == "next" && this.currentSlide + this.itemsPerPage >= this.slides.length && (void 0, this.centerSlide ? this.currentSlide > this.slides.length && (this.currentSlide++, this.currentPage++) : (this.currentSlide = this.slides.length - this.itemsPerPage, this.currentPage = this.totalPages)), this.setActiveSlides(), this.setActiveDot(), this.updateSlide(), this.autoHeight && this.calculateContainerHeight(this.getCurrentSlideDom()), b != this.currentPage && (this.triggerHandler("changed"), void 0);
     }
   }, {
-    key: "nextSlide",
-    value: function nextSlide() {
-      this.changeSlide("next");
+    key: "updateSlide",
+    value: function updateSlide() {
+      if (this.centerSlide) {
+        var a = -this.getSlideDomSize(this.getCurrentSlideDom()) - -this.getCurrentSlideDom().getBoundingClientRect().width * this.centeredSlideOffset;
+        this.currentTranslate = a, this.scrollToPos(a);
+      } else this.scrollToSlide(this.getCurrentSlideDom());
     }
   }, {
-    key: "prevSlide",
-    value: function prevSlide() {
-      this.changeSlide("prev");
+    key: "setActiveSlides",
+    value: function setActiveSlides() {
+      var a = this;
+      if (this.activeSlides.forEach(function (b) {
+        document.querySelector("".concat(a.containerName, " [").concat(a.cDSlide, "=\"").concat(b, "\"]")).classList.remove("active");
+      }), this.activeSlides = [], this.centerSlide) this.activeSlides.push(this.currentSlide);else for (var b = this.currentSlide; b < this.itemsPerPage + this.currentSlide; b++) b < this.slides.length && this.activeSlides.push(b);
+      this.activeSlides.forEach(function (b) {
+        document.querySelector("".concat(a.containerName, " [").concat(a.cDSlide, "=\"").concat(b, "\"]")).classList.add("active");
+      });
     }
   }, {
-    key: "getCurrentSlide",
-    value: function getCurrentSlide() {
-      return this.currentSlide;
+    key: "setActiveDot",
+    value: function setActiveDot() {
+      if (this.dots) {
+        var b = document.querySelector("".concat(this.containerName, " .").concat(this.cDot, "[").concat(this.cDSlide, "].active"));
+        b != null && b.classList.remove("active"), document.querySelector("".concat(this.containerName, " .").concat(this.cDot, "[").concat(this.cDSlide, "=\"").concat(this.currentPage, "\"]")).classList.add("active");
+      }
+    }
+  }, {
+    key: "nextPage",
+    value: function nextPage() {
+      this.changePage("next");
+    }
+  }, {
+    key: "prevPage",
+    value: function prevPage() {
+      this.changePage("prev");
+    }
+  }, {
+    key: "goToPage",
+    value: function goToPage(a) {
+      a >= 0 && a <= this.totalPages && this.changePage(a);
     }
   }, {
     key: "getCurrentSlideDom",
     value: function getCurrentSlideDom() {
-      return document.querySelector("".concat(this.containerName, " [").concat(this.cDSlide, "=\"").concat(this.currentSlide, "\"]"));
+      return document.querySelector("".concat(this.containerName, " [").concat(this.cDSlide, "].active"));
     }
   }, {
     key: "getCurrentPage",
     value: function getCurrentPage() {
-      return document.querySelector("".concat(this.containerName, " [").concat(this.cDSlide, "=\"").concat(this.currentSlide, "\"].active")).getAttribute(this.cDSlide);
+      return document.querySelector("".concat(this.containerName, " [").concat(this.cDSlide, "=\"").concat(this.currentPage, "\"].active")).getAttribute(this.cDSlide);
     }
   }, {
     key: "getTotalSlides",
     value: function getTotalSlides() {
-      return this.slides.length;
+      return this.slides.length - 1;
     }
   }, {
     key: "getSlideDom",
     value: function getSlideDom(a) {
       return document.querySelector("".concat(this.containerName, " .").concat(this.cItem, "[").concat(this.cDSlide, "=\"").concat(a, "\"]"));
+    }
+  }, {
+    key: "getSlideDomSize",
+    value: function getSlideDomSize(a) {
+      return a.getBoundingClientRect().left - this.stage.getBoundingClientRect().left;
+    }
+  }, {
+    key: "getActiveSlides",
+    value: function getActiveSlides() {
+      return this.activeSlides;
+    }
+  }, {
+    key: "getTotalPages",
+    value: function getTotalPages() {
+      return this.totalPages;
+    }
+  }, {
+    key: "whichTransitionEvent",
+    value: function whichTransitionEvent() {
+      var a;
+      var b = document.createElement("fakeelement");
+      var c = {
+        transition: "transitionend",
+        MozTransition: "transitionend",
+        WebkitTransition: "webkitTransitionEnd"
+      };
+
+      for (a in c) if (b.style[a] !== undefined) return c[a];
     }
   }]), a;
 }();
