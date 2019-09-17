@@ -435,10 +435,12 @@ class DDCarousel {
 				heights = [];
 
 			//get specified slides from global array with heights and then get the highest of it
-			for (i = this.currentPage; i <= this.currentPage + this.itemsPerPage - 1; i++) {
+			for (i = this.getActiveSlides()[0]; i <= this.getActiveSlides()[this.getActiveSlides().length - 1]; i++) {
 				heights.push(this.slidesHeights[i]);
-				this.container.style.height = Math.max(...heights) + "px";
 			}
+
+			console.log(heights);
+			this.container.style.height = Math.max(...heights) + "px";
 		}
 	}
 	changePage(index) {
@@ -520,7 +522,7 @@ class DDCarousel {
 			this.activeSlides.push(this.currentSlide);
 		} else {
 			for (let index = this.currentSlide; index < this.itemsPerPage + this.currentSlide; index++) {
-				if (index < this.slides.length && index >= 0) {
+				if (index < this.slides.length) {
 					this.activeSlides.push(index);
 				}
 			}

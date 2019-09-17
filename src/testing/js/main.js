@@ -1,22 +1,22 @@
 document.addEventListener("DOMContentLoaded", function(event) {
 	var slider = new DDCarousel({
 		container: ".ddcarousel",
-		items: 2,
+		items: 5,
 		nav: true,
 		dots: true,
 		autoHeight: false,
 		responsive: false,
 		touch: true,
 		touchMouse: true,
-		centerSlide: false
+		centerSlide: true,
 
 		//touchSwipeThreshold: 10
 		//touchMaxSlideDist: 100
-		//swipeSmooth: 0.1
-		//slideChangeDuration: 0.9
+		swipeSmooth: 0.1,
+		slideChangeDuration: 0.9,
 
-		//labelNavPrev: "Hahahaha",
-		//labelNavNext: "Yep"
+		labelNavPrev: "&#x2190;",
+		labelNavNext: "&#x2192;"
 	});
 
 	//available methods
