@@ -8,23 +8,30 @@
 		<link rel="stylesheet" href="../ddcarousel.css" />
 		<style>
 			body {
-				margin: 0;
-				padding: 0;
 				font-family: sans-serif;
+				background: #111;
 			}
 			section {
 				margin: 40px;
 			}
 			textarea {
 				font-family: Consolas, monospace;
-				font-size: 13px;
 			}
 			.options {
 				margin-top: 280px;
-				display: none;
+				display: block;
 			}
 			.ddcarousel {
-				border: 1px solid #eee;
+				border: 1px solid #333;
+			}
+			button,
+			input {
+				background: #555;
+				border-color: #777;
+			}
+			body,
+			button {
+				color: #bbb;
 			}
 		</style>
 	</head>
@@ -73,9 +80,6 @@
 				<button id="calc">recalculate stage</button>
 				<button id="getDetails">Get carousel info</button>
 				<button id="resizeContainer">Reize random from 10-100%</button>
-				<p>
-					<textarea id="console" cols="100" rows="10" readonly></textarea>
-				</p>
 			</div>
 		</section>
 	</body>

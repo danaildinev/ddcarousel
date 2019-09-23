@@ -1,19 +1,6 @@
 /*! DDCarousel 1.0.2 by Danail Dinev 2019 | License: https://github.com/danaildinev/ddcarousel/blob/master/LICENSE */
 class DDCarousel {
 	appName = "DDCarousel";
-	containerName = null; //full container name
-	container = null; //DOM element: container
-	stage = null; //DOM element: stage
-	currentSlide = 0; //current slide
-	currentPage = 0;
-	currentTranslate = 0;
-	slideDiff = 0;
-	slidesHeights = []; //use dot store slides heights when using autoHeight
-	triggers = [];
-	activeSlides = [];
-	totalPages = [];
-	isDragging = false;
-	init = false;
 
 	cCont = "ddcarousel-container";
 	cStage = "ddcarousel-stage";
@@ -26,62 +13,69 @@ class DDCarousel {
 	cPrev = "ddcarousel-prev";
 	cNext = "ddcarousel-next";
 
-	constructor({
-		container = ".ddcarousel",
-		nav = false,
-		dots = true,
-		autoHeight = false,
-		items = 1,
-		responsive = false,
-		touch = true,
-		touchMouse = true,
-		centerSlide = false,
-		touchSwipeThreshold = 60,
-		touchMaxSlideDist = 500,
-		swipeSmooth = 0,
-		slideChangeDuration = 0.5,
-		labelNavPrev = "< Prev",
-		labelNavNext = "Next >"
-	}) {
-		this.triggerHandler("initializing");
-		console.log("initializing");
-		if (this.checkContainer(container)) {
-			this.containerName = container;
-			this.autoHeight = autoHeight;
-			this.itemsPerPage = items;
-			this.responsive = responsive;
-			this.nav = nav;
-			this.dots = dots;
-			this.touch = touch;
-			this.touchMouse = touchMouse;
-			this.touchSwipeThreshold = touchSwipeThreshold;
-			this.touchMaxSlideDist = touchMaxSlideDist;
-			this.swipeSmooth = swipeSmooth;
-			this.slideChangeDuration = slideChangeDuration;
-			this.labelNavPrev = labelNavPrev;
-			this.labelNavNext = labelNavNext;
+	constructor(options) {
+		this.init = false;
+		this.currentSlide = 0;
+		this.currentPage = 0;
+		this.triggers = [];
 
-			//centered slides scrolls one slide per swipe = one page per swipe and activates only when itemsPerRow are not dividable by 2
-			if (items > 1 && items % 2 && centerSlide) {
-				this.centeredSlideOffset = Math.floor(items / 2);
-				this.centerSlide = true;
-			} else {
-				this.centeredSlideOffset = 0;
-				this.centerSlide = false;
-			}
+		this.config = this.updateSettings(options);
 
-			this.createStage();
-			this.setActiveSlides();
-			this.calculateStage();
-			this.createNav();
-			this.createDots();
-			this.attachEvents();
+		this.checkContainer(this.config.container);
 
-			this.setActiveDot();
-			this.updateSlide();
-
-			if (this.nav) this.refreshNav();
+		this.centeredSlideOffset = 0;
+		//centered slides scrolls one slide per swipe = one page per swipe and activates only when itemsPerRow are not dividable by 2
+		if (this.config.items > 1 && this.config.items % 2 && this.config.centerSlide) {
+			this.centeredSlideOffset = Math.floor(items / 2);
+			this.config.centerSlide = true;
 		}
+
+		this.on("initialized", callback => {
+			this.config.onInit.call(this, callback);
+		});
+
+		this.createStage();
+		this.setActiveSlides();
+		this.calculateStage();
+		this.createNav();
+		this.createDots();
+		this.attachEvents();
+		this.setActiveDot();
+		this.updateSlide();
+
+		if (this.config.nav) this.refreshNav();
+	}
+
+	updateSettings(options) {
+		const settings = {
+			container: ".ddcarousel",
+			nav: false,
+			dots: true,
+			autoHeight: false,
+			items: 1,
+			responsive: false,
+			touch: true,
+			touchMouse: true,
+			centerSlide: false,
+			touchSwipeThreshold: 60,
+			touchMaxSlideDist: 500,
+			swipeSmooth: 0,
+			slideChangeDuration: 0.5,
+			labelNavPrev: "< Prev",
+			labelNavNext: "Next >",
+			onInit: () => {},
+			onChanged: () => {},
+			onDrag: () => {},
+			onDragged: () => {},
+			onDragging: () => {},
+			onTransitionend: () => {}
+		};
+
+		for (var name in options) {
+			settings[name] = options[name];
+		}
+
+		return settings;
 	}
 
 	on(event, callback) {
@@ -103,6 +97,7 @@ class DDCarousel {
 				return false;
 			} else {
 				this.container = document.getElementById(containerNameClear);
+				this.containerName = name;
 				return true;
 			}
 		} else if (name.substring(0, 1) == ".") {
@@ -111,6 +106,7 @@ class DDCarousel {
 				return false;
 			} else {
 				this.container = document.getElementsByClassName(contName)[0];
+				this.containerName = name;
 				return true;
 			}
 		} else {
@@ -137,7 +133,7 @@ class DDCarousel {
 		//get stage DOM
 		this.stage = document.querySelector(`${this.containerName} .${this.cStage}`);
 		//set width to 100% if responsive is enabled and change container width
-		if (this.responsive) {
+		if (this.config.responsive) {
 			this.container.classList.add(this.cResp);
 		}
 
@@ -153,12 +149,14 @@ class DDCarousel {
 		//get all slides and total pages
 		this.slides = document.querySelectorAll(`${this.containerName} .${this.cItem}`);
 
-		this.totalPages = this.centerSlide ? this.slides.length : Math.ceil(this.slides.length / this.itemsPerPage) - 1;
+		this.totalPages = this.config.centerSlide
+			? this.slides.length
+			: Math.ceil(this.slides.length / this.config.itemsPerPage) - 1;
 
 		//get difference between all slides and slider per page
-		this.slideDiff = this.slides.length - this.itemsPerPage;
+		this.slideDiff = this.slides.length - this.config.itemsPerPage;
 
-		this.centeredSlideDiff = this.centerSlide ? this.slideDiff + this.itemsPerPage : 0;
+		this.centeredSlideDiff = this.config.centerSlide ? this.slideDiff + this.config.itemsPerPage : 0;
 	}
 
 	calculateStage() {
@@ -169,17 +167,17 @@ class DDCarousel {
 		this.slidesHeights = [];
 		for (i = 0; i < this.slides.length; i++) {
 			//set current slide size
-			if (this.itemsPerPage == null) {
+			if (this.config.itemsPerPage == null) {
 				this.slides[i].style.width = containerWidth + "px";
 			} else {
-				this.slides[i].style.width = containerWidth / this.itemsPerPage + "px";
+				this.slides[i].style.width = containerWidth / this.config.itemsPerPage + "px";
 			}
 			this.slidesHeights.push(
 				document.querySelector(`${this.containerName} [${this.cDSlide}="${i}"] > div`).scrollHeight
 			);
 		}
 
-		if (this.autoHeight) {
+		if (this.config.autoHeight) {
 			this.calculateContainerHeight(this.currentPage);
 		}
 
@@ -190,15 +188,14 @@ class DDCarousel {
 				this.slides.length == this.slidesSource.length &&
 				document.querySelectorAll(`${this.containerName} .${this.cStage} [${this.cDSlide}]`).length > 0
 			) {
-				this.triggerHandler("initialized");
-				console.log("initialized");
+				this.triggerHandler("initialized", true);
 				this.init = true;
 			}
 		}
 	}
 
 	createNav() {
-		if (this.nav) {
+		if (this.config.nav) {
 			var navContainer = document.createElement("div"),
 				leftBtn = document.createElement("button"),
 				rightBtn = document.createElement("button");
@@ -206,10 +203,10 @@ class DDCarousel {
 			navContainer.classList.add(this.cNav);
 
 			leftBtn.classList.add(this.cPrev);
-			leftBtn.innerHTML = this.labelNavPrev;
+			leftBtn.innerHTML = this.config.labelNavPrev;
 
 			rightBtn.classList.add(this.cNext);
-			rightBtn.innerHTML = this.labelNavNext;
+			rightBtn.innerHTML = this.config.labelNavNext;
 
 			//add buttons in nav container
 			navContainer.appendChild(leftBtn);
@@ -217,21 +214,21 @@ class DDCarousel {
 
 			this.container.appendChild(navContainer);
 
-			this.navPrevBtn = document.querySelector(`${this.containerName} .${this.cPrev}`);
-			this.navNextBtn = document.querySelector(`${this.containerName} .${this.cNext}`);
+			this.config.navPrevBtn = document.querySelector(`${this.containerName} .${this.cPrev}`);
+			this.config.navNextBtn = document.querySelector(`${this.containerName} .${this.cNext}`);
 		}
 	}
 
 	createDots() {
-		if (this.dots) {
+		if (this.config.dots) {
 			var i,
 				dot,
 				targetSlidesLenght,
 				navContainer = document.createElement("div");
 			navContainer.classList.add(this.cContDots);
 
-			if (this.itemsPerPage > 1) {
-				if (this.centerSlide) {
+			if (this.config.itemsPerPage > 1) {
+				if (this.config.centerSlide) {
 					targetSlidesLenght = this.centeredSlideDiff;
 				} else {
 					targetSlidesLenght = this.totalPages + 1;
@@ -255,16 +252,16 @@ class DDCarousel {
 
 	attachEvents() {
 		//nav buttons
-		if (this.nav) {
-			this.navPrevBtn.addEventListener("click", () => this.prevPage());
-			this.navNextBtn.addEventListener("click", () => this.nextPage());
+		if (this.config.nav) {
+			this.config.navPrevBtn.addEventListener("click", () => this.prevPage());
+			this.config.navNextBtn.addEventListener("click", () => this.nextPage());
 			this.on("changed", () => {
 				this.refreshNav();
 			});
 		}
 
 		//responsive
-		if (this.responsive) {
+		if (this.config.responsive) {
 			window.addEventListener("resize", () => {
 				this.calculateStage();
 				this.scrollToSlide(this.getCurrentSlideDom());
@@ -275,8 +272,7 @@ class DDCarousel {
 		var transitionEvent = this.whichTransitionEvent();
 		transitionEvent &&
 			this.stage.addEventListener(transitionEvent, () => {
-				this.triggerHandler("traisitioned");
-				console.log("traisitioned");
+				this.triggerHandler("transitionend");
 			});
 
 		//touch events
@@ -286,129 +282,132 @@ class DDCarousel {
 	attachTouchEvents() {
 		var eventsStart = [],
 			eventsMove = [],
-			eventsEnd = [],
-			touchStart,
-			touchStartRaw,
-			currentTouch,
-			origPosition,
-			swipeDistance,
-			dontChange;
+			eventsEnd = [];
 
 		//add events based on options
-		if (this.touch) {
+		if (this.config.touch) {
 			eventsStart.push("touchstart");
 			eventsMove.push("touchmove");
 			eventsEnd.push("touchend");
 		}
-		if (this.touchMouse) {
+		if (this.config.touchMouse) {
 			eventsStart.push("mousedown");
 			eventsMove.push("mousemove");
 			eventsEnd.push("mouseup");
 		}
 
 		eventsStart.forEach(el => {
-			window.addEventListener(
-				el,
-				e => {
-					if (e.target == this.stage) {
-						this.isDragging = true;
-
-						//set some starting values
-						touchStartRaw =
-							e.type == "mousedown" || (e.type == "mousedown" && this.touchMouse)
-								? e.clientX
-								: e.targetTouches[0].clientX;
-						touchStart =
-							e.type == "mousedown" || (e.type == "mousedown" && this.touchMouse)
-								? e.clientX + -this.currentTranslate
-								: e.targetTouches[0].clientX + -this.currentTranslate;
-
-						//remember orig position
-						origPosition = this.currentTranslate;
-						dontChange = false;
-
-						this.triggerHandler("drag");
-						console.log("drag");
-					}
-				},
-				{ passive: true }
-			);
+			this.draggingStart(el);
 		});
 
 		eventsEnd.forEach(el => {
-			window.addEventListener(el, () => {
-				if (this.isDragging) {
-					//check if swipe distance is enough to change slide or stay on the same
-					this.triggerHandler("dragged");
-					console.log("dragged");
-
-					if (swipeDistance >= this.touchSwipeThreshold && !dontChange) {
-						if (currentTouch > origPosition) {
-							this.prevPage();
-						} else {
-							this.nextPage();
-						}
-					} else {
-						this.scrollToPos(origPosition);
-					}
-
-					this.stage.style.transitionDuration = this.slideChangeDuration + "s";
-					this.isDragging = false;
-				}
-			});
+			this.draggingEnd(el);
 		});
 
 		eventsMove.forEach(el => {
-			window.addEventListener(
-				el,
-				e => {
-					if (this.isDragging) {
-						var input;
-						if (e.type == "mousemove" && this.touchMouse) {
-							input = e.clientX;
-						} else if (e.type == "touchmove") {
-							input = e.targetTouches[0].pageX;
-						}
+			this.dragging(el);
+		});
+	}
 
-						//disable transition to get more responsive dragging
-						this.stage.style.transitionDuration = this.swipeSmooth + "s";
+	draggingStart(el) {
+		window.addEventListener(
+			el,
+			e => {
+				if (e.target == this.stage) {
+					this.isDragging = true;
 
-						//calcualte swipe distance between starging value cnd current value
-						swipeDistance = Math.abs(input - touchStartRaw);
+					//set some starting values
+					this.touchStartRaw =
+						e.type == "mousedown" || (e.type == "mousedown" && this.config.touchMouse)
+							? e.clientX
+							: e.targetTouches[0].clientX;
+					this.touchStart =
+						e.type == "mousedown" || (e.type == "mousedown" && this.config.touchMouse)
+							? e.clientX + -this.currentTranslate
+							: e.targetTouches[0].clientX + -this.currentTranslate;
 
-						//get the current touch
-						currentTouch = input - touchStart;
+					//remember orig position
+					this.origPosition = this.currentTranslate;
+					this.dontChange = false;
 
-						//move slider until max swipe lenght is reached
-						if (swipeDistance <= this.touchMaxSlideDist) {
-							this.triggerHandler("dragging");
-							console.log("dragging");
-							this.scrollToPos(currentTouch);
-						} else {
-							dontChange = true;
-							currentTouch = input - touchStart;
-						}
+					this.triggerHandler("drag");
+				}
+			},
+			{ passive: true }
+		);
+	}
+
+	dragging(el) {
+		window.addEventListener(
+			el,
+			e => {
+				if (this.isDragging) {
+					var input;
+					if (e.type == "mousemove" && this.config.touchMouse) {
+						input = e.clientX;
+					} else if (e.type == "touchmove") {
+						input = e.targetTouches[0].pageX;
 					}
-				},
-				{ passive: true }
-			);
+
+					//disable transition to get more responsive dragging
+					this.stage.style.transitionDuration = this.config.swipeSmooth + "s";
+
+					//calcualte swipe distance between starging value cnd current value
+					this.swipeDistance = Math.abs(input - this.touchStartRaw);
+
+					//get the current touch
+					this.currentTouch = input - this.touchStart;
+
+					//move slider until max swipe lenght is reached
+					if (this.swipeDistance <= this.config.touchMaxSlideDist) {
+						this.triggerHandler("dragging");
+						this.scrollToPos(this.currentTouch);
+					} else {
+						this.dontChange = true;
+						this.currentTouch = input - this.touchStart;
+					}
+				}
+			},
+			{ passive: true }
+		);
+	}
+
+	draggingEnd(el) {
+		window.addEventListener(el, () => {
+			if (this.isDragging) {
+				//check if swipe distance is enough to change slide or stay on the same
+				this.triggerHandler("dragged");
+
+				if (this.swipeDistance >= this.config.touchSwipeThreshold && !this.dontChange) {
+					if (this.currentTouch > this.origPosition) {
+						this.prevPage();
+					} else {
+						this.nextPage();
+					}
+				} else {
+					this.scrollToPos(this.origPosition);
+				}
+
+				this.stage.style.transitionDuration = this.config.slideChangeDuration + "s";
+				this.isDragging = false;
+			}
 		});
 	}
 
 	refreshNav() {
 		if (this.currentPage == 0) {
-			this.navPrevBtn.classList.add("inactive");
-			this.navNextBtn.classList.remove("inactive");
+			this.config.navPrevBtn.classList.add("inactive");
+			this.config.navNextBtn.classList.remove("inactive");
 		} else if (
-			this.centerSlide
+			this.config.centerSlide
 				? this.getActiveSlides() == this.getTotalSlides()
 				: this.currentPage == this.getTotalPages()
 		) {
-			this.navPrevBtn.classList.remove("inactive");
-			this.navNextBtn.classList.add("inactive");
+			this.config.navPrevBtn.classList.remove("inactive");
+			this.config.navNextBtn.classList.add("inactive");
 		} else {
-			this.navPrevBtn.classList.remove("inactive");
-			this.navNextBtn.classList.remove("inactive");
+			this.config.navPrevBtn.classList.remove("inactive");
+			this.config.navNextBtn.classList.remove("inactive");
 		}
 	}
 
@@ -428,7 +427,7 @@ class DDCarousel {
 	}
 
 	calculateContainerHeight() {
-		if (this.itemsPerPage == 1) {
+		if (this.config.itemsPerPage == 1) {
 			this.container.style.height = this.slidesHeights[this.currentPage] + "px";
 		} else {
 			var i,
@@ -438,22 +437,24 @@ class DDCarousel {
 			for (i = this.getActiveSlides()[0]; i <= this.getActiveSlides()[this.getActiveSlides().length - 1]; i++) {
 				heights.push(this.slidesHeights[i]);
 			}
-
-			console.log(heights);
 			this.container.style.height = Math.max(...heights) + "px";
 		}
 	}
 	changePage(index) {
 		var origSlide = this.currentPage;
 
-		this.stage.style.transitionDuration = this.slideChangeDuration + "s";
+		this.stage.style.transitionDuration = this.config.slideChangeDuration + "s";
 
 		//change slide based on parameter
 		if (index == "prev") {
-			this.currentSlide = this.centerSlide ? this.currentSlide - 1 : this.currentSlide - this.itemsPerPage;
+			this.currentSlide = this.config.centerSlide
+				? this.currentSlide - 1
+				: this.currentSlide - this.config.itemsPerPage;
 			this.currentPage--;
 		} else if (index == "next") {
-			this.currentSlide = this.centerSlide ? this.currentSlide + 1 : this.currentSlide + this.itemsPerPage;
+			this.currentSlide = this.config.centerSlide
+				? this.currentSlide + 1
+				: this.currentSlide + this.config.itemsPerPage;
 			this.currentPage++;
 		} else if (Number.isInteger(index)) {
 			this.currentSlide = index;
@@ -461,22 +462,22 @@ class DDCarousel {
 
 		//make some validations with the new value
 		if (index == "prev" && this.currentSlide < 0) {
-			if (this.centerSlide) {
+			if (this.config.centerSlide) {
 				this.currentSlide--;
 				this.currentPage--;
 			} else {
 				this.currentSlide = 0;
 				this.currentPage = 0;
 			}
-		} else if (index == "next" && this.currentSlide + this.itemsPerPage >= this.slides.length) {
+		} else if (index == "next" && this.currentSlide + this.config.itemsPerPage >= this.slides.length) {
 			console.log("ha!");
-			if (this.centerSlide) {
+			if (this.config.centerSlide) {
 				if (this.currentSlide > this.slides.length) {
 					this.currentSlide++;
 					this.currentPage++;
 				}
 			} else {
-				this.currentSlide = this.slides.length - this.itemsPerPage;
+				this.currentSlide = this.slides.length - this.config.itemsPerPage;
 				this.currentPage = this.totalPages;
 			}
 		}
@@ -489,19 +490,18 @@ class DDCarousel {
 		this.updateSlide();
 
 		//change stage height if this options is enabled
-		if (this.autoHeight) {
+		if (this.config.autoHeight) {
 			this.calculateContainerHeight(this.getCurrentSlideDom());
 		}
 
 		//fire change trigger
 		if (origSlide != this.currentPage) {
 			this.triggerHandler("changed");
-			console.log("changed");
 		}
 	}
 
 	updateSlide() {
-		if (this.centerSlide) {
+		if (this.config.centerSlide) {
 			var output =
 				-this.getSlideDomSize(this.getCurrentSlideDom()) -
 				-this.getCurrentSlideDom().getBoundingClientRect().width * this.centeredSlideOffset;
@@ -513,15 +513,17 @@ class DDCarousel {
 	}
 
 	setActiveSlides() {
-		this.activeSlides.forEach(i => {
-			document.querySelector(`${this.containerName} [${this.cDSlide}="${i}"]`).classList.remove("active");
-		});
+		if (this.activeSlides != null) {
+			this.activeSlides.forEach(i => {
+				document.querySelector(`${this.containerName} [${this.cDSlide}="${i}"]`).classList.remove("active");
+			});
+		}
 
 		this.activeSlides = [];
-		if (this.centerSlide) {
+		if (this.config.centerSlide) {
 			this.activeSlides.push(this.currentSlide);
 		} else {
-			for (let index = this.currentSlide; index < this.itemsPerPage + this.currentSlide; index++) {
+			for (let index = this.currentSlide; index < this.config.itemsPerPage + this.currentSlide; index++) {
 				if (index < this.slides.length) {
 					this.activeSlides.push(index);
 				}
@@ -534,7 +536,7 @@ class DDCarousel {
 	}
 
 	setActiveDot() {
-		if (this.dots) {
+		if (this.config.dots) {
 			var a = document.querySelector(`${this.containerName} .${this.cDot}[${this.cDSlide}].active`);
 			if (a != null) a.classList.remove("active");
 
@@ -587,13 +589,13 @@ class DDCarousel {
 	}
 
 	whichTransitionEvent() {
-		var t;
-		var el = document.createElement("fakeelement");
-		var transitions = {
-			transition: "transitionend",
-			MozTransition: "transitionend",
-			WebkitTransition: "webkitTransitionEnd"
-		};
+		var t,
+			el = document.createElement("fakeelement"),
+			transitions = {
+				transition: "transitionend",
+				MozTransition: "transitionend",
+				WebkitTransition: "webkitTransitionEnd"
+			};
 
 		for (t in transitions) {
 			if (el.style[t] !== undefined) {

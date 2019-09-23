@@ -1,7 +1,7 @@
 document.addEventListener("DOMContentLoaded", function(event) {
 	var slider = new DDCarousel({
 		container: ".ddcarousel",
-		items: 3,
+		itemsPerPage: 3,
 		nav: true,
 		dots: true,
 		autoHeight: false,
@@ -16,7 +16,26 @@ document.addEventListener("DOMContentLoaded", function(event) {
 		slideChangeDuration: 0.9,
 
 		labelNavPrev: "&#x2190;",
-		labelNavNext: "&#x2192;"
+		labelNavNext: "&#x2192;",
+
+		onInit: callback => {
+			console.log("initialized/callback:" + callback);
+		},
+		onChange: () => {
+			console.log("changed");
+		},
+		onDrag: () => {
+			console.log("drag");
+		},
+		onDragging: () => {
+			console.log("dragging");
+		},
+		onDragged: () => {
+			console.log("dragged");
+		},
+		onTransitionend: () => {
+			console.log("transitionend");
+		}
 	});
 
 	//available methods
@@ -37,38 +56,10 @@ document.addEventListener("DOMContentLoaded", function(event) {
 		slider.calculateStage();
 	});
 
-	var text = document.getElementById("console");
-
 	//events
-	slider.on("changed", () => {
-		text.innerHTML += "Changed slide\r\n";
-		text.scrollTop = text.scrollHeight;
-	});
-
-	slider.on("drag", () => {
-		text.innerHTML += "Drag\r\n";
-		text.scrollTop = text.scrollHeight;
-	});
-
-	slider.on("dragged", () => {
-		text.innerHTML += "Dropped\r\n";
-		text.scrollTop = text.scrollHeight;
-	});
-
-	slider.on("resized", () => {
-		text.innerHTML += "Resized\r\n";
-		text.scrollTop = text.scrollHeight;
-	});
 
 	document.getElementById("resizeContainer").addEventListener("click", () => {
 		document.getElementsByClassName("ddcarousel")[0].style.width = Math.floor(Math.random() * 101) + 50 + "%";
 		slider.calculateStage();
-	});
-
-	document.getElementById("getDetails").addEventListener("click", () => {
-		text.innerHTML += "Current slide:" + slider.getCurrentSlide() + "\r\n";
-		text.innerHTML += "Current page:" + slider.getCurrentPage() + "\r\n";
-		text.innerHTML += "Total slides:" + slider.getTotalSlides() + "\r\n";
-		text.scrollTop = text.scrollHeight;
 	});
 });
