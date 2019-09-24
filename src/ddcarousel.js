@@ -64,7 +64,7 @@ class DDCarousel {
 		this.triggers.forEach(el => {
 			settings[el] = () => {};
 			this.on(el, () => {
-				this.config[el].call(this);
+				this.config[el].call(this, this.callback(el));
 			});
 		});
 
@@ -73,6 +73,20 @@ class DDCarousel {
 		}
 
 		return settings;
+	}
+
+	callback(event) {
+		var callback = {
+			container: this.container,
+			event: event,
+			activeSlides: this.activeSlides,
+			totalSlides: this.slides.length,
+			totalPages: this.getTotalPages(),
+			totalSlides: this.getTotalSlides(),
+			currentPage: this.getCurrentPage(),
+			currentSlide: this.getCurrentSlideDom()
+		};
+		return callback;
 	}
 
 	on(event, callback) {
@@ -583,6 +597,10 @@ class DDCarousel {
 
 	getTotalPages() {
 		return this.totalPages;
+	}
+
+	getSlideWidth() {
+		return this.slides[0].style.width;
 	}
 
 	whichTransitionEvent() {
