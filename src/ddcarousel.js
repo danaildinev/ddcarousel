@@ -17,7 +17,7 @@ class DDCarousel {
 		this.init = false;
 		this.currentSlide = 0;
 		this.currentPage = 0;
-		this.triggers = [];
+		this.triggers = ["onInit", "onDrag", "onDragging", "onDragged", "onChanged", "onTransitionend", "onResized"];
 
 		this.config = this.updateSettings(options);
 
@@ -29,10 +29,6 @@ class DDCarousel {
 			this.centeredSlideOffset = Math.floor(items / 2);
 			this.config.centerSlide = true;
 		}
-
-		this.on("initialized", callback => {
-			this.config.onInit.call(this, callback);
-		});
 
 		this.createStage();
 		this.setActiveSlides();
@@ -47,7 +43,7 @@ class DDCarousel {
 	}
 
 	updateSettings(options) {
-		const settings = {
+		var settings = {
 			container: ".ddcarousel",
 			nav: false,
 			dots: true,
@@ -62,14 +58,15 @@ class DDCarousel {
 			swipeSmooth: 0,
 			slideChangeDuration: 0.5,
 			labelNavPrev: "< Prev",
-			labelNavNext: "Next >",
-			onInit: () => {},
-			onChanged: () => {},
-			onDrag: () => {},
-			onDragged: () => {},
-			onDragging: () => {},
-			onTransitionend: () => {}
+			labelNavNext: "Next >"
 		};
+
+		this.triggers.forEach(el => {
+			settings[el] = () => {};
+			this.on(el, () => {
+				this.config[el].call(this);
+			});
+		});
 
 		for (var name in options) {
 			settings[name] = options[name];
@@ -181,14 +178,14 @@ class DDCarousel {
 			this.calculateContainerHeight(this.currentPage);
 		}
 
-		if (slideWidth != this.slides[0].style.width) this.triggerHandler("resized");
+		if (slideWidth != this.slides[0].style.width) this.triggerHandler("onResized");
 
 		if (!this.init) {
 			if (
 				this.slides.length == this.slidesSource.length &&
 				document.querySelectorAll(`${this.containerName} .${this.cStage} [${this.cDSlide}]`).length > 0
 			) {
-				this.triggerHandler("initialized", true);
+				this.triggerHandler("onInit", true);
 				this.init = true;
 			}
 		}
@@ -272,7 +269,7 @@ class DDCarousel {
 		var transitionEvent = this.whichTransitionEvent();
 		transitionEvent &&
 			this.stage.addEventListener(transitionEvent, () => {
-				this.triggerHandler("transitionend");
+				this.triggerHandler("onTransitionend");
 			});
 
 		//touch events
@@ -330,7 +327,7 @@ class DDCarousel {
 					this.origPosition = this.currentTranslate;
 					this.dontChange = false;
 
-					this.triggerHandler("drag");
+					this.triggerHandler("onDrag");
 				}
 			},
 			{ passive: true }
@@ -360,7 +357,7 @@ class DDCarousel {
 
 					//move slider until max swipe lenght is reached
 					if (this.swipeDistance <= this.config.touchMaxSlideDist) {
-						this.triggerHandler("dragging");
+						this.triggerHandler("onDragging");
 						this.scrollToPos(this.currentTouch);
 					} else {
 						this.dontChange = true;
@@ -376,7 +373,7 @@ class DDCarousel {
 		window.addEventListener(el, () => {
 			if (this.isDragging) {
 				//check if swipe distance is enough to change slide or stay on the same
-				this.triggerHandler("dragged");
+				this.triggerHandler("onDragged");
 
 				if (this.swipeDistance >= this.config.touchSwipeThreshold && !this.dontChange) {
 					if (this.currentTouch > this.origPosition) {
@@ -496,7 +493,7 @@ class DDCarousel {
 
 		//fire change trigger
 		if (origSlide != this.currentPage) {
-			this.triggerHandler("changed");
+			this.triggerHandler("onChanged");
 		}
 	}
 
