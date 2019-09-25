@@ -17,11 +17,21 @@ class DDCarousel {
 		this.init = false;
 		this.currentSlide = 0;
 		this.currentPage = 0;
-		this.triggers = ["onInit", "onDrag", "onDragging", "onDragged", "onChanged", "onTransitionend", "onResized"];
+		this.triggers = [
+			"onInitialize",
+			"onInitialized",
+			"onDrag",
+			"onDragging",
+			"onDragged",
+			"onChanged",
+			"onTransitionend",
+			"onResized"
+		];
 
 		this.config = this.updateSettings(options);
-
 		this.checkContainer(this.config.container);
+
+		this.triggerHandler("onInitialize", { container: this.container, event: "onInitialize" });
 
 		this.centeredSlideOffset = 0;
 		//centered slides scrolls one slide per swipe = one page per swipe and activates only when itemsPerRow are not dividable by 2
@@ -63,8 +73,8 @@ class DDCarousel {
 
 		this.triggers.forEach(el => {
 			settings[el] = () => {};
-			this.on(el, () => {
-				this.config[el].call(this, this.callback(el));
+			this.on(el, e => {
+				this.config[el].call(this, e != undefined ? e : this.callback(el));
 			});
 		});
 
@@ -86,6 +96,7 @@ class DDCarousel {
 			currentPage: this.getCurrentPage(),
 			currentSlide: this.getCurrentSlideDom()
 		};
+
 		return callback;
 	}
 
@@ -199,8 +210,8 @@ class DDCarousel {
 				this.slides.length == this.slidesSource.length &&
 				document.querySelectorAll(`${this.containerName} .${this.cStage} [${this.cDSlide}]`).length > 0
 			) {
-				this.triggerHandler("onInit", true);
 				this.init = true;
+				this.triggerHandler("onInitialized");
 			}
 		}
 	}

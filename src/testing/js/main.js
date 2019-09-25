@@ -18,11 +18,14 @@ document.addEventListener("DOMContentLoaded", function(event) {
 		labelNavPrev: "&#x2190;",
 		labelNavNext: "&#x2192;",
 
-		onInit: callback => {
-			console.log("initialized/callback:" + callback);
+		onInitialize: e => {
+			console.log(e);
 		},
-		onChange: () => {
-			console.log("changed");
+		onInitialized: e => {
+			console.log(e);
+		},
+		onChanged: e => {
+			console.log(e);
 		},
 		onDrag: () => {
 			console.log("drag");
