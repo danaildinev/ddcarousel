@@ -8,7 +8,7 @@ document.addEventListener("DOMContentLoaded", function(event) {
 		responsive: false,
 		touch: true,
 		touchMouse: true,
-		centerSlide: false,
+		centerSlide: false, //not working
 
 		//touchSwipeThreshold: 10
 		//touchMaxSlideDist: 100
@@ -18,15 +18,15 @@ document.addEventListener("DOMContentLoaded", function(event) {
 		labelNavPrev: "&#x2190;",
 		labelNavNext: "&#x2192;",
 
-		onInitialize: e => {
+		/*onInitialize: e => {
 			console.log(e);
-		},
-		onInitialized: e => {
+		},*/
+		/*onInitialized: e => {
 			console.log(e);
-		},
+		}*/
 		onChanged: e => {
 			console.log(e);
-		},
+		} /*
 		onDrag: () => {
 			console.log("drag");
 		},
@@ -38,7 +38,7 @@ document.addEventListener("DOMContentLoaded", function(event) {
 		},
 		onTransitionend: () => {
 			console.log("transitionend");
-		}
+		}*/
 	});
 
 	//available methods
@@ -52,7 +52,7 @@ document.addEventListener("DOMContentLoaded", function(event) {
 
 	document.getElementById("go").addEventListener("click", () => {
 		var index = parseInt(document.getElementById("slideNum").value);
-		slider.changeSlide(index);
+		slider.changePage(index);
 	});
 
 	document.getElementById("calc").addEventListener("click", () => {
