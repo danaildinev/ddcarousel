@@ -15,7 +15,6 @@ class DDCarousel {
 
 	constructor(options) {
 		this.init = false;
-		this.currentSlide = 0;
 		this.currentPage = 0;
 		this.triggers = [
 			"onInitialize",
@@ -32,13 +31,6 @@ class DDCarousel {
 		this.checkContainer(this.config.container);
 
 		this.triggerHandler("onInitialize", { container: this.container, event: "onInitialize" });
-
-		this.centeredSlideOffset = 0;
-		//centered slides scrolls one slide per swipe = one page per swipe and activates only when itemsPerRow are not dividable by 2
-		if (this.config.items > 1 && this.config.items % 2 && this.config.centerSlide) {
-			this.centeredSlideOffset = Math.floor(items / 2);
-			this.config.centerSlide = true;
-		}
 
 		this.createStage();
 		this.setActiveSlides();
@@ -72,7 +64,7 @@ class DDCarousel {
 		};
 
 		this.triggers.forEach(el => {
-			settings[el] = () => {};
+			settings[el] = () => { };
 			this.on(el, e => {
 				this.config[el].call(this, e != undefined ? e : this.callback(el));
 			});
@@ -89,12 +81,10 @@ class DDCarousel {
 		var callback = {
 			container: this.container,
 			event: event,
-			activeSlides: this.activeSlides,
-			totalSlides: this.slides.length,
-			totalPages: this.getTotalPages(),
-			totalSlides: this.getTotalSlides(),
+			currentSlides: this.activeSlides,
 			currentPage: this.getCurrentPage(),
-			currentSlide: this.getCurrentSlideDom()
+			totalSlides: this.getTotalSlides(),
+			totalPages: this.getTotalPages()
 		};
 
 		return callback;
@@ -172,13 +162,8 @@ class DDCarousel {
 		this.slides = document.querySelectorAll(`${this.containerName} .${this.cItem}`);
 
 		this.totalPages = this.config.centerSlide
-			? this.slides.length
+			? this.slides.length - 1
 			: Math.ceil(this.slides.length / this.config.itemsPerPage) - 1;
-
-		//get difference between all slides and slider per page
-		this.slideDiff = this.slides.length - this.config.itemsPerPage;
-
-		this.centeredSlideDiff = this.config.centerSlide ? this.slideDiff + this.config.itemsPerPage : 0;
 	}
 
 	calculateStage() {
@@ -250,11 +235,7 @@ class DDCarousel {
 			navContainer.classList.add(this.cContDots);
 
 			if (this.config.itemsPerPage > 1) {
-				if (this.config.centerSlide) {
-					targetSlidesLenght = this.centeredSlideDiff;
-				} else {
-					targetSlidesLenght = this.totalPages + 1;
-				}
+				targetSlidesLenght = this.config.centerSlide ? this.slides.length : this.totalPages + 1;
 			} else {
 				targetSlidesLenght = this.slides.length;
 			}
@@ -277,7 +258,7 @@ class DDCarousel {
 		if (this.config.nav) {
 			this.config.navPrevBtn.addEventListener("click", () => this.prevPage());
 			this.config.navNextBtn.addEventListener("click", () => this.nextPage());
-			this.on("changed", () => {
+			this.on("onChanged", () => {
 				this.refreshNav();
 			});
 		}
@@ -420,11 +401,7 @@ class DDCarousel {
 		if (this.currentPage == 0) {
 			this.config.navPrevBtn.classList.add("inactive");
 			this.config.navNextBtn.classList.remove("inactive");
-		} else if (
-			this.config.centerSlide
-				? this.getActiveSlides() == this.getTotalSlides()
-				: this.currentPage == this.getTotalPages()
-		) {
+		} else if (this.currentPage == this.getTotalPages()) {
 			this.config.navPrevBtn.classList.remove("inactive");
 			this.config.navNextBtn.classList.add("inactive");
 		} else {
@@ -434,7 +411,7 @@ class DDCarousel {
 	}
 
 	scrollToSlide(slide) {
-		this.currentTranslate = -this.getSlideDomSize(slide);
+		this.currentTranslate = -this.getSlidePos(slide);
 		this.scrollToPos(this.currentTranslate);
 	}
 
@@ -456,7 +433,7 @@ class DDCarousel {
 				heights = [];
 
 			//get specified slides from global array with heights and then get the highest of it
-			for (i = this.getActiveSlides()[0]; i <= this.getActiveSlides()[this.getActiveSlides().length - 1]; i++) {
+			for (i = this.activeSlides[0]; i <= this.activeSlides[this.activeSlides.length - 1]; i++) {
 				heights.push(this.slidesHeights[i]);
 			}
 			this.container.style.height = Math.max(...heights) + "px";
@@ -469,39 +446,20 @@ class DDCarousel {
 
 		//change slide based on parameter
 		if (index == "prev") {
-			this.currentSlide = this.config.centerSlide
-				? this.currentSlide - 1
-				: this.currentSlide - this.config.itemsPerPage;
 			this.currentPage--;
 		} else if (index == "next") {
-			this.currentSlide = this.config.centerSlide
-				? this.currentSlide + 1
-				: this.currentSlide + this.config.itemsPerPage;
 			this.currentPage++;
 		} else if (Number.isInteger(index)) {
-			this.currentSlide = index;
+			this.currentPage = index;
 		}
 
 		//make some validations with the new value
-		if (index == "prev" && this.currentSlide < 0) {
-			if (this.config.centerSlide) {
-				this.currentSlide--;
-				this.currentPage--;
-			} else {
-				this.currentSlide = 0;
-				this.currentPage = 0;
-			}
-		} else if (index == "next" && this.currentSlide + this.config.itemsPerPage >= this.slides.length) {
-			console.log("ha!");
-			if (this.config.centerSlide) {
-				if (this.currentSlide > this.slides.length) {
-					this.currentSlide++;
-					this.currentPage++;
-				}
-			} else {
-				this.currentSlide = this.slides.length - this.config.itemsPerPage;
-				this.currentPage = this.totalPages;
-			}
+		if (index == "prev" && this.currentPage < 0) {
+			this.currentPage = 0;
+		} else if (index == "next" && this.currentPage == this.getTotalPages()) {
+			this.currentPage = this.getTotalPages();
+		} else if (Number.isInteger(index) && index <= this.totalPages) {
+			this.currentPage = index;
 		}
 
 		//update frontend
@@ -525,10 +483,12 @@ class DDCarousel {
 	updateSlide() {
 		if (this.config.centerSlide) {
 			var output =
-				-this.getSlideDomSize(this.getCurrentSlideDom()) -
-				-this.getCurrentSlideDom().getBoundingClientRect().width * this.centeredSlideOffset;
+				-this.getSlidePos(this.getCurrentSlideDom()) -
+				-(parseInt(this.getSlideWidth()) * Math.floor(this.config.itemsPerPage / 2));
+
 			this.currentTranslate = output;
 			this.scrollToPos(output);
+			console.log(parseInt(this.getSlideWidth()) * this.config.itemsPerPage);
 		} else {
 			this.scrollToSlide(this.getCurrentSlideDom());
 		}
@@ -543,15 +503,30 @@ class DDCarousel {
 
 		this.activeSlides = [];
 		if (this.config.centerSlide) {
-			this.activeSlides.push(this.currentSlide);
+			this.activeSlides.push(this.currentPage);
 		} else {
-			for (let index = this.currentSlide; index < this.config.itemsPerPage + this.currentSlide; index++) {
-				if (index < this.slides.length) {
+			if (this.getSlideIndexForPage() + this.config.itemsPerPage > this.getTotalSlides()) {
+				for (
+					let index = this.slides.length - this.config.itemsPerPage;
+					index < this.getTotalSlides();
+					index++
+				) {
 					this.activeSlides.push(index);
+				}
+			} else {
+				for (
+					let index = this.getSlideIndexForPage();
+					index < this.getSlideIndexForPage() + this.config.itemsPerPage;
+					index++
+				) {
+					if (index < this.slides.length) {
+						this.activeSlides.push(index);
+					}
 				}
 			}
 		}
 
+		console.log(this.activeSlides);
 		this.activeSlides.forEach(i => {
 			document.querySelector(`${this.containerName} [${this.cDSlide}="${i}"]`).classList.add("active");
 		});
@@ -577,7 +552,11 @@ class DDCarousel {
 	}
 
 	goToPage(index) {
-		if (index >= 0 && index <= this.totalPages) this.changePage(index);
+		this.changePage(index);
+	}
+
+	getSlideIndexForPage() {
+		return this.currentPage * this.config.itemsPerPage;
 	}
 
 	getCurrentSlideDom() {
@@ -585,25 +564,15 @@ class DDCarousel {
 	}
 
 	getCurrentPage() {
-		return document
-			.querySelector(`${this.containerName} [${this.cDSlide}="${this.currentPage}"].active`)
-			.getAttribute(this.cDSlide);
+		return this.currentPage;
 	}
 
 	getTotalSlides() {
-		return this.slides.length - 1;
+		return this.slides.length;
 	}
 
-	getSlideDom(id) {
-		return document.querySelector(`${this.containerName} .${this.cItem}[${this.cDSlide}="${id}"]`);
-	}
-
-	getSlideDomSize(slide) {
+	getSlidePos(slide) {
 		return slide.getBoundingClientRect().left - this.stage.getBoundingClientRect().left;
-	}
-
-	getActiveSlides() {
-		return this.activeSlides;
 	}
 
 	getTotalPages() {
@@ -633,16 +602,16 @@ class DDCarousel {
 
 Number.isInteger =
 	Number.isInteger ||
-	function(value) {
+	function (value) {
 		return typeof value === "number" && isFinite(value) && Math.floor(value) === value;
 	};
 
 if (!("classList" in document.documentElement) && Object.defineProperty && typeof HTMLElement !== "undefined") {
 	Object.defineProperty(HTMLElement.prototype, "classList", {
-		get: function() {
+		get: function () {
 			var self = this;
 			function update(fn) {
-				return function(value) {
+				return function (value) {
 					var classes = self.className.split(/\s+/),
 						index = classes.indexOf(value);
 
@@ -652,25 +621,25 @@ if (!("classList" in document.documentElement) && Object.defineProperty && typeo
 			}
 
 			var ret = {
-				add: update(function(classes, index, value) {
+				add: update(function (classes, index, value) {
 					~index || classes.push(value);
 				}),
 
-				remove: update(function(classes, index) {
+				remove: update(function (classes, index) {
 					~index && classes.splice(index, 1);
 				}),
 
-				contains: function(value) {
+				contains: function (value) {
 					return !!~self.className.split(/\s+/).indexOf(value);
 				},
 
-				item: function(i) {
+				item: function (i) {
 					return self.className.split(/\s+/)[i] || null;
 				}
 			};
 
 			Object.defineProperty(ret, "length", {
-				get: function() {
+				get: function () {
 					return self.className.split(/\s+/).length;
 				}
 			});

@@ -1,4 +1,4 @@
-document.addEventListener("DOMContentLoaded", function(event) {
+document.addEventListener("DOMContentLoaded", function (event) {
 	var slider = new DDCarousel({
 		container: ".ddcarousel",
 		itemsPerPage: 3,
@@ -8,7 +8,7 @@ document.addEventListener("DOMContentLoaded", function(event) {
 		responsive: false,
 		touch: true,
 		touchMouse: true,
-		centerSlide: false, //not working
+		centerSlide: true,
 
 		//touchSwipeThreshold: 10
 		//touchMaxSlideDist: 100
