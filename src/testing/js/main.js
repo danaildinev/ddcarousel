@@ -2,11 +2,15 @@ document.addEventListener("DOMContentLoaded", function (event) {
 	var slider = new DDCarousel({
 		container: ".ddcarousel",
 		itemsPerPage: 3,
-		itemPerPage: true,
 		nav: true,
 		autoHeight: false,
-		vertical: true,
+		urlNav: true,
+		onInitialized: function () {
+			this.goToUrl("about", false);
+		}
 		/*dots: true,
+		vertical: true,
+		itemPerPage: true,
 		autoHeight: false,
 		responsive: false,
 		touch: true,

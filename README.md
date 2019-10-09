@@ -72,6 +72,8 @@ document.addEventListener("DOMContentLoaded", function(event) {
 
 `responsive` Responsive slider - overrides width given in css (boolean, default: false)
 
+`urlNav` Creates url navigation based navigation for slides (This automatically enables `itemPerPage`). To use this feature, you must add `data-id` and `data-title` on every slide you want to include in nativagion. (boolean, default: false)
+
 `touch` Toggle touch swiping (boolean, default: true)
 
 `touchMouse` Toggle mouse swiping (boolean, default: true)
@@ -96,11 +98,13 @@ document.addEventListener("DOMContentLoaded", function(event) {
 
 `nextPage()` Go to next page
 
-`changePage(id);` Slides to specified page (parameter - page)
+`changePage(id, enableAnim);` Slides to specified page (first parameter is page number: usable values - "next", "prev" or number; second parameter is toggling animation on/off when switching between pages )
 
 `calculateStage()` Recalculates stage and slides. It can be called when changing carousel container size.
 
 `on(event, callback)` Event listener
+
+`goToUrl(name, enableAnim)` Go to specified slide title. `urlNav` must be enabled for this to work.
 
 `getCurrentPage()` Get the current page
 

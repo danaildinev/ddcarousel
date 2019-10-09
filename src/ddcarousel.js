@@ -13,6 +13,9 @@ class DDCarousel {
 	cPrev = "ddcarousel-prev";
 	cNext = "ddcarousel-next";
 	cVert = "ddcarousel-vertical";
+	cUrl = "ddcarousel-urls";
+	cDId = "data-id";
+	cDTitle = "data-title";
 
 	constructor(options) {
 		this.init = false;
@@ -30,16 +33,18 @@ class DDCarousel {
 
 		this.config = this.updateSettings(options);
 		if (this.checkContainer(this.config.container)) {
+
 			this.triggerHandler("onInitialize", { container: this.container, event: "onInitialize" });
 			this.createStage();
 			this.setActiveSlides();
 			this.calculateStage();
-			this.createNav();
-			this.createDots();
+
 			this.attachEvents();
 			this.setActiveDot();
 			this.updateSlide();
 			if (this.config.nav) this.refreshNav();
+
+			this.triggerHandler("onInitialized");
 		}
 	}
 
@@ -53,6 +58,7 @@ class DDCarousel {
 			itemPerPage: false,
 			responsive: false,
 			vertical: false,
+			urlNav: false,
 			touch: true,
 			touchMouse: true,
 			centerSlide: false,
@@ -74,6 +80,9 @@ class DDCarousel {
 		for (var name in options) {
 			settings[name] = options[name];
 		}
+
+		if (options['urlNav'])
+			settings['itemPerPage'] = true;
 
 		return settings;
 	}
@@ -153,6 +162,12 @@ class DDCarousel {
 			s.classList.add(this.cItem);
 			s.setAttribute(this.cDSlide, i);
 			s.appendChild(this.slidesSource[i]);
+			if (this.config.urlNav) {
+				if (this.slidesSource[i].hasAttribute(this.cDId) && this.slidesSource[i].hasAttribute(this.cDTitle)) {
+					s.setAttribute(this.cDId, this.slidesSource[i].getAttribute(this.cDId));
+					s.setAttribute(this.cDTitle, this.slidesSource[i].getAttribute(this.cDTitle));
+				}
+			}
 			stageDiv.appendChild(s);
 		}
 
@@ -166,6 +181,20 @@ class DDCarousel {
 		} else {
 			this.totalPages = Math.ceil(this.slides.length / this.config.itemsPerPage) - 1;
 		}
+
+		this.createNav();
+		this.createDots();
+		this.createUrls();
+
+		/*if (!this.init) {
+			if (
+				this.slides.length == this.slidesSource.length &&
+				document.querySelectorAll(`${this.containerName} .${this.cStage} [${this.cDSlide}]`).length > 0
+			) {
+				this.init = true;
+				this.triggerHandler("onInitialized");
+			}
+		}*/
 	}
 
 	calculateStage() {
@@ -193,16 +222,6 @@ class DDCarousel {
 		}
 
 		if (slideWidth != this.slides[0].style.width) this.triggerHandler("onResized");
-
-		if (!this.init) {
-			if (
-				this.slides.length == this.slidesSource.length &&
-				document.querySelectorAll(`${this.containerName} .${this.cStage} [${this.cDSlide}]`).length > 0
-			) {
-				this.init = true;
-				this.triggerHandler("onInitialized");
-			}
-		}
 	}
 
 	createNav() {
@@ -255,6 +274,30 @@ class DDCarousel {
 		}
 	}
 
+	createUrls() {
+		if (this.config.urlNav) {
+			var cont = document.createElement("div"),
+				list = document.createElement("ul");
+
+			cont.classList.add(this.cUrl);
+			this.slides.forEach(el => {
+				if (el.hasAttribute(this.cDId) && el.hasAttribute(this.cDTitle)) {
+					var li = document.createElement('li'),
+						a = document.createElement('a');
+
+					a.href = "#" + el.getAttribute(this.cDId);
+					a.innerHTML = el.getAttribute(this.cDTitle);
+
+					li.appendChild(a);
+					list.appendChild(li);
+				}
+			})
+
+			cont.appendChild(list);
+			this.container.appendChild(cont);
+		}
+	}
+
 	attachEvents() {
 		//nav buttons
 		if (this.config.nav) {
@@ -274,14 +317,22 @@ class DDCarousel {
 		}
 
 		//anim
-		var transitionEvent = this.whichTransitionEvent();
-		transitionEvent &&
-			this.stage.addEventListener(transitionEvent, () => {
-				this.triggerHandler("onTransitionend");
-			});
+		this.stage.addEventListener(this.whichTransitionEvent(), () => {
+			this.triggerHandler("onTransitionend");
+		});
 
 		//touch events
 		this.attachTouchEvents();
+
+		//urls
+		if (this.config.urlNav) {
+			var links = document.querySelectorAll(`${this.containerName} .${this.cUrl} a`);
+			links.forEach(el => {
+				el.addEventListener("click", e => {
+					this.goToUrl(el.getAttribute('href').substring(1))
+				})
+			})
+		}
 	}
 
 	attachTouchEvents() {
@@ -437,10 +488,17 @@ class DDCarousel {
 			this.container.style.height = Math.max(...heights) + "px";
 		}
 	}
-	changePage(index) {
-		var old = this.currentPage;
 
-		this.stage.style.transitionDuration = this.config.slideChangeDuration + "s";
+	changePage(index, enableAnim = true) {
+		var old = this.currentPage;
+		if (!enableAnim) {
+			this.stage.style.transitionDuration = "0s";
+			this.stage.addEventListener(this.whichTransitionEvent(), () => {
+				this.stage.style.transitionDuration = this.config.slideChangeDuration + "0s";
+			});
+		} else {
+			this.stage.style.transitionDuration = this.config.slideChangeDuration + "s";
+		}
 
 		//change slide based on parameter
 		if (index == "prev") {
@@ -469,6 +527,11 @@ class DDCarousel {
 		if (old != this.currentPage) {
 			this.triggerHandler("onChanged");
 		}
+	}
+
+	goToUrl(id, enableAnim = true) {
+		var item = document.querySelector(`${this.containerName} .${this.cItem}[${this.cDId}="${id}"]`);
+		this.changePage(parseInt(item.getAttribute(this.cDSlide)), enableAnim);
 	}
 
 	updateSlide() {
