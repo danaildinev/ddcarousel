@@ -1,4 +1,4 @@
-/*! DDCarousel 1.0.2 by Danail Dinev 2019 | License: https://github.com/danaildinev/ddcarousel/blob/master/LICENSE */
+/*! DDCarousel 1.1 by Danail Dinev 2019 | License: https://github.com/danaildinev/ddcarousel/blob/master/LICENSE */
 class DDCarousel {
 	appName = "DDCarousel";
 
@@ -28,20 +28,18 @@ class DDCarousel {
 		];
 
 		this.config = this.updateSettings(options);
-		this.checkContainer(this.config.container);
-
-		this.triggerHandler("onInitialize", { container: this.container, event: "onInitialize" });
-
-		this.createStage();
-		this.setActiveSlides();
-		this.calculateStage();
-		this.createNav();
-		this.createDots();
-		this.attachEvents();
-		this.setActiveDot();
-		this.updateSlide();
-
-		if (this.config.nav) this.refreshNav();
+		if (this.checkContainer(this.config.container)) {
+			this.triggerHandler("onInitialize", { container: this.container, event: "onInitialize" });
+			this.createStage();
+			this.setActiveSlides();
+			this.calculateStage();
+			this.createNav();
+			this.createDots();
+			this.attachEvents();
+			this.setActiveDot();
+			this.updateSlide();
+			if (this.config.nav) this.refreshNav();
+		}
 	}
 
 	updateSettings(options) {
@@ -104,19 +102,13 @@ class DDCarousel {
 	checkContainer(name) {
 		var contName = name.substring(1);
 		if (name.substring(0, 1) == "#") {
-			if (document.getElementById(contName) == null) {
-				console.error(`${this.appName}: Invalid container ID!`);
-				return false;
-			} else {
+			if (document.getElementById(contName) != null) {
 				this.container = document.getElementById(containerNameClear);
 				this.containerName = name;
 				return true;
 			}
 		} else if (name.substring(0, 1) == ".") {
-			if (document.getElementsByClassName(contName)[0] == null) {
-				console.error(`${this.appName}: Invalid container class!`);
-				return false;
-			} else {
+			if (document.getElementsByClassName(contName)[0] != null) {
 				this.container = document.getElementsByClassName(contName)[0];
 				this.containerName = name;
 				return true;
@@ -128,8 +120,7 @@ class DDCarousel {
 	}
 
 	createStage() {
-		var i = 0,
-			stageContainer = document.createElement("div"),
+		var stageContainer = document.createElement("div"),
 			stageDiv = document.createElement("div");
 
 		stageContainer.classList.add(this.cCont);
@@ -150,7 +141,7 @@ class DDCarousel {
 		}
 
 		//set parameters to slides and add them in the new ddcarousel-item container with some params
-		for (i = 0; i < this.slidesSource.length; i++) {
+		for (var i = 0; i < this.slidesSource.length; i++) {
 			var s = document.createElement("div");
 			s.classList.add(this.cItem);
 			s.setAttribute(this.cDSlide, i);
@@ -167,12 +158,11 @@ class DDCarousel {
 	}
 
 	calculateStage() {
-		var i,
-			slideWidth = this.slides[0].style.width,
+		var slideWidth = this.slides[0].style.width,
 			containerWidth = parseInt(window.getComputedStyle(this.container).width);
 
 		this.slidesHeights = [];
-		for (i = 0; i < this.slides.length; i++) {
+		for (var i = 0; i < this.slides.length; i++) {
 			//set current slide size
 			if (this.config.itemsPerPage == null) {
 				this.slides[i].style.width = containerWidth + "px";
@@ -204,33 +194,30 @@ class DDCarousel {
 	createNav() {
 		if (this.config.nav) {
 			var navContainer = document.createElement("div"),
-				leftBtn = document.createElement("button"),
-				rightBtn = document.createElement("button");
+				btn = document.createElement("button")
 
 			navContainer.classList.add(this.cNav);
 
-			leftBtn.classList.add(this.cPrev);
-			leftBtn.innerHTML = this.config.labelNavPrev;
+			btn.classList.add(this.cPrev);
+			btn.innerHTML = this.config.labelNavPrev;
+			navContainer.appendChild(btn);
 
-			rightBtn.classList.add(this.cNext);
-			rightBtn.innerHTML = this.config.labelNavNext;
+			btn.classList.remove(this.cPrev);
+			btn.classList.add(this.cNext);
+			btn.innerHTML = this.config.labelNavNext;
+			navContainer.appendChild(btn);
 
 			//add buttons in nav container
-			navContainer.appendChild(leftBtn);
-			navContainer.appendChild(rightBtn);
-
 			this.container.appendChild(navContainer);
 
-			this.config.navPrevBtn = document.querySelector(`${this.containerName} .${this.cPrev}`);
-			this.config.navNextBtn = document.querySelector(`${this.containerName} .${this.cNext}`);
+			this.navPrevBtn = document.querySelector(`${this.containerName} .${this.cPrev}`);
+			this.navNextBtn = document.querySelector(`${this.containerName} .${this.cNext}`);
 		}
 	}
 
 	createDots() {
 		if (this.config.dots) {
-			var i,
-				dot,
-				targetSlidesLenght,
+			var targetSlidesLenght,
 				navContainer = document.createElement("div");
 			navContainer.classList.add(this.cContDots);
 
@@ -240,8 +227,8 @@ class DDCarousel {
 				targetSlidesLenght = this.slides.length;
 			}
 
-			for (i = 0; i < targetSlidesLenght; i++) {
-				dot = document.createElement("button");
+			for (var i = 0; i < targetSlidesLenght; i++) {
+				var dot = document.createElement("button");
 				dot.classList.add(this.cDot);
 				dot.setAttribute(this.cDSlide, i);
 				dot.addEventListener("click", e => this.changePage(parseInt(e.target.getAttribute(this.cDSlide))));
@@ -256,8 +243,8 @@ class DDCarousel {
 	attachEvents() {
 		//nav buttons
 		if (this.config.nav) {
-			this.config.navPrevBtn.addEventListener("click", () => this.prevPage());
-			this.config.navNextBtn.addEventListener("click", () => this.nextPage());
+			this.navPrevBtn.addEventListener("click", () => this.prevPage());
+			this.navNextBtn.addEventListener("click", () => this.nextPage());
 			this.on("onChanged", () => {
 				this.refreshNav();
 			});
@@ -399,14 +386,14 @@ class DDCarousel {
 
 	refreshNav() {
 		if (this.currentPage == 0) {
-			this.config.navPrevBtn.classList.add("inactive");
-			this.config.navNextBtn.classList.remove("inactive");
+			this.navPrevBtn.classList.add("inactive");
+			this.navNextBtn.classList.remove("inactive");
 		} else if (this.currentPage == this.getTotalPages()) {
-			this.config.navPrevBtn.classList.remove("inactive");
-			this.config.navNextBtn.classList.add("inactive");
+			this.navPrevBtn.classList.remove("inactive");
+			this.navNextBtn.classList.add("inactive");
 		} else {
-			this.config.navPrevBtn.classList.remove("inactive");
-			this.config.navNextBtn.classList.remove("inactive");
+			this.navPrevBtn.classList.remove("inactive");
+			this.navNextBtn.classList.remove("inactive");
 		}
 	}
 
@@ -429,35 +416,29 @@ class DDCarousel {
 		if (this.config.itemsPerPage == 1) {
 			this.container.style.height = this.slidesHeights[this.currentPage] + "px";
 		} else {
-			var i,
-				heights = [];
+			var heights = [];
 
 			//get specified slides from global array with heights and then get the highest of it
-			for (i = this.activeSlides[0]; i <= this.activeSlides[this.activeSlides.length - 1]; i++) {
+			for (var i = this.activeSlides[0]; i <= this.activeSlides[this.activeSlides.length - 1]; i++) {
 				heights.push(this.slidesHeights[i]);
 			}
 			this.container.style.height = Math.max(...heights) + "px";
 		}
 	}
 	changePage(index) {
-		var origSlide = this.currentPage;
+		var old = this.currentPage;
 
 		this.stage.style.transitionDuration = this.config.slideChangeDuration + "s";
 
 		//change slide based on parameter
 		if (index == "prev") {
-			this.currentPage--;
+			if (this.currentPage != 0) {
+				this.currentPage--;
+			}
 		} else if (index == "next") {
-			this.currentPage++;
-		} else if (Number.isInteger(index)) {
-			this.currentPage = index;
-		}
-
-		//make some validations with the new value
-		if (index == "prev" && this.currentPage < 0) {
-			this.currentPage = 0;
-		} else if (index == "next" && this.currentPage == this.getTotalPages()) {
-			this.currentPage = this.getTotalPages();
+			if (this.currentPage < this.getTotalPages()) {
+				this.currentPage++;
+			}
 		} else if (Number.isInteger(index) && index <= this.totalPages) {
 			this.currentPage = index;
 		}
@@ -465,8 +446,6 @@ class DDCarousel {
 		//update frontend
 		this.setActiveSlides();
 		this.setActiveDot();
-
-		//slide to specified slide position
 		this.updateSlide();
 
 		//change stage height if this options is enabled
@@ -475,7 +454,7 @@ class DDCarousel {
 		}
 
 		//fire change trigger
-		if (origSlide != this.currentPage) {
+		if (old != this.currentPage) {
 			this.triggerHandler("onChanged");
 		}
 	}
@@ -506,7 +485,7 @@ class DDCarousel {
 		} else {
 			if (this.getSlideIndexForPage() + this.config.itemsPerPage > this.getTotalSlides()) {
 				for (
-					let index = this.slides.length - this.config.itemsPerPage;
+					var index = this.slides.length - this.config.itemsPerPage;
 					index < this.getTotalSlides();
 					index++
 				) {
@@ -514,7 +493,7 @@ class DDCarousel {
 				}
 			} else {
 				for (
-					let index = this.getSlideIndexForPage();
+					var index = this.getSlideIndexForPage();
 					index < this.getSlideIndexForPage() + this.config.itemsPerPage;
 					index++
 				) {
@@ -578,15 +557,14 @@ class DDCarousel {
 	}
 
 	whichTransitionEvent() {
-		var t,
-			el = document.createElement("fakeelement"),
+		var el = document.createElement("fakeelement"),
 			transitions = {
 				transition: "transitionend",
 				MozTransition: "transitionend",
 				WebkitTransition: "webkitTransitionEnd"
 			};
 
-		for (t in transitions) {
+		for (var t in transitions) {
 			if (el.style[t] !== undefined) {
 				return transitions[t];
 			}
