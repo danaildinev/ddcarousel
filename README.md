@@ -60,6 +60,8 @@ document.addEventListener("DOMContentLoaded", function(event) {
 
 `itemsPerPage` Items per page (int, default: 1)
 
+`itemPerPage` One item per page (boolean, default: false)
+
 `nav` Show prev/next text (boolean, default: false)
 
 `dots` Show dots (boolean, default: true)

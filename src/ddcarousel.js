@@ -49,6 +49,7 @@ class DDCarousel {
 			dots: true,
 			autoHeight: false,
 			itemsPerPage: 1,
+			itemPerPage: false,
 			responsive: false,
 			touch: true,
 			touchMouse: true,
@@ -152,9 +153,13 @@ class DDCarousel {
 		//get all slides and total pages
 		this.slides = document.querySelectorAll(`${this.containerName} .${this.cItem}`);
 
-		this.totalPages = this.config.centerSlide
-			? this.slides.length - 1
-			: Math.ceil(this.slides.length / this.config.itemsPerPage) - 1;
+		if (this.config.centerSlide) {
+			this.totalPages = this.slides.length - 1
+		} else if (this.config.itemPerPage) {
+			this.totalPages = this.slides.length - 1 - Math.ceil(this.config.itemsPerPage / 2)
+		} else {
+			this.totalPages = Math.ceil(this.slides.length / this.config.itemsPerPage) - 1;
+		}
 	}
 
 	calculateStage() {
@@ -194,20 +199,21 @@ class DDCarousel {
 	createNav() {
 		if (this.config.nav) {
 			var navContainer = document.createElement("div"),
-				btn = document.createElement("button")
+				leftBtn = document.createElement("button"),
+				rightBtn = document.createElement("button");
 
 			navContainer.classList.add(this.cNav);
 
-			btn.classList.add(this.cPrev);
-			btn.innerHTML = this.config.labelNavPrev;
-			navContainer.appendChild(btn);
+			leftBtn.classList.add(this.cPrev);
+			leftBtn.innerHTML = this.config.labelNavPrev;
 
-			btn.classList.remove(this.cPrev);
-			btn.classList.add(this.cNext);
-			btn.innerHTML = this.config.labelNavNext;
-			navContainer.appendChild(btn);
+			rightBtn.classList.add(this.cNext);
+			rightBtn.innerHTML = this.config.labelNavNext;
 
 			//add buttons in nav container
+			navContainer.appendChild(leftBtn);
+			navContainer.appendChild(rightBtn);
+
 			this.container.appendChild(navContainer);
 
 			this.navPrevBtn = document.querySelector(`${this.containerName} .${this.cPrev}`);
@@ -436,7 +442,7 @@ class DDCarousel {
 				this.currentPage--;
 			}
 		} else if (index == "next") {
-			if (this.currentPage < this.getTotalPages()) {
+			if (this.currentPage < this.totalPages) {
 				this.currentPage++;
 			}
 		} else if (Number.isInteger(index) && index <= this.totalPages) {
@@ -482,6 +488,14 @@ class DDCarousel {
 		this.activeSlides = [];
 		if (this.config.centerSlide) {
 			this.activeSlides.push(this.currentPage);
+		} else if (this.config.itemPerPage) {
+			for (
+				var index = this.currentPage;
+				index < this.currentPage + this.config.itemsPerPage;
+				index++
+			) {
+				this.activeSlides.push(index);
+			}
 		} else {
 			if (this.getSlideIndexForPage() + this.config.itemsPerPage > this.getTotalSlides()) {
 				for (
