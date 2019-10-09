@@ -6,11 +6,9 @@ Simple and fast carousel slider written in vannila JS.
 
 (May work on older browsers but these are minimum versions tested.)
 
-**Current status:** Alpha version (not stable and ready for using in real projects)
-
 ## Getting started
 
-Two simple steps - download/clone repository and copy css and js from `dist` folder to your project.
+Simply download/clone repository and copy css and js from `dist` folder to your project.
 
 ## Usage
 
@@ -60,13 +58,15 @@ document.addEventListener("DOMContentLoaded", function(event) {
 
 `container` Slider container ID or class (string, required)
 
-`items` Items per page (int, default: 1)
+`itemsPerPage` Items per page (int, default: 1)
 
 `nav` Show prev/next text (boolean, default: false)
 
 `dots` Show dots (boolean, default: true)
 
 `autoHeight` Change height based on current slide (boolean, default: false)
+
+`centerSlide` Centered slide (boolean, default: false)
 
 `responsive` Responsive slider - overrides width given in css (boolean, default: false)
 
@@ -82,23 +82,25 @@ document.addEventListener("DOMContentLoaded", function(event) {
 
 `touchMaxSlideDist` Max swiping distance (int, default: 500)
 
-`slideChangeDuration` Animation speed when changin slide (int, default: 0.3)
+`slideChangeDuration` Animation speed when changin slide (int, default: 0.5)
 
-`swipeSmooth` Swiping smoothness (int, default: 0.3)
+`swipeSmooth` Swiping smoothness (int, default: 0)
 
 ## Methods
 
-`prevSlide()` Go to previous side
+`prevPage()` Go to previous page
 
-`nextSlide()` Go to next side
+`nextPage()` Go to next page
 
-`changeSlide(3);` Slides to slide with `data-slide="3"`
+`changePage(id);` Slides to specified page (parameter - page)
 
 `calculateStage()` Recalculates stage and slides. It can be called when changing carousel container size.
 
-`getCurrentSlide()` Get the current slide (works properly when items per row = 1)
+`on(event, callback)` Event listener
 
-`getCurrentPage()` Get the current page (works properly when dots are enabled and items per row > 1)
+`getCurrentPage()` Get the current page
+
+`getTotalPages()` Get total pages count
 
 `getTotalSlides()` Get total slides count
 
@@ -107,18 +109,33 @@ document.addEventListener("DOMContentLoaded", function(event) {
 Using example:
 
 ```js
-ddcarusel.on("resized", () => {
-	console.log("Carousel resized!");
+var dd = new DDCarousel({
+	container: ".carousel",
+	onInitialized: function (e) {
+		console.log(e);
+	}
+});
+// or like this..
+dd.on("onChanged", function (e) => {
+	console.log(e);
 });
 ```
 
-`changed` Changed slide
+`onInitialize` Before plugin init
 
-`drag` Started dragging slide
+`onInitialized` After plugin init
 
-`dragged` Ended dragging slide
+`onDrag` Started dragging carousel
 
-`resized` Carousel container width is changed (you can use it with `calculateStage()` method)
+`onDragging` Dragging carousel
+
+`onDragged` Ended dragging slide
+
+`onTransitionend` Dragging transition end
+
+`onChanged` Changed page
+
+`onResized` Carousel container width is changed (you can use it with `calculateStage()` method)
 
 ## Building
 

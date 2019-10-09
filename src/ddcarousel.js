@@ -50,7 +50,7 @@ class DDCarousel {
 			nav: false,
 			dots: true,
 			autoHeight: false,
-			items: 1,
+			itemsPerPage: 1,
 			responsive: false,
 			touch: true,
 			touchMouse: true,
@@ -244,7 +244,7 @@ class DDCarousel {
 				dot = document.createElement("button");
 				dot.classList.add(this.cDot);
 				dot.setAttribute(this.cDSlide, i);
-				dot.addEventListener("click", e => this.goToPage(parseInt(e.target.getAttribute(this.cDSlide))));
+				dot.addEventListener("click", e => this.changePage(parseInt(e.target.getAttribute(this.cDSlide))));
 
 				navContainer.appendChild(dot);
 			}
@@ -488,7 +488,6 @@ class DDCarousel {
 
 			this.currentTranslate = output;
 			this.scrollToPos(output);
-			console.log(parseInt(this.getSlideWidth()) * this.config.itemsPerPage);
 		} else {
 			this.scrollToSlide(this.getCurrentSlideDom());
 		}
@@ -526,7 +525,6 @@ class DDCarousel {
 			}
 		}
 
-		console.log(this.activeSlides);
 		this.activeSlides.forEach(i => {
 			document.querySelector(`${this.containerName} [${this.cDSlide}="${i}"]`).classList.add("active");
 		});
@@ -549,10 +547,6 @@ class DDCarousel {
 
 	prevPage() {
 		this.changePage("prev");
-	}
-
-	goToPage(index) {
-		this.changePage(index);
 	}
 
 	getSlideIndexForPage() {

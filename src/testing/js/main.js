@@ -1,7 +1,7 @@
 document.addEventListener("DOMContentLoaded", function (event) {
 	var slider = new DDCarousel({
 		container: ".ddcarousel",
-		itemsPerPage: 3,
+		/*itemsPerPage: 1,
 		nav: true,
 		dots: true,
 		autoHeight: false,
@@ -9,21 +9,21 @@ document.addEventListener("DOMContentLoaded", function (event) {
 		touch: true,
 		touchMouse: true,
 		centerSlide: true,
-
+	
 		//touchSwipeThreshold: 10
 		//touchMaxSlideDist: 100
 		swipeSmooth: 0.1,
 		slideChangeDuration: 0.9,
-
+	
 		labelNavPrev: "&#x2190;",
 		labelNavNext: "&#x2192;",
-
+	
 		/*onInitialize: e => {
-			console.log(e);
-		},*/
+				console.log(e);
+			},*/
 		/*onInitialized: e => {
-			console.log(e);
-		}*/
+				console.log(e);
+			}*/
 		onChanged: e => {
 			console.log(e);
 		} /*
@@ -62,7 +62,8 @@ document.addEventListener("DOMContentLoaded", function (event) {
 	//events
 
 	document.getElementById("resizeContainer").addEventListener("click", () => {
-		document.getElementsByClassName("ddcarousel")[0].style.width = Math.floor(Math.random() * 101) + 50 + "%";
+		document.getElementsByClassName("ddcarousel")[0].style.width =
+			Math.floor(Math.random() * 101) + 50 + "%";
 		slider.calculateStage();
 	});
 });
