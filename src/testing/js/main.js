@@ -5,6 +5,7 @@ document.addEventListener("DOMContentLoaded", function (event) {
 		itemPerPage: true,
 		nav: true,
 		autoHeight: false,
+		vertical: true,
 		/*dots: true,
 		autoHeight: false,
 		responsive: false,
@@ -25,10 +26,10 @@ document.addEventListener("DOMContentLoaded", function (event) {
 			},*/
 		/*onInitialized: e => {
 				console.log(e);
-			}*/
+			}
 		onChanged: e => {
 			console.log(e);
-		} /*
+		} 
 		onDrag: () => {
 			console.log("drag");
 		},
