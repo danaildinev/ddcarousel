@@ -6,6 +6,14 @@
 	&.ddcarousel-responsive {
 		width: 100% !important;
 	}
+	&.ddcarousel-vertical {
+		.ddcarousel-stage {
+			height: auto;
+			flex-direction: column;
+			-ms-flex-direction: column;
+			-webkit-flex-direction: column;
+		}
+	}
 	.ddcarousel-container {
 		position: relative;
 		width: 100%;
@@ -19,22 +27,22 @@
 		//transition: all 0.7s cubic-bezier(0.19, 1, 0.22, 1);
 		backface-visibility: hidden;
 		-moz-user-select: none;
-		& > div {
-			height: 100%;
-			box-sizing: border-box;
-			flex: 0 0 auto;
-			-webkit-flex: 0 0 auto;
-			pointer-events: none;
-			-webkit-touch-callout: none;
-			-webkit-user-select: none;
-			-moz-user-select: none;
-			-ms-user-select: none;
-			user-select: none;
+	}
+	.ddcarousel-item {
+		height: 100%;
+		box-sizing: border-box;
+		flex: 0 0 auto;
+		-webkit-flex: 0 0 auto;
+		pointer-events: none;
+		-webkit-touch-callout: none;
+		-webkit-user-select: none;
+		-moz-user-select: none;
+		-ms-user-select: none;
+		user-select: none;
 
-			img {
-				width: 100%;
-				height: auto;
-			}
+		img {
+			width: 100%;
+			height: auto;
 		}
 	}
 	button {

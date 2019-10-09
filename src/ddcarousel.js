@@ -12,6 +12,7 @@ class DDCarousel {
 	cDot = "ddcarousel-dot";
 	cPrev = "ddcarousel-prev";
 	cNext = "ddcarousel-next";
+	cVert = "ddcarousel-vertical";
 
 	constructor(options) {
 		this.init = false;
@@ -51,6 +52,7 @@ class DDCarousel {
 			itemsPerPage: 1,
 			itemPerPage: false,
 			responsive: false,
+			vertical: false,
 			touch: true,
 			touchMouse: true,
 			centerSlide: false,
@@ -141,6 +143,10 @@ class DDCarousel {
 			this.container.classList.add(this.cResp);
 		}
 
+		if (this.config.vertical) {
+			this.container.classList.add(this.cVert);
+		}
+
 		//set parameters to slides and add them in the new ddcarousel-item container with some params
 		for (var i = 0; i < this.slidesSource.length; i++) {
 			var s = document.createElement("div");
@@ -156,7 +162,7 @@ class DDCarousel {
 		if (this.config.centerSlide) {
 			this.totalPages = this.slides.length - 1
 		} else if (this.config.itemPerPage) {
-			this.totalPages = this.slides.length - 1 - Math.ceil(this.config.itemsPerPage / 2)
+			this.totalPages = this.slides.length - this.config.itemsPerPage
 		} else {
 			this.totalPages = Math.ceil(this.slides.length / this.config.itemsPerPage) - 1;
 		}
@@ -164,14 +170,17 @@ class DDCarousel {
 
 	calculateStage() {
 		var slideWidth = this.slides[0].style.width,
-			containerWidth = parseInt(window.getComputedStyle(this.container).width);
+			containerWidth = parseInt(window.getComputedStyle(this.container).width),
+			containerHeight = parseInt(window.getComputedStyle(this.container).height);
 
 		this.slidesHeights = [];
 		for (var i = 0; i < this.slides.length; i++) {
 			//set current slide size
-			if (this.config.itemsPerPage == null) {
+			if (this.config.itemsPerPage == null && this.config.vertical) {
 				this.slides[i].style.width = containerWidth + "px";
-			} else {
+			} else if (this.config.vertical) {
+				this.slides[i].style.height = containerHeight / this.config.itemsPerPage + "px";
+			} else if (!this.config.vertical) {
 				this.slides[i].style.width = containerWidth / this.config.itemsPerPage + "px";
 			}
 			this.slidesHeights.push(
@@ -314,13 +323,10 @@ class DDCarousel {
 
 					//set some starting values
 					this.touchStartRaw =
-						e.type == "mousedown" || (e.type == "mousedown" && this.config.touchMouse)
-							? e.clientX
-							: e.targetTouches[0].clientX;
-					this.touchStart =
-						e.type == "mousedown" || (e.type == "mousedown" && this.config.touchMouse)
-							? e.clientX + -this.currentTranslate
-							: e.targetTouches[0].clientX + -this.currentTranslate;
+						e.type == "mousedown" && this.config.touchMouse
+							? (this.config.vertical ? e.clientY : e.clientX)
+							: (this.config.vertical ? e.targetTouches[0].clientY : e.targetTouches[0].clientX);
+					this.touchStart = this.touchStartRaw + -this.currentTranslate;
 
 					//remember orig position
 					this.origPosition = this.currentTranslate;
@@ -340,9 +346,9 @@ class DDCarousel {
 				if (this.isDragging) {
 					var input;
 					if (e.type == "mousemove" && this.config.touchMouse) {
-						input = e.clientX;
+						input = this.config.vertical ? e.clientY : e.clientX;
 					} else if (e.type == "touchmove") {
-						input = e.targetTouches[0].pageX;
+						input = this.config.vertical ? e.targetTouches[0].pageY : e.targetTouches[0].pageX;
 					}
 
 					//disable transition to get more responsive dragging
@@ -410,7 +416,7 @@ class DDCarousel {
 
 	scrollToPos(int) {
 		const isSafari8 = /^((?!chrome|android).)*safari/i.test(navigator.userAgent);
-		var output = `translateX(${int}px)`;
+		var output = this.config.vertical ? `translateY(${int}px)` : `translateX(${int}px)`;
 		if (isSafari8) {
 			this.stage.style.webkitTransform = output;
 		} else {
@@ -469,7 +475,7 @@ class DDCarousel {
 		if (this.config.centerSlide) {
 			var output =
 				-this.getSlidePos(this.getCurrentSlideDom()) -
-				-(parseInt(this.getSlideWidth()) * Math.floor(this.config.itemsPerPage / 2));
+				-(parseInt(this.getSlideStyle().width) * Math.floor(this.config.itemsPerPage / 2));
 
 			this.currentTranslate = output;
 			this.scrollToPos(output);
@@ -559,15 +565,17 @@ class DDCarousel {
 	}
 
 	getSlidePos(slide) {
-		return slide.getBoundingClientRect().left - this.stage.getBoundingClientRect().left;
+		return this.config.vertical ?
+			slide.getBoundingClientRect().top - this.stage.getBoundingClientRect().top :
+			slide.getBoundingClientRect().left - this.stage.getBoundingClientRect().left;
 	}
 
 	getTotalPages() {
 		return this.totalPages;
 	}
 
-	getSlideWidth() {
-		return this.slides[0].style.width;
+	getSlideStyle() {
+		return this.slides[0].style;
 	}
 
 	whichTransitionEvent() {

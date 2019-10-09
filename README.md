@@ -76,6 +76,8 @@ document.addEventListener("DOMContentLoaded", function(event) {
 
 `touchMouse` Toggle mouse swiping (boolean, default: true)
 
+`vertical` Change to vertical orientation (boolean, default: false)
+
 `labelNavPrev` Label for nav previous button (string, default: "< Prev")
 
 `labelNavNext` Label for nav next button (string, default: "Next >")
