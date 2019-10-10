@@ -32,6 +32,7 @@ document.addEventListener("DOMContentLoaded", function () {
 	var autoHeight = new DDCarousel({
 		container: ".autoHeight",
 		itemsPerPage: 3,
+		itemPerPage: true,
 		autoHeight: true
 	});
 
@@ -39,6 +40,19 @@ document.addEventListener("DOMContentLoaded", function () {
 		container: ".responsive",
 		itemsPerPage: 2,
 		responsive: true
+	});
+
+	var vertical = new DDCarousel({
+		container: ".vertical",
+		itemsPerPage: 2,
+		itemPerPage: true,
+		vertical: true
+	});
+
+	var url = new DDCarousel({
+		container: ".url",
+		dots: false,
+		urlNav: true
 	});
 
 	var disabledTouch = new DDCarousel({

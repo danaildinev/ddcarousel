@@ -1,36 +1,33 @@
 document.addEventListener("DOMContentLoaded", function (event) {
 	var slider = new DDCarousel({
 		container: ".ddcarousel",
-		itemsPerPage: 3,
-		nav: true,
-		autoHeight: false,
-		urlNav: true,
-		onInitialized: function () {
-			this.goToUrl("about", false);
-		}
-		/*dots: true,
-		vertical: true,
+		/*itemsPerPage: 3,
 		itemPerPage: true,
+		autoHeight: true,
+		nav: true,
+		dots: true,
+		centerSlide: true,
+		urlNav: true
+		vertical: true,
 		autoHeight: false,
 		responsive: false,
 		touch: true,
 		touchMouse: true,
-		centerSlide: true,
 	
-		//touchSwipeThreshold: 10
-		//touchMaxSlideDist: 100
+		touchSwipeThreshold: 10
+		touchMaxSlideDist: 100
 		swipeSmooth: 0.1,
 		slideChangeDuration: 0.9,
 	
 		labelNavPrev: "&#x2190;",
 		labelNavNext: "&#x2192;",
 	
-		/*onInitialize: e => {
-				console.log(e);
-			},*/
-		/*onInitialized: e => {
-				console.log(e);
-			}
+		onInitialize: e => {
+			console.log(e);
+			},
+		onInitialized: e => {
+			console.log(e);
+		}
 		onChanged: e => {
 			console.log(e);
 		} 

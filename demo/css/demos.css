@@ -248,6 +248,9 @@ strong {
 	padding: 40px 0;
 }
 
+.ddcarousel.vertical {
+	height: 500px;
+}
 .ddcarousel-item:nth-child(1) .box {
 	background: #8eb9e2;
 }

@@ -13,6 +13,10 @@
 			-ms-flex-direction: column;
 			-webkit-flex-direction: column;
 		}
+		.ddcarousel-stage,
+		.ddcarousel-item {
+			width: 100%;
+		}
 	}
 	.ddcarousel-container {
 		position: relative;
@@ -26,7 +30,6 @@
 		-webkit-display: flex;
 		position: absolute;
 		height: 100%;
-		//transition: all 0.7s cubic-bezier(0.19, 1, 0.22, 1);
 		backface-visibility: hidden;
 		-moz-user-select: none;
 	}

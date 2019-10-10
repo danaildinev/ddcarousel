@@ -18,8 +18,10 @@
 			<li><a href="#default">Default</a></li>
 			<li><a href="#multiple">Multiple slides + navigation</a></li>
 			<li><a href="#centered">Centered slide <strong>(new)</strong></a></li>
-			<li><a href="#autoheigh">Auto height</a></li>
+			<li><a href="#autoheigh">Auto height + one item per page <strong>(new)</strong></a></li>
 			<li><a href="#responsive">Responsive</a></li>
+			<li><a href="#vertical">Vertical orientation<strong>(new)</strong></a></li>
+			<li><a href="#urlnav">Url navigation<strong>(new)</strong></a></li>
 			<li><a href="#disabledtouch">Disabled device touch</a></li>
 			<li><a href="#disabledtouchmouse">Disabled mouse touch</a></li>
 			<li><a href="#customlabels">Custom navigation labels</a></li>
@@ -153,7 +155,7 @@ var ddcarousel = new DDCarousel({
 	</div>
 	<div id="autoheigh" class="carousel-demo">
 		<div class="container">
-			<h2>Auto height</h2>
+			<h2>Auto height + one item per page <strong>(new)</strong></h2>
 			<div class="ddcarousel autoHeight">
 				<div class="box">1</div>
 				<div class="box">2</div>
@@ -165,7 +167,8 @@ var ddcarousel = new DDCarousel({
 				<div class="box">8</div>
 			</div>
 			<p>
-				Change carousel height automatically on slide change based on the highest visible slide.
+				Change carousel height automatically on slide change based on the highest visible slide. Also showing
+				the new feature to change one item per swipe.
 			</p>
 			<div class="code-container">
 				<div>
@@ -185,6 +188,7 @@ var ddcarousel = new DDCarousel({
 var ddcarousel = new DDCarousel({
 	container: ".ddcarousel",
 	itemsPerPage: 3,
+	itemPerPage: true,
 	autoHeight: true
 });</textarea>
 				</div>
@@ -224,6 +228,84 @@ var ddcarousel = new DDCarousel({
 	container: ".ddcarousel",
 	itemsPerPage: 2,
 	responsive: true
+});</textarea>
+				</div>
+			</div>
+		</div>
+	</div>
+	<div id="vertical" class="carousel-demo">
+		<h2>Vertical orientation <strong>(new)</strong></h2>
+		<div class="container">
+			<div class="ddcarousel vertical">
+				<div class="box">1</div>
+				<div class="box">2</div>
+				<div class="box">3</div>
+				<div class="box">4</div>
+				<div class="box">5</div>
+				<div class="box">6</div>
+			</div>
+			<p>
+				This examples shows vertical orientation of carousel.
+			</p>
+			<div class="code-container">
+				<div>
+					<h4>HTML</h4>
+					<textarea readonly>
+	<div class="ddcarousel">
+		<div>1</div>
+		<div>2</div>
+		<div>3</div>
+		<div>4</div>
+		<div>5</div>
+	</div></textarea>
+				</div>
+				<div>
+					<h4>JS</h4>
+					<textarea readonly>
+	var ddcarousel = new DDCarousel({
+		container: ".ddcarousel",
+		itemsPerPage: 2,
+		itemPerPage: true,
+		vertical: true
+	});</textarea>
+				</div>
+			</div>
+		</div>
+	</div>
+	<div id="urlnav" class="carousel-demo">
+		<h2>Url navigation <strong>(new)</strong></h2>
+		<div class="container">
+			<div class="ddcarousel url">
+				<div class="box" data-id="first" data-title="First slide">1</div>
+				<div class="box">2</div>
+				<div class="box" data-id="third" data-title="Third slide">3</div>
+				<div class="box">4</div>
+				<div class="box" data-id="fifth" data-title="Fifth slide">5</div>
+				<div class="box">6</div>
+			</div>
+			<p>
+				Control slider with links. Links and titles are based on attributes specified for every slide.
+			</p>
+			<div class="code-container">
+				<div>
+					<h4>HTML</h4>
+					<textarea readonly>
+<div class="ddcarousel">
+	<div data-id="first" data-title="First slide">1</div>
+	<div>2</div>
+	<div data-id="third" data-title="Third slide">3</div>
+	<div>4</div>
+	<div data-id="fifth" data-title="Fifth slide">5</div>
+	<div>6</div>
+</div></textarea>
+				</div>
+				<div>
+					<h4>JS</h4>
+					<textarea readonly>
+var ddcarousel = new DDCarousel({
+	container: ".ddcarousel",
+	dots: false,
+	urlNav: true
 });</textarea>
 				</div>
 			</div>
