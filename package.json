@@ -1,12 +1,12 @@
 {
 	"name": "ddcarousel",
 	"version": "1.1.0",
-	"description": "Vanilla JS Carousel slider",
-	"main": "index.js",
+	"description": "Simple and fast carousel slider written in vannila JS.",
+	"main": "./dist/ddcarousel.js",
 	"scripts": {
 		"dist": "npm-run-all babeljs minifyjs buildcss minifycss",
-		"dist+demo": "npm-run-all dist demojs democss",
 		"demo": "npm-run-all demojs democss",
+		"dist+demo": "npm-run-all dist demojs democss",
 		"-----------------": "",
 		"babeljs": "babel src/ddcarousel.js --out-file dist/ddcarousel.js --source-maps --presets=@babel/preset-env",
 		"minifyjs": "uglifyjs --compress --comments /^!/ --output dist/ddcarousel.min.js -- dist/ddcarousel.js",
