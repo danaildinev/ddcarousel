@@ -1,66 +1,105 @@
-/*! DDCarousel 1.0.2 by Danail Dinev 2019 | License: https://github.com/danaildinev/ddcarousel/blob/master/LICENSE */
+/*! DDCarousel 1.1 by Danail Dinev 2019 | License: https://github.com/danaildinev/ddcarousel/blob/master/LICENSE */
+
+const appName = "DDCarousel";
+const app = appName.toLowerCase();
+const cCont = app + "-container";
+const cStage = app + "-stage";
+const cNav = app + "-nav";
+const cItem = app + "-item";
+const cResp = app + "-responsive";
+const cContDots = app + "-dots";
+const cDot = app + "-dot";
+const cPrev = app + "-prev";
+const cNext = app + "-next";
+const cVert = app + "-vertical";
+const cUrl = app + "-urls";
+const cDSlide = "data-slide";
+const cDId = "data-id";
+const cDTitle = "data-title";
+
 class DDCarousel {
-	appName = "DDCarousel";
-	containerName = null; //full container name
-	container = null; //DOM element: container
-	stage = null; //DOM element: stage
-	currentSlide = 0; //current slide
-	currentTranslate = 0;
-	slideDiff = 0;
-	slidesHeights = []; //use dot store slides heights when using autoHeight
-	triggers = [];
 
-	cCont = "ddcarousel-container";
-	cStage = "ddcarousel-stage";
-	cNav = "ddcarousel-nav";
-	cItem = "ddcarousel-item";
-	cResp = "ddcarousel-responsive";
-	cDSlide = "data-slide";
-	cContDots = "ddcarousel-dots";
-	cDot = "ddcarousel-dot";
-	cPrev = "ddcarousel-prev";
+	constructor(options) {
+		this.init = false;
+		this.currentPage = 0;
+		this.triggers = [
+			"onInitialize",
+			"onInitialized",
+			"onDrag",
+			"onDragging",
+			"onDragged",
+			"onChanged",
+			"onTransitionend",
+			"onResized"
+		];
 
-	constructor({
-		container = ".ddcarousel",
-		nav = false,
-		dots = true,
-		autoHeight = false,
-		items = 1,
-		responsive = false,
-		touch = true,
-		touchMouse = true,
-		touchSwipeThreshold = 60,
-		touchMaxSlideDist = 500,
-		swipeSmooth = 0.1,
-		slideChangeDuration = 0.3,
-		labelNavPrev = "< Prev",
-		labelNavNext = "Next >"
-	}) {
-		if (this.checkContainer(container)) {
-			this.containerName = container;
-			this.autoHeight = autoHeight;
-			this.itemsPerPage = items;
-			this.responsive = responsive;
-			this.nav = nav;
-			this.dots = dots;
-			this.touch = touch;
-			this.touchMouse = touchMouse;
-			this.touchSwipeThreshold = touchSwipeThreshold;
-			this.touchMaxSlideDist = touchMaxSlideDist;
-			this.swipeSmooth = swipeSmooth;
-			this.slideChangeDuration = slideChangeDuration;
-			this.labelNavPrev = labelNavPrev;
-			this.labelNavNext = labelNavNext;
+		this.config = this.updateSettings(options);
+		if (this.checkContainer(this.config.container)) {
 
+			this.triggerHandler("onInitialize", { container: this.container, event: "onInitialize" });
 			this.createStage();
+			this.setActiveSlides();
 			this.calculateStage();
-			this.createNav();
-			this.createDots();
-			this.attachEvents();
-			this.changeSlide(this.changeSlide);
 
-			if (this.nav) this.refreshNav();
+			this.attachEvents();
+			this.setActiveDot();
+			this.updateSlide();
+			if (this.config.nav) this.refreshNav();
+
+			this.triggerHandler("onInitialized");
 		}
+	}
+
+	updateSettings(options) {
+		var settings = {
+			container: ".ddcarousel",
+			nav: false,
+			dots: true,
+			autoHeight: false,
+			itemsPerPage: 1,
+			itemPerPage: false,
+			responsive: false,
+			vertical: false,
+			urlNav: false,
+			touch: true,
+			touchMouse: true,
+			centerSlide: false,
+			touchSwipeThreshold: 60,
+			touchMaxSlideDist: 500,
+			swipeSmooth: 0,
+			slideChangeDuration: 0.5,
+			labelNavPrev: "< Prev",
+			labelNavNext: "Next >"
+		};
+
+		this.triggers.forEach(el => {
+			settings[el] = () => { };
+			this.on(el, e => {
+				this.config[el].call(this, e != undefined ? e : this.callback(el));
+			});
+		});
+
+		for (var name in options) {
+			settings[name] = options[name];
+		}
+
+		if (options['urlNav'])
+			settings['itemPerPage'] = true;
+
+		return settings;
+	}
+
+	callback(event) {
+		var callback = {
+			container: this.container,
+			event: event,
+			currentSlides: this.activeSlides,
+			currentPage: this.getCurrentPage(),
+			totalSlides: this.getTotalSlides(),
+			totalPages: this.getTotalPages()
+		};
+
+		return callback;
 	}
 
 	on(event, callback) {
@@ -77,34 +116,29 @@ class DDCarousel {
 	checkContainer(name) {
 		var contName = name.substring(1);
 		if (name.substring(0, 1) == "#") {
-			if (document.getElementById(contName) == null) {
-				console.log(`${this.appName}: Invalid container ID!`);
-				return false;
-			} else {
+			if (document.getElementById(contName) != null) {
 				this.container = document.getElementById(containerNameClear);
+				this.containerName = name;
 				return true;
 			}
 		} else if (name.substring(0, 1) == ".") {
-			if (document.getElementsByClassName(contName)[0] == null) {
-				console.log(`${this.appName}: Invalid container class!`);
-				return false;
-			} else {
+			if (document.getElementsByClassName(contName)[0] != null) {
 				this.container = document.getElementsByClassName(contName)[0];
+				this.containerName = name;
 				return true;
 			}
 		} else {
-			console.log(`${this.appName}: Invalid container!`);
+			console.error(`${this.appName}: Invalid container!`);
 			return false;
 		}
 	}
 
 	createStage() {
-		var i = 0,
-			stageContainer = document.createElement("div"),
+		var stageContainer = document.createElement("div"),
 			stageDiv = document.createElement("div");
 
-		stageContainer.classList.add(this.cCont);
-		stageDiv.classList.add(this.cStage);
+		stageContainer.classList.add(cCont);
+		stageDiv.classList.add(cStage);
 
 		//get all slides from user
 		this.slidesSource = document.querySelectorAll(`${this.containerName} > div`);
@@ -114,65 +148,94 @@ class DDCarousel {
 		stageContainer.appendChild(stageDiv);
 
 		//get stage DOM
-		this.stage = document.querySelector(`${this.containerName} .${this.cStage}`);
+		this.stage = document.querySelector(`${this.containerName} .${cStage}`);
+
 		//set width to 100% if responsive is enabled and change container width
-		if (this.responsive) {
-			this.container.classList.add(this.cResp);
+		if (this.config.responsive) {
+			this.container.classList.add(cResp);
+		}
+
+		if (this.config.vertical) {
+			this.container.classList.add(cVert);
 		}
 
 		//set parameters to slides and add them in the new ddcarousel-item container with some params
-		for (i = 0; i < this.slidesSource.length; i++) {
+		for (var i = 0; i < this.slidesSource.length; i++) {
 			var s = document.createElement("div");
-			s.classList.add(this.cItem);
-			s.setAttribute(this.cDSlide, i);
+			s.classList.add(cItem);
+			s.setAttribute(cDSlide, i);
 			s.appendChild(this.slidesSource[i]);
+			if (this.config.urlNav) {
+				if (this.slidesSource[i].hasAttribute(cDId) && this.slidesSource[i].hasAttribute(cDTitle)) {
+					s.setAttribute(cDId, this.slidesSource[i].getAttribute(cDId));
+					s.setAttribute(cDTitle, this.slidesSource[i].getAttribute(cDTitle));
+				}
+			}
 			stageDiv.appendChild(s);
 		}
 
-		//get all slides
-		this.slides = document.querySelectorAll(`${this.containerName} .${this.cItem}`);
+		//get all slides and total pages
+		this.slides = document.querySelectorAll(`${this.containerName} .${cItem}`);
+
+		if (this.config.centerSlide) {
+			this.totalPages = this.slides.length - 1
+		} else if (this.config.itemPerPage) {
+			this.totalPages = this.slides.length - this.config.itemsPerPage
+		} else {
+			this.totalPages = Math.ceil(this.slides.length / this.config.itemsPerPage) - 1;
+		}
+
+		this.createNav();
+		this.createDots();
+		this.createUrls();
 	}
 
 	calculateStage() {
-		var i,
-			slideWidth = this.slides[0].style.width,
-			containerWidth = parseInt(window.getComputedStyle(this.container).width);
+		var slideWidth = this.slides[0].style.width,
+			containerWidth = parseInt(window.getComputedStyle(this.container).width),
+			containerHeight = parseInt(window.getComputedStyle(this.container).height);
 
 		this.slidesHeights = [];
-		for (i = 0; i < this.slides.length; i++) {
+		for (var i = 0; i < this.slides.length; i++) {
 			//set current slide size
-			if (this.itemsPerPage == null) {
+			if (this.config.itemsPerPage == null && this.config.vertical) {
 				this.slides[i].style.width = containerWidth + "px";
-			} else {
-				this.slides[i].style.width = containerWidth / this.itemsPerPage + "px";
+			} else if (this.config.vertical) {
+				this.slides[i].style.height = containerHeight / this.config.itemsPerPage + "px";
+			} else if (!this.config.vertical) {
+				this.slides[i].style.width = containerWidth / this.config.itemsPerPage + "px";
 			}
 			this.slidesHeights.push(
-				document.querySelector(`${this.containerName} [${this.cDSlide}="${i}"] > div`).scrollHeight
+				document.querySelector(`${this.containerName} [${cDSlide}="${i}"] > div`).scrollHeight
 			);
 		}
 
-		if (this.autoHeight) {
-			this.calculateContainerHeight(this.currentSlide);
+		if (!this.config.vertical) {
+			this.stage.style.width = (containerWidth * this.slides.length) + "px";
 		}
+
+		if (this.config.autoHeight) {
+			this.calculateContainerHeight(this.currentPage);
+		}
+
 		this.scrollToSlide(this.getCurrentSlideDom());
 
-		//fire event
-		if (slideWidth != this.slides[0].style.width) this.triggerHandler("resized");
+		if (slideWidth != this.slides[0].style.width) this.triggerHandler("onResized");
 	}
 
 	createNav() {
-		if (this.nav) {
+		if (this.config.nav) {
 			var navContainer = document.createElement("div"),
 				leftBtn = document.createElement("button"),
 				rightBtn = document.createElement("button");
 
-			navContainer.classList.add(this.cNav);
+			navContainer.classList.add(cNav);
 
-			leftBtn.classList.add(this.cPrev);
-			leftBtn.innerHTML = this.labelNavPrev;
+			leftBtn.classList.add(cPrev);
+			leftBtn.innerHTML = this.config.labelNavPrev;
 
-			rightBtn.classList.add(this.cNext);
-			rightBtn.innerHTML = this.labelNavNext;
+			rightBtn.classList.add(cNext);
+			rightBtn.innerHTML = this.config.labelNavNext;
 
 			//add buttons in nav container
 			navContainer.appendChild(leftBtn);
@@ -180,30 +243,28 @@ class DDCarousel {
 
 			this.container.appendChild(navContainer);
 
-			this.navPrevBtn = document.querySelector(`${this.containerName} .${this.cPrev}`);
-			this.navNextBtn = document.querySelector(`${this.containerName} .${this.cNext}`);
+			this.navPrevBtn = document.querySelector(`${this.containerName} .${cPrev}`);
+			this.navNextBtn = document.querySelector(`${this.containerName} .${cNext}`);
 		}
 	}
 
 	createDots() {
-		if (this.dots) {
-			var i,
-				dot,
-				targetSlidesLenght,
+		if (this.config.dots) {
+			var targetSlidesLenght,
 				navContainer = document.createElement("div");
-			navContainer.classList.add(this.cContDots);
+			navContainer.classList.add(cContDots);
 
-			if (this.itemsPerPage > 1) {
-				targetSlidesLenght = this.slides.length - this.itemsPerPage + 1;
+			if (this.config.itemsPerPage > 1) {
+				targetSlidesLenght = this.config.centerSlide ? this.slides.length : this.totalPages + 1;
 			} else {
 				targetSlidesLenght = this.slides.length;
 			}
 
-			for (i = 0; i < targetSlidesLenght; i++) {
-				dot = document.createElement("button");
-				dot.classList.add(this.cDot);
-				dot.setAttribute(this.cDSlide, i);
-				dot.addEventListener("click", e => this.changeSlide(parseInt(e.target.getAttribute(this.cDSlide))));
+			for (var i = 0; i < targetSlidesLenght; i++) {
+				var dot = document.createElement("button");
+				dot.classList.add(cDot);
+				dot.setAttribute(cDSlide, i);
+				dot.addEventListener("click", e => this.changePage(parseInt(e.target.getAttribute(cDSlide))));
 
 				navContainer.appendChild(dot);
 			}
@@ -212,151 +273,194 @@ class DDCarousel {
 		}
 	}
 
+	createUrls() {
+		if (this.config.urlNav) {
+			var cont = document.createElement("div"),
+				list = document.createElement("ul");
+
+			cont.classList.add(cUrl);
+			this.slides.forEach(el => {
+				if (el.hasAttribute(cDId) && el.hasAttribute(cDTitle)) {
+					var li = document.createElement('li'),
+						a = document.createElement('a');
+
+					a.href = "#" + el.getAttribute(cDId);
+					a.innerHTML = el.getAttribute(cDTitle);
+
+					li.appendChild(a);
+					list.appendChild(li);
+				}
+			})
+
+			cont.appendChild(list);
+			this.container.appendChild(cont);
+		}
+	}
+
 	attachEvents() {
 		//nav buttons
-		if (this.nav) {
-			this.navPrevBtn.addEventListener("click", () => this.prevSlide());
-			this.navNextBtn.addEventListener("click", () => this.nextSlide());
-			this.on("changed", () => {
+		if (this.config.nav) {
+			this.navPrevBtn.addEventListener("click", () => this.prevPage());
+			this.navNextBtn.addEventListener("click", () => this.nextPage());
+			this.on("onChanged", () => {
 				this.refreshNav();
 			});
 		}
 
-		//responsive
-		if (this.responsive) {
-			window.addEventListener("resize", () => {
-				this.calculateStage();
-			});
-		}
+		window.addEventListener("resize", () => {
+			this.calculateStage();
+		});
+
+		//anim
+		this.stage.addEventListener(this.whichTransitionEvent(), () => {
+			this.triggerHandler("onTransitionend");
+		});
 
 		//touch events
 		this.attachTouchEvents();
+
+		//urls
+		if (this.config.urlNav) {
+			var links = document.querySelectorAll(`${this.containerName} .${cUrl} a`);
+			links.forEach(el => {
+				el.addEventListener("click", e => {
+					this.goToUrl(el.getAttribute('href').substring(1))
+				})
+			})
+		}
 	}
 
 	attachTouchEvents() {
 		var eventsStart = [],
 			eventsMove = [],
-			eventsEnd = [],
-			touchStart,
-			touchStartRaw,
-			currentTouch,
-			origPosition,
-			swipeDistance,
-			dontChange,
-			isDragging;
+			eventsEnd = [];
 
 		//add events based on options
-		if (this.touch) {
+		if (this.config.touch) {
 			eventsStart.push("touchstart");
 			eventsMove.push("touchmove");
 			eventsEnd.push("touchend");
 		}
-		if (this.touchMouse) {
+		if (this.config.touchMouse) {
 			eventsStart.push("mousedown");
 			eventsMove.push("mousemove");
 			eventsEnd.push("mouseup");
 		}
 
 		eventsStart.forEach(el => {
-			this.stage.addEventListener(
-				el,
-				e => {
-					isDragging = true;
-
-					//set some starting values
-					touchStartRaw =
-						e.type == "mousedown" || (e.type == "mousedown" && this.touchMouse)
-							? e.clientX
-							: e.targetTouches[0].clientX;
-					touchStart =
-						e.type == "mousedown" || (e.type == "mousedown" && this.touchMouse)
-							? e.clientX + -this.currentTranslate
-							: e.targetTouches[0].clientX + -this.currentTranslate;
-
-					//remember orig position
-					origPosition = this.currentTranslate;
-					dontChange = false;
-
-					this.triggerHandler("drag");
+			//ie10 fix
+			if (document.all && window.atob) {
+				this.stage.addEventListener(el, e => {
+					this.getStartingDragPos(e);
 				},
-				{ passive: true }
-			);
+					{ passive: true }
+				);
+			} else {
+				window.addEventListener(el, e => {
+					if (e.target == this.stage) {
+						this.getStartingDragPos(e);
+					}
+				},
+					{ passive: true }
+				);
+			}
 		});
 
 		eventsEnd.forEach(el => {
-			this.stage.addEventListener(el, () => {
-				//check if swipe distance is enough to change slide or stay on the same
-				this.triggerHandler("dragged");
+			window.addEventListener(el, () => {
+				if (this.isDragging) {
+					//check if swipe distance is enough to change slide or stay on the same
+					this.triggerHandler("onDragged");
 
-				if (swipeDistance >= this.touchSwipeThreshold && !dontChange) {
-					if (currentTouch > origPosition) {
-						this.prevSlide();
+					if (this.swipeDistance >= this.config.touchSwipeThreshold && !this.dontChange) {
+						if (this.currentTouch > this.origPosition) {
+							this.prevPage();
+						} else {
+							this.nextPage();
+						}
 					} else {
-						this.nextSlide();
+						this.scrollToPos(this.origPosition);
 					}
-				} else {
-					this.scrollToPos(origPosition);
-				}
 
-				this.stage.style.transitionDuration = this.slideChangeDuration + "s";
-				isDragging = false;
+					this.stage.style.transitionDuration = this.config.slideChangeDuration + "s";
+					this.isDragging = false;
+				}
 			});
 		});
 
 		eventsMove.forEach(el => {
-			this.stage.addEventListener(
-				el,
-				e => {
+			window.addEventListener(el, e => {
+				if (this.isDragging) {
 					var input;
-					if (e.type == "mousemove" && this.touchMouse) {
-						if (isDragging) {
-							input = e.clientX;
-						}
+					if (e.type == "mousemove" && this.config.touchMouse) {
+						input = this.config.vertical ? e.clientY : e.pageX;
 					} else if (e.type == "touchmove") {
-						input = e.targetTouches[0].pageX;
+						input = this.config.vertical ? e.targetTouches[0].pageY : e.targetTouches[0].pageX;
 					}
 
 					//disable transition to get more responsive dragging
-					this.stage.style.transitionDuration = this.swipeSmooth + "s";
+					this.stage.style.transitionDuration = this.config.swipeSmooth + "s";
 
 					//calcualte swipe distance between starging value cnd current value
-					swipeDistance = Math.abs(input - touchStartRaw);
+					this.swipeDistance = Math.abs(input - this.touchStartRaw);
 
 					//get the current touch
-					currentTouch = input - touchStart;
+					this.currentTouch = input - this.touchStart;
 
 					//move slider until max swipe lenght is reached
-					if (swipeDistance <= this.touchMaxSlideDist) {
-						this.scrollToPos(currentTouch);
+					if (this.swipeDistance <= this.config.touchMaxSlideDist) {
+						this.triggerHandler("onDragging");
+						this.scrollToPos(this.currentTouch);
 					} else {
-						dontChange = true;
-						currentTouch = input - touchStart;
+						this.dontChange = true;
+						this.currentTouch = input - this.touchStart;
 					}
-				},
+				}
+			},
 				{ passive: true }
 			);
 		});
 	}
 
+	getStartingDragPos(e) {
+		this.isDragging = true;
+
+		//set some starting values
+		this.touchStartRaw =
+			e.type == "mousedown" && this.config.touchMouse
+				? (this.config.vertical ? e.clientY : e.pageX)
+				: (this.config.vertical ? e.targetTouches[0].clientY : e.targetTouches[0].pageX);
+		this.touchStart = this.touchStartRaw + -this.currentTranslate;
+
+		//remember orig position
+		this.origPosition = this.currentTranslate;
+		this.dontChange = false;
+
+		this.triggerHandler("onDrag");
+	}
+
 	refreshNav() {
-		if (this.currentSlide == 0) {
-			this.navPrevBtn.classList.add("inactive");
-		} else if (this.currentSlide === this.slides.length - 1 || this.currentSlide == this.slideDiff) {
-			this.navNextBtn.classList.add("inactive");
-		} else if (this.currentSlide > 0 && this.currentSlide < this.slides.length) {
-			this.navPrevBtn.classList.remove("inactive");
-			this.navNextBtn.classList.remove("inactive");
+		var inactive = "inactive";
+		if (this.currentPage == 0) {
+			this.navPrevBtn.classList.add(inactive);
+			this.navNextBtn.classList.remove(inactive);
+		} else if (this.currentPage == this.totalPages) {
+			this.navPrevBtn.classList.remove(inactive);
+			this.navNextBtn.classList.add(inactive);
+		} else {
+			this.navPrevBtn.classList.remove(inactive);
+			this.navNextBtn.classList.remove(inactive);
 		}
 	}
 
 	scrollToSlide(slide) {
-		this.currentTranslate = -(slide.getBoundingClientRect().left - this.stage.getBoundingClientRect().left);
+		this.currentTranslate = -this.getSlidePos(slide);
 		this.scrollToPos(this.currentTranslate);
 	}
 
 	scrollToPos(int) {
 		const isSafari8 = /^((?!chrome|android).)*safari/i.test(navigator.userAgent);
-		var output = `translateX(${int}px)`;
+		var output = this.config.vertical ? `translateY(${int}px)` : `translateX(${int}px)`;
 		if (isSafari8) {
 			this.stage.style.webkitTransform = output;
 		} else {
@@ -365,158 +469,195 @@ class DDCarousel {
 	}
 
 	calculateContainerHeight() {
-		if (this.itemsPerPage == 1) {
-			this.container.style.height = this.slidesHeights[this.currentSlide] + "px";
+		if (this.config.itemsPerPage == 1) {
+			this.container.style.height = this.slidesHeights[this.currentPage] + "px";
 		} else {
-			var i,
-				heights = [];
+			var heights = [];
 
 			//get specified slides from global array with heights and then get the highest of it
-			for (i = this.currentSlide; i <= this.currentSlide + this.itemsPerPage - 1; i++) {
+			for (var i = this.activeSlides[0]; i <= this.activeSlides[this.activeSlides.length - 1]; i++) {
 				heights.push(this.slidesHeights[i]);
-				this.container.style.height = Math.max(...heights) + "px";
 			}
+			this.container.style.height = Math.max(...heights) + "px";
 		}
 	}
 
-	changeSlide(index) {
-		var origSlide = this.currentSlide;
-
-		this.stage.style.transitionDuration = this.slideChangeDuration + "s";
-
-		//remove some classes bedore adding new one
-		if (this.dots) {
-			document
-				.querySelector(`${this.containerName} .${this.cDot}[${this.cDSlide}="${this.currentSlide}"]`)
-				.classList.remove("active");
+	changePage(index, enableAnim = true) {
+		var old = this.currentPage;
+		if (!enableAnim) {
+			this.stage.style.transitionDuration = "0s";
+			this.stage.addEventListener(this.whichTransitionEvent(), () => {
+				this.stage.style.transitionDuration = this.config.slideChangeDuration + "0s";
+			});
+		} else {
+			this.stage.style.transitionDuration = this.config.slideChangeDuration + "s";
 		}
-		this.getSlideDom(this.currentSlide).classList.remove("active");
 
 		//change slide based on parameter
 		if (index == "prev") {
-			this.currentSlide--;
+			if (this.currentPage != 0) {
+				this.currentPage--;
+			}
 		} else if (index == "next") {
-			this.currentSlide++;
-		} else if (Number.isInteger(index)) {
-			this.currentSlide = index;
-		}
-
-		//get difference between all slides and slider per page
-		this.slideDiff = this.slides.length - this.itemsPerPage;
-
-		//set the correct slide index if there is specified items per row
-		if (this.itemsPerPage > 1 && this.currentSlide >= this.slideDiff) {
-			this.currentSlide = this.slideDiff;
-		} else {
-			//check if index is larger than slides count -> then change to the last slide
-			if (this.currentSlide >= this.slides.length) {
-				this.currentSlide = this.slides.length - 1;
+			if (this.currentPage < this.totalPages) {
+				this.currentPage++;
 			}
-			//check if index is smaller than slides count -> then change to the first slide
-			else if (this.currentSlide < 0) {
-				this.currentSlide = 0;
-			}
+		} else if (Number.isInteger(index) && index <= this.totalPages) {
+			this.currentPage = index;
 		}
 
-		//slide to specified slide position
-		this.scrollToSlide(this.getCurrentSlideDom());
-
-		//set active slide class
-		this.getSlideDom(this.currentSlide).classList.add("active");
-
-		//set active dots
-		if (this.dots) {
-			//add class to the current dot
-			document
-				.querySelector(`${this.containerName} .${this.cDot}[${this.cDSlide}="${this.currentSlide}"]`)
-				.classList.add("active");
-		}
+		//update frontend
+		this.setActiveSlides();
+		this.setActiveDot();
+		this.updateSlide();
 
 		//change stage height if this options is enabled
-		if (this.autoHeight) {
+		if (this.config.autoHeight) {
 			this.calculateContainerHeight(this.getCurrentSlideDom());
 		}
 
 		//fire change trigger
-		if (origSlide != this.currentSlide) this.triggerHandler("changed");
+		if (old != this.currentPage) {
+			this.triggerHandler("onChanged");
+		}
 	}
 
-	nextSlide() {
-		this.changeSlide("next");
+	goToUrl(id, enableAnim = true) {
+		var item = document.querySelector(`${this.containerName} .${cItem}[${cDId}="${id}"]`);
+		this.changePage(parseInt(item.getAttribute(cDSlide)), enableAnim);
 	}
 
-	prevSlide() {
-		this.changeSlide("prev");
+	updateSlide() {
+		if (this.config.centerSlide) {
+			var output =
+				-this.getSlidePos(this.getCurrentSlideDom()) -
+				-(parseInt(this.getSlideStyle().width) * Math.floor(this.config.itemsPerPage / 2));
+
+			this.currentTranslate = output;
+			this.scrollToPos(output);
+		} else {
+			this.scrollToSlide(this.getCurrentSlideDom());
+		}
 	}
 
-	getCurrentSlide() {
-		return this.currentSlide;
+	setActiveSlides() {
+		if (this.activeSlides != null) {
+			this.activeSlides.forEach(i => {
+				document.querySelector(`${this.containerName} [${cDSlide}="${i}"]`).classList.remove("active");
+			});
+		}
+
+		this.activeSlides = [];
+		if (this.config.centerSlide) {
+			this.activeSlides.push(this.currentPage);
+		} else if (this.config.itemPerPage) {
+			for (
+				var index = this.currentPage;
+				index < this.currentPage + this.config.itemsPerPage;
+				index++
+			) {
+				this.activeSlides.push(index);
+			}
+		} else {
+			if (this.getSlideIndexForPage() + this.config.itemsPerPage > this.getTotalSlides()) {
+				for (
+					var index = this.slides.length - this.config.itemsPerPage;
+					index < this.getTotalSlides();
+					index++
+				) {
+					this.activeSlides.push(index);
+				}
+			} else {
+				for (
+					var index = this.getSlideIndexForPage();
+					index < this.getSlideIndexForPage() + this.config.itemsPerPage;
+					index++
+				) {
+					if (index < this.slides.length) {
+						this.activeSlides.push(index);
+					}
+				}
+			}
+		}
+
+		this.activeSlides.forEach(i => {
+			document.querySelector(`${this.containerName} [${cDSlide}="${i}"]`).classList.add("active");
+		});
+	}
+
+	setActiveDot() {
+		var active = "active";
+		if (this.config.dots) {
+			var a = document.querySelector(`${this.containerName} .${cDot}[${cDSlide}].` + active);
+			if (a != null) a.classList.remove(active);
+
+			document
+				.querySelector(`${this.containerName} .${cDot}[${cDSlide}="${this.currentPage}"]`)
+				.classList.add(active);
+		}
+	}
+
+	nextPage() {
+		this.changePage("next");
+	}
+
+	prevPage() {
+		this.changePage("prev");
+	}
+
+	getSlideIndexForPage() {
+		return this.currentPage * this.config.itemsPerPage;
 	}
 
 	getCurrentSlideDom() {
-		return document.querySelector(`${this.containerName} [${this.cDSlide}="${this.currentSlide}"]`);
+		return document.querySelector(`${this.containerName} [${cDSlide}].active`);
 	}
 
 	getCurrentPage() {
-		return document
-			.querySelector(`${this.containerName} [${this.cDSlide}="${this.currentSlide}"].active`)
-			.getAttribute(this.cDSlide);
+		return this.currentPage;
 	}
 
 	getTotalSlides() {
 		return this.slides.length;
 	}
 
-	getSlideDom(id) {
-		return document.querySelector(`${this.containerName} .${this.cItem}[${this.cDSlide}="${id}"]`);
+	getSlidePos(slide) {
+		return this.config.vertical ?
+			slide.getBoundingClientRect().top - this.stage.getBoundingClientRect().top :
+			slide.getBoundingClientRect().left - this.stage.getBoundingClientRect().left;
+	}
+
+	getTotalPages() {
+		return this.totalPages;
+	}
+
+	getSlideStyle() {
+		return this.slides[0].style;
+	}
+
+	whichTransitionEvent() {
+		var el = document.createElement("fakeelement"),
+			transitions = {
+				transition: "transitionend",
+				MozTransition: "transitionend",
+				WebkitTransition: "webkitTransitionEnd"
+			};
+
+		for (var t in transitions) {
+			if (el.style[t] !== undefined) {
+				return transitions[t];
+			}
+		}
 	}
 }
 
+//polyfills
 Number.isInteger =
 	Number.isInteger ||
-	function(value) {
+	function (value) {
 		return typeof value === "number" && isFinite(value) && Math.floor(value) === value;
 	};
 
-if (!("classList" in document.documentElement) && Object.defineProperty && typeof HTMLElement !== "undefined") {
-	Object.defineProperty(HTMLElement.prototype, "classList", {
-		get: function() {
-			var self = this;
-			function update(fn) {
-				return function(value) {
-					var classes = self.className.split(/\s+/),
-						index = classes.indexOf(value);
-
-					fn(classes, index, value);
-					self.className = classes.join(" ");
-				};
-			}
-
-			var ret = {
-				add: update(function(classes, index, value) {
-					~index || classes.push(value);
-				}),
-
-				remove: update(function(classes, index) {
-					~index && classes.splice(index, 1);
-				}),
-
-				contains: function(value) {
-					return !!~self.className.split(/\s+/).indexOf(value);
-				},
-
-				item: function(i) {
-					return self.className.split(/\s+/)[i] || null;
-				}
-			};
-
-			Object.defineProperty(ret, "length", {
-				get: function() {
-					return self.className.split(/\s+/).length;
-				}
-			});
-
-			return ret;
-		}
-	});
+if (window.NodeList && !NodeList.prototype.forEach) {
+	NodeList.prototype.forEach = Array.prototype.forEach;
 }

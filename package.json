@@ -1,6 +1,6 @@
 {
 	"name": "ddcarousel",
-	"version": "1.0.2",
+	"version": "1.1.0",
 	"description": "Vanilla JS Carousel slider",
 	"main": "index.js",
 	"scripts": {
@@ -34,13 +34,14 @@
 	},
 	"homepage": "https://github.com/danaildinev/ddcarousel#readme",
 	"devDependencies": {
-		"@babel/cli": "^7.0.0",
-		"@babel/core": "^7.0.0",
+		"@babel/cli": "^7.6.4",
+		"@babel/core": "^7.6.4",
 		"@babel/plugin-proposal-class-properties": "^7.5.5",
-		"@babel/preset-env": "^7.5.5",
+		"@babel/preset-env": "^7.6.3",
 		"babel-plugin-minify-mangle-names": "^0.5.0",
 		"babel-plugin-minify-simplify": "^0.5.1",
 		"babel-plugin-transform-minify-booleans": "^6.9.4",
+		"babel-plugin-transform-remove-console": "^6.9.4",
 		"copyfiles": "^2.1.1",
 		"node-sass": "^4.12.0",
 		"npm-run-all": "^4.1.5",

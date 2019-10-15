@@ -1,21 +1,48 @@
-document.addEventListener("DOMContentLoaded", function(event) {
+document.addEventListener("DOMContentLoaded", function (event) {
 	var slider = new DDCarousel({
 		container: ".ddcarousel",
-		items: 1,
+		/*itemsPerPage: 3,
+		itemPerPage: true,
+		autoHeight: true,
 		nav: true,
 		dots: true,
+		centerSlide: true,
+		urlNav: true
+		vertical: true,
 		autoHeight: false,
-		responsive: true,
+		responsive: false,
 		touch: true,
-		touchMouse: true
-
-		//touchSwipeThreshold: 10
-		//touchMaxSlideDist: 100
-		//swipeSmooth: 0.1
-		//slideChangeDuration: 0.9
-
-		//labelNavPrev: "Hahahaha",
-		//labelNavNext: "Yep"
+		touchMouse: true,
+	
+		touchSwipeThreshold: 10
+		touchMaxSlideDist: 100
+		swipeSmooth: 0.1,
+		slideChangeDuration: 0.9,
+	
+		labelNavPrev: "&#x2190;",
+		labelNavNext: "&#x2192;",
+	
+		onInitialize: e => {
+			console.log(e);
+			},
+		onInitialized: e => {
+			console.log(e);
+		}
+		onChanged: e => {
+			console.log(e);
+		} 
+		onDrag: () => {
+			console.log("drag");
+		},
+		onDragging: () => {
+			console.log("dragging");
+		},
+		onDragged: () => {
+			console.log("dragged");
+		},
+		onTransitionend: () => {
+			console.log("transitionend");
+		}*/
 	});
 
 	//available methods
@@ -29,45 +56,18 @@ document.addEventListener("DOMContentLoaded", function(event) {
 
 	document.getElementById("go").addEventListener("click", () => {
 		var index = parseInt(document.getElementById("slideNum").value);
-		slider.changeSlide(index);
+		slider.changePage(index);
 	});
 
 	document.getElementById("calc").addEventListener("click", () => {
 		slider.calculateStage();
 	});
 
-	var text = document.getElementById("console");
-
 	//events
-	slider.on("changed", () => {
-		text.innerHTML += "Changed slide: " + slider.getCurrentSlide() + "\r\n";
-		text.scrollTop = text.scrollHeight;
-	});
-
-	slider.on("drag", () => {
-		text.innerHTML += "Drag\r\n";
-		text.scrollTop = text.scrollHeight;
-	});
-
-	slider.on("dragged", () => {
-		text.innerHTML += "Dropped\r\n";
-		text.scrollTop = text.scrollHeight;
-	});
-
-	slider.on("resized", () => {
-		text.innerHTML += "Resized\r\n";
-		text.scrollTop = text.scrollHeight;
-	});
 
 	document.getElementById("resizeContainer").addEventListener("click", () => {
-		document.getElementsByClassName("ddcarousel")[0].style.width = Math.floor(Math.random() * 101) + 50 + "%";
+		document.getElementsByClassName("ddcarousel")[0].style.width =
+			Math.floor(Math.random() * 101) + 50 + "%";
 		slider.calculateStage();
-	});
-
-	document.getElementById("getDetails").addEventListener("click", () => {
-		text.innerHTML += "Current slide:" + slider.getCurrentSlide() + "\r\n";
-		text.innerHTML += "Current page:" + slider.getCurrentPage() + "\r\n";
-		text.innerHTML += "Total slides:" + slider.getTotalSlides() + "\r\n";
-		text.scrollTop = text.scrollHeight;
 	});
 });

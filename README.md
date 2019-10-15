@@ -1,16 +1,16 @@
 # DDCarousel
 
+![GitHub tag (latest by date)](https://img.shields.io/github/v/tag/danaildinev/ddcarousel)
+
 Simple and fast carousel slider written in vannila JS.
 
-**Browser compatibility:** IE10+, Edge 15+, Chrome 37+, Firefox 32+, Safari 8+, Safari iOS 9+
+**Browser compatibility:** IE10+, Edge 15+, Chrome 37+, Firefox 32+, Safari 6.2+, Safari iOS 9+
 
 (May work on older browsers but these are minimum versions tested.)
 
-**Current status:** Alpha version (not stable and ready for using in real projects)
-
 ## Getting started
 
-Two simple steps - download/clone repository and copy css and js from `dist` folder to your project.
+Simply download/clone repository and copy css and js from `dist` folder to your project.
 
 ## Usage
 
@@ -60,7 +60,9 @@ document.addEventListener("DOMContentLoaded", function(event) {
 
 `container` Slider container ID or class (string, required)
 
-`items` Items per page (int, default: 1)
+`itemsPerPage` Items per page (int, default: 1)
+
+`itemPerPage` One item per page (boolean, default: false)
 
 `nav` Show prev/next text (boolean, default: false)
 
@@ -68,11 +70,17 @@ document.addEventListener("DOMContentLoaded", function(event) {
 
 `autoHeight` Change height based on current slide (boolean, default: false)
 
+`centerSlide` Centered slide (boolean, default: false)
+
 `responsive` Responsive slider - overrides width given in css (boolean, default: false)
+
+`urlNav` Creates url navigation based navigation for slides (This automatically enables `itemPerPage`). To use this feature, you must add `data-id` and `data-title` on every slide you want to include in nativagion. (boolean, default: false)
 
 `touch` Toggle touch swiping (boolean, default: true)
 
 `touchMouse` Toggle mouse swiping (boolean, default: true)
+
+`vertical` Change to vertical orientation (boolean, default: false)
 
 `labelNavPrev` Label for nav previous button (string, default: "< Prev")
 
@@ -82,23 +90,27 @@ document.addEventListener("DOMContentLoaded", function(event) {
 
 `touchMaxSlideDist` Max swiping distance (int, default: 500)
 
-`slideChangeDuration` Animation speed when changin slide (int, default: 0.3)
+`slideChangeDuration` Animation speed when changin slide (int, default: 0.5)
 
-`swipeSmooth` Swiping smoothness (int, default: 0.3)
+`swipeSmooth` Swiping smoothness (int, default: 0)
 
 ## Methods
 
-`prevSlide()` Go to previous side
+`prevPage()` Go to previous page
 
-`nextSlide()` Go to next side
+`nextPage()` Go to next page
 
-`changeSlide(3);` Slides to slide with `data-slide="3"`
+`changePage(id, enableAnim);` Slides to specified page (first parameter is page number: usable values - "next", "prev" or number; second parameter is toggling animation on/off when switching between pages )
 
 `calculateStage()` Recalculates stage and slides. It can be called when changing carousel container size.
 
-`getCurrentSlide()` Get the current slide (works properly when items per row = 1)
+`on(event, callback)` Event listener
 
-`getCurrentPage()` Get the current page (works properly when dots are enabled and items per row > 1)
+`goToUrl(name, enableAnim)` Go to specified slide title. `urlNav` must be enabled for this to work.
+
+`getCurrentPage()` Get the current page
+
+`getTotalPages()` Get total pages count
 
 `getTotalSlides()` Get total slides count
 
@@ -107,18 +119,33 @@ document.addEventListener("DOMContentLoaded", function(event) {
 Using example:
 
 ```js
-ddcarusel.on("resized", () => {
-	console.log("Carousel resized!");
+var dd = new DDCarousel({
+	container: ".carousel",
+	onInitialized: function (e) {
+		console.log(e);
+	}
+});
+// or like this..
+dd.on("onChanged", function (e) => {
+	console.log(e);
 });
 ```
 
-`changed` Changed slide
+`onInitialize` Before plugin init
 
-`drag` Started dragging slide
+`onInitialized` After plugin init
 
-`dragged` Ended dragging slide
+`onDrag` Started dragging carousel
 
-`resized` Carousel container width is changed (you can use it with `calculateStage()` method)
+`onDragging` Dragging carousel
+
+`onDragged` Ended dragging slide
+
+`onTransitionend` Dragging transition end
+
+`onChanged` Changed page
+
+`onResized` Carousel container width is changed (you can use it with `calculateStage()` method)
 
 ## Building
 
