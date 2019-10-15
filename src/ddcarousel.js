@@ -348,26 +348,22 @@ class DDCarousel {
 		}
 
 		eventsStart.forEach(el => {
-			window.addEventListener(el, e => {
-				if (e.target == this.stage) {
-					this.isDragging = true;
-
-					//set some starting values
-					this.touchStartRaw =
-						e.type == "mousedown" && this.config.touchMouse
-							? (this.config.vertical ? e.clientY : e.clientX)
-							: (this.config.vertical ? e.targetTouches[0].clientY : e.targetTouches[0].clientX);
-					this.touchStart = this.touchStartRaw + -this.currentTranslate;
-
-					//remember orig position
-					this.origPosition = this.currentTranslate;
-					this.dontChange = false;
-
-					this.triggerHandler("onDrag");
-				}
-			},
-				{ passive: true }
-			);
+			//ie10 fix
+			if (document.all && window.atob) {
+				this.stage.addEventListener(el, e => {
+					this.getStartingDragPos(e);
+				},
+					{ passive: true }
+				);
+			} else {
+				window.addEventListener(el, e => {
+					if (e.target == this.stage) {
+						this.getStartingDragPos(e);
+					}
+				},
+					{ passive: true }
+				);
+			}
 		});
 
 		eventsEnd.forEach(el => {
@@ -397,7 +393,7 @@ class DDCarousel {
 				if (this.isDragging) {
 					var input;
 					if (e.type == "mousemove" && this.config.touchMouse) {
-						input = this.config.vertical ? e.clientY : e.clientX;
+						input = this.config.vertical ? e.clientY : e.pageX;
 					} else if (e.type == "touchmove") {
 						input = this.config.vertical ? e.targetTouches[0].pageY : e.targetTouches[0].pageX;
 					}
@@ -424,6 +420,23 @@ class DDCarousel {
 				{ passive: true }
 			);
 		});
+	}
+
+	getStartingDragPos(e) {
+		this.isDragging = true;
+
+		//set some starting values
+		this.touchStartRaw =
+			e.type == "mousedown" && this.config.touchMouse
+				? (this.config.vertical ? e.clientY : e.pageX)
+				: (this.config.vertical ? e.targetTouches[0].clientY : e.targetTouches[0].pageX);
+		this.touchStart = this.touchStartRaw + -this.currentTranslate;
+
+		//remember orig position
+		this.origPosition = this.currentTranslate;
+		this.dontChange = false;
+
+		this.triggerHandler("onDrag");
 	}
 
 	refreshNav() {

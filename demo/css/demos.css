@@ -187,6 +187,7 @@ strong {
 .code-container {
 	width: 100%;
 	display: flex;
+	display: -webkit-flex;
 	flex-direction: row;
 	-webkit-flex-direction: row;
 }

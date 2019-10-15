@@ -26,8 +26,8 @@
 	}
 	.ddcarousel-stage {
 		display: flex;
-		-ms-display: flex;
-		-webkit-display: flex;
+		display: -ms-flexbox;
+		display: -webkit-flex;
 		position: absolute;
 		height: 100%;
 		backface-visibility: hidden;
@@ -101,8 +101,8 @@
 			margin: 0;
 			padding: 0;
 			display: flex;
-			-ms-display: flex;
-			-webkit-display: flex;
+			display: -ms-flexbox;
+			display: -webkit-flex;
 			li {
 				margin-right: 14px;
 				&:last-child {
