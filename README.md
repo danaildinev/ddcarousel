@@ -1,5 +1,7 @@
 # DDCarousel
 
+![GitHub tag (latest by date)](https://img.shields.io/github/v/tag/danaildinev/ddcarousel)
+
 Simple and fast carousel slider written in vannila JS.
 
 **Browser compatibility:** IE10+, Edge 15+, Chrome 37+, Firefox 32+, Safari 6.2+, Safari iOS 9+
