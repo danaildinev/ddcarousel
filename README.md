@@ -10,7 +10,11 @@ Simple and fast carousel slider written in vannila JS.
 
 ## Getting started
 
-Simply download/clone repository and copy css and js from `dist` folder to your project.
+This package can be installed with:
+
+- [npm](https://www.npmjs.com/package/ddcarousel): `npm i ddcarousel`
+
+Or download the [latest release](https://github.com/danaildinev/ddcarousel/releases).
 
 ## Usage
 
