@@ -14,7 +14,8 @@
 		"buildcss": "node-sass --output-style compact --include-path scss src/ddcarousel.scss   src/ddcarousel.css",
 		"minifycss": "uglifycss src/ddcarousel.css > dist/ddcarousel.min.css",
 		"demojs": "copyfiles -u 1 dist/ddcarousel.min.js demo/js/ && echo 'JS copied to demo!'",
-		"democss": "copyfiles -u 1 dist/ddcarousel.min.css demo/css/ && echo 'CSS copied to demo!'"
+		"democss": "copyfiles -u 1 dist/ddcarousel.min.css demo/css/ && echo 'CSS copied to demo!'",
+		"test": "npm run dist+demo"
 	},
 	"repository": {
 		"type": "git",
