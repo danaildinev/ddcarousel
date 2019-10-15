@@ -32,6 +32,7 @@
 		height: 100%;
 		backface-visibility: hidden;
 		-moz-user-select: none;
+		transition-timing-function: ease-out;
 	}
 	.ddcarousel-item {
 		height: 100%;

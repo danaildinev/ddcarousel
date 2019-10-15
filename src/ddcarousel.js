@@ -18,11 +18,21 @@ const cDId = "data-id";
 const cDTitle = "data-title";
 
 class DDCarousel {
-	init = false;
-	currentPage = 0;
-	triggers = [];
 
 	constructor(options) {
+		this.init = false;
+		this.currentPage = 0;
+		this.triggers = [
+			"onInitialize",
+			"onInitialized",
+			"onDrag",
+			"onDragging",
+			"onDragged",
+			"onChanged",
+			"onTransitionend",
+			"onResized"
+		];
+
 		this.config = this.updateSettings(options);
 		if (this.checkContainer(this.config.container)) {
 
@@ -208,6 +218,8 @@ class DDCarousel {
 			this.calculateContainerHeight(this.currentPage);
 		}
 
+		this.scrollToSlide(this.getCurrentSlideDom());
+
 		if (slideWidth != this.slides[0].style.width) this.triggerHandler("onResized");
 	}
 
@@ -268,7 +280,7 @@ class DDCarousel {
 
 			cont.classList.add(cUrl);
 			this.slides.forEach(el => {
-				if (el.hasAttribute(this.cDId) && el.hasAttribute(cDTitle)) {
+				if (el.hasAttribute(cDId) && el.hasAttribute(cDTitle)) {
 					var li = document.createElement('li'),
 						a = document.createElement('a');
 
@@ -295,13 +307,9 @@ class DDCarousel {
 			});
 		}
 
-		//responsive
-		if (this.config.responsive) {
-			window.addEventListener("resize", () => {
-				this.calculateStage();
-				this.scrollToSlide(this.getCurrentSlideDom());
-			});
-		}
+		window.addEventListener("resize", () => {
+			this.calculateStage();
+		});
 
 		//anim
 		this.stage.addEventListener(this.whichTransitionEvent(), () => {
