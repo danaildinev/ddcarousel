@@ -1,8 +1,9 @@
 document.addEventListener("DOMContentLoaded", function (event) {
 	var slider = new DDCarousel({
 		container: ".ddcarousel",
-		/*itemsPerPage: 3,
-		itemPerPage: true,
+		itemsPerPage: 3,
+		/*itemPerPage: true,
+		fixedSlides: true,
 		autoHeight: true,
 		nav: true,
 		dots: true,
