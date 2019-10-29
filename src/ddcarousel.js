@@ -1,4 +1,4 @@
-/*! DDCarousel 1.2 by Danail Dinev 2019 | License: https://github.com/danaildinev/ddcarousel/blob/master/LICENSE */
+/*! DDCarousel 1.1 by Danail Dinev 2019 | License: https://github.com/danaildinev/ddcarousel/blob/master/LICENSE */
 
 const appName = "DDCarousel";
 const app = appName.toLowerCase();
@@ -61,7 +61,6 @@ class DDCarousel {
 			responsive: false,
 			vertical: false,
 			urlNav: false,
-			fixedSlides: false,
 			touch: true,
 			touchMouse: true,
 			centerSlide: false,
@@ -84,13 +83,8 @@ class DDCarousel {
 			settings[name] = options[name];
 		}
 
-		if (options['urlNav'] || options['fixedSlides'])
+		if (options['urlNav'])
 			settings['itemPerPage'] = true;
-
-		if (options['fixedSlides']) {
-			settings['centerSlide'] = false;
-			settings['itemsPerPage'] = 1;
-		}
 
 		return settings;
 	}
@@ -209,11 +203,7 @@ class DDCarousel {
 			} else if (this.config.vertical) {
 				this.slides[i].style.height = containerHeight / this.config.itemsPerPage + "px";
 			} else if (!this.config.vertical) {
-				if (this.config.fixedSlides) {
-					this.slides[i].style.width = this.slidesSource[i].getBoundingClientRect().width;
-				} else {
-					this.slides[i].style.width = containerWidth / this.config.itemsPerPage + "px";
-				}
+				this.slides[i].style.width = containerWidth / this.config.itemsPerPage + "px";
 			}
 			this.slidesHeights.push(
 				document.querySelector(`${this.containerName} [${cDSlide}="${i}"] > div`).scrollHeight
