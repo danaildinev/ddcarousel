@@ -1,5 +1,4 @@
 /*! DDCarousel 1.2 by Danail Dinev 2019 | License: https://github.com/danaildinev/ddcarousel/blob/master/LICENSE */
-
 const appName = "DDCarousel";
 const app = appName.toLowerCase();
 const cCont = app + "-container";
@@ -19,11 +18,10 @@ const cDTitle = "data-title";
 
 class DDCarousel {
 	constructor(options) {
-		this.init = false;
 		this.currentPage = 0;
-		this.eventsStart = [];
-		this.eventsMove = [];
-		this.eventsEnd = [];
+		this.eStart = [];
+		this.eMove = [];
+		this.eEnd = [];
 		this.triggers = [
 			"onInitialize",
 			"onInitialized",
@@ -39,7 +37,7 @@ class DDCarousel {
 		this.updateSettings(options);
 		if (this.checkContainer(this.config.container)) {
 
-			this.triggerHandler("onInitialize", { container: this.container, event: "onInitialize" });
+			this.trigger("onInitialize", { container: this.container, event: "onInitialize" });
 
 			this.createStage();
 			this.setActiveSlides();
@@ -48,13 +46,13 @@ class DDCarousel {
 			this.refreshOnResize();
 			if (this.config.nav) this.refreshNav();
 
-			this.triggerHandler("onInitialized");
+			this.trigger("onInitialized");
 		}
 	}
 
 	updateSettings(options) {
 		var settings = {
-			container: ".ddcarousel",
+			container: "." + app,
 			nav: false,
 			dots: true,
 			autoHeight: false,
@@ -115,48 +113,38 @@ class DDCarousel {
 		this.triggers[event].push(callback);
 	}
 
-	triggerHandler(event, callback) {
+	trigger(event, callback) {
 		if (this.triggers[event]) {
 			for (var i in this.triggers[event]) this.triggers[event][i](callback);
 		}
 	}
 
 	checkContainer(name) {
-		var contName = name.substring(1);
-		if (name.substring(0, 1) == "#") {
-			if (document.getElementById(contName) != null) {
-				this.container = document.getElementById(containerNameClear);
-				this.containerName = name;
-				return true;
-			}
-		} else if (name.substring(0, 1) == ".") {
-			if (document.getElementsByClassName(contName)[0] != null) {
-				this.container = document.getElementsByClassName(contName)[0];
-				this.containerName = name;
-				return true;
-			}
+		var cont = document.querySelector(name);
+		if (cont != null) {
+			this.container = cont;
+			this.containerName = name;
+			return true;
 		} else {
-			console.error(`${this.appName}: Invalid container!`);
+			console.error(`${appName}: Invalid container!`);
 			return false;
 		}
 	}
 
 	createStage() {
-		var stageContainer = document.createElement("div"),
-			stageDiv = document.createElement("div");
+		var stageContainer = this.newEl("div"),
+			stageDiv = this.newEl("div"),
+			slidesSource = this.getEl(`> div`, true); //get all slides from user
 
 		stageContainer.classList.add(cCont);
 		stageDiv.classList.add(cStage);
-
-		//get all slides from user
-		this.slidesSource = document.querySelectorAll(`${this.containerName} > div`);
 
 		//add the stage to the main container
 		this.container.appendChild(stageContainer);
 		stageContainer.appendChild(stageDiv);
 
 		//get stage DOM
-		this.stage = document.querySelector(`${this.containerName} .${cStage}`);
+		this.stage = this.getEl(`.${cStage}`);
 
 		//set width to 100% if responsive is enabled and change container width
 		if (this.config.fullWidth) {
@@ -168,22 +156,22 @@ class DDCarousel {
 		}
 
 		//set parameters to slides and add them in the new ddcarousel-item container with some params
-		for (var i = 0; i < this.slidesSource.length; i++) {
-			var s = document.createElement("div");
+		for (var i = 0; i < slidesSource.length; i++) {
+			var s = this.newEl("div");
 			s.classList.add(cItem);
 			s.setAttribute(cDSlide, i);
-			s.appendChild(this.slidesSource[i]);
+			s.appendChild(slidesSource[i]);
 			if (this.config.urlNav) {
-				if (this.slidesSource[i].hasAttribute(cDId) && this.slidesSource[i].hasAttribute(cDTitle)) {
-					s.setAttribute(cDId, this.slidesSource[i].getAttribute(cDId));
-					s.setAttribute(cDTitle, this.slidesSource[i].getAttribute(cDTitle));
+				if (slidesSource[i].hasAttribute(cDId) && slidesSource[i].hasAttribute(cDTitle)) {
+					s.setAttribute(cDId, slidesSource[i].getAttribute(cDId));
+					s.setAttribute(cDTitle, slidesSource[i].getAttribute(cDTitle));
 				}
 			}
 			stageDiv.appendChild(s);
 		}
 
 		//get all slides and total pages
-		this.slides = document.querySelectorAll(`${this.containerName} .${cItem}`);
+		this.slides = this.getEl(`.${cItem}`, true);
 
 		this.createNav();
 		this.createDots();
@@ -192,16 +180,19 @@ class DDCarousel {
 
 	calculateStage() {
 		var slideWidth = this.slides[0].style.width,
-			containerWidth = parseInt(window.getComputedStyle(this.container).width),
-			containerHeight = parseInt(window.getComputedStyle(this.container).height);
+			wind = window.getComputedStyle(this.container),
+			containerWidth = parseInt(wind.width),
+			containerHeight = parseInt(wind.height),
+			totalPages;
 
 		if (this.config.centerSlide) {
-			this.totalPages = this.slides.length - 1
+			totalPages = this.slides.length - 1
 		} else if (this.config.itemPerPage) {
-			this.totalPages = this.slides.length - this.config.itemsPerPage
+			totalPages = this.slides.length - this.config.itemsPerPage
 		} else {
-			this.totalPages = Math.ceil(this.slides.length / this.config.itemsPerPage) - 1;
+			totalPages = Math.ceil(this.slides.length / this.config.itemsPerPage) - 1;
 		}
+		this.totalPages = totalPages;
 
 		this.slidesHeights = [];
 		for (var i = 0; i < this.slides.length; i++) {
@@ -214,7 +205,7 @@ class DDCarousel {
 				this.slides[i].style.width = containerWidth / this.config.itemsPerPage + "px";
 			}
 			this.slidesHeights.push(
-				document.querySelector(`${this.containerName} [${cDSlide}="${i}"] > div`).scrollHeight
+				this.getEl(`[${cDSlide}="${i}"] > div`).scrollHeight
 			);
 		}
 
@@ -228,16 +219,16 @@ class DDCarousel {
 
 		this.scrollToSlide(this.getCurrentSlideDom());
 
-		if (slideWidth != this.slides[0].style.width) this.triggerHandler("onResized");
+		if (slideWidth != this.slides[0].style.width) this.trigger("onResized");
 	}
 
 	createNav() {
-		var navDiv = document.querySelector(this.containerName + " ." + cNav);
+		var navDiv = this.getEl(`.${cNav}`);
 
 		if (this.config.nav) {
-			var navContainer = document.createElement("div"),
-				leftBtn = document.createElement("button"),
-				rightBtn = document.createElement("button");
+			var navContainer = this.newEl("div"),
+				leftBtn = this.newEl("button"),
+				rightBtn = this.newEl("button");
 
 			if (navDiv)
 				navDiv.remove();
@@ -256,8 +247,8 @@ class DDCarousel {
 
 			this.container.appendChild(navContainer);
 
-			this.navPrevBtn = document.querySelector(`${this.containerName} .${cPrev}`);
-			this.navNextBtn = document.querySelector(`${this.containerName} .${cNext}`);
+			this.navPrevBtn = this.getEl(`.${cPrev}`);
+			this.navNextBtn = this.getEl(`.${cNext}`);
 		} else {
 			if (navDiv != null)
 				navDiv.remove();
@@ -265,14 +256,14 @@ class DDCarousel {
 	}
 
 	createDots() {
-		this.dotsDiv = document.querySelector(this.containerName + " ." + cContDots);
+		var dotsDiv = this.getEl(`.${cContDots}`);
 
 		if (this.config.dots) {
 			var targetSlidesLenght,
-				dotsContainer = document.createElement("div");
+				dotsContainer = this.newEl("div");
 
-			if (this.dotsDiv)
-				this.dotsDiv.remove();
+			if (dotsDiv)
+				dotsDiv.remove();
 
 			dotsContainer.classList.add(cContDots);
 
@@ -283,7 +274,7 @@ class DDCarousel {
 			}
 
 			for (var i = 0; i < targetSlidesLenght; i++) {
-				var dot = document.createElement("button");
+				var dot = this.newEl("button");
 				dot.classList.add(cDot);
 				dot.setAttribute(cDSlide, i);
 				dot.addEventListener("click", e => this.changePage(parseInt(e.target.getAttribute(cDSlide))));
@@ -293,22 +284,26 @@ class DDCarousel {
 
 			this.container.appendChild(dotsContainer);
 		} else {
-			if (this.dotsDiv != null)
-				this.dotsDiv.remove();
+			if (dotsDiv != null)
+				dotsDiv.remove();
 		}
 	}
 
-
 	createUrls() {
+		this.urlsDiv = this.getEl(`.${cUrl}`);
+
 		if (this.config.urlNav) {
-			var cont = document.createElement("div"),
-				list = document.createElement("ul");
+			var cont = this.newEl("div"),
+				list = this.newEl("ul");
+
+			if (this.urlsDiv)
+				this.urlsDiv.remove();
 
 			cont.classList.add(cUrl);
 			this.slides.forEach(el => {
 				if (el.hasAttribute(cDId) && el.hasAttribute(cDTitle)) {
-					var li = document.createElement('li'),
-						a = document.createElement('a');
+					var li = this.newEl('li'),
+						a = this.newEl('a');
 
 					a.href = "#" + el.getAttribute(cDId);
 					a.innerHTML = el.getAttribute(cDTitle);
@@ -320,6 +315,9 @@ class DDCarousel {
 
 			cont.appendChild(list);
 			this.container.appendChild(cont);
+		} else {
+			if (this.urlsDiv != null)
+				this.urlsDiv.remove();
 		}
 	}
 
@@ -347,7 +345,7 @@ class DDCarousel {
 
 		//anim
 		this.stage.addEventListener(this.whichTransitionEvent(), () => {
-			this.triggerHandler("onTransitionend");
+			this.trigger("onTransitionend");
 		});
 
 		//touch events
@@ -355,7 +353,7 @@ class DDCarousel {
 
 		//urls
 		if (this.config.urlNav) {
-			var links = document.querySelectorAll(`${this.containerName} .${cUrl} a`);
+			var links = this.getEl(`.${cUrl} a`, true);
 			links.forEach(el => {
 				el.addEventListener("click", e => {
 					this.goToUrl(el.getAttribute('href').substring(1))
@@ -380,40 +378,41 @@ class DDCarousel {
 		this.setActiveDot();
 		this.attachTouchEvents();
 		this.updateSlide();
+		this.createUrls();
 	}
 
 	attachTouchEvents() {
-		this.eventsStart.forEach(el => {
+		this.eStart.forEach(el => {
 			(document.all && window.atob)
 				? this.stage.removeEventListener(el, this.getStartingDragPos.bind(this), { passive: true }) //ie10fix
 				: window.removeEventListener(el, this.getStartingDragPos.bind(this), { passive: true })
 		});
-		this.eventsMove.forEach(el => window.removeEventListener(el, this.dragMove.bind(this), { passive: true }));
-		this.eventsEnd.forEach(el => window.removeEventListener(el, this.dragEnd.bind(this)));
+		this.eMove.forEach(el => window.removeEventListener(el, this.dragMove.bind(this), { passive: true }));
+		this.eEnd.forEach(el => window.removeEventListener(el, this.dragEnd.bind(this)));
 
-		this.eventsStart = [];
-		this.eventsMove = [];
-		this.eventsEnd = [];
+		this.eStart = [];
+		this.eMove = [];
+		this.eEnd = [];
 
 		//add events based on options
 		if (this.config.touch) {
-			this.eventsStart.push("touchstart");
-			this.eventsMove.push("touchmove");
-			this.eventsEnd.push("touchend");
+			this.eStart.push("touchstart");
+			this.eMove.push("touchmove");
+			this.eEnd.push("touchend");
 		}
 		if (this.config.touchMouse) {
-			this.eventsStart.push("mousedown");
-			this.eventsMove.push("mousemove");
-			this.eventsEnd.push("mouseup");
+			this.eStart.push("mousedown");
+			this.eMove.push("mousemove");
+			this.eEnd.push("mouseup");
 		}
 
-		this.eventsStart.forEach(el => {
+		this.eStart.forEach(el => {
 			(document.all && window.atob)
 				? this.stage.addEventListener(el, this.getStartingDragPos.bind(this), { passive: true }) //ie10fix
 				: window.addEventListener(el, this.getStartingDragPos.bind(this), { passive: true })
 		});
-		this.eventsMove.forEach(el => window.addEventListener(el, this.dragMove.bind(this), { passive: true }));
-		this.eventsEnd.forEach(el => window.addEventListener(el, this.dragEnd.bind(this)));
+		this.eMove.forEach(el => window.addEventListener(el, this.dragMove.bind(this), { passive: true }));
+		this.eEnd.forEach(el => window.addEventListener(el, this.dragEnd.bind(this)));
 	}
 
 	dragMove(e) {
@@ -436,7 +435,7 @@ class DDCarousel {
 
 			//move slider until max swipe lenght is reached
 			if (this.swipeDistance <= this.config.touchMaxSlideDist) {
-				this.triggerHandler("onDragging");
+				this.trigger("onDragging");
 				this.scrollToPos(this.currentTouch);
 			} else {
 				this.dontChange = true;
@@ -447,7 +446,6 @@ class DDCarousel {
 
 	getStartingDragPos(e) {
 		if (e.target == this.stage) {
-			console.log(this.config)
 			this.isDragging = true;
 
 			//set some starting values
@@ -461,14 +459,14 @@ class DDCarousel {
 			this.origPosition = this.currentTranslate;
 			this.dontChange = false;
 
-			this.triggerHandler("onDrag");
+			this.trigger("onDrag");
 		}
 	}
 
 	dragEnd() {
 		if (this.isDragging) {
 			//check if swipe distance is enough to change slide or stay on the same
-			this.triggerHandler("onDragged");
+			this.trigger("onDragged");
 
 			if (this.swipeDistance >= this.config.touchSwipeThreshold && !this.dontChange) {
 				if (this.currentTouch > this.origPosition) {
@@ -564,12 +562,12 @@ class DDCarousel {
 
 		//fire change trigger
 		if (old != this.currentPage) {
-			this.triggerHandler("onChanged");
+			this.trigger("onChanged");
 		}
 	}
 
 	goToUrl(id, enableAnim = true) {
-		var item = document.querySelector(`${this.containerName} .${cItem}[${cDId}="${id}"]`);
+		var item = this.getEl(`.${cItem}[${cDId}="${id}"]`);
 		this.changePage(parseInt(item.getAttribute(cDSlide)), enableAnim);
 	}
 
@@ -589,7 +587,7 @@ class DDCarousel {
 	setActiveSlides() {
 		if (this.activeSlides != null) {
 			this.activeSlides.forEach(i => {
-				document.querySelector(`${this.containerName} [${cDSlide}="${i}"]`).classList.remove("active");
+				this.getEl(`[${cDSlide}="${i}"]`).classList.remove("active");
 			});
 		}
 
@@ -627,19 +625,17 @@ class DDCarousel {
 		}
 
 		this.activeSlides.forEach(i => {
-			document.querySelector(`${this.containerName} [${cDSlide}="${i}"]`).classList.add("active");
+			this.getEl(`[${cDSlide}="${i}"]`).classList.add("active");
 		});
 	}
 
 	setActiveDot() {
 		var active = "active";
-		if (this.config.dots && this.dotsDiv) {
-			var a = document.querySelector(`${this.containerName} .${cDot}[${cDSlide}].` + active);
+		if (this.config.dots) {
+			var a = this.getEl(`.${cDot}[${cDSlide}].` + active);
 			if (a != null) a.classList.remove(active);
 
-			document
-				.querySelector(`${this.containerName} .${cDot}[${cDSlide}="${this.currentPage}"]`)
-				.classList.add(active);
+			this.getEl(`.${cDot}[${cDSlide}="${this.currentPage}"]`).classList.add(active);
 		}
 	}
 
@@ -656,7 +652,7 @@ class DDCarousel {
 	}
 
 	getCurrentSlideDom() {
-		return document.querySelector(`${this.containerName} [${cDSlide}].active`);
+		return this.getEl(`[${cDSlide}].active`);
 	}
 
 	getCurrentPage() {
@@ -682,7 +678,7 @@ class DDCarousel {
 	}
 
 	whichTransitionEvent() {
-		var el = document.createElement("fakeelement"),
+		var el = this.newEl("tr"),
 			transitions = {
 				transition: "transitionend",
 				MozTransition: "transitionend",
@@ -694,6 +690,15 @@ class DDCarousel {
 				return transitions[t];
 			}
 		}
+	}
+
+	getEl(el, all) {
+		var param = `${this.containerName} ${el}`;
+		return all ? document.querySelectorAll(param) : document.querySelector(param);
+	}
+
+	newEl(name) {
+		return document.createElement(name);
 	}
 }
 
