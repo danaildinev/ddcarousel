@@ -67,7 +67,8 @@ class DDCarousel {
 			urlNav: false,
 			responsive: [],
 			autoplay: false,
-			autoplayDuration: 2000,
+			autoplayDuration: 1000,
+			autoplayPauseHover: false,
 			touch: true,
 			touchMouse: true,
 			centerSlide: false,
@@ -366,6 +367,17 @@ class DDCarousel {
 				})
 			})
 		}
+
+		//autoplay
+		var start = ["mouseover", "touchstart"],
+			stop = ["mouseleave", "touchend"];
+		if (this.config.autoplayPauseHover) {
+			start.forEach(el => this.stage.addEventListener(el, this.autoplayStop.bind(this)));
+			stop.forEach(el => this.stage.addEventListener(el, this.autoplayStart.bind(this)));
+		} else {
+			start.forEach(el => this.stage.removeEventListener(el, this.autoplayStop.bind(this)));
+			stop.forEach(el => this.stage.removeEventListener(el, this.autoplayStart.bind(this)));
+		}
 	}
 
 	refreshOnResize() {
@@ -385,7 +397,10 @@ class DDCarousel {
 		this.attachTouchEvents();
 		this.updateSlide();
 		this.createUrls();
-		this.autoplay();
+		this.autoplayStop();
+		if (this.config.autoplay && this.ap == null) {
+			this.autoplayStart();
+		}
 	}
 
 	attachTouchEvents() {
@@ -646,14 +661,17 @@ class DDCarousel {
 		}
 	}
 
-	autoplay() {
-		if (this.config.autoplay) {
-			if (this.ap == null) {
-				this.ap = setInterval(() => this.nextPage(), this.config.autoplayDuration);
-			}
-		} else {
-			if (this.ap != null)
-				clearTimeout(this.ap);
+	autoplayStart() {
+		if (this.ap == null) {
+			console.log('start!')
+			this.ap = setInterval(() => this.nextPage(), this.config.autoplayDuration);
+		}
+	}
+
+	autoplayStop() {
+		if (this.ap > 0) {
+			clearTimeout(this.ap);
+			this.ap = null;
 		}
 	}
 

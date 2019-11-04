@@ -1,24 +1,27 @@
 
 var slider = new DDCarousel({
 	container: ".ddcarousel",
-	responsive: {
+	responsive: [{
 		480: {
 			itemsPerPage: 1,
 		},
 		768: {
-			itemsPerPage: 2,
+			autoplayPauseHover: false
 		},
 		1024: {
 			itemsPerPage: 3,
 			nav: true
 		}
-	},
+	}],
 	itemsPerPage: 4,
 	fullWidth: true,
 	startPage: 0,
-	/*itemsPerPage: 3,
 	autoplay: true,
-	autoplayDuration: 1000
+	itemPerPage: true,
+	autoplayPauseHover: true
+	/*itemsPerPage: 3,
+	autoplayDuration: 1000,
+	autoplayPauseOnHover: true,
 	autoHeight: true,
 	nav: true,
 	dots: true,
