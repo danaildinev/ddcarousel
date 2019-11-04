@@ -45,6 +45,9 @@ class DDCarousel {
 			this.attachEvents();
 			this.refreshOnResize();
 			if (this.config.nav) this.refreshNav();
+			if (this.config.startPage > -1) {
+				this.changePage(this.config.startPage, false);
+			}
 
 			this.trigger("onInitialized");
 		}
@@ -57,6 +60,7 @@ class DDCarousel {
 			dots: true,
 			autoHeight: false,
 			fullWidth: false,
+			startPage: -1,
 			itemsPerPage: 1,
 			itemPerPage: false,
 			vertical: false,
