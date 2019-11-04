@@ -17,6 +17,8 @@ var slider = new DDCarousel({
 	fullWidth: true,
 	startPage: 0,
 	/*itemsPerPage: 3,
+	autoplay: true,
+	autoplayDuration: 1000
 	autoHeight: true,
 	nav: true,
 	dots: true,

@@ -66,6 +66,8 @@ class DDCarousel {
 			vertical: false,
 			urlNav: false,
 			responsive: [],
+			autoplay: false,
+			autoplayDuration: 2000,
 			touch: true,
 			touchMouse: true,
 			centerSlide: false,
@@ -383,6 +385,7 @@ class DDCarousel {
 		this.attachTouchEvents();
 		this.updateSlide();
 		this.createUrls();
+		this.autoplay();
 	}
 
 	attachTouchEvents() {
@@ -640,6 +643,17 @@ class DDCarousel {
 			if (a != null) a.classList.remove(active);
 
 			this.getEl(`.${cDot}[${cDSlide}="${this.currentPage}"]`).classList.add(active);
+		}
+	}
+
+	autoplay() {
+		if (this.config.autoplay) {
+			if (this.ap == null) {
+				this.ap = setInterval(() => this.nextPage(), this.config.autoplayDuration);
+			}
+		} else {
+			if (this.ap != null)
+				clearTimeout(this.ap);
 		}
 	}
 
