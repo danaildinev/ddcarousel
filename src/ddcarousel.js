@@ -33,27 +33,22 @@ class DDCarousel {
 			"onResized"
 		];
 
-		this.origOptions = options;
-		this.updateSettings(options);
+		this.configOrig = options;
+		this.setDefaults();
 		if (this.checkContainer(this.config.container)) {
-
 			this.trigger("onInitialize", { container: this.container, event: "onInitialize" });
-
 			this.createStage();
 			this.setActiveSlides();
 			this.calculateStage();
 			this.attachEvents();
 			this.refreshOnResize();
 			if (this.config.nav) this.refreshNav();
-			if (this.config.startPage > -1) {
-				this.changePage(this.config.startPage, false);
-			}
-
+			if (this.config.startPage > -1) this.changePage(this.config.startPage, false);
 			this.trigger("onInitialized");
 		}
 	}
 
-	updateSettings(options) {
+	setDefaults(options = this.configOrig) {
 		var settings = {
 			container: "." + app,
 			nav: false,
@@ -87,19 +82,21 @@ class DDCarousel {
 			});
 		});
 
-		if (options['responsive']) {
-			this.responsiveOptions = options['responsive'];
-			delete options['responsive'];
+		if (options['responsive'] !== undefined) {
+			this.configResp = options['responsive'];
 		}
-
-		for (var name in options) {
-			settings[name] = options[name];
-		}
-
-		if (options['urlNav'])
-			settings['itemPerPage'] = true;
 
 		this.config = settings;
+		this.updateSettings(options);
+	}
+
+	updateSettings(options) {
+		/* updating event triggers is not supported for now! */
+		for (var name in options) {
+			this.config[name] = options[name];
+		}
+
+		console.log('updated')
 	}
 
 	callback(event) {
@@ -153,15 +150,6 @@ class DDCarousel {
 		//get stage DOM
 		this.stage = this.getEl(`.${cStage}`);
 
-		//set width to 100% if responsive is enabled and change container width
-		if (this.config.fullWidth) {
-			this.container.classList.add(cResp);
-		}
-
-		if (this.config.vertical) {
-			this.container.classList.add(cVert);
-		}
-
 		//set parameters to slides and add them in the new ddcarousel-item container with some params
 		for (var i = 0; i < slidesSource.length; i++) {
 			var s = this.newEl("div");
@@ -190,7 +178,20 @@ class DDCarousel {
 			wind = window.getComputedStyle(this.container),
 			containerWidth = parseInt(wind.width),
 			containerHeight = parseInt(wind.height),
-			totalPages;
+			totalPages,
+			contClassList = this.container.classList;
+
+		if (this.config.fullWidth) {
+			contClassList.add(cResp);
+		} else {
+			contClassList.remove(cResp);
+		}
+
+		if (this.config.vertical) {
+			contClassList.add(cVert);
+		} else {
+			contClassList.remove(cVert);
+		}
 
 		if (this.config.centerSlide) {
 			totalPages = this.slides.length - 1
@@ -382,12 +383,12 @@ class DDCarousel {
 
 	refreshOnResize() {
 		//check responsive options
-		for (let i = 0; i < Object.keys(this.responsiveOptions).length; i++) {
-			if (document.body.clientWidth <= Object.keys(this.responsiveOptions)[i]) {
-				this.updateSettings(Object.values(this.responsiveOptions)[i]);
+		for (let i = 0; i < Object.keys(this.configResp).length; i++) {
+			if (document.body.clientWidth <= Object.keys(this.configResp)[i]) {
+				this.updateSettings(Object.values(this.configResp)[i]);
 				break;
 			} else {
-				this.updateSettings(this.origOptions);
+				this.setDefaults();
 			}
 		}
 		this.calculateStage();
