@@ -1,23 +1,23 @@
 /*! DDCarousel 1.2 by Danail Dinev 2019 | License: https://github.com/danaildinev/ddcarousel/blob/master/LICENSE */
-const appName = "DDCarousel";
-const app = appName.toLowerCase();
-const cCont = app + "-container";
-const cStage = app + "-stage";
-const cNav = app + "-nav";
-const cItem = app + "-item";
-const cResp = app + "-responsive";
-const cContDots = app + "-dots";
-const cDot = app + "-dot";
-const cPrev = app + "-prev";
-const cNext = app + "-next";
-const cVert = app + "-vertical";
-const cUrl = app + "-urls";
-const cDSlide = "data-slide";
-const cDId = "data-id";
-const cDTitle = "data-title";
-
 class DDCarousel {
+
 	constructor(options) {
+		this.appName = "DDCarousel";
+		this.cApp = "ddcarousel";
+		this.cCont = "ddcarousel-container";
+		this.cStage = "ddcarousel-stage";
+		this.cNav = "ddcarousel-nav";
+		this.cItem = "ddcarousel-item";
+		this.cResp = "ddcarousel-responsive";
+		this.cContDots = "ddcarousel-dots";
+		this.cDot = "ddcarousel-dot";
+		this.cPrev = "ddcarousel-prev";
+		this.cNext = "ddcarousel-next";
+		this.cVert = "ddcarousel-vertical";
+		this.cUrl = "ddcarousel-urls";
+		this.cDSlide = "data-slide";
+		this.cDId = "data-id";
+		this.cDTitle = "data-title";
 		this.currentPage = 0;
 		this.triggers = [
 			"onInitialize",
@@ -48,7 +48,7 @@ class DDCarousel {
 
 	setDefaults(options = this.configOrig) {
 		var settings = {
-			container: "." + app,
+			container: "." + this.cApp,
 			nav: false,
 			dots: true,
 			autoHeight: false,
@@ -67,6 +67,7 @@ class DDCarousel {
 			centerSlide: false,
 			touchSwipeThreshold: 60,
 			touchMaxSlideDist: 500,
+			resizeRefresh: 200,
 			swipeSmooth: 0,
 			slideChangeDuration: 0.5,
 			labelNavPrev: "< Prev",
@@ -94,8 +95,6 @@ class DDCarousel {
 		for (var name in options) {
 			this.config[name] = options[name];
 		}
-
-		console.log('updated')
 	}
 
 	callback(event) {
@@ -103,9 +102,9 @@ class DDCarousel {
 			container: this.container,
 			event: event,
 			currentSlides: this.activeSlides,
-			currentPage: this.getCurrentPage(),
+			currentPage: this.currentPage,
 			totalSlides: this.getTotalSlides(),
-			totalPages: this.getTotalPages()
+			totalPages: this.totalPages
 		};
 
 		return callback;
@@ -129,7 +128,7 @@ class DDCarousel {
 			this.containerName = name;
 			return true;
 		} else {
-			console.error(`${appName}: Invalid container!`);
+			console.error(`${this.appName}: Invalid container!`);
 			return false;
 		}
 	}
@@ -139,33 +138,33 @@ class DDCarousel {
 			stageDiv = this.newEl("div"),
 			slidesSource = this.getEl(`> div`, true); //get all slides from user
 
-		stageContainer.classList.add(cCont);
-		stageDiv.classList.add(cStage);
+		stageContainer.classList.add(this.cCont);
+		stageDiv.classList.add(this.cStage);
 
 		//add the stage to the main container
 		this.container.appendChild(stageContainer);
 		stageContainer.appendChild(stageDiv);
 
 		//get stage DOM
-		this.stage = this.getEl(`.${cStage}`);
+		this.stage = this.getEl(`.${this.cStage}`);
 
 		//set parameters to slides and add them in the new ddcarousel-item container with some params
 		for (var i = 0; i < slidesSource.length; i++) {
 			var s = this.newEl("div");
-			s.classList.add(cItem);
-			s.setAttribute(cDSlide, i);
+			s.classList.add(this.cItem);
+			s.setAttribute(this.cDSlide, i);
 			s.appendChild(slidesSource[i]);
 			if (this.config.urlNav) {
-				if (slidesSource[i].hasAttribute(cDId) && slidesSource[i].hasAttribute(cDTitle)) {
-					s.setAttribute(cDId, slidesSource[i].getAttribute(cDId));
-					s.setAttribute(cDTitle, slidesSource[i].getAttribute(cDTitle));
+				if (slidesSource[i].hasAttribute(this.cDId) && slidesSource[i].hasAttribute(this.cDTitle)) {
+					s.setAttribute(this.cDId, slidesSource[i].getAttribute(this.cDId));
+					s.setAttribute(this.cDTitle, slidesSource[i].getAttribute(this.cDTitle));
 				}
 			}
 			stageDiv.appendChild(s);
 		}
 
 		//get all slides and total pages
-		this.slides = this.getEl(`.${cItem}`, true);
+		this.slides = this.getEl(`.${this.cItem}`, true);
 
 		this.createNav();
 		this.createDots();
@@ -181,15 +180,15 @@ class DDCarousel {
 			contClassList = this.container.classList;
 
 		if (this.config.fullWidth) {
-			contClassList.add(cResp);
+			contClassList.add(this.cResp);
 		} else {
-			contClassList.remove(cResp);
+			contClassList.remove(this.cResp);
 		}
 
 		if (this.config.vertical) {
-			contClassList.add(cVert);
+			contClassList.add(this.cVert);
 		} else {
-			contClassList.remove(cVert);
+			contClassList.remove(this.cVert);
 		}
 
 		if (this.config.centerSlide) {
@@ -212,7 +211,7 @@ class DDCarousel {
 				this.slides[i].style.width = containerWidth / this.config.itemsPerPage + "px";
 			}
 			this.slidesHeights.push(
-				this.getEl(`[${cDSlide}="${i}"] > div`).scrollHeight
+				this.getEl(`[${this.cDSlide}="${i}"] > div`).scrollHeight
 			);
 		}
 
@@ -230,7 +229,7 @@ class DDCarousel {
 	}
 
 	createNav() {
-		var navDiv = this.getEl(`.${cNav}`);
+		var navDiv = this.getEl(`.${this.cNav}`);
 
 		if (this.config.nav) {
 			var navContainer = this.newEl("div"),
@@ -240,12 +239,12 @@ class DDCarousel {
 			if (navDiv)
 				navDiv.remove();
 
-			navContainer.classList.add(cNav);
+			navContainer.classList.add(this.cNav);
 
-			leftBtn.classList.add(cPrev);
+			leftBtn.classList.add(this.cPrev);
 			leftBtn.innerHTML = this.config.labelNavPrev;
 
-			rightBtn.classList.add(cNext);
+			rightBtn.classList.add(this.cNext);
 			rightBtn.innerHTML = this.config.labelNavNext;
 
 			//add buttons in nav container
@@ -254,8 +253,8 @@ class DDCarousel {
 
 			this.container.appendChild(navContainer);
 
-			this.navPrevBtn = this.getEl(`.${cPrev}`);
-			this.navNextBtn = this.getEl(`.${cNext}`);
+			this.navPrevBtn = this.getEl(`.${this.cPrev}`);
+			this.navNextBtn = this.getEl(`.${this.cNext}`);
 			this.navPrevBtn.addEventListener("click", () => this.prevPage());
 			this.navNextBtn.addEventListener("click", () => this.nextPage());
 		} else {
@@ -265,7 +264,7 @@ class DDCarousel {
 	}
 
 	createDots() {
-		var dotsDiv = this.getEl(`.${cContDots}`);
+		var dotsDiv = this.getEl(`.${this.cContDots}`);
 
 		if (this.config.dots) {
 			var targetSlidesLenght,
@@ -274,7 +273,7 @@ class DDCarousel {
 			if (dotsDiv)
 				dotsDiv.remove();
 
-			dotsContainer.classList.add(cContDots);
+			dotsContainer.classList.add(this.cContDots);
 
 			if (this.config.itemsPerPage > 1) {
 				targetSlidesLenght = this.config.centerSlide ? this.slides.length : this.totalPages + 1;
@@ -284,9 +283,9 @@ class DDCarousel {
 
 			for (var i = 0; i < targetSlidesLenght; i++) {
 				var dot = this.newEl("button");
-				dot.classList.add(cDot);
-				dot.setAttribute(cDSlide, i);
-				dot.addEventListener("click", e => this.changePage(parseInt(e.target.getAttribute(cDSlide))));
+				dot.classList.add(this.cDot);
+				dot.setAttribute(this.cDSlide, i);
+				dot.addEventListener("click", e => this.changePage(parseInt(e.target.getAttribute(this.cDSlide))));
 
 				dotsContainer.appendChild(dot);
 			}
@@ -299,7 +298,7 @@ class DDCarousel {
 	}
 
 	createUrls() {
-		this.urlsDiv = this.getEl(`.${cUrl}`);
+		this.urlsDiv = this.getEl(`.${this.cUrl}`);
 
 		if (this.config.urlNav) {
 			var cont = this.newEl("div"),
@@ -308,14 +307,14 @@ class DDCarousel {
 			if (this.urlsDiv)
 				this.urlsDiv.remove();
 
-			cont.classList.add(cUrl);
+			cont.classList.add(this.cUrl);
 			this.slides.forEach(el => {
-				if (el.hasAttribute(cDId) && el.hasAttribute(cDTitle)) {
+				if (el.hasAttribute(cDId) && el.hasAttribute(this.cDTitle)) {
 					var li = this.newEl('li'),
 						a = this.newEl('a');
 
-					a.href = "#" + el.getAttribute(cDId);
-					a.innerHTML = el.getAttribute(cDTitle);
+					a.href = "#" + el.getAttribute(this.cDId);
+					a.innerHTML = el.getAttribute(this.cDTitle);
 
 					li.appendChild(a);
 					list.appendChild(li);
@@ -325,7 +324,7 @@ class DDCarousel {
 			cont.appendChild(list);
 			this.container.appendChild(cont);
 
-			this.getEl(`.${cUrl} a`, true).forEach(el => {
+			this.getEl(`.${this.cUrl} a`, true).forEach(el => {
 				el.addEventListener("click", e => {
 					this.goToUrl(el.getAttribute('href').substring(1))
 				})
@@ -348,7 +347,7 @@ class DDCarousel {
 				throttled = true;
 				setTimeout(function () {
 					throttled = false;
-				}, 200);
+				}, this.config.resizeRefresh);
 			}
 		});
 
@@ -558,8 +557,8 @@ class DDCarousel {
 	}
 
 	goToUrl(id, enableAnim = true) {
-		var item = this.getEl(`.${cItem}[${cDId}="${id}"]`);
-		this.changePage(parseInt(item.getAttribute(cDSlide)), enableAnim);
+		var item = this.getEl(`.${this.cItem}[${this.cDId}="${id}"]`);
+		this.changePage(parseInt(item.getAttribute(this.cDSlide)), enableAnim);
 	}
 
 	updateSlide() {
@@ -578,7 +577,7 @@ class DDCarousel {
 	setActiveSlides() {
 		if (this.activeSlides != null) {
 			this.activeSlides.forEach(i => {
-				this.getEl(`[${cDSlide}="${i}"]`).classList.remove("active");
+				this.getEl(`[${this.cDSlide}="${i}"]`).classList.remove("active");
 			});
 		}
 
@@ -616,17 +615,17 @@ class DDCarousel {
 		}
 
 		this.activeSlides.forEach(i => {
-			this.getEl(`[${cDSlide}="${i}"]`).classList.add("active");
+			this.getEl(`[${this.cDSlide}="${i}"]`).classList.add("active");
 		});
 	}
 
 	setActiveDot() {
 		var active = "active";
 		if (this.config.dots) {
-			var a = this.getEl(`.${cDot}[${cDSlide}].` + active);
+			var a = this.getEl(`.${this.cDot}[${this.cDSlide}].` + active);
 			if (a != null) a.classList.remove(active);
 
-			this.getEl(`.${cDot}[${cDSlide}="${this.currentPage}"]`).classList.add(active);
+			this.getEl(`.${this.cDot}[${this.cDSlide}="${this.currentPage}"]`).classList.add(active);
 		}
 	}
 
@@ -656,7 +655,7 @@ class DDCarousel {
 	}
 
 	getCurrentSlideDom() {
-		return this.getEl(`[${cDSlide}].active`);
+		return this.getEl(`[${this.cDSlide}].active`);
 	}
 
 	getCurrentPage() {
