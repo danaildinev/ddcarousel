@@ -7,14 +7,16 @@ var slider = new DDCarousel({
 			touch: false,
 		}
 	},
-	itemsPerPage: 4,
+	items: 3,
 	fullWidth: true,
-	startPage: 0,
 	//autoplay: true,
 	itemPerPage: true,
-	autoplayPauseHover: true
+	//startPage: 2,
+	autoplayPauseHover: true,
+	callbacks: true,
+	nav: true
 	/*itemsPerPage: 3,
-	autoplayDuration: 1000,
+	autoplaySpeed: 1000,
 	autoplayPauseOnHover: true,
 	autoHeight: true,
 	nav: true,
