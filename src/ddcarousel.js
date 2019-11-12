@@ -19,9 +19,6 @@ const cDTitle = "data-title";
 class DDCarousel {
 	constructor(options) {
 		this.currentPage = 0;
-		this.eStart = [];
-		this.eMove = [];
-		this.eEnd = [];
 		this.triggers = [
 			"onInitialize",
 			"onInitialized",
@@ -40,11 +37,12 @@ class DDCarousel {
 			this.createStage();
 			this.setActiveSlides();
 			this.calculateStage();
-			this.attachEvents();
 			this.refreshOnResize();
-			if (this.config.nav) this.refreshNav();
+			this.refreshNav();
 			if (this.config.startPage > -1) this.changePage(this.config.startPage, false);
 			this.trigger("onInitialized");
+			this.calculateStage();
+			this.attachEvents();
 		}
 	}
 
@@ -82,6 +80,7 @@ class DDCarousel {
 			});
 		});
 
+		this.configResp = [];
 		if (options['responsive'] !== undefined) {
 			this.configResp = options['responsive'];
 		}
@@ -257,6 +256,8 @@ class DDCarousel {
 
 			this.navPrevBtn = this.getEl(`.${cPrev}`);
 			this.navNextBtn = this.getEl(`.${cNext}`);
+			this.navPrevBtn.addEventListener("click", () => this.prevPage());
+			this.navNextBtn.addEventListener("click", () => this.nextPage());
 		} else {
 			if (navDiv != null)
 				navDiv.remove();
@@ -323,6 +324,12 @@ class DDCarousel {
 
 			cont.appendChild(list);
 			this.container.appendChild(cont);
+
+			this.getEl(`.${cUrl} a`, true).forEach(el => {
+				el.addEventListener("click", e => {
+					this.goToUrl(el.getAttribute('href').substring(1))
+				})
+			})
 		} else {
 			if (this.urlsDiv != null)
 				this.urlsDiv.remove();
@@ -330,18 +337,12 @@ class DDCarousel {
 	}
 
 	attachEvents() {
-		var throttled;
-		//nav buttons
-		if (this.config.nav) {
-			this.navPrevBtn.addEventListener("click", () => this.prevPage());
-			this.navNextBtn.addEventListener("click", () => this.nextPage());
-			this.on("onChanged", () => {
-				this.refreshNav();
-			});
-		}
+		this.setDraggingEvents();
 
 		//resize event
+		var throttled;
 		window.addEventListener("resize", () => {
+			this.calculateStage();
 			if (!throttled) {
 				this.refreshOnResize();
 				throttled = true;
@@ -356,23 +357,10 @@ class DDCarousel {
 			this.trigger("onTransitionend");
 		});
 
-		//touch events
-		this.attachTouchEvents();
-
-		//urls
-		if (this.config.urlNav) {
-			var links = this.getEl(`.${cUrl} a`, true);
-			links.forEach(el => {
-				el.addEventListener("click", e => {
-					this.goToUrl(el.getAttribute('href').substring(1))
-				})
-			})
-		}
-
 		//autoplay
 		var start = ["mouseover", "touchstart"],
 			stop = ["mouseleave", "touchend"];
-		if (this.config.autoplayPauseHover) {
+		if (this.config.autoplayPauseHover && this.config.autoplay) {
 			start.forEach(el => this.stage.addEventListener(el, this.autoplayStop.bind(this)));
 			stop.forEach(el => this.stage.addEventListener(el, this.autoplayStart.bind(this)));
 		} else {
@@ -391,51 +379,25 @@ class DDCarousel {
 				this.setDefaults();
 			}
 		}
-		this.calculateStage();
 		this.createNav();
 		this.createDots();
 		this.setActiveDot();
-		this.attachTouchEvents();
-		this.updateSlide();
 		this.createUrls();
 		this.autoplayStop();
-		if (this.config.autoplay && this.ap == null) {
+		if (this.config.autoplay && this.ap == undefined) {
 			this.autoplayStart();
 		}
 	}
 
-	attachTouchEvents() {
-		this.eStart.forEach(el => {
-			(document.all && window.atob)
-				? this.stage.removeEventListener(el, this.getStartingDragPos.bind(this), { passive: true }) //ie10fix
-				: window.removeEventListener(el, this.getStartingDragPos.bind(this), { passive: true })
-		});
-		this.eMove.forEach(el => window.removeEventListener(el, this.dragMove.bind(this), { passive: true }));
-		this.eEnd.forEach(el => window.removeEventListener(el, this.dragEnd.bind(this)));
+	setDraggingEvents() {
+		var startDrag = ["touchstart", "mousedown"],
+			movingDrag = ["touchmove", "mousemove"],
+			endDrag = ["touchend", "mouseup"],
+			startEl = document.all && window.atob ? this.stage : window;
 
-		this.eStart = [];
-		this.eMove = [];
-		this.eEnd = [];
-
-		//add events based on options
-		if (this.config.touch) {
-			this.eStart.push("touchstart");
-			this.eMove.push("touchmove");
-			this.eEnd.push("touchend");
-		}
-		if (this.config.touchMouse) {
-			this.eStart.push("mousedown");
-			this.eMove.push("mousemove");
-			this.eEnd.push("mouseup");
-		}
-
-		this.eStart.forEach(el => {
-			(document.all && window.atob)
-				? this.stage.addEventListener(el, this.getStartingDragPos.bind(this), { passive: true }) //ie10fix
-				: window.addEventListener(el, this.getStartingDragPos.bind(this), { passive: true })
-		});
-		this.eMove.forEach(el => window.addEventListener(el, this.dragMove.bind(this), { passive: true }));
-		this.eEnd.forEach(el => window.addEventListener(el, this.dragEnd.bind(this)));
+		startDrag.forEach(el => startEl.addEventListener(el, e => this.dragStart(e), { passive: true }));
+		movingDrag.forEach(el => window.addEventListener(el, e => this.dragMove(e), { passive: true }));
+		endDrag.forEach(el => window.addEventListener(el, () => this.dragEnd()));
 	}
 
 	dragMove(e) {
@@ -443,7 +405,7 @@ class DDCarousel {
 			var input;
 			if (e.type == "mousemove" && this.config.touchMouse) {
 				input = this.config.vertical ? e.clientY : e.pageX;
-			} else if (e.type == "touchmove") {
+			} else if (e.type == "touchmove" && this.config.touch) {
 				input = this.config.vertical ? e.targetTouches[0].pageY : e.targetTouches[0].pageX;
 			}
 
@@ -467,22 +429,25 @@ class DDCarousel {
 		}
 	}
 
-	getStartingDragPos(e) {
+	dragStart(e) {
 		if (e.target == this.stage) {
-			this.isDragging = true;
+			var startPoint;
+			if (e.type == "mousedown" && this.config.touchMouse) {
+				startPoint = this.config.vertical ? e.clientY : e.pageX;
+			} else if (e.type == "touchstart" && this.config.touch) {
+				startPoint = this.config.vertical ? e.targetTouches[0].clientY : e.targetTouches[0].pageX;
+			}
 
-			//set some starting values
-			this.touchStartRaw =
-				e.type == "mousedown" && this.config.touchMouse
-					? (this.config.vertical ? e.clientY : e.pageX)
-					: (this.config.vertical ? e.targetTouches[0].clientY : e.targetTouches[0].pageX);
-			this.touchStart = this.touchStartRaw + -this.currentTranslate;
-
-			//remember orig position
-			this.origPosition = this.currentTranslate;
-			this.dontChange = false;
-
-			this.trigger("onDrag");
+			if (startPoint !== undefined) {
+				if (e.target == this.stage) {
+					this.isDragging = true;
+					this.touchStartRaw = startPoint;
+					this.touchStart = this.touchStartRaw + -this.currentTranslate;
+					this.origPosition = this.currentTranslate;
+					this.dontChange = false;
+					this.trigger("onDrag");
+				}
+			}
 		}
 	}
 
@@ -507,16 +472,18 @@ class DDCarousel {
 	}
 
 	refreshNav() {
-		var inactive = "inactive";
-		if (this.currentPage == 0) {
-			this.navPrevBtn.classList.add(inactive);
-			this.navNextBtn.classList.remove(inactive);
-		} else if (this.currentPage == this.totalPages) {
-			this.navPrevBtn.classList.remove(inactive);
-			this.navNextBtn.classList.add(inactive);
-		} else {
-			this.navPrevBtn.classList.remove(inactive);
-			this.navNextBtn.classList.remove(inactive);
+		if (this.config.nav) {
+			var inactive = "inactive";
+			if (this.currentPage == 0) {
+				this.navPrevBtn.classList.add(inactive);
+				this.navNextBtn.classList.remove(inactive);
+			} else if (this.currentPage == this.totalPages) {
+				this.navPrevBtn.classList.remove(inactive);
+				this.navNextBtn.classList.add(inactive);
+			} else {
+				this.navPrevBtn.classList.remove(inactive);
+				this.navNextBtn.classList.remove(inactive);
+			}
 		}
 	}
 
@@ -577,6 +544,7 @@ class DDCarousel {
 		this.setActiveSlides();
 		this.setActiveDot();
 		this.updateSlide();
+		this.refreshNav();
 
 		//change stage height if this options is enabled
 		if (this.config.autoHeight) {
@@ -663,8 +631,7 @@ class DDCarousel {
 	}
 
 	autoplayStart() {
-		if (this.ap == null) {
-			console.log('start!')
+		if (this.ap == undefined) {
 			this.ap = setInterval(() => this.nextPage(), this.config.autoplayDuration);
 		}
 	}
@@ -672,7 +639,7 @@ class DDCarousel {
 	autoplayStop() {
 		if (this.ap > 0) {
 			clearTimeout(this.ap);
-			this.ap = null;
+			this.ap = undefined;
 		}
 	}
 
