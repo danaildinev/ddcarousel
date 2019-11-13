@@ -39,12 +39,12 @@ class DDCarousel {
 			this.trigger("onInitialize", { container: this.container, event: "onInitialize" });
 			this.createStage();
 			this.setActiveSlides();
-			this.calculateStage();
 			this.changePage(this.config.startPage > 0 ? this.config.startPage : 0, false);
 			this.refreshOnResize();
 			this.trigger("onInitialized");
 			this.calculateStage();
 			this.attachEvents();
+			this.updateSlide();
 		}
 	}
 
@@ -66,7 +66,7 @@ class DDCarousel {
 			autoplayPauseHover: false,
 			touchDrag: true,
 			mouseDrag: true,
-			centerSlide: true,
+			centerSlide: false,
 			touchSwipeThreshold: 60,
 			touchMaxSlideDist: 500,
 			resizeRefresh: 200,
@@ -167,6 +167,7 @@ class DDCarousel {
 		//get all slides and total pages
 		this.slides = this.getEl(`.${this.cItem}`, true);
 
+		this.calculateStage();
 		this.createNav();
 		this.createDots();
 		this.createUrls();
@@ -386,6 +387,7 @@ class DDCarousel {
 			this.autoplayStart();
 		}
 		this.updateSlide();
+		this.refreshNav();
 	}
 
 	setDraggingEvents() {
