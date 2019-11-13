@@ -252,32 +252,29 @@ strong {
 .ddcarousel.vertical {
 	height: 500px;
 }
-.ddcarousel-item:nth-child(1) .box {
-	background: #8eb9e2;
-}
-.ddcarousel-item:nth-child(2) .box {
-	background: #639e64;
-}
-.ddcarousel-item:nth-child(3) .box {
-	background: #a57cc0;
-}
-.ddcarousel-item:nth-child(4) .box {
-	background: #b97a8b;
-}
-.ddcarousel-item:nth-child(5) .box {
-	background: #d6c089;
-}
+.ddcarousel-item:nth-child(1) .box,
 .ddcarousel-item:nth-child(6) .box {
 	background: #8eb9e2;
 }
-.ddcarousel-item:nth-child(7) .box {
+.ddcarousel-item:nth-child(2) .box,
+.ddcarousel-item:nth-child(10) .box {
 	background: #639e64;
 }
+.ddcarousel-item:nth-child(3) .box,
 .ddcarousel-item:nth-child(8) .box {
 	background: #a57cc0;
 }
+.ddcarousel-item:nth-child(4) .box,
 .ddcarousel-item:nth-child(9) .box {
 	background: #b97a8b;
+}
+.ddcarousel-item:nth-child(5) .box,
+.ddcarousel-item:nth-child(11) .box {
+	background: #d6c089;
+}
+.ddcarousel-item:nth-child(7) .box,
+.ddcarousel-item:nth-child(12) .box {
+	background: #639e64;
 }
 .ddcarousel.autoHeight .box {
 	height: auto;

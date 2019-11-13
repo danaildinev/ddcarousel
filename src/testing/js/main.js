@@ -14,6 +14,7 @@ var slider = new DDCarousel({
 	//startPage: 2,
 	autoplayPauseHover: true,
 	callbacks: true,
+	autoHeight: false,
 	nav: true
 	/*itemsPerPage: 3,
 	autoplaySpeed: 1000,
@@ -24,7 +25,6 @@ var slider = new DDCarousel({
 	centerSlide: true,
 	urlNav: true
 	vertical: true,
-	autoHeight: false,
 	responsive: false,
 	touch: true,
 	touchMouse: true,
