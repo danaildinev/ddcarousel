@@ -7,7 +7,7 @@ class DDCarousel {
 		this.cStage = "ddcarousel-stage";
 		this.cNav = "ddcarousel-nav";
 		this.cItem = "ddcarousel-item";
-		this.cResp = "ddcarousel-responsive";
+		this.cFullW = "ddcarousel-fullwidth";
 		this.cDots = "ddcarousel-dots";
 		this.cDot = "ddcarousel-dot";
 		this.cPrev = "ddcarousel-prev";
@@ -179,9 +179,9 @@ class DDCarousel {
 			contClassList = this.container.classList;
 
 		if (this.config.fullWidth) {
-			contClassList.add(this.cResp);
+			contClassList.add(this.cFullW);
 		} else {
-			contClassList.remove(this.cResp);
+			contClassList.remove(this.cFullW);
 		}
 
 		if (this.config.vertical) {
