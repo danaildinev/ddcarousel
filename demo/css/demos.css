@@ -1,6 +1,7 @@
 html {
 	box-sizing: border-box;
 }
+
 *,
 *:before,
 *:after {
@@ -11,11 +12,22 @@ body {
 	padding: 0;
 	margin: 0;
 	font-family: "Open Sans", sans-serif;
+	position: relative;
 }
 
 body.nav-opened {
 	height: 100%;
 	overflow: hidden;
+}
+
+body.nav-opened::after {
+	content: "";
+	position: absolute;
+	top: 0;
+	left: 0;
+	width: 100%;
+	height: 100%;
+	background: rgba(0, 0, 0, 0.3);
 }
 
 h1,
@@ -79,29 +91,12 @@ nav.contents {
 	background: #e7e7e7;
 	height: 0;
 	transition: all 0.3s ease-in-out;
-	padding: 0 18px;
 	overflow: hidden;
 }
 
-nav.contents::after {
-	position: absolute;
-	content: "";
-	width: 100%;
-	height:	35px;
-	bottom: 12px;
-	left: 0;
-	background: rgb(0,0,0);
-	background: -moz-linear-gradient(180deg, rgba(0,0,0,0) 0%, rgba(231,231,231,1) 100%);
-	background: -webkit-linear-gradient(180deg, rgba(0,0,0,0) 0%, rgba(231,231,231,1) 100%);
-	background: linear-gradient(180deg, rgba(0,0,0,0) 0%, rgba(231,231,231,1) 100%);
-	filter: progid:DXImageTransform.Microsoft.gradient(startColorstr="#000000",endColorstr="#e7e7e7",GradientType=1);
-	pointer-events: none;
-}
-
 nav.contents.show {
-	height: 400px;
+	height: 390px;
 	padding-top: 46px;
-	padding-bottom: 12px;
 }
 
 
@@ -109,7 +104,7 @@ nav.contents ul {
 	list-style: none;
 	height: 100%;
 	margin: 0;
-	padding: 0 0 20px 0;
+	padding: 10px;
 	overflow-y: scroll;
 }
 
@@ -121,12 +116,15 @@ nav.contents ul li{
 #toggle-nav {
 	display: inline-block;
     position: fixed;
-    left: 20px;
-    top: 20px;
+    left: 0;
+    top: 0;
 	z-index: 2000;
 	font-weight: 600;
 	font-size: 14px;
 	text-transform: uppercase;
+	background: #ddd;
+    padding: 12px;
+    width: 100%;
 }
 
 #toggle-nav .arrow {
@@ -180,6 +178,10 @@ strong {
 	-webkit-align-items: center;
 }
 
+.carousel-demo .container p {
+	width: 100%;
+}
+
 .carousel-demo:nth-of-type(2n + 1) {
 	background: #f1f1f1;
 }
@@ -223,7 +225,7 @@ strong {
 	display: inline-block;
 	width: 38px;
 	padding: 0 4px;
-	background: #fff;
+	background: #efefef;
 	font-size: 10px;
 	transition: background 0.2s ease-in;
 	margin-right: 7px;
@@ -298,5 +300,18 @@ strong {
 @media (max-width: 1140px) {
 	.container {
 		width: 100%;
+	}
+}
+
+@media (max-width: 768px) {
+	.container {
+		width: 100%;
+	}
+	.code-container {
+		flex-direction: column;
+		-webkit-flex-direction: column;
+	}
+	.carousel-demo {
+		padding: 100px 0;
 	}
 }

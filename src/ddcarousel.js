@@ -31,6 +31,8 @@ class DDCarousel {
 			"onResized"
 		];
 
+		this.isIE = window.navigator.msPointerEnabled; // IE <= 10
+
 		this.configOrig = options;
 		this.setDefaults();
 		if (this.checkContainer(this.config.container)) {
@@ -43,9 +45,8 @@ class DDCarousel {
 			this.setActiveSlides();
 			this.changePage(this.config.startPage > 0 ? this.config.startPage : 0, false);
 			this.refresh();
-			this.trigger("onInitialized");
 			this.attachEvents();
-			this.updateSlide();
+			this.trigger("onInitialized");
 		}
 	}
 
@@ -173,8 +174,8 @@ class DDCarousel {
 	calculateStage() {
 		var slideWidth = this.slides[0].style.width,
 			wind = window.getComputedStyle(this.container),
-			containerWidth = parseInt(wind.width),
-			containerHeight = parseInt(wind.height),
+			containerWidth,
+			containerHeight,
 			totalPages,
 			contClassList = this.container.classList;
 
@@ -189,6 +190,8 @@ class DDCarousel {
 		} else {
 			contClassList.remove(this.cVert);
 		}
+		containerWidth = parseInt(wind.width);
+		containerHeight = parseInt(wind.height)
 
 		if (this.config.centerSlide) {
 			totalPages = this.slides.length - 1
@@ -367,12 +370,19 @@ class DDCarousel {
 	}
 
 	refresh() {
+		var keys = Object.keys(this.configResp);
 		//check responsive options
-		for (let i = 0; i < Object.keys(this.configResp).length; i++) {
-			if (document.body.clientWidth <= Object.keys(this.configResp)[i]) {
-				this.updateSettings(Object.values(this.configResp)[i]);
-				break;
-			} else {
+		for (var i = keys.length - 1; i >= 0; i--) {
+			if (document.body.clientWidth < keys[i]) {
+				if (!this.isIE) {
+					this.updateSettings(Object.values(this.configResp)[i]);
+				} else {
+					var values = keys.map(j => {
+						return this.configResp[j];
+					});
+					this.updateSettings(values[i]);
+				}
+			} else if (document.body.clientWidth >= keys[keys.length - 1]) {
 				this.setDefaults();
 			}
 		}
@@ -380,6 +390,7 @@ class DDCarousel {
 		this.createNav();
 		this.createDots();
 		this.setActiveDot();
+		this.setActiveSlides();
 		this.createUrls();
 		this.autoplayStop();
 		if (this.config.autoplay && this.ap == undefined) {
@@ -712,4 +723,13 @@ Number.isInteger =
 
 if (window.NodeList && !NodeList.prototype.forEach) {
 	NodeList.prototype.forEach = Array.prototype.forEach;
+}
+
+if (!('remove' in Element.prototype)) {
+	Element.prototype.remove = function () {
+		var a = this.parentNode;
+		if (a) {
+			a.removeChild(this);
+		}
+	};
 }
