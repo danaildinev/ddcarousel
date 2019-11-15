@@ -1,6 +1,6 @@
 .ddcarousel { width: 800px; height: 200px; transition: height 0.3s ease-in-out; margin-bottom: 50px; }
 
-.ddcarousel.ddcarousel-responsive { width: 100% !important; }
+.ddcarousel.ddcarousel-fullwidth { width: 100% !important; }
 
 .ddcarousel.ddcarousel-vertical .ddcarousel-stage { height: auto; flex-direction: column; -ms-flex-direction: column; -webkit-flex-direction: column; }
 

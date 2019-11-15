@@ -1,73 +1,90 @@
-document.addEventListener("DOMContentLoaded", function (event) {
-	var slider = new DDCarousel({
-		container: ".ddcarousel",
-		/*itemsPerPage: 3,
-		itemPerPage: true,
-		autoHeight: true,
-		nav: true,
-		dots: true,
-		centerSlide: true,
-		urlNav: true
-		vertical: true,
-		autoHeight: false,
-		responsive: false,
-		touch: true,
-		touchMouse: true,
-	
-		touchSwipeThreshold: 10
-		touchMaxSlideDist: 100
-		swipeSmooth: 0.1,
-		slideChangeDuration: 0.9,
-	
-		labelNavPrev: "&#x2190;",
-		labelNavNext: "&#x2192;",
-	
-		onInitialize: e => {
-			console.log(e);
-			},
-		onInitialized: e => {
-			console.log(e);
-		}
-		onChanged: e => {
-			console.log(e);
-		} 
-		onDrag: () => {
-			console.log("drag");
+
+var slider = new DDCarousel({
+	container: ".ddcarousel",
+	responsive: {
+		480: {
+			items: 1,
 		},
-		onDragging: () => {
-			console.log("dragging");
+		768: {
+			items: 2,
 		},
-		onDragged: () => {
-			console.log("dragged");
+	},
+	items: 3,
+	fullWidth: true,
+	//autoplay: true,
+	itemPerPage: true,
+	//startPage: 2,
+	autoplayPauseHover: true,
+	callbacks: true,
+	autoHeight: false,
+	nav: true
+
+	/*itemsPerPage: 3,
+	autoplaySpeed: 1000,
+	autoplayPauseOnHover: true,
+	autoHeight: true,
+	nav: true,
+	dots: true,
+	centerSlide: true,
+	urlNav: true
+	vertical: true,
+	responsive: false,
+	touch: true,
+	touchMouse: true,
+	
+	touchSwipeThreshold: 10
+	touchMaxSlideDist: 100
+	swipeSmooth: 0.1,
+	slideChangeDuration: 0.9,
+	
+	labelNavPrev: "&#x2190;",
+	labelNavNext: "&#x2192;",
+	
+	onInitialize: e => {
+		console.log(e);
 		},
-		onTransitionend: () => {
-			console.log("transitionend");
-		}*/
-	});
+	onInitialized: e => {
+		console.log(e);
+	}
+	onChanged: e => {
+		console.log(e);
+	} 
+	onDrag: () => {
+		console.log("drag");
+	},
+	onDragging: () => {
+		console.log("dragging");
+	},
+	onDragged: () => {
+		console.log("dragged");
+	},
+	onTransitionend: () => {
+		console.log("transitionend");
+	}*/
+});
 
-	//available methods
-	document.getElementById("prev").addEventListener("click", () => {
-		slider.prevSlide();
-	});
+//available methods
+document.getElementById("prev").addEventListener("click", () => {
+	slider.prevSlide();
+});
 
-	document.getElementById("next").addEventListener("click", () => {
-		slider.nextSlide();
-	});
+document.getElementById("next").addEventListener("click", () => {
+	slider.nextSlide();
+});
 
-	document.getElementById("go").addEventListener("click", () => {
-		var index = parseInt(document.getElementById("slideNum").value);
-		slider.changePage(index);
-	});
+document.getElementById("go").addEventListener("click", () => {
+	var index = parseInt(document.getElementById("slideNum").value);
+	slider.changePage(index);
+});
 
-	document.getElementById("calc").addEventListener("click", () => {
-		slider.calculateStage();
-	});
+document.getElementById("calc").addEventListener("click", () => {
+	slider.calculateStage();
+});
 
-	//events
+//events
 
-	document.getElementById("resizeContainer").addEventListener("click", () => {
-		document.getElementsByClassName("ddcarousel")[0].style.width =
-			Math.floor(Math.random() * 101) + 50 + "%";
-		slider.calculateStage();
-	});
+document.getElementById("resizeContainer").addEventListener("click", () => {
+	document.getElementsByClassName("ddcarousel")[0].style.width =
+		Math.floor(Math.random() * 101) + 50 + "%";
+	slider.calculateStage();
 });

@@ -12,22 +12,22 @@
 </head>
 
 <body>
-	<a href="#" id="toggle-nav"><span class="arrow"></span> Demos list</a>
+	<a href="#" id="toggle-nav"><span class="arrow"></span> Menu</a>
 	<nav class="contents">
 		<ul>
 			<li><a href="#default">Default</a></li>
 			<li><a href="#multiple">Multiple slides + navigation</a></li>
-			<li><a href="#centered">Centered slide <strong>(new)</strong></a></li>
-			<li><a href="#autoheigh">Auto height + one item per page <strong>(new)</strong></a></li>
-			<li><a href="#responsive">Responsive</a></li>
-			<li><a href="#vertical">Vertical orientation<strong>(new)</strong></a></li>
-			<li><a href="#urlnav">Url navigation<strong>(new)</strong></a></li>
-			<li><a href="#disabledtouch">Disabled device touch</a></li>
-			<li><a href="#disabledtouchmouse">Disabled mouse touch</a></li>
+			<li><a href="#centered">Centered slide </a></li>
+			<li><a href="#autoheigh">Auto height + one item per page </a></li>
+			<li><a href="#responsive">Responsive + fullWidth <strong>(new)</strong></a></li>
+			<li><a href="#vertical">Vertical orientation <strong>(new)</strong></a></li>
+			<li><a href="#urlnav">Url navigation</a></li>
+			<li><a href="#autoplay">Autoplay <strong>(new)</strong></a></li>
+			<li><a href="#disabledtouch">Disabled touch drag</a></li>
+			<li><a href="#disabledtouchmouse">Disabled mouse drag</a></li>
 			<li><a href="#customlabels">Custom navigation labels</a></li>
 			<li><a href="#customanim">Custom animation config</a></li>
 			<li><a href="#events">Events</a></li>
-			<li><a href="#methods">Methods</a></li>
 		</ul>
 	</nav>
 	<div class="carousel-demo">
@@ -107,7 +107,7 @@ var ddcarousel = new DDCarousel({
 					<textarea readonly>
 var ddcarousel = new DDCarousel({
 	container: ".ddcarousel",
-	itemsPerPage: 3,
+	items: 3,
 	nav: true,
 	dots: false
 });</textarea>
@@ -117,7 +117,7 @@ var ddcarousel = new DDCarousel({
 	</div>
 	<div id="centered" class="carousel-demo">
 		<div class="container">
-			<h2>Centered slide <strong>(new)</strong></h2>
+			<h2>Centered slide</h2>
 			<div class="ddcarousel centered">
 				<div class="box">1</div>
 				<div class="box">2</div>
@@ -146,7 +146,7 @@ var ddcarousel = new DDCarousel({
 					<textarea readonly>
 var ddcarousel = new DDCarousel({
 	container: ".ddcarousel",
-	itemsPerPage: 3,
+	items: 3,
 	centerSlide: false
 });</textarea>
 				</div>
@@ -155,7 +155,7 @@ var ddcarousel = new DDCarousel({
 	</div>
 	<div id="autoheigh" class="carousel-demo">
 		<div class="container">
-			<h2>Auto height + one item per page <strong>(new)</strong></h2>
+			<h2>Auto height + one item per page</h2>
 			<div class="ddcarousel autoHeight">
 				<div class="box">1</div>
 				<div class="box">2</div>
@@ -187,7 +187,7 @@ var ddcarousel = new DDCarousel({
 					<textarea readonly>
 var ddcarousel = new DDCarousel({
 	container: ".ddcarousel",
-	itemsPerPage: 3,
+	items: 3,
 	itemPerPage: true,
 	autoHeight: true
 });</textarea>
@@ -196,18 +196,19 @@ var ddcarousel = new DDCarousel({
 		</div>
 	</div>
 	<div id="responsive" class="carousel-demo">
-		<h2>Responsive</h2>
-		<div class="ddcarousel responsive">
-			<div class="box">1</div>
-			<div class="box">2</div>
-			<div class="box">3</div>
-			<div class="box">4</div>
-			<div class="box">5</div>
-			<div class="box">6</div>
-		</div>
+		<h2>Responsive <strong>(new)</strong></h2>
 		<div class="container">
+			<div class="ddcarousel responsive">
+				<div class="box">1</div>
+				<div class="box">2</div>
+				<div class="box">3</div>
+				<div class="box">4</div>
+				<div class="box">5</div>
+				<div class="box">6</div>
+			</div>
 			<p>
-				Slides are stretched on full width (2 per page on this example). Try resizing the page.
+				Try resizing the page to see different options based on viewport. You can also see the new 'fullWidth'
+				option enabled below 768px width.
 			</p>
 			<div class="code-container">
 				<div>
@@ -225,16 +226,28 @@ var ddcarousel = new DDCarousel({
 					<h4>JS</h4>
 					<textarea readonly>
 var ddcarousel = new DDCarousel({
-	container: ".ddcarousel",
-	itemsPerPage: 2,
-	responsive: true
+ 	container: ".responsive",
+	items: 3,
+	nav: true,
+	dots: false,
+	responsive: {
+		480: {
+			items: 1,
+			nav: false,
+			dots: true,
+		},
+		768: {
+			items: 2,
+			fullWidth: true
+		},
+	}
 });</textarea>
 				</div>
 			</div>
 		</div>
 	</div>
 	<div id="vertical" class="carousel-demo">
-		<h2>Vertical orientation <strong>(new)</strong></h2>
+		<h2>Vertical orientation + starting page <strong>(new)</strong></h2>
 		<div class="container">
 			<div class="ddcarousel vertical">
 				<div class="box">1</div>
@@ -245,7 +258,7 @@ var ddcarousel = new DDCarousel({
 				<div class="box">6</div>
 			</div>
 			<p>
-				This examples shows vertical orientation of carousel.
+				This examples shows vertical orientation of carousel and starting page set to 3.
 			</p>
 			<div class="code-container">
 				<div>
@@ -264,16 +277,17 @@ var ddcarousel = new DDCarousel({
 					<textarea readonly>
 	var ddcarousel = new DDCarousel({
 		container: ".ddcarousel",
-		itemsPerPage: 2,
+		items: 2,
 		itemPerPage: true,
-		vertical: true
+		vertical: true,
+		startPage: 2
 	});</textarea>
 				</div>
 			</div>
 		</div>
 	</div>
 	<div id="urlnav" class="carousel-demo">
-		<h2>Url navigation <strong>(new)</strong></h2>
+		<h2>Url navigation</h2>
 		<div class="container">
 			<div class="ddcarousel url">
 				<div class="box" data-id="first" data-title="First slide">1</div>
@@ -311,8 +325,69 @@ var ddcarousel = new DDCarousel({
 			</div>
 		</div>
 	</div>
+	<div id="autoplay" class="carousel-demo">
+		<h2>Autoplay <strong>(new)</strong></h2>
+		<div class="container">
+			<div class="ddcarousel autoplay">
+				<div class="box">1</div>
+				<div class="box">2</div>
+				<div class="box">3</div>
+				<div class="box">4</div>
+				<div class="box">5</div>
+				<div class="box">6</div>
+				<div class="box">7</div>
+				<div class="box">8</div>
+				<div class="box">9</div>
+				<div class="box">10</div>
+				<div class="box">11</div>
+				<div class="box">12</div>
+			</div>
+			<p>
+				Autoplay feature with speed set to 3 seconds and enabled pause on hover/touch. Use buttons to toggle
+				on/off.
+			</p>
+			<p>
+				<button class="btn" id="apStop">Stop</button>
+				<button class="btn" id="apStart">Start</button>
+			</p>
+			<div class="code-container">
+				<div>
+					<h4>HTML</h4>
+					<textarea readonly>
+	<div class="ddcarousel">
+		<div>1</div>
+		<div>2</div>
+		<div>3</div>
+		<div>4</div>
+		<div>5</div>
+		<div>6</div>
+	</div>
+	<button id="apStop">Stop</button>
+	<button id="apStart">Start</button>
+</textarea>
+				</div>
+				<div>
+					<h4>JS</h4>
+					<textarea readonly>
+	var ddcarousel = new DDCarousel({
+		container: ".ddcarousel",
+		autoplay: true,
+		autoplaySpeed: 3000,
+		autoplayPauseHover: true
+	});
+	document.getElementById("apStop").addEventListener("click", function () {
+		ddcarousel.autoplayStop();
+	});
+	document.getElementById("apStart").addEventListener("click", function () {
+		ddcarousel.autoplayStart();
+	});
+</textarea>
+				</div>
+			</div>
+		</div>
+	</div>
 	<div id="disabledtouch" class="carousel-demo">
-		<h2>Disabled device touch</h2>
+		<h2>Disabled touch drag</h2>
 		<div class="container">
 			<div class="ddcarousel disabledTouch">
 				<div class="box">1</div>
@@ -323,7 +398,7 @@ var ddcarousel = new DDCarousel({
 				<div class="box">6</div>
 			</div>
 			<p>
-				In this example, touch is disabled but mouse swiping still works.
+				In this example, touch is disabled but mouse dragging still works.
 			</p>
 			<div class="code-container">
 				<div>
@@ -342,15 +417,14 @@ var ddcarousel = new DDCarousel({
 					<textarea readonly>
 var ddcarousel = new DDCarousel({
 	container: ".ddcarousel",
-	itemsPerPage: 3,
-	touch: false
+	touchDrag: false
 });</textarea>
 				</div>
 			</div>
 		</div>
 	</div>
 	<div id="disabledtouchmouse" class="carousel-demo">
-		<h2>Disabled mouse touch</h2>
+		<h2>Disabled mouse drag</h2>
 		<div class="container">
 			<div class="ddcarousel disabledTouchMouse">
 				<div class="box">1</div>
@@ -361,7 +435,7 @@ var ddcarousel = new DDCarousel({
 				<div class="box">6</div>
 			</div>
 			<p>
-				Similar example as the previous one, but this time mouse swiping is disabled.
+				Similar example as the previous one, but this time mouse dragging is disabled.
 			</p>
 			<div class="code-container">
 				<div>
@@ -380,8 +454,7 @@ var ddcarousel = new DDCarousel({
 					<textarea readonly>
 var ddcarousel = new DDCarousel({
 	container: ".ddcarousel",
-	itemsPerPage: 3,
-	touchMouse: false
+	mouseDrag: false
 });</textarea>
 				</div>
 			</div>
@@ -418,7 +491,6 @@ var ddcarousel = new DDCarousel({
 					<textarea readonly>
 var ddcarousel = new DDCarousel({
 	container: ".ddcarousel",
-	itemsPerPage: 1,
 	dots: false,
 	nav: true,
 	labelNavPrev: "&#x2190;",
@@ -464,7 +536,7 @@ var ddcarousel = new DDCarousel({
 					<textarea readonly>
 var ddcarousel = new DDCarousel({
 	container: ".ddcarousel",
-	itemsPerPage: 3,
+	items: 3,
 	touchSwipeThreshold: 1,
 	touchMaxSlideDist: 1000,
 	swipeSmooth: 0.2,
@@ -509,7 +581,7 @@ var ddcarousel = new DDCarousel({
 			</div>
 			<p>
 				Resize event is called when you change carousel container size and then call the
-				<strong>calculateStage()</strong> method. Try resizing and re-calculate the carousel:
+				<strong>refresh()</strong> method. Try resizing and re-calculate the carousel:
 				<button class="btn" id="resizeContainer">Resize random</button>
 			</p>
 			<h4>JS</h4>
@@ -517,13 +589,14 @@ var ddcarousel = new DDCarousel({
 				<textarea readonly>
 var ddcarousel = new DDCarousel({
 	container: ".ddcarousel",
+	callbacks: true,
 	onChanged: function(e) {
-		console.log(e.event);
+		console.log(e);
 	}
 });
 // or like this...
 ddcarousel.on("onChanged", function(e) {
-	console.log(e.event);
+	console.log(e);
 });
 	</textarea>
 			</div>

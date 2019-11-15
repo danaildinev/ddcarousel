@@ -18,35 +18,48 @@ document.addEventListener("DOMContentLoaded", function () {
 
 	var items = new DDCarousel({
 		container: ".items",
-		itemsPerPage: 3,
+		items: 3,
 		nav: true,
 		dots: false
 	});
 
 	var centered = new DDCarousel({
 		container: ".centered",
-		itemsPerPage: 3,
+		items: 3,
 		centerSlide: true
 	});
 
 	var autoHeight = new DDCarousel({
 		container: ".autoHeight",
-		itemsPerPage: 3,
+		items: 3,
 		itemPerPage: true,
 		autoHeight: true
 	});
 
 	var responsive = new DDCarousel({
 		container: ".responsive",
-		itemsPerPage: 2,
-		responsive: true
+		items: 3,
+		nav: true,
+		dots: false,
+		responsive: {
+			480: {
+				items: 1,
+				nav: false,
+				dots: true,
+			},
+			768: {
+				items: 2,
+				fullWidth: true
+			},
+		}
 	});
 
 	var vertical = new DDCarousel({
 		container: ".vertical",
-		itemsPerPage: 2,
+		items: 2,
 		itemPerPage: true,
-		vertical: true
+		vertical: true,
+		startPage: 2
 	});
 
 	var url = new DDCarousel({
@@ -55,14 +68,29 @@ document.addEventListener("DOMContentLoaded", function () {
 		urlNav: true
 	});
 
+	var autoplay = new DDCarousel({
+		container: ".autoplay",
+		autoplay: true,
+		autoplaySpeed: 3000,
+		autoplayPauseHover: true
+	});
+
+	document.getElementById("apStop").addEventListener("click", function () {
+		autoplay.autoplayStop();
+	});
+
+	document.getElementById("apStart").addEventListener("click", function () {
+		autoplay.autoplayStart();
+	});
+
 	var disabledTouch = new DDCarousel({
 		container: ".disabledTouch",
-		touch: false
+		touchDrag: false
 	});
 
 	var disabledTouchMouse = new DDCarousel({
 		container: ".disabledTouchMouse",
-		touchMouse: false
+		mouseDrag: false
 	});
 
 	var customLabels = new DDCarousel({
@@ -75,7 +103,7 @@ document.addEventListener("DOMContentLoaded", function () {
 
 	var customAnimConfig = new DDCarousel({
 		container: ".customAnimConfig",
-		itemsPerPage: 3,
+		items: 3,
 		touchSwipeThreshold: 1,
 		touchMaxSlideDist: 1000,
 		swipeSmooth: 0.2,
@@ -84,10 +112,11 @@ document.addEventListener("DOMContentLoaded", function () {
 
 	var eventsExample = new DDCarousel({
 		container: ".eventsExample",
-		itemsPerPage: 3,
+		items: 3,
 		touchSwipeThreshold: 1,
 		swipeSmooth: 0.2,
 		slideChangeDuration: 1.2,
+		callbacks: true,
 		onInitialize: function (e) {
 			setActiveEvent(e.event);
 		},
@@ -116,7 +145,7 @@ document.addEventListener("DOMContentLoaded", function () {
 
 	document.getElementById("resizeContainer").addEventListener("click", function () {
 		document.getElementsByClassName("eventsExample")[0].style.width = Math.floor(Math.random() * 80) + 50 + "%";
-		eventsExample.calculateStage();
+		eventsExample.refresh();
 	});
 
 	var status = document.querySelectorAll(".events-list .status");

@@ -1,8 +1,8 @@
 {
 	"name": "ddcarousel",
-	"version": "1.1.0",
-	"description": "Simple and fast carousel slider written in vannila JS.",
-	"main": "./dist/ddcarousel.js",
+	"version": "1.2.0",
+	"description": "Simple and fast carousel slider written in vannila JS",
+	"main": "index.js",
 	"scripts": {
 		"dist": "npm-run-all babeljs minifyjs buildcss minifycss",
 		"demo": "npm-run-all demojs democss",
