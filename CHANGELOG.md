@@ -1,5 +1,21 @@
 # Changelog
 
+## v1.2 (2019 Nov 15)
+-   Added full width option
+-   Added option to show specified page number after init
+-   Added autoplay option with options for speed, pause on hover/touch and methods for start/stop
+-   Added option to toggle callback events (disabled by default)
+-   Added option to control refresh speed of carousel when resizing the window
+-   Reworked responsive option - you can specify set of options for different viewports
+-   Improved events and resizing performance
+-   Breaking changes in this version:
+    -   'itemsPerPage' option is renamed to 'items'
+    -   'responsive' option is renamed to 'fullWidth'
+    -   'touch' option is renamed to 'touchDrag'
+    -   'touchMouse' option is renamed to 'mouseDrag'
+    -   'calculateStage()' method is replaced with 'refresh()'
+    -   'urlNav' will no longer enable automatically 'itemPerPage'
+
 ## v1.1 (2019 Oct 15)
 -   Added new vertical orientation feature
 -   Added centered slide option
