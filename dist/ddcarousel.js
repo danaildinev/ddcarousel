@@ -11,10 +11,10 @@ var DDCarousel =
 /*#__PURE__*/
 function () {
   function a(b) {
-    _classCallCheck(this, a), this.appName = "DDCarousel", this.cCont = "ddcarousel-container", this.cStage = "ddcarousel-stage", this.cNav = "ddcarousel-nav", this.cItem = "ddcarousel-item", this.cFullW = "ddcarousel-fullwidth", this.cDots = "ddcarousel-dots", this.cDot = "ddcarousel-dot", this.cPrev = "ddcarousel-prev", this.cNext = "ddcarousel-next", this.cVert = "ddcarousel-vertical", this.cUrl = "ddcarousel-urls", this.dSlide = "data-slide", this.dId = "data-id", this.dTitle = "data-title", this.currentPage = 0, this.triggers = ["onInitialize", "onInitialized", "onDrag", "onDragging", "onDragged", "onChanged", "onTransitionend", "onResized"], this.configOrig = b, this.setDefaults(), this.checkContainer(this.config.container) && (this.trigger("onInitialize", {
+    _classCallCheck(this, a), this.appName = "DDCarousel", this.cCont = "ddcarousel-container", this.cStage = "ddcarousel-stage", this.cNav = "ddcarousel-nav", this.cItem = "ddcarousel-item", this.cFullW = "ddcarousel-fullwidth", this.cDots = "ddcarousel-dots", this.cDot = "ddcarousel-dot", this.cPrev = "ddcarousel-prev", this.cNext = "ddcarousel-next", this.cVert = "ddcarousel-vertical", this.cUrl = "ddcarousel-urls", this.dSlide = "data-slide", this.dId = "data-id", this.dTitle = "data-title", this.currentPage = 0, this.triggers = ["onInitialize", "onInitialized", "onDrag", "onDragging", "onDragged", "onChanged", "onTransitionend", "onResized"], this.ie10 = document.all && window.atob, this.configOrig = b, this.setDefaults(), this.checkContainer(this.config.container) && (this.trigger("onInitialize", {
       container: this.container,
       event: "onInitialize"
-    }), this.createStage(), this.calculateStage(), this.createNav(), this.createDots(), this.createUrls(), this.setActiveSlides(), this.changePage(this.config.startPage > 0 ? this.config.startPage : 0, !1), this.refresh(), this.trigger("onInitialized"), this.attachEvents(), this.updateSlide());
+    }), this.createStage(), this.calculateStage(), this.createNav(), this.createDots(), this.createUrls(), this.setActiveSlides(), this.changePage(this.config.startPage > 0 ? this.config.startPage : 0, !1), this.refresh(), this.attachEvents(), this.trigger("onInitialized"));
   }
 
   return _createClass(a, [{
@@ -111,16 +111,16 @@ function () {
     key: "calculateStage",
     value: function calculateStage() {
       var a,
-          b = this.slides[0].style.width,
-          c = window.getComputedStyle(this.container),
-          d = parseInt(c.width),
-          e = parseInt(c.height),
+          b,
+          c,
+          d = this.slides[0].style.width,
+          e = window.getComputedStyle(this.container),
           f = this.container.classList;
-      this.config.fullWidth ? f.add(this.cFullW) : f.remove(this.cFullW), this.config.vertical ? f.add(this.cVert) : f.remove(this.cVert), a = this.config.centerSlide ? this.slides.length - 1 : this.config.itemPerPage ? this.slides.length - this.config.items : Math.ceil(this.slides.length / this.config.items) - 1, this.totalPages = a, this.slidesHeights = [];
+      this.config.fullWidth ? f.add(this.cFullW) : f.remove(this.cFullW), this.config.vertical ? f.add(this.cVert) : f.remove(this.cVert), a = parseInt(e.width), b = parseInt(e.height), c = this.config.centerSlide ? this.slides.length - 1 : this.config.itemPerPage ? this.slides.length - this.config.items : Math.ceil(this.slides.length / this.config.items) - 1, this.totalPages = c, this.slidesHeights = [];
 
-      for (var g = 0; g < this.slides.length; g++) this.config.items == null && this.config.vertical ? this.slides[g].style.width = d + "px" : this.config.vertical ? this.slides[g].style.height = e / this.config.items + "px" : !this.config.vertical && (this.slides[g].style.width = d / this.config.items + "px"), this.slidesHeights.push(this.getEl("[".concat(this.dSlide, "=\"").concat(g, "\"] > div")).scrollHeight);
+      for (var g = 0; g < this.slides.length; g++) this.config.items == null && this.config.vertical ? this.slides[g].style.width = a + "px" : this.config.vertical ? this.slides[g].style.height = b / this.config.items + "px" : !this.config.vertical && (this.slides[g].style.width = a / this.config.items + "px"), this.slidesHeights.push(this.getEl("[".concat(this.dSlide, "=\"").concat(g, "\"] > div")).scrollHeight);
 
-      !this.config.vertical && (this.stage.style.width = d * this.slides.length + "px"), this.config.autoHeight && (this.setActiveSlides(), this.calculateContainerHeight(this.currentPage)), b != this.slides[0].style.width && this.trigger("onResized");
+      !this.config.vertical && (this.stage.style.width = a * this.slides.length + "px"), this.config.autoHeight && (this.setActiveSlides(), this.calculateContainerHeight(this.currentPage)), d != this.slides[0].style.width && this.trigger("onResized");
     }
   }, {
     key: "createNav",
@@ -211,13 +211,11 @@ function () {
   }, {
     key: "refresh",
     value: function refresh() {
-      //check responsive options
-      for (var a = 0; a < Object.keys(this.configResp).length; a++) if (document.body.clientWidth <= Object.keys(this.configResp)[a]) {
-        this.updateSettings(Object.values(this.configResp)[a]);
-        break;
-      } else this.setDefaults();
+      var a = Object.keys(this.configResp); //check responsive options
 
-      this.calculateStage(), this.createNav(), this.createDots(), this.setActiveDot(), this.createUrls(), this.autoplayStop(), this.config.autoplay && this.ap == null && this.autoplayStart(), this.updateSlide(), this.refreshNav();
+      for (var b = a.length - 1; b >= 0; b--) document.body.clientWidth < a[b] ? this.updateSettings(Object.values(this.configResp)[b]) : document.body.clientWidth >= a[a.length - 1] && this.setDefaults();
+
+      this.calculateStage(), this.createNav(), this.createDots(), this.setActiveDot(), this.setActiveSlides(), this.createUrls(), this.autoplayStop(), this.config.autoplay && this.ap == null && this.autoplayStart(), this.updateSlide(), this.refreshNav();
     }
   }, {
     key: "setDraggingEvents",
@@ -226,7 +224,7 @@ function () {
       var b = ["touchstart", "mousedown"],
           c = ["touchmove", "mousemove"],
           d = ["touchend", "mouseup"],
-          e = document.all && window.atob ? this.stage : window;
+          e = this.ie10 ? this.stage : window;
       b.forEach(function (b) {
         return e.addEventListener(b, function (b) {
           return a.dragStart(b);
@@ -262,9 +260,9 @@ function () {
   }, {
     key: "dragStart",
     value: function dragStart(a) {
-      if (a.target == this.stage) {
+      if (this.ie10 || a.target == this.stage) {
         var b = this.getInput(a, "mousedown", "touchstart");
-        b !== undefined && a.target == this.stage && (this.isDragging = !0, this.touchStartRaw = b, this.touchStart = this.touchStartRaw + -this.currentTranslate, this.origPosition = this.currentTranslate, this.dontChange = !1, this.trigger("onDrag"));
+        b !== undefined && (this.isDragging = !0, this.touchStartRaw = b, this.touchStart = this.touchStartRaw + -this.currentTranslate, this.origPosition = this.currentTranslate, this.dontChange = !1, this.trigger("onDrag"));
       }
     }
   }, {
@@ -288,9 +286,8 @@ function () {
   }, {
     key: "scrollToPos",
     value: function scrollToPos(a) {
-      var b = /^((?!chrome|android).)*safari/i.test(navigator.userAgent);
-      var c = this.config.vertical ? "translateY(".concat(a, "px)") : "translateX(".concat(a, "px)");
-      b ? this.stage.style.webkitTransform = c : this.stage.style.transform = c;
+      var b = this.config.vertical ? "translateY(".concat(a, "px)") : "translateX(".concat(a, "px)");
+      /^((?!chrome|android).)*safari/i.test(navigator.userAgent) ? this.stage.style.webkitTransform = b : this.stage.style.transform = b;
     }
   }, {
     key: "calculateContainerHeight",
@@ -436,6 +433,13 @@ function () {
 
 Number.isInteger = Number.isInteger || function (a) {
   return typeof a === "number" && isFinite(a) && Math.floor(a) === a;
-}, window.NodeList && !NodeList.prototype.forEach && (NodeList.prototype.forEach = Array.prototype.forEach);
+}, window.NodeList && !NodeList.prototype.forEach && (NodeList.prototype.forEach = Array.prototype.forEach), !('remove' in Element.prototype) && (Element.prototype.remove = function () {
+  var b = this.parentNode;
+  b && b.removeChild(this);
+}), Object.values = Object.values || function (a) {
+  return Object.keys(a).map(function (b) {
+    return a[b];
+  });
+};
 
 //# sourceMappingURL=ddcarousel.js.map
