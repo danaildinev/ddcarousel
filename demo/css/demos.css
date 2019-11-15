@@ -242,6 +242,7 @@ strong {
 	height: 100%;
 	display: flex;
 	display: -webkit-flex;
+	display: -ms-flexbox;
 	justify-content: center;
 	-webkit-justify-content: center;
 	align-items: center;
@@ -250,7 +251,9 @@ strong {
 	color: #fff;
 	padding: 40px 0;
 }
-
+.ddcarousel {
+	margin: 0 auto 50px auto;
+}
 .ddcarousel.vertical {
 	height: 500px;
 }
@@ -304,12 +307,12 @@ strong {
 }
 
 @media (max-width: 768px) {
-	.container {
-		width: 100%;
-	}
 	.code-container {
 		flex-direction: column;
 		-webkit-flex-direction: column;
+	}
+	.code-container div {
+		flex: none;
 	}
 	.carousel-demo {
 		padding: 100px 0;

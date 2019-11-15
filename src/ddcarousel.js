@@ -31,8 +31,7 @@ class DDCarousel {
 			"onResized"
 		];
 
-		this.isIE = window.navigator.msPointerEnabled; // IE <= 10
-
+		this.ie10 = document.all && window.atob;
 		this.configOrig = options;
 		this.setDefaults();
 		if (this.checkContainer(this.config.container)) {
@@ -374,14 +373,7 @@ class DDCarousel {
 		//check responsive options
 		for (var i = keys.length - 1; i >= 0; i--) {
 			if (document.body.clientWidth < keys[i]) {
-				if (!this.isIE) {
-					this.updateSettings(Object.values(this.configResp)[i]);
-				} else {
-					var values = keys.map(j => {
-						return this.configResp[j];
-					});
-					this.updateSettings(values[i]);
-				}
+				this.updateSettings(Object.values(this.configResp)[i]);
 			} else if (document.body.clientWidth >= keys[keys.length - 1]) {
 				this.setDefaults();
 			}
@@ -404,8 +396,7 @@ class DDCarousel {
 		var startDrag = ["touchstart", "mousedown"],
 			movingDrag = ["touchmove", "mousemove"],
 			endDrag = ["touchend", "mouseup"],
-			startEl = document.all && window.atob ? this.stage : window;
-
+			startEl = this.ie10 ? this.stage : window;
 		startDrag.forEach(el => startEl.addEventListener(el, e => this.dragStart(e), { passive: true }));
 		movingDrag.forEach(el => window.addEventListener(el, e => this.dragMove(e), { passive: true }));
 		endDrag.forEach(el => window.addEventListener(el, () => this.dragEnd()));
@@ -444,17 +435,15 @@ class DDCarousel {
 	}
 
 	dragStart(e) {
-		if (e.target == this.stage) {
+		if (this.ie10 || e.target == this.stage) {
 			var startPoint = this.getInput(e, "mousedown", "touchstart");
 			if (startPoint !== undefined) {
-				if (e.target == this.stage) {
-					this.isDragging = true;
-					this.touchStartRaw = startPoint;
-					this.touchStart = this.touchStartRaw + -this.currentTranslate;
-					this.origPosition = this.currentTranslate;
-					this.dontChange = false;
-					this.trigger("onDrag");
-				}
+				this.isDragging = true;
+				this.touchStartRaw = startPoint;
+				this.touchStart = this.touchStartRaw + -this.currentTranslate;
+				this.origPosition = this.currentTranslate;
+				this.dontChange = false;
+				this.trigger("onDrag");
 			}
 		}
 	}
@@ -501,9 +490,8 @@ class DDCarousel {
 	}
 
 	scrollToPos(int) {
-		const isSafari8 = /^((?!chrome|android).)*safari/i.test(navigator.userAgent);
 		var output = this.config.vertical ? `translateY(${int}px)` : `translateX(${int}px)`;
-		if (isSafari8) {
+		if (/^((?!chrome|android).)*safari/i.test(navigator.userAgent)) { //for older webkit browsers
 			this.stage.style.webkitTransform = output;
 		} else {
 			this.stage.style.transform = output;
@@ -733,3 +721,5 @@ if (!('remove' in Element.prototype)) {
 		}
 	};
 }
+
+Object.values = Object.values || (x => Object.keys(x).map(k => x[k]));
