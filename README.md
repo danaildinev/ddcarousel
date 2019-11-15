@@ -1,6 +1,6 @@
 # DDCarousel
 
-![GitHub tag (latest by date)](https://img.shields.io/github/v/tag/danaildinev/ddcarousel)
+![GitHub package.json version](https://img.shields.io/github/package-json/v/danaildinev/ddcarousel) ![Travis (.org) branch](https://img.shields.io/travis/danaildinev/ddcarousel/master) ![GitHub](https://img.shields.io/github/license/danaildinev/ddcarousel)
 
 Simple and fast carousel slider written in vannila JS.
 
@@ -10,7 +10,11 @@ Simple and fast carousel slider written in vannila JS.
 
 ## Getting started
 
-Simply download/clone repository and copy css and js from `dist` folder to your project.
+This package can be installed with:
+
+- [npm](https://www.npmjs.com/package/ddcarousel): `npm i ddcarousel`
+
+Or download the [latest release](https://github.com/danaildinev/ddcarousel/releases).
 
 ## Usage
 

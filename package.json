@@ -1,12 +1,12 @@
 {
 	"name": "ddcarousel",
 	"version": "1.2.0",
-	"description": "Vanilla JS Carousel slider",
+	"description": "Simple and fast carousel slider written in vannila JS",
 	"main": "index.js",
 	"scripts": {
 		"dist": "npm-run-all babeljs minifyjs buildcss minifycss",
-		"dist+demo": "npm-run-all dist demojs democss",
 		"demo": "npm-run-all demojs democss",
+		"dist+demo": "npm-run-all dist demojs democss",
 		"-----------------": "",
 		"babeljs": "babel src/ddcarousel.js --out-file dist/ddcarousel.js --source-maps --presets=@babel/preset-env",
 		"minifyjs": "uglifyjs --compress --comments /^!/ --output dist/ddcarousel.min.js -- dist/ddcarousel.js",
@@ -14,7 +14,8 @@
 		"buildcss": "node-sass --output-style compact --include-path scss src/ddcarousel.scss   src/ddcarousel.css",
 		"minifycss": "uglifycss src/ddcarousel.css > dist/ddcarousel.min.css",
 		"demojs": "copyfiles -u 1 dist/ddcarousel.min.js demo/js/ && echo 'JS copied to demo!'",
-		"democss": "copyfiles -u 1 dist/ddcarousel.min.css demo/css/ && echo 'CSS copied to demo!'"
+		"democss": "copyfiles -u 1 dist/ddcarousel.min.css demo/css/ && echo 'CSS copied to demo!'",
+		"test": "npm run dist+demo"
 	},
 	"repository": {
 		"type": "git",
