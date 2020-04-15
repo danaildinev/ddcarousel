@@ -192,6 +192,10 @@ class DDCarousel {
 		containerWidth = parseInt(wind.width);
 		containerHeight = parseInt(wind.height)
 
+		if (this.slides.length <= this.config.items) {
+			this.config.items = this.slides.length;
+		}
+
 		if (this.config.centerSlide) {
 			totalPages = this.slides.length - 1
 		} else if (this.config.itemPerPage) {
@@ -236,10 +240,14 @@ class DDCarousel {
 		return height;
 	}
 
+	checkNavStatus() {
+		return this.config.nav && this.totalPages > 0
+	}
+
 	createNav() {
 		var navDiv = this.getEl(`.${this.cNav}`);
 
-		if (this.config.nav) {
+		if (this.checkNavStatus()) {
 			var navContainer = this.newEl("div"),
 				leftBtn = this.newEl("button"),
 				rightBtn = this.newEl("button");
@@ -271,10 +279,14 @@ class DDCarousel {
 		}
 	}
 
+	checkDotsStatus() {
+		return this.config.dots && this.totalPages > 0
+	}
+
 	createDots() {
 		var dotsDiv = this.getEl(`.${this.cDots}`);
 
-		if (this.config.dots) {
+		if (this.checkDotsStatus()) {
 			var targetSlidesLenght,
 				dotsContainer = this.newEl("div");
 
@@ -477,7 +489,7 @@ class DDCarousel {
 	}
 
 	refreshNav() {
-		if (this.config.nav) {
+		if (this.checkNavStatus()) {
 			var inactive = "inactive";
 			if (this.currentPage == 0) {
 				this.navPrevBtn.classList.add(inactive);
@@ -626,7 +638,7 @@ class DDCarousel {
 
 	setActiveDot() {
 		var active = "active";
-		if (this.config.dots) {
+		if (this.checkDotsStatus()) {
 			var a = this.getEl(`.${this.cDot}[${this.dSlide}].` + active);
 			if (a != null) a.classList.remove(active);
 

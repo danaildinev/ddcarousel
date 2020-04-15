@@ -1,5 +1,10 @@
 # Changelog
 
+## v1.2.1 (2020 Apr 15)
+-   Improved auto height option
+-   Fixed error when slider items are lower count than specified in the config
+-   Navigation and dots won't show when there aren't any pages to slide
+
 ## v1.2 (2019 Nov 15)
 -   Added full width option
 -   Added option to show specified page number after init
