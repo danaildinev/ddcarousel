@@ -32,29 +32,20 @@ Put the required base style and script:
 
 **Usage**
 
-Wrap all items in container element with id/class:
+Wrap all items in container (`ddcarousel` is required class)
 
 ```html
-<div class="ddcarousel">
+<div class="ddcarousel sample">
 	<div>Lorem ipsum dolor sit amet consectetur adipisicing elit.</div>
 	<div>Lorem ipsum Placeat corrupti minus quia alias ullam error commodi recusandae dolores.</div>
 </div>
-```
-
-Give the container some height and width or leave them by default:
-
-```css
-.ddcarousel {
-	width: 100%;
-	height: 300px;
-}
 ```
 
 Call the plugin when page is ready:
 
 ```js
 var carousel = new DDCarousel({
-	container: ".ddcarousel"
+	container: ".sample"
 });
 ```
 
@@ -70,9 +61,9 @@ var carousel = new DDCarousel({
 
 - `dots` - Show dots (boolean, default: true)
 
-- `autoHeight` - Change height based on current slide (boolean, default: false)
+- `autoHeight` - Change height based on current slide (boolean, default: true)
 
-- `fullWidth` **(new)**- Set container to full width (boolean, default: false)
+- `fullWidth` **(new)**- Set container to full width (boolean, default: true)
 
 - `centerSlide` - Centered slide (boolean, default: false)
 
@@ -84,7 +75,7 @@ var carousel = new DDCarousel({
 
 - `touchDrag` - Toggle touch drag (boolean, default: true)
 
-- `mouseDrag` - Toggle mouse drag (boolean, default: true)
+- `mouseDrag` - Toggle mouse drag (boolean, default: false)
 
 - `vertical` - Change to vertical orientation (boolean, default: false)
 
@@ -94,7 +85,7 @@ var carousel = new DDCarousel({
 
 - `autoplayPauseHover` **(new)** - Pause autoplay on hover or touch (boolean, default: false)
 
-- `callback` **(new)** - Enable callback events (boolean, default: false)
+- `callbacks` **(new)** - Enable callback events (boolean, default: false)
 
 - `labelNavPrev` - Label for nav previous button (string, default: "< Prev")
 
@@ -166,6 +157,8 @@ carousel.on("onChanged", function (e) => {
 - `onChanged` - Changed page
 
 - `onResized` - Carousel container width is changed (you can use it with `refresh()` method)
+
+**Note**: `onInitialize` and `onInitialized` events are working only when declared in plugin constructor (see first example)
 
 ## Building
 

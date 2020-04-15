@@ -7,13 +7,14 @@ class DDCarousel {
 		this.cStage = "ddcarousel-stage";
 		this.cNav = "ddcarousel-nav";
 		this.cItem = "ddcarousel-item";
-		this.cFullW = "ddcarousel-fullwidth";
 		this.cDots = "ddcarousel-dots";
 		this.cDot = "ddcarousel-dot";
 		this.cPrev = "ddcarousel-prev";
 		this.cNext = "ddcarousel-next";
 		this.cVert = "ddcarousel-vertical";
 		this.cUrl = "ddcarousel-urls";
+		this.cFullW = "full-width";
+		this.cDisbl = "disabled";
 
 		this.dSlide = "data-slide";
 		this.dId = "data-id";
@@ -54,8 +55,8 @@ class DDCarousel {
 			container: "." + this.appName.toLowerCase(),
 			nav: false,
 			dots: true,
-			autoHeight: false,
-			fullWidth: false,
+			autoHeight: true,
+			fullWidth: true,
 			startPage: 0,
 			items: 1,
 			itemPerPage: false,
@@ -66,7 +67,7 @@ class DDCarousel {
 			autoplaySpeed: 1000,
 			autoplayPauseHover: false,
 			touchDrag: true,
-			mouseDrag: true,
+			mouseDrag: false,
 			centerSlide: false,
 			touchSwipeThreshold: 60,
 			touchMaxSlideDist: 500,
@@ -227,6 +228,12 @@ class DDCarousel {
 		if (this.config.autoHeight) {
 			this.setActiveSlides();
 			this.calculateContainerHeight(this.currentPage);
+		}
+
+		if (this.config.mouseDrag) {
+			this.stage.classList.add(this.cDisbl);
+		} else {
+			this.stage.classList.remove(this.cDisbl);
 		}
 
 		if (slideWidth != this.slides[0].style.width) this.trigger("onResized");

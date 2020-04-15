@@ -2,8 +2,11 @@
 
 ## v1.2.1 (2020 Apr 15)
 -   Improved auto height option
+-   Auto height is now enabled by default and slider width is set to auto (if you disable auto height, you must to specify manually the height)
 -   Fixed error when slider items are lower count than specified in the config
--   Navigation and dots won't show when there aren't any pages to slide
+-   Improved navigation and dots - they won't show when there aren't any pages to slide
+-   Pointer events are enabled only when mouse drag is enabled
+-   Mouse drag is disabled by default
 
 ## v1.2 (2019 Nov 15)
 -   Added full width option

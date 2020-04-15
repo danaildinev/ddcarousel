@@ -1,6 +1,6 @@
-.ddcarousel { width: 800px; height: 200px; transition: height 0.3s ease-in-out; margin-bottom: 50px; }
+.ddcarousel { transition: height 0.3s ease-in-out; margin-bottom: 50px; }
 
-.ddcarousel.ddcarousel-fullwidth { width: 100% !important; }
+.ddcarousel.full-width { width: 100%; }
 
 .ddcarousel.ddcarousel-vertical .ddcarousel-stage { height: auto; flex-direction: column; -ms-flex-direction: column; -webkit-flex-direction: column; }
 
@@ -10,9 +10,11 @@
 
 .ddcarousel .ddcarousel-stage { display: flex; display: -ms-flexbox; display: -webkit-flex; position: absolute; height: 100%; backface-visibility: hidden; -moz-user-select: none; transition-timing-function: ease-out; }
 
-.ddcarousel .ddcarousel-item { height: 100%; box-sizing: border-box; flex: 0 0 auto; -webkit-flex: 0 0 auto; pointer-events: none; -webkit-touch-callout: none; -webkit-user-select: none; -moz-user-select: none; -ms-user-select: none; user-select: none; }
+.ddcarousel .ddcarousel-item { height: 100%; box-sizing: border-box; flex: 0 0 auto; -webkit-flex: 0 0 auto; }
 
 .ddcarousel .ddcarousel-item img { width: 100%; height: auto; }
+
+.ddcarousel .disabled .ddcarousel-item { pointer-events: none; -webkit-touch-callout: none; -webkit-user-select: none; -moz-user-select: none; -ms-user-select: none; user-select: none; }
 
 .ddcarousel button { display: inline-block; text-decoration: none; background: transparent; border: 0; font-size: 100%; font-family: inherit; cursor: pointer; overflow: visible; margin: 0; padding: 4px 8px; appearance: button; -webkit-appearance: button; }
 
