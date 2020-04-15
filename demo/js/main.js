@@ -13,27 +13,29 @@ document.addEventListener("DOMContentLoaded", function () {
 	});
 
 	var defaultCarousel = new DDCarousel({
-		container: ".default"
+		container: ".default",
 	});
 
 	var items = new DDCarousel({
 		container: ".items",
 		items: 3,
 		nav: true,
-		dots: false
+		dots: false,
+		mouseDrag: true
 	});
 
 	var centered = new DDCarousel({
 		container: ".centered",
 		items: 3,
-		centerSlide: true
+		centerSlide: true,
+		mouseDrag: true
 	});
 
 	var autoHeight = new DDCarousel({
 		container: ".autoHeight",
 		items: 3,
 		itemPerPage: true,
-		autoHeight: true
+		mouseDrag: true
 	});
 
 	var responsive = new DDCarousel({
@@ -41,6 +43,7 @@ document.addEventListener("DOMContentLoaded", function () {
 		items: 3,
 		nav: true,
 		dots: false,
+		mouseDrag: true,
 		responsive: {
 			480: {
 				items: 1,
@@ -59,13 +62,16 @@ document.addEventListener("DOMContentLoaded", function () {
 		items: 2,
 		itemPerPage: true,
 		vertical: true,
-		startPage: 2
+		startPage: 2,
+		mouseDrag: true,
+		autoHeight: false
 	});
 
 	var url = new DDCarousel({
 		container: ".url",
 		dots: false,
-		urlNav: true
+		urlNav: true,
+		mouseDrag: true
 	});
 
 	var autoplay = new DDCarousel({
@@ -83,14 +89,14 @@ document.addEventListener("DOMContentLoaded", function () {
 		autoplay.autoplayStart();
 	});
 
-	var disabledTouch = new DDCarousel({
+	var enabledmouse = new DDCarousel({
 		container: ".disabledTouch",
 		touchDrag: false
 	});
 
-	var disabledTouchMouse = new DDCarousel({
-		container: ".disabledTouchMouse",
-		mouseDrag: false
+	var enabledMouse = new DDCarousel({
+		container: ".enabledMouse",
+		mouseDrag: true
 	});
 
 	var customLabels = new DDCarousel({
@@ -104,6 +110,7 @@ document.addEventListener("DOMContentLoaded", function () {
 	var customAnimConfig = new DDCarousel({
 		container: ".customAnimConfig",
 		items: 3,
+		mouseDrag: true,
 		touchSwipeThreshold: 1,
 		touchMaxSlideDist: 1000,
 		swipeSmooth: 0.2,
@@ -113,6 +120,7 @@ document.addEventListener("DOMContentLoaded", function () {
 	var eventsExample = new DDCarousel({
 		container: ".eventsExample",
 		items: 3,
+		mouseDrag: true,
 		touchSwipeThreshold: 1,
 		swipeSmooth: 0.2,
 		slideChangeDuration: 1.2,

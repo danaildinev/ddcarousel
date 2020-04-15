@@ -6,12 +6,10 @@ function _defineProperties(a, b) { for (var c = 0; c < b.length; c++) { var d = 
 
 function _createClass(a, b, c) { return b && _defineProperties(a.prototype, b), c && _defineProperties(a, c), a; }
 
-/*! DDCarousel 1.2 by Danail Dinev 2019 | License: https://github.com/danaildinev/ddcarousel/blob/master/LICENSE */
-var DDCarousel =
-/*#__PURE__*/
-function () {
+/*! DDCarousel 1.2.1 | Danail Dinev 2019-2020 | License: https://github.com/danaildinev/ddcarousel/blob/master/LICENSE */
+var DDCarousel = /*#__PURE__*/function () {
   function a(b) {
-    _classCallCheck(this, a), this.appName = "DDCarousel", this.cCont = "ddcarousel-container", this.cStage = "ddcarousel-stage", this.cNav = "ddcarousel-nav", this.cItem = "ddcarousel-item", this.cFullW = "ddcarousel-fullwidth", this.cDots = "ddcarousel-dots", this.cDot = "ddcarousel-dot", this.cPrev = "ddcarousel-prev", this.cNext = "ddcarousel-next", this.cVert = "ddcarousel-vertical", this.cUrl = "ddcarousel-urls", this.dSlide = "data-slide", this.dId = "data-id", this.dTitle = "data-title", this.currentPage = 0, this.triggers = ["onInitialize", "onInitialized", "onDrag", "onDragging", "onDragged", "onChanged", "onTransitionend", "onResized"], this.ie10 = document.all && window.atob, this.configOrig = b, this.setDefaults(), this.checkContainer(this.config.container) && (this.trigger("onInitialize", {
+    _classCallCheck(this, a), this.appName = "DDCarousel", this.cCont = "ddcarousel-container", this.cStage = "ddcarousel-stage", this.cNav = "ddcarousel-nav", this.cItem = "ddcarousel-item", this.cDots = "ddcarousel-dots", this.cDot = "ddcarousel-dot", this.cPrev = "ddcarousel-prev", this.cNext = "ddcarousel-next", this.cVert = "ddcarousel-vertical", this.cUrl = "ddcarousel-urls", this.cFullW = "full-width", this.cDisbl = "disabled", this.dSlide = "data-slide", this.dId = "data-id", this.dTitle = "data-title", this.currentPage = 0, this.triggers = ["onInitialize", "onInitialized", "onDrag", "onDragging", "onDragged", "onChanged", "onTransitionend", "onResized"], this.ie10 = document.all && window.atob, this.configOrig = b, this.setDefaults(), this.checkContainer(this.config.container) && (this.trigger("onInitialize", {
       container: this.container,
       event: "onInitialize"
     }), this.createStage(), this.calculateStage(), this.createNav(), this.createDots(), this.createUrls(), this.setActiveSlides(), this.changePage(this.config.startPage > 0 ? this.config.startPage : 0, !1), this.refresh(), this.attachEvents(), this.trigger("onInitialized"));
@@ -26,8 +24,8 @@ function () {
         container: "." + this.appName.toLowerCase(),
         nav: !1,
         dots: !0,
-        autoHeight: !1,
-        fullWidth: !1,
+        autoHeight: !0,
+        fullWidth: !0,
         startPage: 0,
         items: 1,
         itemPerPage: !1,
@@ -38,7 +36,7 @@ function () {
         autoplaySpeed: 1000,
         autoplayPauseHover: !1,
         touchDrag: !0,
-        mouseDrag: !0,
+        mouseDrag: !1,
         centerSlide: !1,
         touchSwipeThreshold: 60,
         touchMaxSlideDist: 500,
@@ -116,11 +114,23 @@ function () {
           d = this.slides[0].style.width,
           e = window.getComputedStyle(this.container),
           f = this.container.classList;
-      this.config.fullWidth ? f.add(this.cFullW) : f.remove(this.cFullW), this.config.vertical ? f.add(this.cVert) : f.remove(this.cVert), a = parseInt(e.width), b = parseInt(e.height), c = this.config.centerSlide ? this.slides.length - 1 : this.config.itemPerPage ? this.slides.length - this.config.items : Math.ceil(this.slides.length / this.config.items) - 1, this.totalPages = c, this.slidesHeights = [];
+      this.config.fullWidth ? f.add(this.cFullW) : f.remove(this.cFullW), this.config.vertical ? f.add(this.cVert) : f.remove(this.cVert), a = parseInt(e.width), b = parseInt(e.height), this.slides.length <= this.config.items && (this.config.items = this.slides.length), c = this.config.centerSlide ? this.slides.length - 1 : this.config.itemPerPage ? this.slides.length - this.config.items : Math.ceil(this.slides.length / this.config.items) - 1, this.totalPages = c, this.slidesHeights = [];
 
-      for (var g = 0; g < this.slides.length; g++) this.config.items == null && this.config.vertical ? this.slides[g].style.width = a + "px" : this.config.vertical ? this.slides[g].style.height = b / this.config.items + "px" : !this.config.vertical && (this.slides[g].style.width = a / this.config.items + "px"), this.slidesHeights.push(this.getEl("[".concat(this.dSlide, "=\"").concat(g, "\"] > div")).scrollHeight);
+      for (var g = 0; g < this.slides.length; g++) this.config.items == null && this.config.vertical ? this.slides[g].style.width = a + "px" : this.config.vertical ? this.slides[g].style.height = b / this.config.items + "px" : !this.config.vertical && (this.slides[g].style.width = a / this.config.items + "px"), this.slidesHeights.push(this.getOuterHeight(this.getEl("[".concat(this.dSlide, "=\"").concat(g, "\"] > div"))));
 
-      !this.config.vertical && (this.stage.style.width = a * this.slides.length + "px"), this.config.autoHeight && (this.setActiveSlides(), this.calculateContainerHeight(this.currentPage)), d != this.slides[0].style.width && this.trigger("onResized");
+      !this.config.vertical && (this.stage.style.width = a * this.slides.length + "px"), this.config.autoHeight && (this.setActiveSlides(), this.calculateContainerHeight(this.currentPage)), this.config.mouseDrag ? this.stage.classList.add(this.cDisbl) : this.stage.classList.remove(this.cDisbl), d != this.slides[0].style.width && this.trigger("onResized");
+    }
+  }, {
+    key: "getOuterHeight",
+    value: function getOuterHeight(a) {
+      var b = a.offsetHeight,
+          c = getComputedStyle(a);
+      return b += parseInt(c.marginTop) + parseInt(c.marginBottom), b;
+    }
+  }, {
+    key: "checkNavStatus",
+    value: function checkNavStatus() {
+      return this.config.nav && this.totalPages > 0;
     }
   }, {
     key: "createNav",
@@ -128,7 +138,7 @@ function () {
       var a = this;
       var b = this.getEl(".".concat(this.cNav));
 
-      if (this.config.nav) {
+      if (this.checkNavStatus()) {
         var c = this.newEl("div"),
             d = this.newEl("button"),
             e = this.newEl("button");
@@ -140,12 +150,17 @@ function () {
       } else b != null && b.remove();
     }
   }, {
+    key: "checkDotsStatus",
+    value: function checkDotsStatus() {
+      return this.config.dots && this.totalPages > 0;
+    }
+  }, {
     key: "createDots",
     value: function createDots() {
       var a = this;
       var b = this.getEl(".".concat(this.cDots));
 
-      if (this.config.dots) {
+      if (this.checkDotsStatus()) {
         var c,
             d = this.newEl("div");
         b && b.remove(), d.classList.add(this.cDots), c = this.config.items > 1 ? this.config.centerSlide ? this.slides.length : this.totalPages + 1 : this.slides.length;
@@ -273,7 +288,7 @@ function () {
   }, {
     key: "refreshNav",
     value: function refreshNav() {
-      if (this.config.nav) {
+      if (this.checkNavStatus()) {
         var a = "inactive";
         this.currentPage == 0 ? (this.navPrevBtn.classList.add(a), this.navNextBtn.classList.remove(a)) : this.currentPage == this.totalPages ? (this.navPrevBtn.classList.remove(a), this.navNextBtn.classList.add(a)) : (this.navPrevBtn.classList.remove(a), this.navNextBtn.classList.remove(a));
       }
@@ -341,7 +356,7 @@ function () {
     value: function setActiveDot() {
       var b = "active";
 
-      if (this.config.dots) {
+      if (this.checkDotsStatus()) {
         var c = this.getEl(".".concat(this.cDot, "[").concat(this.dSlide, "].") + b);
         c != null && c.classList.remove(b), this.getEl(".".concat(this.cDot, "[").concat(this.dSlide, "=\"").concat(this.currentPage, "\"]")).classList.add(b);
       }
