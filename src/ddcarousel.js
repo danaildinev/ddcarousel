@@ -1,4 +1,4 @@
-/*! DDCarousel 1.2 by Danail Dinev 2019 | License: https://github.com/danaildinev/ddcarousel/blob/master/LICENSE */
+/*! DDCarousel 1.2.1 | Danail Dinev 2019-2020 | License: https://github.com/danaildinev/ddcarousel/blob/master/LICENSE */
 class DDCarousel {
 	constructor(options) {
 		this.appName = "DDCarousel";
@@ -212,7 +212,7 @@ class DDCarousel {
 				this.slides[i].style.width = containerWidth / this.config.items + "px";
 			}
 			this.slidesHeights.push(
-				this.getEl(`[${this.dSlide}="${i}"] > div`).scrollHeight
+				this.getOuterHeight(this.getEl(`[${this.dSlide}="${i}"] > div`))
 			);
 		}
 
@@ -226,6 +226,14 @@ class DDCarousel {
 		}
 
 		if (slideWidth != this.slides[0].style.width) this.trigger("onResized");
+	}
+
+	getOuterHeight(el) {
+		var height = el.offsetHeight,
+			style = getComputedStyle(el);
+
+		height += parseInt(style.marginTop) + parseInt(style.marginBottom);
+		return height;
 	}
 
 	createNav() {
