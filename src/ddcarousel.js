@@ -1,4 +1,4 @@
-/*! DDCarousel 1.2 by Danail Dinev 2019 | License: https://github.com/danaildinev/ddcarousel/blob/master/LICENSE */
+/*! DDCarousel 1.2.1 | Danail Dinev 2019-2020 | License: https://github.com/danaildinev/ddcarousel/blob/master/LICENSE */
 class DDCarousel {
 	constructor(options) {
 		this.appName = "DDCarousel";
@@ -7,13 +7,14 @@ class DDCarousel {
 		this.cStage = "ddcarousel-stage";
 		this.cNav = "ddcarousel-nav";
 		this.cItem = "ddcarousel-item";
-		this.cFullW = "ddcarousel-fullwidth";
 		this.cDots = "ddcarousel-dots";
 		this.cDot = "ddcarousel-dot";
 		this.cPrev = "ddcarousel-prev";
 		this.cNext = "ddcarousel-next";
 		this.cVert = "ddcarousel-vertical";
 		this.cUrl = "ddcarousel-urls";
+		this.cFullW = "full-width";
+		this.cDisbl = "disabled";
 
 		this.dSlide = "data-slide";
 		this.dId = "data-id";
@@ -54,8 +55,8 @@ class DDCarousel {
 			container: "." + this.appName.toLowerCase(),
 			nav: false,
 			dots: true,
-			autoHeight: false,
-			fullWidth: false,
+			autoHeight: true,
+			fullWidth: true,
 			startPage: 0,
 			items: 1,
 			itemPerPage: false,
@@ -66,7 +67,7 @@ class DDCarousel {
 			autoplaySpeed: 1000,
 			autoplayPauseHover: false,
 			touchDrag: true,
-			mouseDrag: true,
+			mouseDrag: false,
 			centerSlide: false,
 			touchSwipeThreshold: 60,
 			touchMaxSlideDist: 500,
@@ -192,6 +193,10 @@ class DDCarousel {
 		containerWidth = parseInt(wind.width);
 		containerHeight = parseInt(wind.height)
 
+		if (this.slides.length <= this.config.items) {
+			this.config.items = this.slides.length;
+		}
+
 		if (this.config.centerSlide) {
 			totalPages = this.slides.length - 1
 		} else if (this.config.itemPerPage) {
@@ -212,7 +217,7 @@ class DDCarousel {
 				this.slides[i].style.width = containerWidth / this.config.items + "px";
 			}
 			this.slidesHeights.push(
-				this.getEl(`[${this.dSlide}="${i}"] > div`).scrollHeight
+				this.getOuterHeight(this.getEl(`[${this.dSlide}="${i}"] > div`))
 			);
 		}
 
@@ -225,13 +230,31 @@ class DDCarousel {
 			this.calculateContainerHeight(this.currentPage);
 		}
 
+		if (this.config.mouseDrag) {
+			this.stage.classList.add(this.cDisbl);
+		} else {
+			this.stage.classList.remove(this.cDisbl);
+		}
+
 		if (slideWidth != this.slides[0].style.width) this.trigger("onResized");
+	}
+
+	getOuterHeight(el) {
+		var height = el.offsetHeight,
+			style = getComputedStyle(el);
+
+		height += parseInt(style.marginTop) + parseInt(style.marginBottom);
+		return height;
+	}
+
+	checkNavStatus() {
+		return this.config.nav && this.totalPages > 0
 	}
 
 	createNav() {
 		var navDiv = this.getEl(`.${this.cNav}`);
 
-		if (this.config.nav) {
+		if (this.checkNavStatus()) {
 			var navContainer = this.newEl("div"),
 				leftBtn = this.newEl("button"),
 				rightBtn = this.newEl("button");
@@ -263,10 +286,14 @@ class DDCarousel {
 		}
 	}
 
+	checkDotsStatus() {
+		return this.config.dots && this.totalPages > 0
+	}
+
 	createDots() {
 		var dotsDiv = this.getEl(`.${this.cDots}`);
 
-		if (this.config.dots) {
+		if (this.checkDotsStatus()) {
 			var targetSlidesLenght,
 				dotsContainer = this.newEl("div");
 
@@ -469,7 +496,7 @@ class DDCarousel {
 	}
 
 	refreshNav() {
-		if (this.config.nav) {
+		if (this.checkNavStatus()) {
 			var inactive = "inactive";
 			if (this.currentPage == 0) {
 				this.navPrevBtn.classList.add(inactive);
@@ -618,7 +645,7 @@ class DDCarousel {
 
 	setActiveDot() {
 		var active = "active";
-		if (this.config.dots) {
+		if (this.checkDotsStatus()) {
 			var a = this.getEl(`.${this.cDot}[${this.dSlide}].` + active);
 			if (a != null) a.classList.remove(active);
 

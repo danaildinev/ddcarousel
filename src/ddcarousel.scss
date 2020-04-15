@@ -1,10 +1,8 @@
 .ddcarousel {
-	width: 800px;
-	height: 200px;
 	transition: height 0.3s ease-in-out;
 	margin-bottom: 50px;
-	&.ddcarousel-fullwidth {
-		width: 100% !important;
+	&.full-width {
+		width: 100%;
 	}
 	&.ddcarousel-vertical {
 		.ddcarousel-stage {
@@ -39,16 +37,19 @@
 		box-sizing: border-box;
 		flex: 0 0 auto;
 		-webkit-flex: 0 0 auto;
-		pointer-events: none;
-		-webkit-touch-callout: none;
-		-webkit-user-select: none;
-		-moz-user-select: none;
-		-ms-user-select: none;
-		user-select: none;
-
 		img {
 			width: 100%;
 			height: auto;
+		}
+	}
+	.disabled {
+		.ddcarousel-item {
+			pointer-events: none;
+			-webkit-touch-callout: none;
+			-webkit-user-select: none;
+			-moz-user-select: none;
+			-ms-user-select: none;
+			user-select: none;
 		}
 	}
 	button {
