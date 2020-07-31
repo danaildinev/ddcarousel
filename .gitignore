@@ -1,4 +1,6 @@
 node_modules
+src/testing
+src/ddcarousel.css
 
 # Windows
 Thumbs.db

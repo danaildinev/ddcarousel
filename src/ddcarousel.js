@@ -1,4 +1,4 @@
-/*! DDCarousel 1.2.1 | Danail Dinev 2019-2020 | License: https://github.com/danaildinev/ddcarousel/blob/master/LICENSE */
+/*! DDCarousel 1.2.2 | Danail Dinev 2019-2020 | License: https://github.com/danaildinev/ddcarousel/blob/master/LICENSE */
 class DDCarousel {
 	constructor(options) {
 		this.appName = "DDCarousel";
@@ -100,6 +100,8 @@ class DDCarousel {
 		for (var name in options) {
 			this.config[name] = options[name];
 		}
+		if (this.config.items == 0)
+			this.config.itemPerPage = false;
 	}
 
 	callback(e) {
@@ -207,14 +209,21 @@ class DDCarousel {
 		this.totalPages = totalPages;
 
 		this.slidesHeights = [];
+		var width = 0;
 		for (var i = 0; i < this.slides.length; i++) {
 			//set current slide size
-			if (this.config.items == null && this.config.vertical) {
-				this.slides[i].style.width = containerWidth + "px";
-			} else if (this.config.vertical) {
-				this.slides[i].style.height = containerHeight / this.config.items + "px";
-			} else if (!this.config.vertical) {
-				this.slides[i].style.width = containerWidth / this.config.items + "px";
+			if (this.config.items != 0) {
+				if (this.config.vertical) {
+					this.slides[i].style.width = containerWidth + "px";
+				} else if (this.config.vertical) {
+					this.slides[i].style.height = containerHeight / this.config.items + "px";
+				} else if (!this.config.vertical) {
+					this.slides[i].style.width = containerWidth / this.config.items + "px";
+				}
+			} else {
+				var w = this.slides[i].getBoundingClientRect().width;
+				this.slides[i].style.width = w + "px";
+				width += w;
 			}
 			this.slidesHeights.push(
 				this.getOuterHeight(this.getEl(`[${this.dSlide}="${i}"] > div`))
@@ -222,7 +231,7 @@ class DDCarousel {
 		}
 
 		if (!this.config.vertical) {
-			this.stage.style.width = (containerWidth * this.slides.length) + "px";
+			this.stage.style.width = this.config.items == 0 ? (width + "px") : ((containerWidth * this.slides.length) + "px");
 		}
 
 		if (this.config.autoHeight) {
@@ -586,7 +595,7 @@ class DDCarousel {
 	}
 
 	updateSlide() {
-		if (this.config.centerSlide) {
+		if (this.config.centerSlide && this.config.items > 0) {
 			var output =
 				-this.getSlidePos(this.getCurrentSlideDom()) -
 				-(parseInt(this.getSlideStyle().width) * Math.floor(this.config.items / 2));
@@ -626,13 +635,18 @@ class DDCarousel {
 					this.activeSlides.push(index);
 				}
 			} else {
-				for (
-					var index = this.getSlideIndexForPage();
-					index < this.getSlideIndexForPage() + this.config.items;
-					index++
-				) {
-					if (index < this.slides.length) {
-						this.activeSlides.push(index);
+				if (this.config.items == 0) {
+					console.log('yeah');
+					this.activeSlides.push(this.getSlideIndexForPage());
+				} else {
+					for (
+						var index = this.getSlideIndexForPage();
+						index < this.getSlideIndexForPage() + this.config.items;
+						index++
+					) {
+						if (index < this.slides.length) {
+							this.activeSlides.push(index);
+						}
 					}
 				}
 			}
@@ -675,7 +689,7 @@ class DDCarousel {
 	}
 
 	getSlideIndexForPage() {
-		return this.currentPage * this.config.items;
+		return this.currentPage * (this.config.items > 0 ? this.config.items : 1);
 	}
 
 	getCurrentSlideDom() {
