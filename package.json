@@ -4,12 +4,13 @@
 	"description": "Simple and fast carousel slider written in vannila JS",
 	"main": "index.js",
 	"scripts": {
-		"dist": "npm-run-all babeljs minifyjs buildcss minifycss",
+		"dist": "npm-run-all babeljs minifyjs buildcss minifycss license",
 		"babeljs": "babel src/ddcarousel.js --out-file dist/ddcarousel.js --source-maps --presets=@babel/preset-env",
 		"minifyjs": "uglifyjs --compress --comments /^!/ --output dist/ddcarousel.min.js -- dist/ddcarousel.js",
 		"watchsass": "node-sass -w --output-style compact --include-path scss src/ddcarousel.scss   src/testing/ddcarousel.css",
 		"buildcss": "node-sass --output-style compact --include-path scss src/ddcarousel.scss   src/ddcarousel.css",
 		"minifycss": "uglifycss src/ddcarousel.css > dist/ddcarousel.min.css",
+		"license": "node utils/post-dist.js",
 		"test": "npm run dist"
 	},
 	"repository": {
@@ -24,7 +25,10 @@
 		"free"
 	],
 	"author": "Danail Dinev",
-	"license": "MIT",
+	"license": {
+		"type": "MIT",
+		"url": "https://github.com/danaildinev/ddcarousel/blob/master/LICENSE"
+	},
 	"bugs": {
 		"url": "https://github.com/danaildinev/ddcarousel/issues"
 	},
@@ -44,5 +48,8 @@
 		"npm-run-all": "^4.1.5",
 		"uglify-js": "^3.6.0",
 		"uglifycss": "0.0.29"
+	},
+	"dependencies": {
+		"read-package-json": "^2.1.1"
 	}
 }

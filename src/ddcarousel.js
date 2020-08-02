@@ -1,4 +1,3 @@
-/*! DDCarousel 1.2.2 | Danail Dinev 2019-2020 | License: https://github.com/danaildinev/ddcarousel/blob/master/LICENSE */
 class DDCarousel {
 	constructor(options) {
 		this.appName = "DDCarousel";
