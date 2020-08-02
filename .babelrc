@@ -7,6 +7,7 @@
 		"transform-minify-booleans",
 		"minify-simplify",
 		"minify-mangle-names",
+		"remove-import-export",
 		[
 			"transform-remove-console",
 			{

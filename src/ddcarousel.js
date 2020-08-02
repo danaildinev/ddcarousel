@@ -764,3 +764,5 @@ if (!('remove' in Element.prototype)) {
 }
 
 Object.values = Object.values || (x => Object.keys(x).map(k => x[k]));
+
+export default DDCarousel;
