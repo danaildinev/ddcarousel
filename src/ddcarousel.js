@@ -35,17 +35,7 @@ class DDCarousel {
 		this.configOrig = options;
 		this.setDefaults();
 		if (this.checkContainer(this.config.container)) {
-			this.trigger("onInitialize", { container: this.container, event: "onInitialize" });
-			this.createStage();
-			this.calculateStage();
-			this.createNav();
-			this.createDots();
-			this.createUrls();
-			this.setActiveSlides();
-			this.changePage(this.config.startPage > 0 ? this.config.startPage : 0, false);
-			this.refresh();
-			this.attachEvents();
-			this.trigger("onInitialized");
+			this.init();
 		}
 	}
 
@@ -137,10 +127,27 @@ class DDCarousel {
 		}
 	}
 
+	init() {
+		this.trigger("onInitialize", { container: this.container, event: "onInitialize" });
+		if (this.createStage() !== false) {
+			this.createNav();
+			this.createDots();
+			this.createUrls();
+			this.setActiveSlides();
+			this.changePage(this.config.startPage > 0 ? this.config.startPage : 0, false);
+			this.refresh();
+			this.attachEvents();
+			this.trigger("onInitialized");
+		}
+	}
+
 	createStage() {
 		var stageContainer = this.newEl("div"),
 			stageDiv = this.newEl("div"),
 			slidesSource = this.getEl(`> div`, true); //get all slides from user
+
+		if (slidesSource.length == 0)
+			return false;
 
 		stageContainer.classList.add(this.cCont);
 		stageDiv.classList.add(this.cStage);
@@ -170,6 +177,7 @@ class DDCarousel {
 		//get all slides and total pages
 		this.slides = this.getEl(`.${this.cItem}`, true);
 
+		this.calculateStage();
 	}
 
 	calculateStage() {
@@ -764,4 +772,4 @@ if (!('remove' in Element.prototype)) {
 
 Object.values = Object.values || (x => Object.keys(x).map(k => x[k]));
 
-export default DDCarousel;
+//export default DDCarousel;
