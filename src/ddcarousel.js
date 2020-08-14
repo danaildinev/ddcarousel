@@ -242,15 +242,13 @@ var DDCarousel = function (options) {
 			//set current slide size
 			if (config.items != 0) {
 				if (config.vertical) {
-					slides[i].style.width = containerWidth + "px";
-				} else if (config.vertical) {
 					slides[i].style.height = containerHeight / config.items + "px";
 				} else if (!config.vertical) {
 					slides[i].style.width = containerWidth / config.items + "px";
 				}
 			} else {
-				var w = slides[i].getBoundingClientRect().width;
-				slides[i].style.width = w + "px";
+				var w = slides[i].getBoundingClientRect();
+				slides[i].style.width = w.width + "px";
 				width += w;
 			}
 			slidesHeights.push(
