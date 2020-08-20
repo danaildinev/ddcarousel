@@ -55,6 +55,7 @@ var DDCarousel = function (options) {
 		swipeDistance,
 		currentTouch,
 		dontChange,
+		appCreated,
 		settings = {
 			container: "." + appName,
 			nav: false,
@@ -84,14 +85,9 @@ var DDCarousel = function (options) {
 		};
 
 	configOrig = options;
-	setDefaults(options);
-	if (checkContainer(config.container)) {
-		origClasses = document.querySelector(config.container).className;
-		init();
-	}
+	init(configOrig);
 
-
-	function setDefaults(options = configOrig) {
+	function setDefaults() {
 		triggers.forEach(el => {
 			settings[el] = () => { };
 			on(el, e => {
@@ -100,12 +96,12 @@ var DDCarousel = function (options) {
 		});
 
 		configResp = [];
-		if (options['responsive'] !== undefined) {
-			configResp = options['responsive'];
+		if (configOrig['responsive'] !== undefined) {
+			configResp = configOrig['responsive'];
 		}
 
 		config = settings;
-		updateSettings(options);
+		updateSettings(configOrig);
 	}
 
 	function updateSettings(options) {
@@ -152,16 +148,25 @@ var DDCarousel = function (options) {
 	}
 
 	function init() {
+		if (appCreated) {
+			console.error(`${appName}: Already created!`);
+			return false;
+		}
 		trigger("onInitialize", { container: container, event: "onInitialize" });
-		if (createStage() !== false) {
-			createNav();
-			createDots();
-			createUrls();
-			setActiveSlides();
-			changePage(config.startPage > 0 ? config.startPage : 0, false);
-			refresh();
-			attachEvents();
-			trigger("onInitialized");
+		setDefaults();
+		if (checkContainer(config.container)) {
+			origClasses = document.querySelector(config.container).className;
+			if (createStage() !== false) {
+				createNav();
+				createDots();
+				createUrls();
+				setActiveSlides();
+				changePage(config.startPage > 0 ? config.startPage : 0, false);
+				refresh();
+				attachEvents();
+				trigger("onInitialized");
+				appCreated = true;
+			}
 		}
 	}
 
@@ -221,6 +226,7 @@ var DDCarousel = function (options) {
 
 		app.className = origClasses;
 		currentPage = 0;
+		appCreated = false;
 	}
 
 	function calculateStage() {
@@ -799,7 +805,8 @@ var DDCarousel = function (options) {
 		getCurrentPage,
 		getTotalPages,
 		getTotalSlides,
-		destroy
+		destroy,
+		init
 	}
 };
 
