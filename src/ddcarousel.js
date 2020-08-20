@@ -36,6 +36,7 @@ var DDCarousel = function (options) {
 		totalPages = 0,
 		autoPlay,
 		isDragging,
+		origClasses = [],
 		configOrig = {},
 		config = {},
 		configResp,
@@ -85,6 +86,7 @@ var DDCarousel = function (options) {
 	configOrig = options;
 	setDefaults(options);
 	if (checkContainer(config.container)) {
+		origClasses = document.querySelector(config.container).className;
 		init();
 	}
 
@@ -200,6 +202,25 @@ var DDCarousel = function (options) {
 		slides = getEl(`.${cssClass.item}`, true);
 
 		calculateStage();
+	}
+
+	function destroy(fullReset) {
+		var app = document.querySelector(config.container);
+
+		if (!fullReset) {
+			var slides = getEl(`.${cssClass.item}`, true);
+			slides.forEach(el => {
+				app.appendChild(el.firstChild);
+			});
+		}
+
+		getEl(`.${cssClass.cont}`).remove();
+		getEl(`.${cssClass.nav}`).remove();
+		getEl(`.${cssClass.dots}`).remove();
+		getEl(`.${cssClass.url}`).remove();
+
+		app.className = origClasses;
+		currentPage = 0;
 	}
 
 	function calculateStage() {
@@ -777,7 +798,8 @@ var DDCarousel = function (options) {
 		autoplayStop,
 		getCurrentPage,
 		getTotalPages,
-		getTotalSlides
+		getTotalSlides,
+		destroy
 	}
 };
 
