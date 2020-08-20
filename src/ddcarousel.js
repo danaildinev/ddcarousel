@@ -27,7 +27,9 @@ var DDCarousel = function (options) {
 			"onDragged",
 			"onChanged",
 			"onTransitionend",
-			"onResized"
+			"onResized",
+			"onDestroy",
+			"onDestroyed",
 		],
 		ie10 = document.all && window.atob;
 
@@ -152,10 +154,10 @@ var DDCarousel = function (options) {
 			console.error(`${appName}: Already created!`);
 			return false;
 		}
-		trigger("onInitialize", { container: container, event: "onInitialize" });
 		setDefaults();
 		if (checkContainer(config.container)) {
 			origClasses = document.querySelector(config.container).className;
+			trigger("onInitialize", { container: container, event: "onInitialize" });
 			if (createStage() !== false) {
 				createNav();
 				createDots();
@@ -210,6 +212,7 @@ var DDCarousel = function (options) {
 	}
 
 	function destroy(fullReset) {
+		trigger("onDestroy");
 		var app = document.querySelector(config.container);
 
 		if (!fullReset) {
@@ -227,6 +230,9 @@ var DDCarousel = function (options) {
 		app.className = origClasses;
 		currentPage = 0;
 		appCreated = false;
+
+		trigger("onDestroyed");
+		return true;
 	}
 
 	function calculateStage() {
