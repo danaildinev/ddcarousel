@@ -86,7 +86,7 @@ var config = {
 	},
 	events: {
 		container: ".events",
-		items: 3,
+		items: 2,
 		mouseDrag: true,
 		touchSwipeThreshold: 1,
 		swipeSmooth: 0.2,
@@ -115,16 +115,25 @@ var config = {
 		},
 		onResized: function (e) {
 			setActiveEvent(e.event);
+		},
+		onDestroy: function (e) {
+			setActiveEvent(e.event);
+		},
+		onDestroyed: function (e) {
+			setActiveEvent(e.event);
 		}
 	}
 };
 
 function setActiveEvent(name) {
-	document.getElementById("eventLog").innerHTML += name + "\r\n";
-	document.getElementById("eventLog").scrollTop = document.getElementById("eventLog").scrollHeight;
-
+	writeLog(name);
 	document.querySelector(".events-list [data-event='" + name + "']").className = "active";
 	document.querySelector(".events-list [data-event='" + name + "'] .status").innerHTML = "on";
+}
+
+function writeLog(data) {
+	document.getElementById("eventLog").innerHTML += data + "\r\n";
+	document.getElementById("eventLog").scrollTop = document.getElementById("eventLog").scrollHeight;
 }
 
 document.addEventListener("DOMContentLoaded", function () {
@@ -191,6 +200,10 @@ document.addEventListener("DOMContentLoaded", function () {
 	//resize button
 	document.getElementById("resizeContainer").addEventListener("click", function () {
 		document.querySelector(".ddcarousel.events").style.width = Math.floor(Math.random() * 80) + 50 + "%";
+		writeLog("Carousel was resized. You can now refresh it.")
+
+	});
+	document.getElementById("eventsRefresh").addEventListener("click", function () {
 		events.refresh();
 	});
 
@@ -206,6 +219,42 @@ document.addEventListener("DOMContentLoaded", function () {
 			eventClass[j].className = "";
 		}
 	}, 1000);
+
+	//methods
+	document.getElementById("eventsGoToSlide").addEventListener("click", function () {
+		events.changePage(parseInt(document.getElementById("inputGoToSlide").value));
+	});
+	document.getElementById("eventsPrevSlide").addEventListener("click", function () {
+		events.prevPage();
+	});
+	document.getElementById("eventsNextSlide").addEventListener("click", function () {
+		events.nextPage();
+	});
+	document.getElementById("eventsGetCurrentPage").addEventListener("click", function () {
+		writeLog(events.getCurrentPage())
+	});
+	document.getElementById("eventsGetTotalPages").addEventListener("click", function () {
+		writeLog(events.getTotalPages())
+	});
+	document.getElementById("eventsGetTotalSlides").addEventListener("click", function () {
+		writeLog(events.getTotalSlides())
+	});
+	document.getElementById("eventsDestroyKeep").addEventListener("click", function () {
+		events.destroy();
+	});
+	document.getElementById("eventsDestroy").addEventListener("click", function () {
+		events.destroy(true);
+	});
+	document.getElementById("eventsInit").addEventListener("click", function () {
+		events.init();
+	});
+	document.getElementById("eventsAddSlide").addEventListener("click", function () {
+		var slide = document.createElement("div");
+		slide.classList.add("box");
+		slide.textContent = "New slide " + Math.floor(Math.random() * 20);
+		document.querySelector('.ddcarousel.events').append(slide);
+		writeLog("Added new slide. You can now call onitialize()")
+	});
 
 	//populate src textboxes
 	for (i = 0; i < srcTextareas.length; i++) {

@@ -101,6 +101,7 @@ input {
 	font-size: 0.9rem;
 	padding: 4px 14px;
 	border-radius: 14px;
+	margin-top: 4px;
 }
 
 button.btn:focus,
@@ -227,7 +228,9 @@ body.nav-opened #toggle-nav span {
 .ddcarousel.autoHeight {
 	box-shadow: none;
 }
-
+.ddcarousel-item .box {
+	background: #8eb9e2;
+}
 .ddcarousel-item:nth-child(1) .box,
 .ddcarousel-item:nth-child(6) .box {
 	background: #8eb9e2;

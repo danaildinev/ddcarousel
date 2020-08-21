@@ -32,7 +32,7 @@
 			<li><a href="#disabledTouch">Disabled touch drag</a></li>
 			<li><a href="#customLabels">Custom navigation labels</a></li>
 			<li><a href="#customanim">Custom animation config</a></li>
-			<li><a href="#events">Events</a></li>
+			<li><a href="#events">Events + methods</a></li>
 		</ul>
 	</nav>
 	<div class="carousel-section">
@@ -187,6 +187,8 @@
 						<li data-event="onChanged"><span class="status"></span>Changed</li>
 						<li data-event="onTransitionend"><span class="status"></span>Transition end</li>
 						<li data-event="onResized"><span class="status"></span>Resized</li>
+						<li data-event="onDestroy"><span class="status"></span>Destroy</li>
+						<li data-event="onDestroyed"><span class="status"></span>Destroyed</li>
 					</ul>
 				</div>
 				<div>
@@ -197,6 +199,21 @@
 				Resize event is called when you change carousel container size and then call the
 				<strong>refresh()</strong> method. Try resizing and re-calculate the carousel:
 				<button class="btn" id="resizeContainer">Resize random</button>
+				<button class="btn" id="eventsRefresh">Refresh</button>
+			</p>
+			<h3>Methods</h3>
+			<p>
+				<input id="inputGoToSlide" type="number" value="2" placeholder="1" style="width: 60px;">
+				<button class="btn" id="eventsGoToSlide">Go</button>
+				<button class="btn" id="eventsPrevSlide">Previous</button>
+				<button class="btn" id="eventsNextSlide">Next</button>
+				<button class="btn" id="eventsGetCurrentPage">Get current page</button>
+				<button class="btn" id="eventsGetTotalPages">Get total pages</button>
+				<button class="btn" id="eventsGetTotalSlides">Get total slides</button>
+				<button class="btn" id="eventsDestroy">Destroy</button>
+				<button class="btn" id="eventsDestroyKeep">Destroy (keep slides)</button>
+				<button class="btn" id="eventsInit">Initialize</button>
+				<button class="btn" id="eventsAddSlide">Add new slide (after destroy)</button>
 			</p>
 		</div>
 	</div>
