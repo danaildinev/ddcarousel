@@ -11,12 +11,10 @@ html {
 body {
 	padding: 0;
 	margin: 0;
-	font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Oxygen, Ubuntu, Cantarell, "Open Sans",
-		"Helvetica Neue", sans-serif;
+	font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Ubuntu, sans-serif;
 	position: relative;
-}
-
-body.nav-opened {
+	font-size: 16px;
+	color: #333;
 }
 
 body.nav-opened::after {
@@ -26,14 +24,26 @@ body.nav-opened::after {
 	left: 0;
 	width: 100%;
 	height: 100%;
-	background: rgba(255, 255, 255, 0.7);
+	background: rgba(200, 200, 200, 0.7);
+	height: 100%;
+	opacity: 0;
+	animation: fadeBackground 0.3s 1 forwards;
 }
 
 h1,
 h2,
 h3,
 h4 {
+	font-weight: 300;
 	text-align: center;
+}
+
+h1 {
+	font-size: 3rem;
+}
+
+h2 {
+	font-size: 2.2rem;
 }
 
 a {
@@ -42,13 +52,12 @@ a {
 }
 
 p {
-	font-size: 16px;
 	line-height: 24px;
 	text-align: center;
 }
 
 strong {
-	font-family: monospace;
+	font-family: Consolas, monospace;
 	background: rgb(255, 239, 235);
 	color: rgb(255, 104, 58);
 	font-weight: 100;
@@ -63,7 +72,7 @@ h2 strong {
 textarea {
 	width: 100%;
 	height: 150px;
-	font-size: 13px;
+	font-size: 0.8rem;
 	font-family: Consolas, monospace;
 	border: 1px solid #eee;
 	background: #fafafa;
@@ -73,6 +82,10 @@ textarea {
 textarea:focus {
 	outline: 0;
 	box-shadow: 0 0 3px 3px #ddd;
+}
+
+.center {
+	text-align: center;
 }
 
 .container {
@@ -85,8 +98,8 @@ button.btn,
 input {
 	border: 1px solid #ccc;
 	background: #fafafa;
-	font-size: 14px;
-	padding: 2px 12px;
+	font-size: 0.9rem;
+	padding: 4px 14px;
 	border-radius: 14px;
 }
 
@@ -100,7 +113,7 @@ nav.contents {
 	position: fixed;
 	width: 100%;
 	z-index: 1000;
-	background: #e7e7e7;
+	background: #fff;
 	height: 0;
 	transition: all 0.3s ease-in-out;
 	overflow: hidden;
@@ -121,7 +134,6 @@ nav.contents ul {
 
 nav.contents ul li {
 	padding: 6px 0;
-	font-size: 14px;
 }
 
 #top {
@@ -142,7 +154,6 @@ nav.contents ul li {
 #toggle-nav {
 	display: inline-block;
 	font-weight: 600;
-	font-size: 14px;
 	text-transform: uppercase;
 }
 
@@ -185,7 +196,7 @@ body.nav-opened #toggle-nav span {
 }
 
 .ddcarousel {
-	margin: 30px auto 60px auto;
+	margin: 60px auto;
 	box-shadow: 0 0 40px 10px #dedede;
 }
 
@@ -316,5 +327,14 @@ body.nav-opened #toggle-nav span {
 	}
 	.carousel-section {
 		padding: 100px 0;
+	}
+}
+
+@keyframes fadeBackground {
+	from {
+		opacity: 0;
+	}
+	to {
+		opacity: 1;
 	}
 }

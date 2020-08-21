@@ -13,23 +13,24 @@
 <body>
 	<div id="top">
 		<a href="#" id="toggle-nav"><span class="arrow"></span> Menu</a>
-		<div class="info"><a href="https://github.com/danaildinev/ddcarousel"
+		<div class="info">
+			<a href="https://github.com/danaildinev/ddcarousel"
 				target="_blank">https://github.com/danaildinev/ddcarousel</a>
 		</div>
 	</div>
 	<nav class="contents">
 		<ul>
 			<li><a href="#default">Default</a></li>
-			<li><a href="#enabledmouse">Enabled mouse drag</a></li>
+			<li><a href="#enabledMouse">Enabled mouse drag</a></li>
 			<li><a href="#multiple">Multiple slides + navigation</a></li>
 			<li><a href="#centered">Centered slide </a></li>
-			<li><a href="#autoheigh">Auto height + one item per page </a></li>
+			<li><a href="#autoHeight">Auto height + one item per page </a></li>
 			<li><a href="#responsive">Responsive + fullWidth <strong>(new)</strong></a></li>
 			<li><a href="#vertical">Vertical orientation <strong>(new)</strong></a></li>
 			<li><a href="#urlnav">Url navigation</a></li>
 			<li><a href="#autoplay">Autoplay <strong>(new)</strong></a></li>
-			<li><a href="#disabledtouch">Disabled touch drag</a></li>
-			<li><a href="#customlabels">Custom navigation labels</a></li>
+			<li><a href="#disabledTouch">Disabled touch drag</a></li>
+			<li><a href="#customLabels">Custom navigation labels</a></li>
 			<li><a href="#customanim">Custom animation config</a></li>
 			<li><a href="#events">Events</a></li>
 		</ul>
@@ -37,8 +38,11 @@
 	<div class="carousel-section">
 		<div class="container">
 			<h1>DDCarousel demos</h1>
-			<h4><a href="https://github.com/danaildinev/ddcarousel"
-					target="_blank">https://github.com/danaildinev/ddcarousel</a></h4>
+			<p>
+
+				<a class="center" href="https://github.com/danaildinev/ddcarousel"
+					target="_blank">https://github.com/danaildinev/ddcarousel</a>
+			</p>
 			<p>Demos with different carousel settings.<br />Important: Styles of slides are not included in
 				examples!
 			</p>
@@ -47,544 +51,131 @@
 	<div id="default" class="carousel-section">
 		<div class="container">
 			<h2>Default</h2>
-			<div class="ddcarousel default">
-				<div class="box">1</div>
-				<div class="box">2</div>
-				<div class="box">3</div>
-				<div class="box">4</div>
-				<div class="box">5</div>
-				<div class="box">6</div>
-			</div>
-			<p>
-				Default slider settings
-			</p>
-			<div class="code-container">
-				<div>
-					<h4>HTML</h4>
-					<textarea readonly>
-<div class="ddcarousel">
-	<div>1</div>
-	<div>2</div>
-	<div>3</div>
-	<div>4</div>
-	<div>5</div>
-</div>
-						</textarea>
-				</div>
-				<div>
-					<h4>JS</h4>
-					<textarea readonly>
-var ddcarousel = new DDCarousel({
-	container: ".ddcarousel"
-});
-						</textarea>
-				</div>
-			</div>
+			<p>Default slider settings</p>
+			<div class="ddcarousel default"></div>
 		</div>
 	</div>
-	<div id="enabledmouse" class="carousel-section">
-		<h2>Enabled mouse drag</h2>
+	<div id="enabledMouse" class="carousel-section">
 		<div class="container">
-			<div class="ddcarousel enabledMouse">
-				<div class="box">1</div>
-				<div class="box">2</div>
-				<div class="box">3</div>
-				<div class="box">4</div>
-				<div class="box">5</div>
-				<div class="box">6</div>
-			</div>
-			<p>
-				Similar example as the previous one, but this time mouse dragging is disabled.
-			</p>
-			<div class="code-container">
-				<div>
-					<h4>HTML</h4>
-					<textarea readonly>
-<div class="ddcarousel">
-	<div>1</div>
-	<div>2</div>
-	<div>3</div>
-	<div>4</div>
-	<div>5</div>
-</div></textarea>
-				</div>
-				<div>
-					<h4>JS</h4>
-					<textarea readonly>
-var ddcarousel = new DDCarousel({
-	container: ".ddcarousel",
-	mouseDrag: true
-});</textarea>
-				</div>
-			</div>
+			<h2>Enabled mouse drag</h2>
+			<p>Similar example as the previous one, but this time mouse dragging is disabled.</p>
+			<div class="ddcarousel enabledMouse"></div>
+			<textarea data-slider="enabledMouse" readonly></textarea>
 		</div>
 	</div>
 	<div id="multiple" class="carousel-section">
 		<div class="container">
 			<h2>Multiple slides + navigation</h2>
-			<div class="ddcarousel items">
-				<div class="box">1</div>
-				<div class="box">2</div>
-				<div class="box">3</div>
-				<div class="box">4</div>
-				<div class="box">5</div>
-				<div class="box">6</div>
-				<div class="box">7</div>
-				<div class="box">8</div>
-			</div>
-			<p>
-				Carousel with 3 slides per page.
-			</p>
-			<div class="code-container">
-				<div>
-					<h4>HTML</h4>
-					<textarea readonly>
-<div class="ddcarousel">
-	<div>1</div>
-	<div>2</div>
-	<div>3</div>
-	<div>4</div>
-	<div>5</div>
-</div></textarea>
-				</div>
-				<div>
-					<h4>JS</h4>
-					<textarea readonly>
-var ddcarousel = new DDCarousel({
-	container: ".ddcarousel",
-	items: 3,
-	nav: true,
-	dots: false,
-	mouseDrag: true
-});</textarea>
-				</div>
-			</div>
+			<p>Carousel with 3 slides per page.</p>
+			<div class="ddcarousel items"></div>
+			<textarea data-slider="items" readonly></textarea>
 		</div>
 	</div>
 	<div id="centered" class="carousel-section">
 		<div class="container">
 			<h2>Centered slide</h2>
-			<div class="ddcarousel centered">
-				<div class="box">1</div>
-				<div class="box">2</div>
-				<div class="box">3</div>
-				<div class="box">4</div>
-				<div class="box">5</div>
-			</div>
 			<p>
 				Example with centered slide. Currently only one slide per swipe is possible even though there are
 				multiple slides per page. Active slide is the centered one.
 			</p>
-			<div class="code-container">
-				<div>
-					<h4>HTML</h4>
-					<textarea readonly>
-<div class="ddcarousel">
-	<div>1</div>
-	<div>2</div>
-	<div>3</div>
-	<div>4</div>
-	<div>5</div>
-</div></textarea>
-				</div>
-				<div>
-					<h4>JS</h4>
-					<textarea readonly>
-var ddcarousel = new DDCarousel({
-	container: ".ddcarousel",
-	items: 3,
-	centerSlide: false,
-	mouseDrag: true
-});</textarea>
-				</div>
-			</div>
+			<div class="ddcarousel centered"></div>
+			<textarea data-slider="centered" readonly></textarea>
 		</div>
 	</div>
-	<div id="autoheigh" class="carousel-section">
+	<div id="autoHeight" class="carousel-section">
 		<div class="container">
 			<h2>Auto height + one item per page</h2>
-			<div class="ddcarousel autoHeight">
-				<div class="box">1</div>
-				<div class="box">2</div>
-				<div class="box">3</div>
-				<div class="box">4</div>
-				<div class="box">5</div>
-				<div class="box">6</div>
-				<div class="box">7</div>
-				<div class="box">8</div>
-			</div>
 			<p>
 				Change carousel height automatically on slide change based on the highest visible slide. Also showing
 				the new feature to change one item per swipe.
 			</p>
-			<div class="code-container">
-				<div>
-					<h4>HTML</h4>
-					<textarea readonly>
-<div class="ddcarousel">
-	<div>1</div>
-	<div>2</div>
-	<div>3</div>
-	<div>4</div>
-	<div>5</div>
-</div></textarea>
-				</div>
-				<div>
-					<h4>JS</h4>
-					<textarea readonly>
-var ddcarousel = new DDCarousel({
-	container: ".ddcarousel",
-	items: 3,
-	itemPerPage: true,
-	mouseDrag: true
-});</textarea>
-				</div>
-			</div>
+			<div class="ddcarousel autoHeight"></div>
+			<textarea data-slider="autoHeight" readonly></textarea>
 		</div>
 	</div>
 	<div id="responsive" class="carousel-section">
-		<h2>Responsive <strong>(new)</strong></h2>
 		<div class="container">
-			<div class="ddcarousel responsive">
-				<div class="box">1</div>
-				<div class="box">2</div>
-				<div class="box">3</div>
-				<div class="box">4</div>
-				<div class="box">5</div>
-				<div class="box">6</div>
-			</div>
+			<h2>Responsive <strong>(new)</strong></h2>
 			<p>
 				Try resizing the page to see different options based on viewport. You can also see the new 'fullWidth'
 				option enabled below 768px width.
 			</p>
-			<div class="code-container">
-				<div>
-					<h4>HTML</h4>
-					<textarea readonly>
-<div class="ddcarousel">
-	<div>1</div>
-	<div>2</div>
-	<div>3</div>
-	<div>4</div>
-	<div>5</div>
-</div></textarea>
-				</div>
-				<div>
-					<h4>JS</h4>
-					<textarea readonly>
-var ddcarousel = new DDCarousel({
- 	container: ".responsive",
-	items: 3,
-	nav: true,
-	dots: false,
-	mouseDrag: true
-	responsive: {
-		480: {
-			items: 1,
-			nav: false,
-			dots: true,
-		},
-		768: {
-			items: 2,
-			fullWidth: true
-		},
-	}
-});</textarea>
-				</div>
-			</div>
+			<div class="ddcarousel responsive"></div>
+			<textarea data-slider="responsive" readonly></textarea>
 		</div>
 	</div>
 	<div id="vertical" class="carousel-section">
-		<h2>Vertical orientation + starting page <strong>(new)</strong></h2>
 		<div class="container">
-			<div class="ddcarousel vertical">
-				<div class="box">1</div>
-				<div class="box">2</div>
-				<div class="box">3</div>
-				<div class="box">4</div>
-				<div class="box">5</div>
-				<div class="box">6</div>
-			</div>
-			<p>
-				This examples shows vertical orientation of carousel with two slides per page and starting page set to
-				3.
+			<h2>Vertical orientation + starting page <strong>(new)</strong></h2>
+			<p>This examples shows vertical orientation of carousel with two slides per page and starting page set to 3.
 			</p>
-			<div class="code-container">
-				<div>
-					<h4>HTML</h4>
-					<textarea readonly>
-<div class="ddcarousel vertical">
-	<div>1</div>
-	<div>2</div>
-	<div>3</div>
-	<div>4</div>
-	<div>5</div>
-</div></textarea>
-				</div>
-				<div>
-					<h4>CSS</h4>
-					<textarea readonly>
-.ddcarousel.vertical {
-	height: 500px;
-}</textarea>
-				</div>
-				<div>
-					<h4>JS</h4>
-					<textarea readonly>
-var ddcarousel = new DDCarousel({
-	container: ".vertical",
-	items: 2,
-	itemPerPage: true,
-	vertical: true,
-	startPage: 2,
-	mouseDrag: true,
-	autoHeight: false
-});</textarea>
-				</div>
-			</div>
+			<div class="ddcarousel vertical"></div>
+			<textarea data-slider="vertical" readonly></textarea>
 		</div>
 	</div>
 	<div id="urlnav" class="carousel-section">
-		<h2>Url navigation</h2>
 		<div class="container">
+			<h2>Url navigation</h2>
+			<p>Control slider with links. Links and titles are based on attributes specified for every slide.</p>
 			<div class="ddcarousel url">
-				<div class="box" data-id="first" data-title="First slide">1</div>
-				<div class="box">2</div>
-				<div class="box" data-id="third" data-title="Third slide">3</div>
-				<div class="box">4</div>
-				<div class="box" data-id="fifth" data-title="Fifth slide">5</div>
-				<div class="box">6</div>
+				<div class="box" data-id="first" data-title="First slide">First</div>
+				<div class="box">Second</div>
+				<div class="box" data-id="third" data-title="Third slide">Third</div>
+				<div class="box">Fourth</div>
+				<div class="box" data-id="fifth" data-title="Fifth slide">Fifth</div>
 			</div>
-			<p>
-				Control slider with links. Links and titles are based on attributes specified for every slide.
-			</p>
-			<div class="code-container">
-				<div>
-					<h4>HTML</h4>
-					<textarea readonly>
-<div class="ddcarousel">
-	<div data-id="first" data-title="First slide">1</div>
-	<div>2</div>
-	<div data-id="third" data-title="Third slide">3</div>
-	<div>4</div>
-	<div data-id="fifth" data-title="Fifth slide">5</div>
-	<div>6</div>
-</div></textarea>
-				</div>
-				<div>
-					<h4>JS</h4>
-					<textarea readonly>
-var ddcarousel = new DDCarousel({
-	container: ".ddcarousel",
-	dots: false,
-	urlNav: true,
-	mouseDrag: true
-});</textarea>
-				</div>
-			</div>
+			<textarea data-slider="url" readonly></textarea>
 		</div>
 	</div>
 	<div id="autoplay" class="carousel-section">
-		<h2>Autoplay <strong>(new)</strong></h2>
 		<div class="container">
-			<div class="ddcarousel autoplay">
-				<div class="box">1</div>
-				<div class="box">2</div>
-				<div class="box">3</div>
-				<div class="box">4</div>
-				<div class="box">5</div>
-				<div class="box">6</div>
-				<div class="box">7</div>
-				<div class="box">8</div>
-				<div class="box">9</div>
-				<div class="box">10</div>
-				<div class="box">11</div>
-				<div class="box">12</div>
-			</div>
+			<h2>Autoplay <strong>(new)</strong></h2>
+			<p>Autoplay feature with speed set to 3 seconds and enabled pause on hover/touch. Use buttons to toggle
+				on/off.</p>
 			<p>
-				Autoplay feature with speed set to 3 seconds and enabled pause on hover/touch. Use buttons to toggle
-				on/off.
+			<div class="ddcarousel autoplay"></div>
+			<button class="btn" id="apStop">Stop</button>
+			<button class="btn" id="apStart">Start</button>
 			</p>
-			<p>
-				<button class="btn" id="apStop">Stop</button>
-				<button class="btn" id="apStart">Start</button>
-			</p>
-			<div class="code-container">
-				<div>
-					<h4>HTML</h4>
-					<textarea readonly>
-	<div class="ddcarousel">
-		<div>1</div>
-		<div>2</div>
-		<div>3</div>
-		<div>4</div>
-		<div>5</div>
-		<div>6</div>
-	</div>
-	<button id="apStop">Stop</button>
-	<button id="apStart">Start</button>
-</textarea>
-				</div>
-				<div>
-					<h4>JS</h4>
-					<textarea readonly>
-	var ddcarousel = new DDCarousel({
-		container: ".ddcarousel",
-		autoplay: true,
-		autoplaySpeed: 3000,
-		autoplayPauseHover: true
-	});
-	document.getElementById("apStop").addEventListener("click", function () {
-		ddcarousel.autoplayStop();
-	});
-	document.getElementById("apStart").addEventListener("click", function () {
-		ddcarousel.autoplayStart();
-	});
-</textarea>
-				</div>
-			</div>
+			<textarea data-slider="autoplay" readonly></textarea>
 		</div>
 	</div>
-	<div id="disabledtouch" class="carousel-section">
-		<h2>Disabled touch drag</h2>
+	<div id="disabledTouch" class="carousel-section">
 		<div class="container">
-			<div class="ddcarousel disabledTouch">
-				<div class="box">1</div>
-				<div class="box">2</div>
-				<div class="box">3</div>
-				<div class="box">4</div>
-				<div class="box">5</div>
-				<div class="box">6</div>
-			</div>
-			<p>
-				In this example, touch is disabled but mouse dragging still works.
-			</p>
-			<div class="code-container">
-				<div>
-					<h4>HTML</h4>
-					<textarea readonly>
-<div class="ddcarousel">
-	<div>1</div>
-	<div>2</div>
-	<div>3</div>
-	<div>4</div>
-	<div>5</div>
-</div></textarea>
-				</div>
-				<div>
-					<h4>JS</h4>
-					<textarea readonly>
-var ddcarousel = new DDCarousel({
-	container: ".ddcarousel",
-	touchDrag: false
-});</textarea>
-				</div>
-			</div>
+			<h2>Disabled touch drag</h2>
+			<p>In this example, touch is disabled but mouse dragging still works.</p>
+			<div class="ddcarousel disabledTouch"></div>
+			<textarea data-slider="disabledTouch" readonly></textarea>
 		</div>
 	</div>
-	<div id="customlabels" class="carousel-section">
-		<h2>Custom navigation labels</h2>
+	<div id="customLabels" class="carousel-section">
 		<div class="container">
-			<div class="ddcarousel customLabels">
-				<div class="box">1</div>
-				<div class="box">2</div>
-				<div class="box">3</div>
-				<div class="box">4</div>
-				<div class="box">5</div>
-				<div class="box">6</div>
-			</div>
-			<p>
-				Use custom labels for navigation links.
-			</p>
-			<div class="code-container">
-				<div>
-					<h4>HTML</h4>
-					<textarea readonly>
-<div class="ddcarousel">
-	<div>1</div>
-	<div>2</div>
-	<div>3</div>
-	<div>4</div>
-	<div>5</div>
-</div></textarea>
-				</div>
-				<div>
-					<h4>JS</h4>
-					<textarea readonly>
-var ddcarousel = new DDCarousel({
-	container: ".ddcarousel",
-	dots: false,
-	nav: true,
-	labelNavPrev: "&#x2190;",
-	labelNavNext: "&#x2192;"
-});</textarea>
-				</div>
-			</div>
+			<h2>Custom navigation labels</h2>
+			<p>Use custom labels for navigation links.</p>
+			<div class="ddcarousel customLabels"></div>
+			<textarea data-slider="customLabels" readonly></textarea>
 		</div>
 	</div>
 	<div id="customanim" class="carousel-section">
-		<h2>Custom animation config</h2>
 		<div class="container">
-			<div class="ddcarousel customAnimConfig">
-				<div class="box">1</div>
-				<div class="box">2</div>
-				<div class="box">3</div>
-				<div class="box">4</div>
-				<div class="box">5</div>
-				<div class="box">6</div>
-			</div>
+			<h2>Custom animation config</h2>
 			<p>
-				In this example some animation properties are changed.
-				<br />
+				In this example some animation properties are changed.</p>
+			<p>
 				<strong>touchSwipeThreshold</strong> is changed to <strong>1</strong>, so the user can swipe easier
 				than default. <strong>touchMaxSlideDist</strong> is also set to high value, so that user can swipe
 				longer before reaching the max swiping distance. <strong>slideChangeDuration</strong> and
 				<strong>swipeSmooth</strong> is increased for smoother experience.
 			</p>
-			<div class="code-container">
-				<div>
-					<h4>HTML</h4>
-					<textarea readonly>
-<div class="ddcarousel">
-	<div>1</div>
-	<div>2</div>
-	<div>3</div>
-	<div>4</div>
-	<div>5</div>
-</div></textarea>
-				</div>
-				<div>
-					<h4>JS</h4>
-					<textarea readonly>
-var ddcarousel = new DDCarousel({
-	container: ".ddcarousel",
-	items: 3,
-	mouseDrag: true,
-	touchSwipeThreshold: 1,
-	touchMaxSlideDist: 1000,
-	swipeSmooth: 0.2,
-	slideChangeDuration: 1.2
-});</textarea>
-				</div>
-			</div>
+			<div class="ddcarousel customAnim"></div>
+			<textarea data-slider="customAnim" readonly></textarea>
 		</div>
 	</div>
 	<div id="events" class="carousel-section">
-		<h2>Events</h2>
 		<div class="container">
-			<div class="ddcarousel eventsExample">
-				<div class="box">1</div>
-				<div class="box">2</div>
-				<div class="box">3</div>
-				<div class="box">4</div>
-				<div class="box">5</div>
-				<div class="box">6</div>
-			</div>
-
-			<p>
-				Try to scroll or change slide.
-			</p>
-
+			<h2>Events</h2>
+			<p>Try to scroll or change slide.</p>
+			<div class="ddcarousel events"></div>
 			<div class="code-container">
 				<div>
 					<ul class="events-list">
@@ -607,23 +198,6 @@ var ddcarousel = new DDCarousel({
 				<strong>refresh()</strong> method. Try resizing and re-calculate the carousel:
 				<button class="btn" id="resizeContainer">Resize random</button>
 			</p>
-			<h4>JS</h4>
-			<div class="code-container">
-				<textarea readonly>
-var ddcarousel = new DDCarousel({
-	container: ".ddcarousel",
-	callbacks: true,
-	mouseDrag: true,
-	onChanged: function(e) {
-		console.log(e);
-	}
-});
-// or like this...
-ddcarousel.on("onChanged", function(e) {
-	console.log(e);
-});
-	</textarea>
-			</div>
 		</div>
 	</div>
 </body>
