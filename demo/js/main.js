@@ -252,14 +252,16 @@ document.addEventListener("DOMContentLoaded", function () {
 		var slide = document.createElement("div");
 		slide.classList.add("box");
 		slide.textContent = "New slide " + Math.floor(Math.random() * 20);
-		document.querySelector('.ddcarousel.events').append(slide);
+		document.querySelector('.ddcarousel.events').appendChild(slide);
 		writeLog("Added new slide. You can now call onitialize()")
 	});
 
 	//populate src textboxes
 	for (i = 0; i < srcTextareas.length; i++) {
 		var el = srcTextareas[i],
-			source = { ...config[el.getAttribute('data-slider')] };
+			source = {};
+
+		Object.assign(source, config[el.getAttribute('data-slider')]);
 
 		source['container'] = undefined;
 		if (source !== undefined) {
@@ -269,6 +271,7 @@ document.addEventListener("DOMContentLoaded", function () {
 	}
 });
 
+//ie
 if (!("classList" in document.documentElement) && Object.defineProperty && typeof HTMLElement !== "undefined") {
 	Object.defineProperty(HTMLElement.prototype, "classList", {
 		get: function () {
@@ -308,6 +311,39 @@ if (!("classList" in document.documentElement) && Object.defineProperty && typeo
 			});
 
 			return ret;
+		}
+	});
+}
+
+if (!Object.assign) {
+	Object.defineProperty(Object, 'assign', {
+		enumerable: false,
+		configurable: true,
+		writable: true,
+		value: function (target) {
+			'use strict';
+			if (target === undefined || target === null) {
+				throw new TypeError('Cannot convert first argument to object');
+			}
+
+			var to = Object(target);
+			for (var i = 1; i < arguments.length; i++) {
+				var nextSource = arguments[i];
+				if (nextSource === undefined || nextSource === null) {
+					continue;
+				}
+				nextSource = Object(nextSource);
+
+				var keysArray = Object.keys(Object(nextSource));
+				for (var nextIndex = 0, len = keysArray.length; nextIndex < len; nextIndex++) {
+					var nextKey = keysArray[nextIndex];
+					var desc = Object.getOwnPropertyDescriptor(nextSource, nextKey);
+					if (desc !== undefined && desc.enumerable) {
+						to[nextKey] = nextSource[nextKey];
+					}
+				}
+			}
+			return to;
 		}
 	});
 }

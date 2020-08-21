@@ -58,6 +58,13 @@ var DDCarousel = function (options) {
 		currentTouch,
 		dontChange,
 		appCreated,
+		startDrag = ["touchstart", "mousedown"],
+		movingDrag = ["touchmove", "mousemove"],
+		endDrag = ["touchend", "mouseup"],
+		autoPlayStartEvents = ["mouseover", "touchstart"],
+		autoPlayStopEvents = ["mouseleave", "touchend"],
+		startEl,
+		throttled,
 		settings = {
 			container: "." + appName,
 			nav: false,
@@ -216,19 +223,29 @@ var DDCarousel = function (options) {
 		var app = document.querySelector(config.container);
 
 		if (!fullReset) {
-			var slides = getEl(`.${cssClass.item}`, true);
-			slides.forEach(el => {
+			var origSlides = getEl(`.${cssClass.item}`, true);
+			origSlides.forEach(el => {
 				app.appendChild(el.firstChild);
 			});
 		}
 
 		getEl(`.${cssClass.cont}`).remove();
-		getEl(`.${cssClass.nav}`).remove();
-		getEl(`.${cssClass.dots}`).remove();
-		getEl(`.${cssClass.url}`).remove();
+		if (checkNavStatus())
+			getEl(`.${cssClass.nav}`).remove();
+		if (checkDotsStatus())
+			getEl(`.${cssClass.dots}`).remove();
+		if (config.urlNav)
+			getEl(`.${cssClass.url}`).remove();
+
+		if (autoPlay)
+			autoplayStop();
+
+		detachEvents();
 
 		app.className = origClasses;
 		currentPage = 0;
+		totalPages = 0;
+		slides = [];
 		appCreated = false;
 
 		trigger("onDestroyed");
@@ -430,35 +447,56 @@ var DDCarousel = function (options) {
 	}
 
 	function attachEvents() {
-		setDraggingEvents();
+		startEl = ie10 ? stage : window;
 
-		//resize event
-		var throttled;
-		window.addEventListener("resize", () => {
-			calculateStage();
-			if (!throttled) {
-				refresh();
-				throttled = true;
-				setTimeout(function () {
-					throttled = false;
-				}, config.resizeRefresh);
-			}
-		});
+		startDrag.forEach(el => startEl.addEventListener(el, dragStart, { passive: true }));
+		movingDrag.forEach(el => window.addEventListener(el, dragMove, { passive: true }));
+		endDrag.forEach(el => window.addEventListener(el, dragEnd));
 
-		//anim
-		stage.addEventListener(whichTransitionEvent(), () => {
-			trigger("onTransitionend");
-		});
+		window.addEventListener("resize", resizeEvent); //resize event
+		stage.addEventListener(whichTransitionEvent(), transitionEvent); //anim
 
 		//autoplay
-		var start = ["mouseover", "touchstart"],
-			stop = ["mouseleave", "touchend"];
 		if (config.autoplayPauseHover && config.autoplay) {
-			start.forEach(el => stage.addEventListener(el, autoplayStop.bind(this)));
-			stop.forEach(el => stage.addEventListener(el, autoplayStart.bind(this)));
+			attachAutoplay();
 		} else {
-			start.forEach(el => stage.removeEventListener(el, autoplayStop.bind(this)));
-			stop.forEach(el => stage.removeEventListener(el, autoplayStart.bind(this)));
+			detachAutoplay();
+		}
+	}
+
+	function detachEvents() {
+		startEl = ie10 ? stage : window;
+
+		startDrag.forEach(el => startEl.removeEventListener(el, dragStart, { passive: true }));
+		movingDrag.forEach(el => window.removeEventListener(el, dragMove, { passive: true }));
+		endDrag.forEach(el => window.removeEventListener(el, dragEnd));
+		window.removeEventListener("resize", resizeEvent);
+		stage.removeEventListener(whichTransitionEvent(), transitionEvent);
+		detachAutoplay();
+	}
+
+	function attachAutoplay() {
+		autoPlayStartEvents.forEach(el => stage.addEventListener(el, autoplayStop));
+		autoPlayStopEvents.forEach(el => stage.addEventListener(el, autoplayStart));
+	}
+
+	function detachAutoplay() {
+		autoPlayStartEvents.forEach(el => stage.removeEventListener(el, autoplayStop));
+		autoPlayStopEvents.forEach(el => stage.removeEventListener(el, autoplayStart));
+	}
+
+	function transitionEvent() {
+		trigger("onTransitionend");
+	}
+
+	function resizeEvent() {
+		calculateStage();
+		if (!throttled) {
+			refresh();
+			throttled = true;
+			setTimeout(function () {
+				throttled = false;
+			}, config.resizeRefresh);
 		}
 	}
 
@@ -484,16 +522,6 @@ var DDCarousel = function (options) {
 		}
 		updateSlide();
 		refreshNav();
-	}
-
-	function setDraggingEvents() {
-		var startDrag = ["touchstart", "mousedown"],
-			movingDrag = ["touchmove", "mousemove"],
-			endDrag = ["touchend", "mouseup"],
-			startEl = ie10 ? stage : window;
-		startDrag.forEach(el => startEl.addEventListener(el, e => dragStart(e), { passive: true }));
-		movingDrag.forEach(el => window.addEventListener(el, e => dragMove(e), { passive: true }));
-		endDrag.forEach(el => window.addEventListener(el, () => dragEnd()));
 	}
 
 	function dragMove(e) {
@@ -540,6 +568,7 @@ var DDCarousel = function (options) {
 				trigger("onDrag");
 			}
 		}
+		console.log('hello')
 	}
 
 	function dragEnd() {
