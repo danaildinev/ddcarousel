@@ -39,7 +39,7 @@ var DDCarousel = function (options) {
 		autoPlay,
 		isDragging,
 		origClasses = [],
-		configOrig = {},
+		configOrig,
 		config = {},
 		configResp,
 		container,
@@ -93,8 +93,8 @@ var DDCarousel = function (options) {
 			labelNavNext: "Next >"
 		};
 
-	configOrig = options;
-	init(configOrig);
+	if (options != undefined)
+		init(options);
 
 	function setDefaults() {
 		triggers.forEach(el => {
@@ -156,11 +156,15 @@ var DDCarousel = function (options) {
 		}
 	}
 
-	function init() {
+	function init(options) {
 		if (appCreated) {
 			console.error(`${appName}: Already created!`);
 			return false;
 		}
+
+		if (configOrig == undefined)
+			configOrig = options;
+
 		setDefaults();
 		if (checkContainer(config.container)) {
 			origClasses = document.querySelector(config.container).className;
