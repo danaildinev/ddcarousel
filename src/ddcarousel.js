@@ -243,7 +243,7 @@ var DDCarousel = function (options) {
 			getEl(`.${cssClass.nav}`).remove();
 		if (checkDotsStatus())
 			getEl(`.${cssClass.dots}`).remove();
-		if (config.urlNav)
+		if (config.urlNav && getEl(`.${cssClass.url}`))
 			getEl(`.${cssClass.url}`).remove();
 
 		if (autoPlay)
@@ -255,6 +255,7 @@ var DDCarousel = function (options) {
 		currentPage = 0;
 		totalPages = 0;
 		slides = [];
+		activeSlides = [];
 		appCreated = false;
 
 		trigger("onDestroyed");
