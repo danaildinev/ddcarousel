@@ -184,8 +184,11 @@ var DDCarousel = function (options) {
 			stageDiv = newEl("div"),
 			slidesSource = getEl(`> div`, true); //get all slides from user
 
-		if (slidesSource.length == 0)
+		if (slidesSource.length == 0) {
+			console.error(`${appName}: No content found in container. Destroying carousel...`);
+			destroy();
 			return false;
+		}
 
 		stateContainer.classList.add(cssClass.cont);
 		stageDiv.classList.add(cssClass.stage);
@@ -229,7 +232,13 @@ var DDCarousel = function (options) {
 			});
 		}
 
-		getEl(`.${cssClass.cont}`).remove();
+		triggers.forEach(el => {
+			triggers[el] = [];
+		});
+
+		var cont = getEl(`.${cssClass.cont}`);
+		if (cont)
+			cont.remove();
 		if (checkNavStatus())
 			getEl(`.${cssClass.nav}`).remove();
 		if (checkDotsStatus())

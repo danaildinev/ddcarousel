@@ -98,7 +98,7 @@ var config = {
 		onInitialized: function (e) {
 			setActiveEvent(e.event);
 		},
-		onDrag: function (e) {
+		/*onDrag: function (e) {
 			setActiveEvent(e.event);
 		},
 		onDragging: function (e) {
@@ -121,7 +121,7 @@ var config = {
 		},
 		onDestroyed: function (e) {
 			setActiveEvent(e.event);
-		}
+		}*/
 	}
 };
 
@@ -253,7 +253,7 @@ document.addEventListener("DOMContentLoaded", function () {
 		slide.classList.add("box");
 		slide.textContent = "New slide " + Math.floor(Math.random() * 20);
 		document.querySelector('.ddcarousel.events').appendChild(slide);
-		writeLog("Added new slide. You can now call onitialize()")
+		writeLog("Added new slide. You can now initialize the carousel.")
 	});
 
 	//populate src textboxes

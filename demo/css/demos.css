@@ -280,7 +280,7 @@ body.nav-opened #toggle-nav span {
 
 .code-container div {
 	padding: 0 12px;
-	width: 100%;
+	width: 50%;
 }
 
 .events-list {
@@ -326,6 +326,7 @@ body.nav-opened #toggle-nav span {
 		-webkit-flex-direction: column;
 	}
 	.code-container div {
+		width: 100%;
 		flex: none;
 	}
 	.carousel-section {
