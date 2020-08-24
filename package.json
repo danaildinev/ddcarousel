@@ -34,22 +34,22 @@
 	},
 	"homepage": "https://github.com/danaildinev/ddcarousel#readme",
 	"devDependencies": {
-		"@babel/cli": "^7.6.4",
-		"@babel/core": "^7.6.4",
-		"@babel/plugin-proposal-class-properties": "^7.5.5",
-		"@babel/preset-env": "^7.6.3",
+		"@babel/cli": "^7.10.5",
+		"@babel/core": "^7.11.4",
+		"@babel/plugin-proposal-class-properties": "^7.10.4",
+		"@babel/preset-env": "^7.11.0",
 		"babel-plugin-minify-mangle-names": "^0.5.0",
 		"babel-plugin-minify-simplify": "^0.5.1",
 		"babel-plugin-remove-import-export": "^1.1.1",
 		"babel-plugin-transform-minify-booleans": "^6.9.4",
 		"babel-plugin-transform-remove-console": "^6.9.4",
-		"copyfiles": "^2.1.1",
-		"node-sass": "^4.12.0",
+		"copyfiles": "^2.3.0",
+		"node-sass": "^4.14.1",
 		"npm-run-all": "^4.1.5",
-		"uglify-js": "^3.6.0",
+		"uglify-js": "^3.10.2",
 		"uglifycss": "0.0.29"
 	},
 	"dependencies": {
-		"read-package-json": "^2.1.1"
+		"read-package-json": "^2.1.2"
 	}
 }
