@@ -33,39 +33,54 @@ var DDCarousel = function (options) {
 		],
 		ie10 = document.all && window.atob;
 
-	var currentPage = 0,
-		activeSlides = [],
-		totalPages = 0,
-		autoPlay,
-		isDragging,
-		origClasses = [],
-		configOrig,
-		config = {},
-		configResp,
+	var config,
+		configUser,
+		configResponsive,
+		configDefault,
+		//carousel
 		container,
 		stage,
 		slides,
 		slidesHeights,
-		containerName,
-		currentTranslate,
-		navPrevBtn,
-		navNextBtn,
-		isDragging,
-		touchStartRaw,
-		touchStart,
-		origPosition,
-		swipeDistance,
-		currentTouch,
-		dontChange,
-		appCreated,
-		startDrag = ["touchstart", "mousedown"],
+		activeSlides,
+		currentPage,
+		totalPages,
+		//autoplay
+		autoPlay,
+		autoPlayStartEvents = ["mouseover", "touchStartCords"],
+		autoPlayStopEvents = ["mouseleave", "touchend"],
+		//touch and mouse
+		startDrag = ["touchStartCords", "mousedown"],
 		movingDrag = ["touchmove", "mousemove"],
 		endDrag = ["touchend", "mouseup"],
-		autoPlayStartEvents = ["mouseover", "touchstart"],
-		autoPlayStopEvents = ["mouseleave", "touchend"],
-		startEl,
-		throttled,
-		settings = {
+		dragStartElement,
+		touchStartRawCords,
+		touchStartCords,
+		currentTouch,
+		isDragging,
+		swipeDistance,
+		origPosition,
+		stayOnThisSlide,
+		currentTranslate,
+		//app
+		appCreated,
+		origClasses,
+		containerName,
+		//ui		
+		navPrevBtn,
+		navNextBtn,
+		//others
+		throttled;
+
+	init(options);
+
+	function init(options) {
+		if (appCreated) {
+			console.error(`${appName}: Already created!`);
+			return false;
+		}
+
+		configDefault = {
 			container: "." + appName,
 			nav: false,
 			dots: true,
@@ -92,25 +107,47 @@ var DDCarousel = function (options) {
 			labelNavPrev: "< Prev",
 			labelNavNext: "Next >"
 		};
+		currentPage = 0;
+		totalPages = 0;
+		activeSlides = [];
+		configUser = {};
 
-	if (options != undefined)
-		init(options);
+		//get user specified config or set defaults
+		configUser = options === undefined ? configDefault : options;
+
+		console.log(configDefault)
+		setDefaults();
+		if (checkContainer(config.container)) {
+			origClasses = document.querySelector(config.container).className;
+			trigger("onInitialize", { container: container, event: "onInitialize" });
+			if (createStage() !== false) {
+				createNav();
+				createDots();
+				createUrls();
+				setActiveSlides();
+				changePage(config.startPage > 0 ? config.startPage : 0, false);
+				refresh();
+				attachEvents();
+				trigger("onInitialized");
+				appCreated = true;
+			}
+		}
+	}
 
 	function setDefaults() {
+		config = [];
+		configResponsive = [];
 		triggers.forEach(el => {
-			settings[el] = () => { };
+			configDefault[el] = () => { };
 			on(el, e => {
 				config[el].call(this, e != undefined ? e : callback(el));
 			});
 		});
-
-		configResp = [];
-		if (configOrig['responsive'] !== undefined) {
-			configResp = configOrig['responsive'];
+		if (configUser['responsive'] !== undefined) {
+			configResponsive = configUser['responsive'];
 		}
-
-		config = settings;
-		updateSettings(configOrig);
+		config = configDefault;
+		updateSettings(configUser);
 	}
 
 	function updateSettings(options) {
@@ -120,6 +157,18 @@ var DDCarousel = function (options) {
 		}
 		if (config.items == 0)
 			config.itemPerPage = false;
+	}
+
+	function checkContainer(name) {
+		var c = document.querySelector(name);
+		if (c != null) {
+			container = c;
+			containerName = name;
+			return true;
+		} else {
+			console.error(`${appName}: Invalid container!`);
+			return false;
+		}
 	}
 
 	function callback(e) {
@@ -141,45 +190,6 @@ var DDCarousel = function (options) {
 	function trigger(event, callback) {
 		if (triggers[event]) {
 			for (var i in triggers[event]) triggers[event][i](callback);
-		}
-	}
-
-	function checkContainer(name) {
-		var c = document.querySelector(name);
-		if (c != null) {
-			container = c;
-			containerName = name;
-			return true;
-		} else {
-			console.error(`${appName}: Invalid container!`);
-			return false;
-		}
-	}
-
-	function init(options) {
-		if (appCreated) {
-			console.error(`${appName}: Already created!`);
-			return false;
-		}
-
-		if (configOrig == undefined)
-			configOrig = options;
-
-		setDefaults();
-		if (checkContainer(config.container)) {
-			origClasses = document.querySelector(config.container).className;
-			trigger("onInitialize", { container: container, event: "onInitialize" });
-			if (createStage() !== false) {
-				createNav();
-				createDots();
-				createUrls();
-				setActiveSlides();
-				changePage(config.startPage > 0 ? config.startPage : 0, false);
-				refresh();
-				attachEvents();
-				trigger("onInitialized");
-				appCreated = true;
-			}
 		}
 	}
 
@@ -461,9 +471,9 @@ var DDCarousel = function (options) {
 	}
 
 	function attachEvents() {
-		startEl = ie10 ? stage : window;
+		dragStartElement = ie10 ? stage : window;
 
-		startDrag.forEach(el => startEl.addEventListener(el, dragStart, { passive: true }));
+		startDrag.forEach(el => dragStartElement.addEventListener(el, dragStart, { passive: true }));
 		movingDrag.forEach(el => window.addEventListener(el, dragMove, { passive: true }));
 		endDrag.forEach(el => window.addEventListener(el, dragEnd));
 
@@ -479,9 +489,9 @@ var DDCarousel = function (options) {
 	}
 
 	function detachEvents() {
-		startEl = ie10 ? stage : window;
+		dragStartElement = ie10 ? stage : window;
 
-		startDrag.forEach(el => startEl.removeEventListener(el, dragStart, { passive: true }));
+		startDrag.forEach(el => dragStartElement.removeEventListener(el, dragStart, { passive: true }));
 		movingDrag.forEach(el => window.removeEventListener(el, dragMove, { passive: true }));
 		endDrag.forEach(el => window.removeEventListener(el, dragEnd));
 		window.removeEventListener("resize", resizeEvent);
@@ -515,11 +525,11 @@ var DDCarousel = function (options) {
 	}
 
 	function refresh() {
-		var keys = Object.keys(configResp);
+		var keys = Object.keys(configResponsive);
 		//check responsive options
 		for (var i = keys.length - 1; i >= 0; i--) {
 			if (document.body.clientWidth < keys[i]) {
-				updateSettings(Object.values(configResp)[i]);
+				updateSettings(Object.values(configResponsive)[i]);
 			} else if (document.body.clientWidth >= keys[keys.length - 1]) {
 				setDefaults();
 			}
@@ -546,18 +556,18 @@ var DDCarousel = function (options) {
 			stage.style.transitionDuration = config.swipeSmooth + "s";
 
 			//calcualte swipe distance between starging value cnd current value
-			swipeDistance = Math.abs(input - touchStartRaw);
+			swipeDistance = Math.abs(input - touchStartRawCords);
 
 			//get the current touch
-			currentTouch = input - touchStart;
+			currentTouch = input - touchStartCords;
 
 			//move slider until max swipe lenght is reached
 			if (swipeDistance <= config.touchMaxSlideDist) {
 				trigger("onDragging");
 				scrollToPos(currentTouch);
 			} else {
-				dontChange = true;
-				currentTouch = input - touchStart;
+				stayOnThisSlide = true;
+				currentTouch = input - touchStartCords;
 			}
 		}
 	}
@@ -572,13 +582,13 @@ var DDCarousel = function (options) {
 
 	function dragStart(e) {
 		if (ie10 || e.target == stage) {
-			var startPoint = getInput(e, "mousedown", "touchstart");
+			var startPoint = getInput(e, "mousedown", "touchStartCords");
 			if (startPoint !== undefined) {
 				isDragging = true;
-				touchStartRaw = startPoint;
-				touchStart = touchStartRaw + -currentTranslate;
+				touchStartRawCords = startPoint;
+				touchStartCords = touchStartRawCords + -currentTranslate;
 				origPosition = currentTranslate;
-				dontChange = false;
+				stayOnThisSlide = false;
 				trigger("onDrag");
 			}
 		}
@@ -590,7 +600,7 @@ var DDCarousel = function (options) {
 			//check if swipe distance is enough to change slide or stay on the same
 			trigger("onDragged");
 
-			if (swipeDistance >= config.touchSwipeThreshold && !dontChange) {
+			if (swipeDistance >= config.touchSwipeThreshold && !stayOnThisSlide) {
 				if (currentTouch > origPosition) {
 					prevPage();
 				} else {

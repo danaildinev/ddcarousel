@@ -98,7 +98,7 @@ var config = {
 		onInitialized: function (e) {
 			setActiveEvent(e.event);
 		},
-		/*onDrag: function (e) {
+		onDrag: function (e) {
 			setActiveEvent(e.event);
 		},
 		onDragging: function (e) {
@@ -121,7 +121,7 @@ var config = {
 		},
 		onDestroyed: function (e) {
 			setActiveEvent(e.event);
-		}*/
+		}
 	}
 };
 
