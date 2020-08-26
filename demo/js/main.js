@@ -72,8 +72,8 @@ var config = {
 		container: ".customLabels",
 		dots: false,
 		nav: true,
-		labelNavPrev: "&#x2190;",
-		labelNavNext: "&#x2192;"
+		labelNavPrev: "< Prev",
+		labelNavNext: "Next >"
 	},
 	customAnim: {
 		container: ".customAnim",

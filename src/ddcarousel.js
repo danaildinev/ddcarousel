@@ -47,10 +47,10 @@ var DDCarousel = function (options) {
 		totalPages,
 		//autoplay
 		autoPlay,
-		autoPlayStartEvents = ["mouseover", "touchStartCords"],
+		autoPlayStartEvents = ["mouseover", "touchstart"],
 		autoPlayStopEvents = ["mouseleave", "touchend"],
 		//touch and mouse
-		startDrag = ["touchStartCords", "mousedown"],
+		startDrag = ["touchstart", "mousedown"],
 		movingDrag = ["touchmove", "mousemove"],
 		endDrag = ["touchend", "mouseup"],
 		dragStartElement,
@@ -79,6 +79,10 @@ var DDCarousel = function (options) {
 			console.error(`${appName}: Already created!`);
 			return false;
 		}
+		if (options == undefined) {
+			console.error(`${appName}: No options specified!`);
+			return false;
+		}
 
 		configDefault = {
 			container: "." + appName,
@@ -104,8 +108,8 @@ var DDCarousel = function (options) {
 			swipeSmooth: 0,
 			slideChangeDuration: 0.5,
 			callbacks: false,
-			labelNavPrev: "< Prev",
-			labelNavNext: "Next >"
+			labelNavPrev: "&#x2190;",
+			labelNavNext: "&#x2192;"
 		};
 		currentPage = 0;
 		totalPages = 0;
@@ -115,7 +119,6 @@ var DDCarousel = function (options) {
 		//get user specified config or set defaults
 		configUser = options === undefined ? configDefault : options;
 
-		console.log(configDefault)
 		setDefaults();
 		if (checkContainer(config.container)) {
 			origClasses = document.querySelector(config.container).className;
@@ -592,7 +595,6 @@ var DDCarousel = function (options) {
 				trigger("onDrag");
 			}
 		}
-		console.log('hello')
 	}
 
 	function dragEnd() {
