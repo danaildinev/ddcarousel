@@ -80,7 +80,6 @@ var DDCarousel = function (options) {
 			return false;
 		}
 		if (options == undefined) {
-			console.error(`${appName}: No options specified!`);
 			return false;
 		}
 
@@ -201,11 +200,6 @@ var DDCarousel = function (options) {
 			stageDiv = newEl("div"),
 			slidesSource = getEl(`> div`, true); //get all slides from user
 
-		if (slidesSource.length == 0) {
-			console.error(`${appName}: No content found in container. Destroying carousel...`);
-			destroy();
-			return false;
-		}
 
 		stateContainer.classList.add(cssClass.cont);
 		stageDiv.classList.add(cssClass.stage);
@@ -216,6 +210,12 @@ var DDCarousel = function (options) {
 
 		//get stage DOM
 		stage = getEl(`.${cssClass.stage}`);
+
+		if (slidesSource.length == 0) {
+			console.error(`${appName}: No content found in container. Destroying carousel...`);
+			destroy();
+			return false;
+		}
 
 		//set parameters to slides and add them in the new ddcarousel-item container with some params
 		for (var i = 0; i < slidesSource.length; i++) {
@@ -845,6 +845,12 @@ var DDCarousel = function (options) {
 		}
 	}
 
+	function getStatus() {
+		return new Object({
+			created: appCreated === undefined ? false : true
+		});
+	}
+
 	function getEl(el, all) {
 		var param = `${containerName} ${el}`;
 		return all ? document.querySelectorAll(param) : document.querySelector(param);
@@ -866,8 +872,9 @@ var DDCarousel = function (options) {
 		getCurrentPage,
 		getTotalPages,
 		getTotalSlides,
+		getStatus,
 		destroy,
-		init
+		init,
 	}
 };
 
