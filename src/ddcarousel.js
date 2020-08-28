@@ -41,6 +41,7 @@ var DDCarousel = function (options) {
 		container,
 		stage,
 		slides,
+		slidesSource,
 		slidesHeights,
 		activeSlides,
 		currentPage,
@@ -93,6 +94,7 @@ var DDCarousel = function (options) {
 			items: 1,
 			itemPerPage: false,
 			vertical: false,
+			verticalMaxContentWidth: false,
 			urlNav: false,
 			responsive: [],
 			autoplay: false,
@@ -197,9 +199,8 @@ var DDCarousel = function (options) {
 
 	function createStage() {
 		var stateContainer = newEl("div"),
-			stageDiv = newEl("div"),
-			slidesSource = getEl(`> div`, true); //get all slides from user
-
+			stageDiv = newEl("div");
+		slidesSource = getEl(`> div`, true); //get all slides from user
 
 		stateContainer.classList.add(cssClass.cont);
 		stageDiv.classList.add(cssClass.stage);
@@ -273,6 +274,7 @@ var DDCarousel = function (options) {
 		totalPages = 0;
 		slides = [];
 		activeSlides = [];
+		slidesSource = [];
 		appCreated = false;
 
 		trigger("onDestroyed");
@@ -286,7 +288,7 @@ var DDCarousel = function (options) {
 			containerHeight,
 			containerClassList = container.classList;
 
-		if (config.fullWidth) {
+		if (config.fullWidth && !config.verticalMaxContentWidth) {
 			containerClassList.add(cssClass.fullW);
 		} else {
 			containerClassList.remove(cssClass.fullW);
@@ -335,6 +337,21 @@ var DDCarousel = function (options) {
 
 		if (!config.vertical) {
 			stage.style.width = config.items == 0 ? (width + "px") : ((containerWidth * slides.length) + "px");
+		}
+
+		if (config.verticalMaxContentWidth) {
+			console.log('yes')
+			var maxWidth = 0, elWidth;
+			slidesSource.forEach(el => {
+				elWidth = el.getBoundingClientRect().width;
+				if (elWidth > maxWidth) {
+					maxWidth = elWidth;
+				}
+			});
+			container.style.width = maxWidth + "px";
+			console.log(maxWidth)
+		} else if (!config.verticalMaxContentWidth) {
+			container.style.width = "";
 		}
 
 		if (config.autoHeight) {
@@ -681,7 +698,7 @@ var DDCarousel = function (options) {
 			if (currentPage < totalPages) {
 				currentPage++;
 			}
-		} else if (Number.isInteger(index) && index <= totalPages) {
+		} else if (Number.isInteger(index) && index > -1 && index <= totalPages) {
 			currentPage = index;
 		}
 
