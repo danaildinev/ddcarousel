@@ -57,6 +57,12 @@ carousel = ddcarousel();
 carousel.init(config);
 ```
 
+You can also import is as module. I tested it on **React** and it seems to work fine.
+
+```
+import ddcarousel from 'ddcarousel';
+```
+
 ## Options
 
 - `container` - Slider container ID or class (string, required)
@@ -132,6 +138,8 @@ carousel.init(config);
 - `autoplayStart()` **(new)** - Start autoplay (if enabled from options)
 
 - `autoplayStop()` **(new)** - Stop autoplay (if enabled from options)
+
+- `getStatus()` - Get carousel info (experimental feature)
 
 - `getCurrentPage()` - Get the current page
 
