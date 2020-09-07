@@ -1,4 +1,4 @@
-var DDCarousel = function (options) {
+var ddcarousel = function (options) {
 	const appName = "ddcarousel",
 		cssClass = {
 			cont: "ddcarousel-container",
@@ -913,4 +913,4 @@ if (!('remove' in Element.prototype)) {
 
 Object.values = Object.values || (x => Object.keys(x).map(k => x[k]));
 
-export default DDCarousel;
+export default ddcarousel;

@@ -175,19 +175,19 @@ document.addEventListener("DOMContentLoaded", function () {
 	}
 
 	//init carousels
-	var defaultCarousel = DDCarousel(config['default']),
-		items = DDCarousel(config['items']),
-		centered = DDCarousel(config['centered']),
-		autoHeight = DDCarousel(config['autoHeight']),
-		responsive = DDCarousel(config['responsive']),
-		vertical = DDCarousel(config['vertical']),
-		url = DDCarousel(config['url']),
-		autoplay = DDCarousel(config['autoplay']),
-		enabledmouse = DDCarousel(config['enabledMouse']),
-		disabledTouch = DDCarousel(config['disabledTouch']),
-		customLabels = DDCarousel(config['customLabels']),
-		customAnim = DDCarousel(config['customAnim']),
-		events = DDCarousel(config['events']);
+	var defaultCarousel = ddcarousel(config['default']),
+		items = ddcarousel(config['items']),
+		centered = ddcarousel(config['centered']),
+		autoHeight = ddcarousel(config['autoHeight']),
+		responsive = ddcarousel(config['responsive']),
+		vertical = ddcarousel(config['vertical']),
+		url = ddcarousel(config['url']),
+		autoplay = ddcarousel(config['autoplay']),
+		enabledmouse = ddcarousel(config['enabledMouse']),
+		disabledTouch = ddcarousel(config['disabledTouch']),
+		customLabels = ddcarousel(config['customLabels']),
+		customAnim = ddcarousel(config['customAnim']),
+		events = ddcarousel(config['events']);
 
 	//autoplay controls
 	document.getElementById("apStop").addEventListener("click", function () {

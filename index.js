@@ -1,2 +1,2 @@
-import DDCarousel from './src/ddcarousel'
-export default DDCarousel;
+import ddcarousel from './src/ddcarousel'
+export default ddcarousel;
