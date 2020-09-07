@@ -60,6 +60,7 @@ carousel.init(config);
 You can also import is as module. I tested it on **React** and it seems to work fine.
 
 ```
+import 'ddcarousel/dist/ddcarousel.min.css';
 import ddcarousel from 'ddcarousel';
 ```
 
