@@ -1,5 +1,22 @@
 # Changelog
 
+## v1.3 (2020 Sept 7)
+-   Added option to reinitialize carousel
+-   Added option to destroy carousel (revert container to state before initialization or fully wipe it)
+-   Added new destroy events
+-   Added new option for vertical orientation that changes the width of the carousel relative to the longest slide inside
+-   Changed navigation buttons content
+-   You can now create an instance of carousel with empty config and initialize it later
+-   You can now use carousel as module 
+-   Fixed crash when container is empty
+-   Fixed changing slides when set items to zero - now allows to show every items next each other
+-   Fixed carousel crash when trying to change page with negative index
+-   Fixed security vulnerability
+-   Much smaller filesize due to changes in code structure
+-   Code and project improvements
+-   Updated packages
+-   Improved and added new demos
+
 ## v1.2.1 (2020 Apr 15)
 -   Improved auto height option
 -   Auto height is now enabled by default and slider width is set to auto (if you disable auto height, you must to specify manually the height)

@@ -35,7 +35,7 @@ Put the required base style and script:
 Wrap all items in container (`ddcarousel` is required class)
 
 ```html
-<div class="ddcarousel sample">
+<div class="sample ddcarousel">
 	<div>Lorem ipsum dolor sit amet consectetur adipisicing elit.</div>
 	<div>Lorem ipsum Placeat corrupti minus quia alias ullam error commodi recusandae dolores.</div>
 </div>
@@ -44,9 +44,17 @@ Wrap all items in container (`ddcarousel` is required class)
 Call the plugin when page is ready:
 
 ```js
-var carousel = new DDCarousel({
+ddcarousel({
 	container: ".sample"
 });
+```
+or
+```js
+var config = {
+	container: ".sample"
+},
+carousel = ddcarousel();
+carousel.init(config);
 ```
 
 ## Options
@@ -79,6 +87,8 @@ var carousel = new DDCarousel({
 
 - `vertical` - Change to vertical orientation (boolean, default: false)
 
+- `verticalMaxContentWidth` - Changes the width of the carousel relative to the longest slide inside. When enabled it will turn off `fullWidth` option (boolean, default: false)
+
 - `autoplay` **(new)** - Autoplay feature (boolean, default: false)
 
 - `autoplaySpeed` **(new)** - Autoplay interval timeout (int, default: 2000)
@@ -102,6 +112,10 @@ var carousel = new DDCarousel({
 - `resizeRefresh` **(new)** - Refresh rate of slider when resizing (int, default: 200)
 
 ## Methods
+
+- `init()` - Initialize carousel with config as method parameter.
+
+- `destroy()` - Destroy carousel. (revert container to state before initialization or fully wipe it with `destroy(true)`)
 
 - `prevPage()` - Go to previous page
 
@@ -130,7 +144,7 @@ var carousel = new DDCarousel({
 Using example:
 
 ```js
-var carousel = new DDCarousel({
+var carousel = ddcarousel({
 	container: ".carousel",
 	onInitialized: function (e) {
 		console.log(e);
@@ -157,6 +171,10 @@ carousel.on("onChanged", function (e) => {
 - `onChanged` - Changed page
 
 - `onResized` - Carousel container width is changed (you can use it with `refresh()` method)
+
+- `onDestroy` - Begin destroying carousel
+
+- `onDestroyed` - After destroying carousel
 
 **Note**: `onInitialize` and `onInitialized` events are working only when declared in plugin constructor (see first example)
 
