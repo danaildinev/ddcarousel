@@ -77,11 +77,11 @@ import ddcarousel from 'ddcarousel';
 
 - `autoHeight` - Change height based on current slide (boolean, default: true)
 
-- `fullWidth` **(new)**- Set container to full width (boolean, default: true)
+- `fullWidth` - Set container to full width (boolean, default: true)
 
 - `centerSlide` - Centered slide (boolean, default: false)
 
-- `startPage` **(new)**- Set starting page (int, default: -1)
+- `startPage` - Set starting page (int, default: -1)
 
 - `responsive` - Object with options for different queries (object, default: empty object)
 
@@ -93,15 +93,15 @@ import ddcarousel from 'ddcarousel';
 
 - `vertical` - Change to vertical orientation (boolean, default: false)
 
-- `verticalMaxContentWidth` - Changes the width of the carousel relative to the longest slide inside. When enabled it will turn off `fullWidth` option (boolean, default: false)
+- `verticalMaxContentWidth` **(new)** - Changes the width of the carousel relative to the longest slide inside. When enabled it will turn off `fullWidth` option (boolean, default: false)
 
-- `autoplay` **(new)** - Autoplay feature (boolean, default: false)
+- `autoplay` - Autoplay feature (boolean, default: false)
 
-- `autoplaySpeed` **(new)** - Autoplay interval timeout (int, default: 2000)
+- `autoplaySpeed` - Autoplay interval timeout (int, default: 2000)
 
-- `autoplayPauseHover` **(new)** - Pause autoplay on hover or touch (boolean, default: false)
+- `autoplayPauseHover` - Pause autoplay on hover or touch (boolean, default: false)
 
-- `callbacks` **(new)** - Enable callback events (boolean, default: false)
+- `callbacks` - Enable callback events (boolean, default: false)
 
 - `labelNavPrev` - Label for nav previous button (string, default: "< Prev")
 
@@ -115,13 +115,13 @@ import ddcarousel from 'ddcarousel';
 
 - `swipeSmooth` - Swiping smoothness (int, default: 0)
 
-- `resizeRefresh` **(new)** - Refresh rate of slider when resizing (int, default: 200)
+- `resizeRefresh` - Refresh rate of slider when resizing (int, default: 200)
 
 ## Methods
 
-- `init()` - Initialize carousel with config as method parameter.
+- `init()` **(new)** - Initialize carousel with config as method parameter.
 
-- `destroy()` - Destroy carousel. (revert container to state before initialization or fully wipe it with `destroy(true)`)
+- `destroy()` **(new)** - Destroy carousel. (revert container to state before initialization or fully wipe it with `destroy(true)`)
 
 - `prevPage()` - Go to previous page
 
@@ -135,11 +135,11 @@ import ddcarousel from 'ddcarousel';
 
 - `goToUrl(name, enableAnim)` - Go to specified slide title. `urlNav` must be enabled for this to work.
 
-- `autoplayStart()` **(new)** - Start autoplay (if enabled from options)
+- `autoplayStart()` - Start autoplay (if enabled from options)
 
-- `autoplayStop()` **(new)** - Stop autoplay (if enabled from options)
+- `autoplayStop()` - Stop autoplay (if enabled from options)
 
-- `getStatus()` - Get carousel info (experimental feature)
+- `getStatus()` **(new)** - Get carousel info (experimental feature)
 
 - `getCurrentPage()` - Get the current page
 
@@ -180,9 +180,9 @@ carousel.on("onChanged", function (e) => {
 
 - `onResized` - Carousel container width is changed (you can use it with `refresh()` method)
 
-- `onDestroy` - Begin destroying carousel
+- `onDestroy` **(new)** - Begin destroying carousel
 
-- `onDestroyed` - After destroying carousel
+- `onDestroyed` **(new)** - After destroying carousel
 
 **Note**: `onInitialize` and `onInitialized` events are working only when declared in plugin constructor (see first example)
 
