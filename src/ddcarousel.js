@@ -340,7 +340,6 @@ var DDCarousel = function (options) {
 		}
 
 		if (config.verticalMaxContentWidth) {
-			console.log('yes')
 			var maxWidth = 0, elWidth;
 			slidesSource.forEach(el => {
 				elWidth = el.getBoundingClientRect().width;
@@ -349,9 +348,6 @@ var DDCarousel = function (options) {
 				}
 			});
 			container.style.width = maxWidth + "px";
-			console.log(maxWidth)
-		} else if (!config.verticalMaxContentWidth) {
-			container.style.width = "";
 		}
 
 		if (config.autoHeight) {
@@ -917,4 +913,4 @@ if (!('remove' in Element.prototype)) {
 
 Object.values = Object.values || (x => Object.keys(x).map(k => x[k]));
 
-//export default DDCarousel;
+export default DDCarousel;
