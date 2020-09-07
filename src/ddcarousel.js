@@ -250,10 +250,6 @@ var ddcarousel = function (options) {
 			});
 		}
 
-		triggers.forEach(el => {
-			triggers[el] = [];
-		});
-
 		var cont = getEl(`.${cssClass.cont}`);
 		if (cont)
 			cont.remove();
@@ -278,6 +274,11 @@ var ddcarousel = function (options) {
 		appCreated = false;
 
 		trigger("onDestroyed");
+
+		triggers.forEach(el => {
+			triggers[el] = [];
+		});
+
 		return true;
 	}
 

@@ -99,11 +99,10 @@ var ddcarousel = function ddcarousel(a) {
       });
     }
 
-    ba.forEach(function (a) {
-      ba[a] = [];
-    });
     var d = Y(".".concat(_.cont));
-    return d && d.remove(), m() && Y(".".concat(_.nav)).remove(), o() && Y(".".concat(_.dots)).remove(), da.urlNav && Y(".".concat(_.url)) && Y(".".concat(_.url)).remove(), pa && M(), s(), b.className = Aa, na = 0, oa = 0, ja = [], ma = [], ka = [], za = !1, h("onDestroyed"), !0;
+    return d && d.remove(), m() && Y(".".concat(_.nav)).remove(), o() && Y(".".concat(_.dots)).remove(), da.urlNav && Y(".".concat(_.url)) && Y(".".concat(_.url)).remove(), pa && M(), s(), b.className = Aa, na = 0, oa = 0, ja = [], ma = [], ka = [], za = !1, h("onDestroyed"), ba.forEach(function (a) {
+      ba[a] = [];
+    }), !0;
   }
 
   function k() {

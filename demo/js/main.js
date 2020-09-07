@@ -246,7 +246,7 @@ document.addEventListener("DOMContentLoaded", function () {
 		events.destroy(true);
 	});
 	document.getElementById("eventsInit").addEventListener("click", function () {
-		events.init();
+		events.init(config['events']);
 	});
 	document.getElementById("eventsAddSlide").addEventListener("click", function () {
 		var slide = document.createElement("div");
