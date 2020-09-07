@@ -1,8 +1,9 @@
 # Changelog
 
 ## v1.3 (2020 Sept 7)
--   Added option to reinitialize carousel
--   Added option to destroy carousel (revert container to state before initialization or fully wipe it)
+-   Added new method to reinitialize carousel
+-   Added new method to destroy carousel (revert container to state before initialization or fully wipe it)
+-   Added new method to show carousel info
 -   Added new destroy events
 -   Added new option for vertical orientation that changes the width of the carousel relative to the longest slide inside
 -   Changed navigation buttons content
@@ -16,6 +17,8 @@
 -   Code and project improvements
 -   Updated packages
 -   Improved and added new demos
+-   Breaking changes in this version:
+    - `DDCarousel()` is now `ddcarousel()`
 
 ## v1.2.1 (2020 Apr 15)
 -   Improved auto height option
@@ -34,12 +37,12 @@
 -   Reworked responsive option - you can specify set of options for different viewports
 -   Improved events and resizing performance
 -   Breaking changes in this version:
-    -   'itemsPerPage' option is renamed to 'items'
-    -   'responsive' option is renamed to 'fullWidth'
-    -   'touch' option is renamed to 'touchDrag'
-    -   'touchMouse' option is renamed to 'mouseDrag'
-    -   'calculateStage()' method is replaced with 'refresh()'
-    -   'urlNav' will no longer enable automatically 'itemPerPage'
+    -   `itemsPerPage` option is renamed to `items`
+    -   `responsive` option is renamed to `fullWidth`
+    -   `touch` option is renamed to `touchDrag`
+    -   `touchMouse` option is renamed to `mouseDrag`
+    -   `calculateStage()` method is replaced with `refresh()`
+    -   `urlNav` will no longer enable automatically `itemPerPage`
 
 ## v1.1 (2019 Oct 15)
 -   Added new vertical orientation feature
@@ -56,7 +59,7 @@
 ## v1.0.2 (2019 Sept 12)
 
 -   Added Safari 8 support
--   Fixed getCurrentPage() method
+-   Fixed `getCurrentPage()` method
 -   Fixed stage selection with mouse when swiping the carousel on older Firefox versions
 -   (Dev) Switched to SCSS style and added new build scripts
 
