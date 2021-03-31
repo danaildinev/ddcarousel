@@ -1,4 +1,4 @@
-/* ddcarousel 1.3.0 | Danail Dinev | License: https://github.com/danaildinev/ddcarousel/blob/master/LICENSE */
+/* ddcarousel 1.3.1 | Danail Dinev | License: https://github.com/danaildinev/ddcarousel/blob/master/LICENSE */
 "use strict";
 
 var ddcarousel = function ddcarousel(a) {

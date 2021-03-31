@@ -1,5 +1,9 @@
 # Changelog
 
+## v1.3.1 (2021 March 31)
+-   Updated 'y18n' package to latest version to fix a security vulnerability
+-   Updated all packages to latest version
+
 ## v1.3 (2020 Sept 7)
 -   Added new method to reinitialize carousel
 -   Added new method to destroy carousel (revert container to state before initialization or fully wipe it)
