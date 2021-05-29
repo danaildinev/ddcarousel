@@ -30,8 +30,7 @@ var ddcarousel = function (options) {
 			"onResized",
 			"onDestroy",
 			"onDestroyed",
-		],
-		ie10 = document.all && window.atob;
+		];
 
 	var config,
 		configUser,
@@ -488,9 +487,7 @@ var ddcarousel = function (options) {
 	}
 
 	function attachEvents() {
-		dragStartElement = ie10 ? stage : window;
-
-		startDrag.forEach(el => dragStartElement.addEventListener(el, dragStart, { passive: true }));
+		startDrag.forEach(el => window.addEventListener(el, dragStart, { passive: true }));
 		movingDrag.forEach(el => window.addEventListener(el, dragMove, { passive: true }));
 		endDrag.forEach(el => window.addEventListener(el, dragEnd));
 
@@ -506,9 +503,7 @@ var ddcarousel = function (options) {
 	}
 
 	function detachEvents() {
-		dragStartElement = ie10 ? stage : window;
-
-		startDrag.forEach(el => dragStartElement.removeEventListener(el, dragStart, { passive: true }));
+		startDrag.forEach(el => window.removeEventListener(el, dragStart, { passive: true }));
 		movingDrag.forEach(el => window.removeEventListener(el, dragMove, { passive: true }));
 		endDrag.forEach(el => window.removeEventListener(el, dragEnd));
 		window.removeEventListener("resize", resizeEvent);
@@ -598,7 +593,7 @@ var ddcarousel = function (options) {
 	}
 
 	function dragStart(e) {
-		if (ie10 || e.target == stage) {
+		if (e.target == stage) {
 			var startPoint = getInput(e, "mousedown", "touchStartCords");
 			if (startPoint !== undefined) {
 				isDragging = true;
