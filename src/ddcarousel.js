@@ -53,7 +53,6 @@ var ddcarousel = function (options) {
 		startDrag = ["touchstart", "mousedown"],
 		movingDrag = ["touchmove", "mousemove"],
 		endDrag = ["touchend", "mouseup"],
-		dragStartElement,
 		touchStartRawCords,
 		touchStartCords,
 		currentTouch,
@@ -888,23 +887,8 @@ var ddcarousel = function (options) {
 };
 
 //polyfills
-Number.isInteger =
-	Number.isInteger ||
-	function (value) {
-		return typeof value === "number" && isFinite(value) && Math.floor(value) === value;
-	};
-
 if (window.NodeList && !NodeList.prototype.forEach) {
 	NodeList.prototype.forEach = Array.prototype.forEach;
-}
-
-if (!('remove' in Element.prototype)) {
-	Element.prototype.remove = function () {
-		var a = this.parentNode;
-		if (a) {
-			a.removeChild(this);
-		}
-	};
 }
 
 Object.values = Object.values || (x => Object.keys(x).map(k => x[k]));
