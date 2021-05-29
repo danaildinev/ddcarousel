@@ -4,7 +4,7 @@
 
 Simple and fast carousel slider written in vannila JS.
 
-**Browser compatibility:** Edge 15+, Chrome 37+, Firefox 32+, Opera 23+, Safari 6.2+, Safari iOS 9+
+**Browser compatibility:** Edge 15+, Chrome 37+, Firefox 32+, Opera 23+, Safari 10.1+, Safari iOS 10+
 
 (May work on older browsers but these are minimum versions tested.)
 
