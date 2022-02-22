@@ -197,3 +197,5 @@ Run these two commands in the root dir:
 ## License
 
 The code is released under the [MIT License](https://github.com/danaildinev/ddcarousel/blob/master/LICENSE).
+
+:)
