@@ -17,7 +17,8 @@ var ddcarousel = function (options) {
 		dataTags = {
 			slide: "data-slide",
 			id: "data-id",
-			title: "data-title"
+			title: "data-title",
+			lazyImg: "data-src"
 		},
 		triggers = [
 			"onInitialize",
@@ -96,6 +97,9 @@ var ddcarousel = function (options) {
 			vertical: false,
 			verticalMaxContentWidth: false,
 			urlNav: false,
+			lazyLoad: false,
+			lazyPreload: false,
+			lazyPreloadSlides: 1,
 			responsive: [],
 			autoplay: false,
 			autoplaySpeed: 1000,
@@ -487,6 +491,29 @@ var ddcarousel = function (options) {
 		}
 	}
 
+	function lazyLoad() {
+		if (config.lazyLoad) {
+			if (config.lazyPreload) {
+				const lastActiveIndex = activeSlides[activeSlides.length - 1];
+				for (var i = lastActiveIndex + 1; i <= lastActiveIndex + config.lazyPreloadSlides; i++)
+					if (i < slides.length && activeSlides.indexOf(i) == -1)
+						activeSlides.push(i);
+			}
+
+			activeSlides.forEach(i => {
+				const images = getEl(`[${dataTags.slide}="${i}"] img[data-src]`, true);
+				images.forEach(i => enableImageSrc(i));
+			});
+		}
+	}
+
+	function enableImageSrc(slideImg) {
+		if (slideImg && slideImg.getAttribute(dataTags.lazyImg) && !slideImg.src) {
+			slideImg.src = slideImg.getAttribute(dataTags.lazyImg);
+			slideImg.removeAttribute(dataTags.lazyImg);
+		}
+	}
+
 	function attachEvents() {
 		dragStartElement = ie10 ? stage : window;
 
@@ -781,6 +808,8 @@ var ddcarousel = function (options) {
 		activeSlides.forEach(i => {
 			getEl(`[${dataTags.slide}="${i}"]`).classList.add("active");
 		});
+
+		lazyLoad();
 	}
 
 	function setActiveDot() {
