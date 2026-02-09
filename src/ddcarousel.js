@@ -51,7 +51,7 @@ var ddcarousel = function (options) {
 		totalPages,
 		//autoplay
 		autoPlay,
-		autoPlayStartEvents = ["mouseover", "touchstart"],
+		autoPlayStartEvents = ["mouseenter", "touchstart"],
 		autoPlayStopEvents = ["mouseleave", "touchend"],
 		//touch and mouse
 		startDrag = ["touchstart", "mousedown"],
@@ -878,7 +878,10 @@ var ddcarousel = function (options) {
 	}
 
 	function autoplayStart() {
-		if (!config.autoplay && autoPlay != undefined)
+		if (!config.autoplay || autoPlay != null)
+			return;
+
+		if (currentPage == totalPages)
 			return;
 
 		// reset progress bar
@@ -889,16 +892,22 @@ var ddcarousel = function (options) {
 			restartAutoplayProgressBar();
 
 			if (currentPage == totalPages) {
-				removeAutoplayProgress();
 				clearInterval(autoPlay);
+				autoPlay = undefined;
+				removeAutoplayProgress();
 			}
 		}, config.autoplaySpeed);
 	}
 
 	function restartAutoplayProgressBar() {
-		const bar = getEl(`.${cssClass.progb}`);
-		if (!bar)
+		let bar = getEl(`.${cssClass.progb}`);
+		if (!bar) {
 			createAutoplayProgress();
+			bar = getEl(`.${cssClass.progb}`);
+		}
+
+		if (!bar)
+			return;
 
 		const duration = config.autoplaySpeed;
 
@@ -914,8 +923,8 @@ var ddcarousel = function (options) {
 	}
 
 	function autoplayStop() {
-		if (autoPlay > 0) {
-			clearTimeout(autoPlay);
+		if (autoPlay != null) {
+			clearInterval(autoPlay);
 			autoPlay = undefined;
 			removeAutoplayProgress();
 		}
