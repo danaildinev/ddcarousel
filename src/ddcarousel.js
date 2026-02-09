@@ -30,7 +30,8 @@ var ddcarousel = function (options) {
 			"onResized",
 			"onDestroy",
 			"onDestroyed",
-		];
+		],
+		ie10 = document.all && window.atob;
 
 	var config,
 		configUser,
@@ -53,6 +54,7 @@ var ddcarousel = function (options) {
 		startDrag = ["touchstart", "mousedown"],
 		movingDrag = ["touchmove", "mousemove"],
 		endDrag = ["touchend", "mouseup"],
+		dragStartElement,
 		touchStartRawCords,
 		touchStartCords,
 		currentTouch,
@@ -486,7 +488,9 @@ var ddcarousel = function (options) {
 	}
 
 	function attachEvents() {
-		startDrag.forEach(el => window.addEventListener(el, dragStart, { passive: true }));
+		dragStartElement = ie10 ? stage : window;
+
+		startDrag.forEach(el => dragStartElement.addEventListener(el, dragStart, { passive: true }));
 		movingDrag.forEach(el => window.addEventListener(el, dragMove, { passive: true }));
 		endDrag.forEach(el => window.addEventListener(el, dragEnd));
 
@@ -502,7 +506,9 @@ var ddcarousel = function (options) {
 	}
 
 	function detachEvents() {
-		startDrag.forEach(el => window.removeEventListener(el, dragStart, { passive: true }));
+		dragStartElement = ie10 ? stage : window;
+
+		startDrag.forEach(el => dragStartElement.removeEventListener(el, dragStart, { passive: true }));
 		movingDrag.forEach(el => window.removeEventListener(el, dragMove, { passive: true }));
 		endDrag.forEach(el => window.removeEventListener(el, dragEnd));
 		window.removeEventListener("resize", resizeEvent);
@@ -592,7 +598,7 @@ var ddcarousel = function (options) {
 	}
 
 	function dragStart(e) {
-		if (e.target == stage) {
+		if (ie10 || e.target == stage) {
 			var startPoint = getInput(e, "mousedown", "touchStartCords");
 			if (startPoint !== undefined) {
 				isDragging = true;
@@ -887,8 +893,23 @@ var ddcarousel = function (options) {
 };
 
 //polyfills
+Number.isInteger =
+	Number.isInteger ||
+	function (value) {
+		return typeof value === "number" && isFinite(value) && Math.floor(value) === value;
+	};
+
 if (window.NodeList && !NodeList.prototype.forEach) {
 	NodeList.prototype.forEach = Array.prototype.forEach;
+}
+
+if (!('remove' in Element.prototype)) {
+	Element.prototype.remove = function () {
+		var a = this.parentNode;
+		if (a) {
+			a.removeChild(this);
+		}
+	};
 }
 
 Object.values = Object.values || (x => Object.keys(x).map(k => x[k]));
