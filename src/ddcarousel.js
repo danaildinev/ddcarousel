@@ -786,7 +786,7 @@ var ddcarousel = function (options) {
 		setActiveDot();
 		updateSlide();
 		refreshNav();
-		autoplayStart();
+		resetAutoplay();
 
 		//change stage height if this options is enabled
 		if (config.autoHeight) {
@@ -931,6 +931,11 @@ var ddcarousel = function (options) {
 		}
 	}
 
+	function resetAutoplay() {
+		autoplayStop();
+		autoplayStart();
+	}
+
 	function nextPage() {
 		changePage("next");
 	}
@@ -992,7 +997,7 @@ var ddcarousel = function (options) {
 			totalSlides: slides.length,
 			activeSlides: [...activeSlides],
 			config: { ...config },
-			currentTranslate: currentTranslate
+			currentTranslate: currentTranslate,
 		});
 	}
 
