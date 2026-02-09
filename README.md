@@ -106,7 +106,9 @@ import ddcarousel from 'ddcarousel';
 
 - `autoplay` - Autoplay feature (boolean, default: false)
 
-- `autoplaySpeed` - Autoplay interval timeout (int, default: 2000)
+- `autoplaySpeed` - Autoplay interval timeout (int, default: 5000)
+
+- `autoplayProgress` **(new)** - Show autoplay progress indicator. Requires `autoplay: true` (bool, default: true)
 
 - `autoplayPauseHover` - Pause autoplay on hover or touch (boolean, default: false)
 
