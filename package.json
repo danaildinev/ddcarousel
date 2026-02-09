@@ -7,6 +7,7 @@
 		"dist": "npm-run-all babeljs minifyjs buildcss minifycss license",
 		"babeljs": "babel src/ddcarousel.js --out-file dist/ddcarousel.js --source-maps --presets=@babel/preset-env",
 		"minifyjs": "uglifyjs --compress --comments /^!/ --output dist/ddcarousel.min.js -- dist/ddcarousel.js",
+		"testjs": "uglifyjs --output src/testing/ddcarousel.js -- src/ddcarousel.js",
 		"watchsass": "sass --watch --style=compressed --load-path=scss src/ddcarousel.scss src/testing/ddcarousel.css",
 		"buildcss": "sass --style=compressed --load-path=scss src/ddcarousel.scss src/ddcarousel.css",
 		"minifycss": "uglifycss src/ddcarousel.css > dist/ddcarousel.min.css",
