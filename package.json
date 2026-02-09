@@ -15,7 +15,7 @@
 	},
 	"repository": {
 		"type": "git",
-		"url": "git+https://github.com/danaildinev/ddcarousel.git"
+		"url": "https://github.com/danaildinev/ddcarousel.git"
 	},
 	"keywords": [
 		"js",
