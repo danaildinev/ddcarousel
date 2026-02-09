@@ -786,6 +786,7 @@ var ddcarousel = function (options) {
 		setActiveDot();
 		updateSlide();
 		refreshNav();
+		autoplayStart();
 
 		//change stage height if this options is enabled
 		if (config.autoHeight) {
