@@ -11,6 +11,8 @@ var ddcarousel = function (options) {
 			next: "ddcarousel-next",
 			vert: "ddcarousel-vertical",
 			url: "ddcarousel-urls",
+			prog: "ddcarousel-progress",
+			progb: "ddcarousel-progress-bar",
 			fullW: "full-width",
 			disable: "disabled"
 		},
@@ -102,8 +104,9 @@ var ddcarousel = function (options) {
 			lazyPreloadSlides: 1,
 			responsive: [],
 			autoplay: false,
-			autoplaySpeed: 1000,
+			autoplaySpeed: 5000,
 			autoplayPauseHover: false,
+			autoplayProgress: true,
 			touchDrag: true,
 			mouseDrag: false,
 			keyboardNavigation: false,
@@ -133,6 +136,7 @@ var ddcarousel = function (options) {
 				createNav();
 				createDots();
 				createUrls();
+				createAutoplayProgress();
 				setActiveSlides();
 				changePage(config.startPage > 0 ? config.startPage : 0, false);
 				refresh();
@@ -492,6 +496,30 @@ var ddcarousel = function (options) {
 		}
 	}
 
+	function createAutoplayProgress() {
+		if (!config.autoplay)
+			return;
+
+		removeAutoplayProgress();
+
+		if (config.autoplayProgress) {
+			const progress = newEl("div"),
+				progressBar = newEl("div");
+
+			progress.classList.add(cssClass.prog);
+			progressBar.classList.add(cssClass.progb);
+
+			progress.appendChild(progressBar);
+			container.appendChild(progress);
+		}
+	}
+
+	function removeAutoplayProgress() {
+		const progress = getEl(`.${cssClass.prog}`);
+		if (progress)
+			progress.remove();
+	}
+
 	function lazyLoad() {
 		if (config.lazyLoad) {
 			if (config.lazyPreload) {
@@ -588,6 +616,7 @@ var ddcarousel = function (options) {
 		calculateStage();
 		createNav();
 		createDots();
+		createAutoplayProgress();
 		setActiveDot();
 		setActiveSlides();
 		createUrls();
@@ -849,15 +878,46 @@ var ddcarousel = function (options) {
 	}
 
 	function autoplayStart() {
-		if (autoPlay == undefined) {
-			autoPlay = setInterval(() => nextPage(), config.autoplaySpeed);
-		}
+		if (!config.autoplay && autoPlay != undefined)
+			return;
+
+		// reset progress bar
+		restartAutoplayProgressBar();
+
+		autoPlay = setInterval(() => {
+			nextPage();
+			restartAutoplayProgressBar();
+
+			if (currentPage == totalPages) {
+				removeAutoplayProgress();
+				clearInterval(autoPlay);
+			}
+		}, config.autoplaySpeed);
+	}
+
+	function restartAutoplayProgressBar() {
+		const bar = getEl(`.${cssClass.progb}`);
+		if (!bar)
+			createAutoplayProgress();
+
+		const duration = config.autoplaySpeed;
+
+		bar.style.transition = 'none';
+		bar.style.width = '0%';
+
+		requestAnimationFrame(() => {
+			requestAnimationFrame(() => {
+				bar.style.transition = `width ${duration}ms linear`;
+				bar.style.width = '100%';
+			});
+		});
 	}
 
 	function autoplayStop() {
 		if (autoPlay > 0) {
 			clearTimeout(autoPlay);
 			autoPlay = undefined;
+			removeAutoplayProgress();
 		}
 	}
 
