@@ -92,6 +92,11 @@ var config = {
 		swipeSmooth: 0.2,
 		slideChangeDuration: 1.2
 	},
+	keyboardNav: {
+		container: ".keyboardNav",
+		items: 3,
+		keyboardNavigation: true
+	},
 	events: {
 		container: ".events",
 		items: 2,
@@ -196,7 +201,8 @@ document.addEventListener("DOMContentLoaded", function () {
 		customLabels = ddcarousel(config['customLabels']),
 		customAnim = ddcarousel(config['customAnim']),
 		events = ddcarousel(config['events']),
-		lazy = ddcarousel(config['lazy']);
+		lazy = ddcarousel(config['lazy']),
+		keyboardNav = ddcarousel(config['keyboardNav']);
 
 	//autoplay controls
 	document.getElementById("apStop").addEventListener("click", function () {

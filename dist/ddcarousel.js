@@ -14,8 +14,8 @@ function _arrayWithoutHoles(a) { if (Array.isArray(a)) return _arrayLikeToArray(
 function _arrayLikeToArray(b, c) { (null == c || c > b.length) && (c = b.length); for (var d = 0, f = Array(c); d < c; d++) f[d] = b[d]; return f; }
 var ddcarousel = function b(a) {
   function c(a) {
-    return Da ? (console.error("".concat(ca, ": Already created!")), !1) : a != null && void (ka = {
-      container: "." + ca,
+    return Ea ? (console.error("".concat(da, ": Already created!")), !1) : a != null && void (la = {
+      container: "." + da,
       nav: !1,
       dots: !0,
       autoHeight: !0,
@@ -35,6 +35,7 @@ var ddcarousel = function b(a) {
       autoplayPauseHover: !1,
       touchDrag: !0,
       mouseDrag: !1,
+      keyboardNavigation: !1,
       centerSlide: !1,
       touchSwipeThreshold: 60,
       touchMaxSlideDist: 500,
@@ -44,90 +45,90 @@ var ddcarousel = function b(a) {
       callbacks: !1,
       labelNavPrev: "&#x2190;",
       labelNavNext: "&#x2192;"
-    }, ra = 0, sa = 0, qa = [], ia = {}, ia = a === undefined ? ka : a, d(), f(ha.container) && (Ea = document.querySelector(ha.container).className, j("onInitialize", {
-      container: la,
+    }, sa = 0, ta = 0, ra = [], ja = {}, ja = a === undefined ? la : a, d(), f(ia.container) && (Fa = document.querySelector(ia.container).className, j("onInitialize", {
+      container: ma,
       event: "onInitialize"
-    }), k() !== !1 && (p(), r(), s(), N(), K(ha.startPage > 0 ? ha.startPage : 0, !1), B(), v(), j("onInitialized"), Da = !0)));
+    }), k() !== !1 && (p(), r(), s(), O(), L(ia.startPage > 0 ? ia.startPage : 0, !1), B(), v(), j("onInitialized"), Ea = !0)));
   }
   function d() {
     var a = this;
-    ha = [], ja = [], fa.forEach(function (b) {
-      ka[b] = function () {}, h(b, function (c) {
-        ha[b].call(a, c == null ? g(b) : c);
+    ia = [], ka = [], ga.forEach(function (b) {
+      la[b] = function () {}, h(b, function (c) {
+        ia[b].call(a, c == null ? g(b) : c);
       });
-    }), ia['responsive'] !== undefined && (ja = ia['responsive']), ha = ka, e(ia);
+    }), ja['responsive'] !== undefined && (ka = ja['responsive']), ia = la, e(ja);
   }
   function e(a) {
-    for (var b in a) ha[b] = a[b];
-    ha.items == 0 && (ha.itemPerPage = !1);
+    for (var b in a) ia[b] = a[b];
+    ia.items == 0 && (ia.itemPerPage = !1);
   }
   function f(a) {
     var b = document.querySelector(a);
-    return b == null ? (console.error("".concat(ca, ": Invalid container!")), !1) : (la = b, Fa = a, !0);
+    return b == null ? (console.error("".concat(da, ": Invalid container!")), !1) : (ma = b, Ga = a, !0);
   }
   function g(a) {
-    return ha.callbacks ? new Object({
-      container: la,
+    return ia.callbacks ? new Object({
+      container: ma,
       event: a,
-      currentSlides: qa,
-      currentPage: ra,
-      totalSlides: W(),
-      totalPages: sa
+      currentSlides: ra,
+      currentPage: sa,
+      totalSlides: X(),
+      totalPages: ta
     }) : undefined;
   }
   function h(a, b) {
-    !fa[a] && (fa[a] = []), fa[a].push(b);
+    !ga[a] && (ga[a] = []), ga[a].push(b);
   }
   function j(a, b) {
-    if (fa[a]) for (var c in fa[a]) fa[a][c](b);
+    if (ga[a]) for (var c in ga[a]) ga[a][c](b);
   }
   function k() {
-    var a = ba("div"),
-      b = ba("div");
-    if (oa = aa("> div", !0), a.classList.add(da.cont), b.classList.add(da.stage), la.appendChild(a), a.appendChild(b), ma = aa(".".concat(da.stage)), oa.length == 0) return console.error("".concat(ca, ": No content found in container. Destroying carousel...")), l(), !1;
-    for (var c = 0; c < oa.length; c++) {
-      var d = ba("div");
-      d.classList.add(da.item), d.setAttribute(ea.slide, c), d.appendChild(oa[c]), ha.urlNav && oa[c].hasAttribute(ea.id) && oa[c].hasAttribute(ea.title) && (d.setAttribute(ea.id, oa[c].getAttribute(ea.id)), d.setAttribute(ea.title, oa[c].getAttribute(ea.title))), b.appendChild(d);
+    var a = ca("div"),
+      b = ca("div");
+    if (pa = ba("> div", !0), a.classList.add(ea.cont), b.classList.add(ea.stage), ma.appendChild(a), a.appendChild(b), na = ba(".".concat(ea.stage)), pa.length == 0) return console.error("".concat(da, ": No content found in container. Destroying carousel...")), l(), !1;
+    for (var c = 0; c < pa.length; c++) {
+      var d = ca("div");
+      d.classList.add(ea.item), d.setAttribute(fa.slide, c), d.appendChild(pa[c]), ia.urlNav && pa[c].hasAttribute(fa.id) && pa[c].hasAttribute(fa.title) && (d.setAttribute(fa.id, pa[c].getAttribute(fa.id)), d.setAttribute(fa.title, pa[c].getAttribute(fa.title))), b.appendChild(d);
     }
-    na = aa(".".concat(da.item), !0), m();
+    oa = ba(".".concat(ea.item), !0), m();
   }
   function l(a) {
     j("onDestroy");
-    var b = document.querySelector(ha.container);
+    var b = document.querySelector(ia.container);
     if (!a) {
-      var c = aa(".".concat(da.item), !0);
+      var c = ba(".".concat(ea.item), !0);
       c.forEach(function (a) {
         b.appendChild(a.firstChild);
       });
     }
-    var d = aa(".".concat(da.cont));
-    return d && d.remove(), o() && aa(".".concat(da.nav)).remove(), q() && aa(".".concat(da.dots)).remove(), ha.urlNav && aa(".".concat(da.url)) && aa(".".concat(da.url)).remove(), ta && Q(), w(), b.className = Ea, ra = 0, sa = 0, na = [], qa = [], oa = [], Da = !1, j("onDestroyed"), fa.forEach(function (a) {
-      fa[a] = [];
+    var d = ba(".".concat(ea.cont));
+    return d && d.remove(), o() && ba(".".concat(ea.nav)).remove(), q() && ba(".".concat(ea.dots)).remove(), ia.urlNav && ba(".".concat(ea.url)) && ba(".".concat(ea.url)).remove(), ua && R(), w(), b.className = Fa, sa = 0, ta = 0, oa = [], ra = [], pa = [], Ea = !1, j("onDestroyed"), ga.forEach(function (a) {
+      ga[a] = [];
     }), !0;
   }
   function m() {
     var a,
       b,
-      c = na[0].style.width,
-      d = window.getComputedStyle(la),
-      e = la.classList;
-    ha.fullWidth && !ha.verticalMaxContentWidth ? e.add(da.fullW) : e.remove(da.fullW), ha.vertical ? e.add(da.vert) : e.remove(da.vert), a = parseInt(d.width), b = parseInt(d.height), na.length <= ha.items && (ha.items = na.length), sa = ha.centerSlide ? na.length - 1 : ha.itemPerPage ? na.length - ha.items : Math.ceil(na.length / ha.items) - 1, sa = sa, pa = [];
+      c = oa[0].style.width,
+      d = window.getComputedStyle(ma),
+      e = ma.classList;
+    ia.fullWidth && !ia.verticalMaxContentWidth ? e.add(ea.fullW) : e.remove(ea.fullW), ia.vertical ? e.add(ea.vert) : e.remove(ea.vert), a = parseInt(d.width), b = parseInt(d.height), oa.length <= ia.items && (ia.items = oa.length), ta = ia.centerSlide ? oa.length - 1 : ia.itemPerPage ? oa.length - ia.items : Math.ceil(oa.length / ia.items) - 1, ta = ta, qa = [];
     var f = 0;
-    for (var g = 0; g < na.length; g++) {
-      if (ha.items != 0) ha.vertical ? na[g].style.height = b / ha.items + "px" : !ha.vertical && (na[g].style.width = a / ha.items + "px");else {
-        var h = na[g].getBoundingClientRect();
-        na[g].style.width = h.width + "px", f += h;
+    for (var g = 0; g < oa.length; g++) {
+      if (ia.items != 0) ia.vertical ? oa[g].style.height = b / ia.items + "px" : !ia.vertical && (oa[g].style.width = a / ia.items + "px");else {
+        var h = oa[g].getBoundingClientRect();
+        oa[g].style.width = h.width + "px", f += h;
       }
-      pa.push(n(aa("[".concat(ea.slide, "=\"").concat(g, "\"] > div"))));
+      qa.push(n(ba("[".concat(fa.slide, "=\"").concat(g, "\"] > div"))));
     }
-    if (!ha.vertical && (ma.style.width = ha.items == 0 ? f + "px" : a * na.length + "px"), ha.verticalMaxContentWidth) {
+    if (!ia.vertical && (na.style.width = ia.items == 0 ? f + "px" : a * oa.length + "px"), ia.verticalMaxContentWidth) {
       var k,
         l = 0;
-      oa.forEach(function (a) {
+      pa.forEach(function (a) {
         k = a.getBoundingClientRect().width, k > l && (l = k);
-      }), la.style.width = l + "px";
+      }), ma.style.width = l + "px";
     }
-    ha.autoHeight && (N(), J(ra)), ha.mouseDrag ? ma.classList.add(da.disable) : ma.classList.remove(da.disable), c != na[0].style.width && j("onResized");
+    ia.autoHeight && (O(), K(sa)), ia.mouseDrag ? na.classList.add(ea.disable) : na.classList.remove(ea.disable), c != oa[0].style.width && j("onResized");
   }
   function n(a) {
     var b = a.offsetHeight,
@@ -135,65 +136,65 @@ var ddcarousel = function b(a) {
     return b += parseInt(c.marginTop) + parseInt(c.marginBottom), b;
   }
   function o() {
-    return ha.nav && sa > 0;
+    return ia.nav && ta > 0;
   }
   function p() {
-    var a = aa(".".concat(da.nav));
+    var a = ba(".".concat(ea.nav));
     if (o()) {
-      var b = ba("div"),
-        c = ba("button"),
-        d = ba("button");
-      a && a.remove(), b.classList.add(da.nav), c.classList.add(da.prev), c.innerHTML = ha.labelNavPrev, d.classList.add(da.next), d.innerHTML = ha.labelNavNext, b.appendChild(c), b.appendChild(d), la.appendChild(b), Ga = aa(".".concat(da.prev)), Ha = aa(".".concat(da.next)), Ga.addEventListener("click", function () {
+      var b = ca("div"),
+        c = ca("button"),
+        d = ca("button");
+      a && a.remove(), b.classList.add(ea.nav), c.classList.add(ea.prev), c.innerHTML = ia.labelNavPrev, d.classList.add(ea.next), d.innerHTML = ia.labelNavNext, b.appendChild(c), b.appendChild(d), ma.appendChild(b), Ha = ba(".".concat(ea.prev)), Ia = ba(".".concat(ea.next)), Ha.addEventListener("click", function () {
+        return T();
+      }), Ia.addEventListener("click", function () {
         return S();
-      }), Ha.addEventListener("click", function () {
-        return R();
       });
     } else a != null && a.remove();
   }
   function q() {
-    return ha.dots && sa > 0;
+    return ia.dots && ta > 0;
   }
   function r() {
-    var a = aa(".".concat(da.dots));
+    var a = ba(".".concat(ea.dots));
     if (q()) {
       var b,
-        c = ba("div");
-      a && a.remove(), c.classList.add(da.dots), b = ha.items > 1 ? ha.centerSlide ? na.length : sa + 1 : na.length;
+        c = ca("div");
+      a && a.remove(), c.classList.add(ea.dots), b = ia.items > 1 ? ia.centerSlide ? oa.length : ta + 1 : oa.length;
       for (var d = 0; d < b; d++) {
-        var e = ba("button");
-        e.classList.add(da.dot), e.setAttribute(ea.slide, d), e.addEventListener("click", function (a) {
-          return K(parseInt(a.target.getAttribute(ea.slide)));
+        var e = ca("button");
+        e.classList.add(ea.dot), e.setAttribute(fa.slide, d), e.addEventListener("click", function (a) {
+          return L(parseInt(a.target.getAttribute(fa.slide)));
         }), c.appendChild(e);
       }
-      la.appendChild(c);
+      ma.appendChild(c);
     } else a != null && a.remove();
   }
   function s() {
-    var a = aa(".".concat(da.url));
-    if (ha.urlNav) {
-      var b = ba("div"),
-        c = ba("ul");
-      a && a.remove(), b.classList.add(da.url), na.forEach(function (b) {
-        if (b.hasAttribute(ea.id) && b.hasAttribute(ea.title)) {
-          var d = ba('li'),
-            e = ba('a');
-          e.href = "#" + b.getAttribute(ea.id), e.innerHTML = b.getAttribute(ea.title), d.appendChild(e), c.appendChild(d);
+    var a = ba(".".concat(ea.url));
+    if (ia.urlNav) {
+      var b = ca("div"),
+        c = ca("ul");
+      a && a.remove(), b.classList.add(ea.url), oa.forEach(function (b) {
+        if (b.hasAttribute(fa.id) && b.hasAttribute(fa.title)) {
+          var d = ca('li'),
+            e = ca('a');
+          e.href = "#" + b.getAttribute(fa.id), e.innerHTML = b.getAttribute(fa.title), d.appendChild(e), c.appendChild(d);
         }
-      }), b.appendChild(c), la.appendChild(b), aa(".".concat(da.url, " a"), !0).forEach(function (a) {
+      }), b.appendChild(c), ma.appendChild(b), ba(".".concat(ea.url, " a"), !0).forEach(function (a) {
         a.addEventListener("click", function (b) {
-          L(a.getAttribute('href').substring(1));
+          M(a.getAttribute('href').substring(1));
         });
       });
     } else a != null && a.remove();
   }
   function t() {
-    if (ha.lazyLoad) {
-      if (ha.lazyPreload) {
-        var a = qa[qa.length - 1];
-        for (var b = a + 1; b <= a + ha.lazyPreloadSlides; b++) b < na.length && qa.indexOf(b) == -1 && qa.push(b);
+    if (ia.lazyLoad) {
+      if (ia.lazyPreload) {
+        var a = ra[ra.length - 1];
+        for (var b = a + 1; b <= a + ia.lazyPreloadSlides; b++) b < oa.length && ra.indexOf(b) == -1 && ra.push(b);
       }
-      qa.forEach(function (a) {
-        var b = aa("[".concat(ea.slide, "=\"").concat(a, "\"] img[data-src]"), !0);
+      ra.forEach(function (a) {
+        var b = ba("[".concat(fa.slide, "=\"").concat(a, "\"] img[data-src]"), !0);
         b.forEach(function (a) {
           return u(a);
         });
@@ -201,169 +202,180 @@ var ddcarousel = function b(a) {
     }
   }
   function u(a) {
-    a && a.getAttribute(ea.lazyImg) && !a.src && (a.src = a.getAttribute(ea.lazyImg), a.removeAttribute(ea.lazyImg));
+    a && a.getAttribute(fa.lazyImg) && !a.src && (a.src = a.getAttribute(fa.lazyImg), a.removeAttribute(fa.lazyImg));
   }
   function v() {
-    ua = ga ? ma : window, La.forEach(function (a) {
-      return ua.addEventListener(a, E, {
+    va = ha ? na : window, Ma.forEach(function (a) {
+      return va.addEventListener(a, E, {
         passive: !0
       });
-    }), Ma.forEach(function (a) {
+    }), Na.forEach(function (a) {
       return window.addEventListener(a, C, {
         passive: !0
       });
-    }), Na.forEach(function (a) {
+    }), Oa.forEach(function (a) {
       return window.addEventListener(a, F);
-    }), window.addEventListener("resize", A), ma.addEventListener($(), z), ha.autoplayPauseHover && ha.autoplay ? x() : y();
+    }), window.addEventListener("resize", A), na.addEventListener(_(), z), ia.autoplayPauseHover && ia.autoplay ? x() : y(), ia.keyboardNavigation && window.addEventListener("keydown", G);
   }
   function w() {
-    ua = ga ? ma : window, La.forEach(function (a) {
-      return ua.removeEventListener(a, E, {
+    va = ha ? na : window, Ma.forEach(function (a) {
+      return va.removeEventListener(a, E, {
         passive: !0
       });
-    }), Ma.forEach(function (a) {
+    }), Na.forEach(function (a) {
       return window.removeEventListener(a, C, {
         passive: !0
       });
-    }), Na.forEach(function (a) {
+    }), Oa.forEach(function (a) {
       return window.removeEventListener(a, F);
-    }), window.removeEventListener("resize", A), ma.removeEventListener($(), z), y();
+    }), window.removeEventListener("resize", A), na.removeEventListener(_(), z), y(), ia.keyboardNavigation && window.removeEventListener("keydown", G);
   }
   function x() {
-    Ja.forEach(function (a) {
-      return ma.addEventListener(a, Q);
-    }), Ka.forEach(function (a) {
-      return ma.addEventListener(a, P);
+    Ka.forEach(function (a) {
+      return na.addEventListener(a, R);
+    }), La.forEach(function (a) {
+      return na.addEventListener(a, Q);
     });
   }
   function y() {
-    Ja.forEach(function (a) {
-      return ma.removeEventListener(a, Q);
-    }), Ka.forEach(function (a) {
-      return ma.removeEventListener(a, P);
+    Ka.forEach(function (a) {
+      return na.removeEventListener(a, R);
+    }), La.forEach(function (a) {
+      return na.removeEventListener(a, Q);
     });
   }
   function z() {
     j("onTransitionend");
   }
   function A() {
-    m(), !Ia && (B(), Ia = !0, setTimeout(function () {
-      Ia = !1;
-    }, ha.resizeRefresh));
+    m(), !Ja && (B(), Ja = !0, setTimeout(function () {
+      Ja = !1;
+    }, ia.resizeRefresh));
   }
   function B() {
-    var a = Object.keys(ja);
-    for (var b = a.length - 1; b >= 0; b--) document.body.clientWidth < a[b] ? e(Object.values(ja)[b]) : document.body.clientWidth >= a[a.length - 1] && d();
-    m(), p(), r(), O(), N(), s(), Q(), ha.autoplay && ta == null && P(), M(), G();
+    var a = Object.keys(ka);
+    for (var b = a.length - 1; b >= 0; b--) document.body.clientWidth < a[b] ? e(Object.values(ka)[b]) : document.body.clientWidth >= a[a.length - 1] && d();
+    m(), p(), r(), P(), O(), s(), R(), ia.autoplay && ua == null && Q(), N(), H();
   }
   function C(a) {
-    if (ya) {
+    if (za) {
       var b = D(a, "mousemove", "touchmove");
-      ma.style.transitionDuration = ha.swipeSmooth + "s", za = Math.abs(b - va), xa = b - wa, za <= ha.touchMaxSlideDist ? (j("onDragging"), I(xa)) : (Ba = !0, xa = b - wa);
+      na.style.transitionDuration = ia.swipeSmooth + "s", Aa = Math.abs(b - wa), ya = b - xa, Aa <= ia.touchMaxSlideDist ? (j("onDragging"), J(ya)) : (Ca = !0, ya = b - xa);
     }
   }
   function D(a, b, c) {
-    return a.type == b && ha.mouseDrag ? ha.vertical ? a.clientY : a.pageX : a.type == c && ha.touchDrag ? ha.vertical ? a.targetTouches[0].pageY : a.targetTouches[0].pageX : void 0;
+    return a.type == b && ia.mouseDrag ? ia.vertical ? a.clientY : a.pageX : a.type == c && ia.touchDrag ? ia.vertical ? a.targetTouches[0].pageY : a.targetTouches[0].pageX : void 0;
   }
   function E(a) {
-    if (ga || a.target == ma) {
+    if (ha || a.target == na) {
       var b = D(a, "mousedown", "touchStartCords");
-      b !== undefined && (ya = !0, va = b, wa = va + -Ca, Aa = Ca, Ba = !1, j("onDrag"));
+      b !== undefined && (za = !0, wa = b, xa = wa + -Da, Ba = Da, Ca = !1, j("onDrag"));
     }
   }
   function F() {
-    ya && (j("onDragged"), za >= ha.touchSwipeThreshold && !Ba ? xa > Aa ? S() : R() : I(Aa), ma.style.transitionDuration = ha.slideChangeDuration + "s", ya = !1);
+    za && (j("onDragged"), Aa >= ia.touchSwipeThreshold && !Ca ? ya > Ba ? T() : S() : J(Ba), na.style.transitionDuration = ia.slideChangeDuration + "s", za = !1);
   }
-  function G() {
+  function G(a) {
+    if (document.activeElement.tagName !== 'INPUT' && document.activeElement.tagName !== 'TEXTAREA') switch (a.key) {
+      case "ArrowLeft":
+      case "ArrowUp":
+        T(), a.preventDefault();
+        break;
+      case "ArrowRight":
+      case "ArrowDown":
+        S(), a.preventDefault();
+    }
+  }
+  function H() {
     if (o()) {
       var a = "inactive";
-      ra == 0 ? (Ga.classList.add(a), Ha.classList.remove(a)) : ra == sa ? (Ga.classList.remove(a), Ha.classList.add(a)) : (Ga.classList.remove(a), Ha.classList.remove(a));
+      sa == 0 ? (Ha.classList.add(a), Ia.classList.remove(a)) : sa == ta ? (Ha.classList.remove(a), Ia.classList.add(a)) : (Ha.classList.remove(a), Ia.classList.remove(a));
     }
-  }
-  function H(a) {
-    Ca = -X(a), I(Ca);
   }
   function I(a) {
-    var b = ha.vertical ? "translateY(".concat(a, "px)") : "translateX(".concat(a, "px)");
-    /^((?!chrome|android).)*safari/i.test(navigator.userAgent) ? ma.style.webkitTransform = b : ma.style.transform = b;
+    Da = -Y(a), J(Da);
   }
-  function J() {
-    if (ha.items == 1) la.style.height = pa[ra] + "px";else {
+  function J(a) {
+    var b = ia.vertical ? "translateY(".concat(a, "px)") : "translateX(".concat(a, "px)");
+    /^((?!chrome|android).)*safari/i.test(navigator.userAgent) ? na.style.webkitTransform = b : na.style.transform = b;
+  }
+  function K() {
+    if (ia.items == 1) ma.style.height = qa[sa] + "px";else {
       var a = [];
-      for (var b = qa[0]; b <= qa[qa.length - 1]; b++) a.push(pa[b]);
-      la.style.height = Math.max.apply(Math, a) + "px";
+      for (var b = ra[0]; b <= ra[ra.length - 1]; b++) a.push(qa[b]);
+      ma.style.height = Math.max.apply(Math, a) + "px";
     }
-  }
-  function K(a) {
-    var b = !(arguments.length > 1 && arguments[1] !== undefined) || arguments[1];
-    var c = ra;
-    b ? ma.style.transitionDuration = ha.slideChangeDuration + "s" : (ma.style.transitionDuration = "0s", ma.addEventListener($(), function () {
-      ma.style.transitionDuration = ha.slideChangeDuration + "0s";
-    })), a == "prev" ? ra != 0 && ra-- : a == "next" ? ra < sa && ra++ : Number.isInteger(a) && a > -1 && a <= sa && (ra = a), N(), O(), M(), G(), ha.autoHeight && J(U()), c != ra && j("onChanged");
   }
   function L(a) {
     var b = !(arguments.length > 1 && arguments[1] !== undefined) || arguments[1];
-    var c = aa(".".concat(da.item, "[").concat(ea.id, "=\"").concat(a, "\"]"));
-    K(parseInt(c.getAttribute(ea.slide)), b);
+    var c = sa;
+    b ? na.style.transitionDuration = ia.slideChangeDuration + "s" : (na.style.transitionDuration = "0s", na.addEventListener(_(), function () {
+      na.style.transitionDuration = ia.slideChangeDuration + "0s";
+    })), a == "prev" ? sa != 0 && sa-- : a == "next" ? sa < ta && sa++ : Number.isInteger(a) && a > -1 && a <= ta && (sa = a), O(), P(), N(), H(), ia.autoHeight && K(V()), c != sa && j("onChanged");
   }
-  function M() {
-    if (ha.centerSlide && ha.items > 0) {
-      var a = -X(U()) - -(parseInt(Z().width) * Math.floor(ha.items / 2));
-      Ca = a, I(a);
-    } else H(U());
+  function M(a) {
+    var b = !(arguments.length > 1 && arguments[1] !== undefined) || arguments[1];
+    var c = ba(".".concat(ea.item, "[").concat(fa.id, "=\"").concat(a, "\"]"));
+    L(parseInt(c.getAttribute(fa.slide)), b);
   }
   function N() {
-    if (qa != null && qa.forEach(function (a) {
-      aa("[".concat(ea.slide, "=\"").concat(a, "\"]")).classList.remove("active");
-    }), qa = [], ha.centerSlide) qa.push(ra);else if (ha.itemPerPage) for (var a = ra; a < ra + ha.items; a++) qa.push(a);else if (T() + ha.items > W()) for (var a = na.length - ha.items; a < W(); a++) qa.push(a);else if (ha.items == 0) qa.push(T());else for (var a = T(); a < T() + ha.items; a++) a < na.length && qa.push(a);
-    qa.forEach(function (a) {
-      aa("[".concat(ea.slide, "=\"").concat(a, "\"]")).classList.add("active");
-    }), t();
+    if (ia.centerSlide && ia.items > 0) {
+      var a = -Y(V()) - -(parseInt($().width) * Math.floor(ia.items / 2));
+      Da = a, J(a);
+    } else I(V());
   }
   function O() {
-    var b = "active";
-    if (q()) {
-      var c = aa(".".concat(da.dot, "[").concat(ea.slide, "].") + b);
-      c != null && c.classList.remove(b), aa(".".concat(da.dot, "[").concat(ea.slide, "=\"").concat(ra, "\"]")).classList.add(b);
-    }
+    if (ra != null && ra.forEach(function (a) {
+      ba("[".concat(fa.slide, "=\"").concat(a, "\"]")).classList.remove("active");
+    }), ra = [], ia.centerSlide) ra.push(sa);else if (ia.itemPerPage) for (var a = sa; a < sa + ia.items; a++) ra.push(a);else if (U() + ia.items > X()) for (var a = oa.length - ia.items; a < X(); a++) ra.push(a);else if (ia.items == 0) ra.push(U());else for (var a = U(); a < U() + ia.items; a++) a < oa.length && ra.push(a);
+    ra.forEach(function (a) {
+      ba("[".concat(fa.slide, "=\"").concat(a, "\"]")).classList.add("active");
+    }), t();
   }
   function P() {
-    ta == null && (ta = setInterval(function () {
-      return R();
-    }, ha.autoplaySpeed));
+    var b = "active";
+    if (q()) {
+      var c = ba(".".concat(ea.dot, "[").concat(fa.slide, "].") + b);
+      c != null && c.classList.remove(b), ba(".".concat(ea.dot, "[").concat(fa.slide, "=\"").concat(sa, "\"]")).classList.add(b);
+    }
   }
   function Q() {
-    ta > 0 && (clearTimeout(ta), ta = undefined);
+    ua == null && (ua = setInterval(function () {
+      return S();
+    }, ia.autoplaySpeed));
   }
   function R() {
-    K("next");
+    ua > 0 && (clearTimeout(ua), ua = undefined);
   }
   function S() {
-    K("prev");
+    L("next");
   }
   function T() {
-    return ra * (ha.items > 0 ? ha.items : 1);
+    L("prev");
   }
   function U() {
-    return aa("[".concat(ea.slide, "].active"));
+    return sa * (ia.items > 0 ? ia.items : 1);
   }
   function V() {
-    return ra;
+    return ba("[".concat(fa.slide, "].active"));
   }
   function W() {
-    return na.length;
-  }
-  function X(a) {
-    return ha.vertical ? a.getBoundingClientRect().top - ma.getBoundingClientRect().top : a.getBoundingClientRect().left - ma.getBoundingClientRect().left;
-  }
-  function Y() {
     return sa;
   }
+  function X() {
+    return oa.length;
+  }
+  function Y(a) {
+    return ia.vertical ? a.getBoundingClientRect().top - na.getBoundingClientRect().top : a.getBoundingClientRect().left - na.getBoundingClientRect().left;
+  }
   function Z() {
-    return na[0].style;
+    return ta;
   }
   function $() {
-    var a = ba("tr"),
+    return oa[0].style;
+  }
+  function _() {
+    var a = ca("tr"),
       b = {
         transition: "transitionend",
         MozTransition: "transitionend",
@@ -371,26 +383,26 @@ var ddcarousel = function b(a) {
       };
     for (var c in b) if (a.style[c] !== undefined) return b[c];
   }
-  function _() {
+  function aa() {
     return new Object({
-      created: Da !== undefined,
-      currentPage: ra,
-      totalPages: sa,
-      totalSlides: na.length,
-      activeSlides: _toConsumableArray(qa),
-      config: _objectSpread({}, ha),
-      currentTranslate: Ca
+      created: Ea !== undefined,
+      currentPage: sa,
+      totalPages: ta,
+      totalSlides: oa.length,
+      activeSlides: _toConsumableArray(ra),
+      config: _objectSpread({}, ia),
+      currentTranslate: Da
     });
   }
-  function aa(a, b) {
-    var c = "".concat(Fa, " ").concat(a);
+  function ba(a, b) {
+    var c = "".concat(Ga, " ").concat(a);
     return b ? document.querySelectorAll(c) : document.querySelector(c);
   }
-  function ba(a) {
+  function ca(a) {
     return document.createElement(a);
   }
-  var ca = "ddcarousel",
-    da = {
+  var da = "ddcarousel",
+    ea = {
       cont: "ddcarousel-container",
       stage: "ddcarousel-stage",
       nav: "ddcarousel-nav",
@@ -404,16 +416,15 @@ var ddcarousel = function b(a) {
       fullW: "full-width",
       disable: "disabled"
     },
-    ea = {
+    fa = {
       slide: "data-slide",
       id: "data-id",
       title: "data-title",
       lazyImg: "data-src"
     },
-    fa = ["onInitialize", "onInitialized", "onDrag", "onDragging", "onDragged", "onChanged", "onTransitionend", "onResized", "onDestroy", "onDestroyed"],
-    ga = document.all && window.atob;
-  var ha,
-    ia,
+    ga = ["onInitialize", "onInitialized", "onDrag", "onDragging", "onDragged", "onChanged", "onTransitionend", "onResized", "onDestroy", "onDestroyed"],
+    ha = document.all && window.atob;
+  var ia,
     ja,
     ka,
     la,
@@ -440,24 +451,25 @@ var ddcarousel = function b(a) {
     Ga,
     Ha,
     Ia,
-    Ja = ["mouseover", "touchstart"],
-    Ka = ["mouseleave", "touchend"],
-    La = ["touchstart", "mousedown"],
-    Ma = ["touchmove", "mousemove"],
-    Na = ["touchend", "mouseup"];
+    Ja,
+    Ka = ["mouseover", "touchstart"],
+    La = ["mouseleave", "touchend"],
+    Ma = ["touchstart", "mousedown"],
+    Na = ["touchmove", "mousemove"],
+    Oa = ["touchend", "mouseup"];
   return c(a), {
-    prevPage: S,
-    nextPage: R,
-    changePage: K,
+    prevPage: T,
+    nextPage: S,
+    changePage: L,
     refresh: B,
     on: h,
-    goToUrl: L,
-    autoplayStart: P,
-    autoplayStop: Q,
-    getCurrentPage: V,
-    getTotalPages: Y,
-    getTotalSlides: W,
-    getStatus: _,
+    goToUrl: M,
+    autoplayStart: Q,
+    autoplayStop: R,
+    getCurrentPage: W,
+    getTotalPages: Z,
+    getTotalSlides: X,
+    getStatus: aa,
     destroy: l,
     init: c
   };

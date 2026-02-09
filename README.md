@@ -98,6 +98,8 @@ import ddcarousel from 'ddcarousel';
 
 - `mouseDrag` - Toggle mouse drag (boolean, default: false)
 
+- `keyboardNavigation` **(new)** - Use keyboard arrow keys to navigate through slides. (boolean, default: false)
+
 - `vertical` - Change to vertical orientation (boolean, default: false)
 
 - `verticalMaxContentWidth` **(new)** - Changes the width of the carousel relative to the longest slide inside. When enabled it will turn off `fullWidth` option (boolean, default: false)

@@ -106,6 +106,7 @@ var ddcarousel = function (options) {
 			autoplayPauseHover: false,
 			touchDrag: true,
 			mouseDrag: false,
+			keyboardNavigation: false,
 			centerSlide: false,
 			touchSwipeThreshold: 60,
 			touchMaxSlideDist: 500,
@@ -530,6 +531,9 @@ var ddcarousel = function (options) {
 		} else {
 			detachAutoplay();
 		}
+
+		if (config.keyboardNavigation)
+			window.addEventListener("keydown", keyboardHandler);
 	}
 
 	function detachEvents() {
@@ -541,6 +545,9 @@ var ddcarousel = function (options) {
 		window.removeEventListener("resize", resizeEvent);
 		stage.removeEventListener(whichTransitionEvent(), transitionEvent);
 		detachAutoplay();
+
+		if (config.keyboardNavigation)
+			window.removeEventListener("keydown", keyboardHandler);
 	}
 
 	function attachAutoplay() {
@@ -655,6 +662,25 @@ var ddcarousel = function (options) {
 
 			stage.style.transitionDuration = config.slideChangeDuration + "s";
 			isDragging = false;
+		}
+	}
+
+	function keyboardHandler(e) {
+		// don't trigger while typing
+		if (document.activeElement.tagName === 'INPUT' || document.activeElement.tagName === 'TEXTAREA')
+			return;
+
+		switch (e.key) {
+			case "ArrowLeft":
+			case "ArrowUp":
+				prevPage();
+				e.preventDefault();
+				break;
+			case "ArrowRight":
+			case "ArrowDown":
+				nextPage();
+				e.preventDefault();
+				break;
 		}
 	}
 
