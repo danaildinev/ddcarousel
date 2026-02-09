@@ -110,6 +110,8 @@ import ddcarousel from 'ddcarousel';
 
 - `autoplayProgress` **(new)** - Show autoplay progress indicator. Requires `autoplay: true` (bool, default: true)
 
+- `autoplayPauseOnTabHidden` **(new)** - Pause autoplay when browser tab loses focus (bool, default: true)
+
 - `autoplayPauseHover` - Pause autoplay on hover or touch (boolean, default: false)
 
 - `callbacks` - Enable callback events (boolean, default: false)

@@ -107,6 +107,7 @@ var ddcarousel = function (options) {
 			autoplaySpeed: 5000,
 			autoplayPauseHover: false,
 			autoplayProgress: true,
+			autoplayPauseOnTabHidden: true,
 			touchDrag: true,
 			mouseDrag: false,
 			keyboardNavigation: false,
@@ -144,6 +145,12 @@ var ddcarousel = function (options) {
 				trigger("onInitialized");
 				appCreated = true;
 			}
+		}
+
+		if (config.autoplayPauseOnTabHidden) {
+			document.addEventListener("visibilitychange", () => {
+				document.hidden ? autoplayStop() : autoplayStart();
+			});
 		}
 	}
 
