@@ -44,8 +44,5 @@
 		"sass": "^1.97.3",
 		"uglify-js": "^3.13.3",
 		"uglifycss": "0.0.29"
-	},
-	"dependencies": {
-		"read-package-json": "^2.1.2"
 	}
 }

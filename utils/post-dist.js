@@ -1,8 +1,6 @@
-// Example Node.js program to append data to file
-const fs = require('fs'),
-    readJson = require('read-package-json');
-
-var license;
+// Append license header to build files
+const fs = require('fs/promises');
+const path = require('path');
 
 const targetFiles = [
     './dist/ddcarousel.js',
@@ -10,24 +8,32 @@ const targetFiles = [
     './dist/ddcarousel.min.css',
 ];
 
-//read some values from package.json
-readJson('./package.json', console.error, false, function (er, data) {
-    if (er) {
-        console.error("There was an error reading " + data)
-        return
-    }
-    license = "/* " + data["name"] + " " + data["version"] + " | " + data["author"]["name"] + " | License: " + data["license"]["url"] + " */\r\n";
+async function buildLicenseHeader() {
+    const file = path.resolve('./package.json');
+    const fileText = await fs.readFile(file, 'utf8');
+    const package = JSON.parse(fileText);
 
-    //write license info on the top of target files
-    targetFiles.forEach(file => {
-        fs.readFile(file, 'utf8', function (err, data) {
-            if (err) throw err;
-            fs.writeFile(file, license + data, 'utf8', function (err) {
-                if (err) throw err;
-                // if no error
-                console.log("\x1b[32m", "License is appended to " + file + " successfully 😊")
-            });
-        });
-    });
-});
+    // output -> /*! ddcarousel v1.4.2 | MIT | https://github.com/user/ddcarousel */
+    return `/*! ${package.name} v${package.version} | ${package.license} | ${package.repository.url} */\n`;
+}
+
+async function prependLicense(file, license) {
+    const content = await fs.readFile(file, 'utf8');
+    await fs.writeFile(file, license + content, 'utf8');
+    console.log("\x1b[32m", `License appended to ${file} successfully 😊`);
+}
+
+async function main() {
+    try {
+        const license = await buildLicenseHeader();
+        await Promise.all(
+            targetFiles.map(file => prependLicense(file, license))
+        );
+    } catch (err) {
+        console.error('Failed to append license', err);
+        process.exit(1);
+    }
+}
+
+main();
 
