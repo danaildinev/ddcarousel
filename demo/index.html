@@ -28,6 +28,7 @@
 			<li><a href="#responsive">Responsive + fullWidth <strong>(new)</strong></a></li>
 			<li><a href="#vertical">Vertical orientation <strong>(new)</strong></a></li>
 			<li><a href="#urlnav">Url navigation</a></li>
+			<li><a href="#lazydemo">Lazy loading <strong>(new)</strong></a></li>
 			<li><a href="#autoplay">Autoplay <strong>(new)</strong></a></li>
 			<li><a href="#disabledTouch">Disabled touch drag</a></li>
 			<li><a href="#customLabels">Custom navigation labels</a></li>
@@ -127,6 +128,46 @@
 			<textarea data-slider="url" readonly></textarea>
 		</div>
 	</div>
+	<div id="lazydemo" class="carousel-section">
+		<div class="container">
+			<h2>Lazy load images <strong>(new)</strong></h2>
+			<p>Lazy loading of images in carousel. This demo will lazy load images on changing active slides and also
+				preload the next 2 images (total of 4 images loaded).</p>
+			<div class="ddcarousel lazy">
+				<div>
+					<img data-src="images/img1.jpg" alt="Image 1">
+				</div>
+				<div>
+					<img data-src="images/img2.jpg" alt="Image 2">
+				</div>
+				<div>
+					<img data-src="images/img3.jpg" alt="Image 3">
+				</div>
+				<div>
+					<img data-src="images/img4.jpg" alt="Image 4">
+				</div>
+				<div>
+					<img data-src="images/img5.jpg" alt="Image 5">
+				</div>
+				<div>
+					<img data-src="images/img6.jpg" alt="Image 6">
+				</div>
+				<div>
+					<img data-src="images/img7.jpg" alt="Image 7">
+				</div>
+				<div>
+					<img data-src="images/img8.jpg" alt="Image 8">
+				</div>
+				<div>
+					<img data-src="images/img9.jpg" alt="Image 9">
+				</div>
+				<div>
+					<img data-src="images/img10.jpg" alt="Image 10">
+				</div>
+			</div>
+			<textarea data-slider="lazy" readonly></textarea>
+		</div>
+	</div>
 	<div id="autoplay" class="carousel-section">
 		<div class="container">
 			<h2>Autoplay <strong>(new)</strong></h2>
@@ -218,7 +259,7 @@
 		</div>
 	</div>
 </body>
-<script src="../dist/ddcarousel.min.js"></script>
+<script src="../dist/ddcarousel.js"></script>
 <script src="js/main.js"></script>
 
 </html>

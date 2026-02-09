@@ -54,6 +54,14 @@ var config = {
 		urlNav: true,
 		mouseDrag: true
 	},
+	lazy: {
+		container: ".lazy",
+		autoHeight: false,
+		items: 2,
+		lazyLoad: true,
+		lazyPreload: true,
+		lazyPreloadSlides: 2,
+	},
 	autoplay: {
 		container: ".autoplay",
 		autoplay: true,
@@ -187,7 +195,8 @@ document.addEventListener("DOMContentLoaded", function () {
 		disabledTouch = ddcarousel(config['disabledTouch']),
 		customLabels = ddcarousel(config['customLabels']),
 		customAnim = ddcarousel(config['customAnim']),
-		events = ddcarousel(config['events']);
+		events = ddcarousel(config['events']),
+		lazy = ddcarousel(config['lazy']);
 
 	//autoplay controls
 	document.getElementById("apStop").addEventListener("click", function () {

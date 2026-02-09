@@ -86,6 +86,12 @@ import ddcarousel from 'ddcarousel';
 
 - `responsive` - Object with options for different queries (object, default: empty object)
 
+- `lazyLoad` **(new)** - Lazy load all images for the current active slides (boolean, default: false)
+
+- `lazyPreload` **(new)** - Preload images from next slide(s) (default - next 1 slide). Requires `lazyLoad: true`. (boolean, default: false)
+
+- `lazyPreloadSlides` **(new)** - Specify how many slides to preload images. Requires `lazyPreload: true`. (boolean, default: 1)
+
 - `urlNav` - Creates url navigation based navigation for slides (you may need to enagle `itemPerPage` for better experience). To use this feature, you must add `data-id` and `data-title` on every slide you want to include in nativagion. (boolean, default: false)
 
 - `touchDrag` - Toggle touch drag (boolean, default: true)

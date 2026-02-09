@@ -271,6 +271,11 @@ body.nav-opened #toggle-nav span {
 	height: 210px;
 }
 
+.ddcarousel.lazy {
+	width: 80%;
+	height: 400px;
+}
+
 .code-container {
 	display: flex;
 	display: -webkit-flex;
