@@ -890,7 +890,13 @@ var ddcarousel = function (options) {
 
 	function getStatus() {
 		return new Object({
-			created: appCreated === undefined ? false : true
+			created: appCreated === undefined ? false : true,
+			currentPage: currentPage,
+			totalPages: totalPages,
+			totalSlides: slides.length,
+			activeSlides: [...activeSlides],
+			config: { ...config },
+			currentTranslate: currentTranslate
 		});
 	}
 

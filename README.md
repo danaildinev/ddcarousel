@@ -146,7 +146,7 @@ import ddcarousel from 'ddcarousel';
 
 - `autoplayStop()` - Stop autoplay (if enabled from options)
 
-- `getStatus()` **(new)** - Get carousel info (experimental feature)
+- `getStatus()` **(new)** - Get the current state of the carousel (like current page, active slides, total slides, loop info, config and etc.)
 
 - `getCurrentPage()` - Get the current page
 

@@ -239,6 +239,13 @@ document.addEventListener("DOMContentLoaded", function () {
 	document.getElementById("eventsNextSlide").addEventListener("click", function () {
 		events.nextPage();
 	});
+	document.getElementById("eventsGetStatus").addEventListener("click", function () {
+		const status = events.getStatus();
+		console.log(status);
+		writeLog("getStatus()");
+		writeLog(JSON.stringify(status, null, "  "));
+		writeLog("End of getStatus()... Open your console and then you trigger again for more details.");
+	});
 	document.getElementById("eventsGetCurrentPage").addEventListener("click", function () {
 		writeLog(events.getCurrentPage())
 	});
