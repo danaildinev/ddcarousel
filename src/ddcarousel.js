@@ -109,7 +109,7 @@ var ddcarousel = function (options) {
 			autoplayProgress: true,
 			autoplayPauseOnTabHidden: true,
 			touchDrag: true,
-			mouseDrag: false,
+			mouseDrag: true,
 			keyboardNavigation: false,
 			centerSlide: false,
 			touchSwipeThreshold: 60,

@@ -96,7 +96,7 @@ import ddcarousel from 'ddcarousel';
 
 - `touchDrag` - Toggle touch drag (boolean, default: true)
 
-- `mouseDrag` - Toggle mouse drag (boolean, default: false)
+- `mouseDrag` - Toggle mouse drag (boolean, default: true)
 
 - `keyboardNavigation` **(new)** - Use keyboard arrow keys to navigate through slides. (boolean, default: false)
 
