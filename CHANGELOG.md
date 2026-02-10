@@ -1,5 +1,19 @@
 # Changelog
 
+## v1.4 (2026 February 10)
+- Added an option to enable lazy loading for images in slides
+- Added an option to preload images in upcoming slides and an option to change the number of upcoming slides
+- Added an option to pause autoplay when the tab is hidden to prevent background playback
+- Added an option to show autoplay progress bar
+- Added an option to navigate slides using the keyboard
+- Fix autoplay repeatedly trying to go to the next page when already on the last page
+- Fix autoplay not reseting timer when changing pages
+- Exposed more properties to `getStatus()` methods: current page, total pages, total slides, current active slides, current translate and current config
+- Changed default autoplay speed to 5 seconds
+- Updated generated header information for distribution files
+- Updated npm packages to latest versions
+- Removed deprecated npm packages
+
 ## v1.3.1 (2021 March 31)
 -   Updated 'y18n' package to latest version to fix a security vulnerability
 -   Updated all packages to latest version
