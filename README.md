@@ -2,11 +2,11 @@
 
 ![GitHub package.json version](https://img.shields.io/github/package-json/v/danaildinev/ddcarousel) ![GitHub](https://img.shields.io/github/license/danaildinev/ddcarousel)
 
-Simple and fast carousel slider written in vannila JS.
+Simple, fast and lightweight carousel slider written in vannila JS.
 
 **Browser compatibility:** IE10+, Edge 15+, Chrome 37+, Firefox 32+, Opera 23+, Safari 6.2+, Safari iOS 9+
 
-(May work on older browsers but these are minimum versions tested.)
+(May work on older browsers, but these are minimum versions tested.)
 
 ## Getting started
 
@@ -32,7 +32,7 @@ Put the required base style and script:
 
 **Usage**
 
-Wrap all items in container (`ddcarousel` is required class)
+Wrap all items in container (`ddcarousel` is required class) and keep each slide contents in a separate div container.
 
 ```html
 <div class="sample ddcarousel">
@@ -48,9 +48,9 @@ ddcarousel({
 	container: ".sample"
 });
 ```
-or
+or you can initialize it later:
 ```js
-var config = {
+const config = {
 	container: ".sample"
 },
 carousel = ddcarousel();
@@ -146,7 +146,7 @@ import ddcarousel from 'ddcarousel';
 
 - `on(event, callback)` - Event listener
 
-- `goToUrl(name, enableAnim)` - Go to specified slide title. `urlNav` must be enabled for this to work.
+- `goToUrl(name, enableAnim)` - Go to specified slide title. `urlNav` option must be enabled for this to work.
 
 - `autoplayStart()` - Start autoplay (if enabled from options)
 
@@ -162,19 +162,15 @@ import ddcarousel from 'ddcarousel';
 
 ## Events
 
-Using example:
+Events example:
 
 ```js
-var carousel = ddcarousel({
+const carousel = ddcarousel({
 	container: ".carousel",
-	onInitialized: function (e) {
-		console.log(e);
-	}
+	onInitialized: e => console.log(e)
 });
 // or like this..
-carousel.on("onChanged", function (e) => {
-	console.log(e);
-});
+carousel.on("onChanged", e => console.log(e));
 ```
 
 - `onInitialize` - Before plugin init
@@ -201,10 +197,20 @@ carousel.on("onChanged", function (e) => {
 
 ## Building
 
-Run these two commands in the root dir:
+1. `npm install`
+2. Use available npm scripts. All of the commands will output to `src` folder:
+	- `dist` - build full package of the slider
+	- `babeljs` - build js only
+	- `minifyjs` - minify js
+	- `buildcss` - compile and compress css
+	- `minifycss` - minify css
+	- `license` - append license header information in dist files
 
-1. `npm install` (run once)
-2. Open package.json and see available build scripts.
+3. Scripts you can use then testing the carousel. All of the commands will output to `src/testing` folder. It is added in `.gitignore`, so you are free to use it as a testnig playground.
+	- `testjs` - build js in `src/testing`
+	- `watchsass` - watch and compile scss in `src/testing` folder
+
+4. Demo folder will load non-minifed script directly from `dist`, so it can be used as final testing.
 
 ## License
 
