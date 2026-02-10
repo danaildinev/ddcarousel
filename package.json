@@ -31,6 +31,15 @@
 		"url": "https://github.com/danaildinev/ddcarousel/issues"
 	},
 	"homepage": "https://github.com/danaildinev/ddcarousel#readme",
+	"browserslist": [
+		"ie >= 10",
+		"edge >= 15",
+		"chrome >= 37",
+		"firefox >= 32",
+		"opera >= 23",
+		"safari >= 6.2",
+		"ios >= 9"
+	],
 	"devDependencies": {
 		"@babel/cli": "^7.13.14",
 		"@babel/core": "^7.14.3",
