@@ -7,26 +7,22 @@ var config = {
 		items: 3,
 		nav: true,
 		dots: false,
-		mouseDrag: true
 	},
 	centered: {
 		container: ".centered",
 		items: 3,
 		centerSlide: true,
-		mouseDrag: true
 	},
 	autoHeight: {
 		container: ".autoHeight",
 		items: 3,
 		itemPerPage: true,
-		mouseDrag: true
 	},
 	responsive: {
 		container: ".responsive",
 		items: 3,
 		nav: true,
 		dots: false,
-		mouseDrag: true,
 		responsive: {
 			480: {
 				items: 1,
@@ -45,14 +41,20 @@ var config = {
 		itemPerPage: true,
 		vertical: true,
 		startPage: 2,
-		mouseDrag: true,
 		autoHeight: false
 	},
 	url: {
 		container: ".url",
 		dots: false,
 		urlNav: true,
-		mouseDrag: true
+	},
+	lazy: {
+		container: ".lazy",
+		autoHeight: false,
+		items: 2,
+		lazyLoad: true,
+		lazyPreload: true,
+		lazyPreloadSlides: 2,
 	},
 	autoplay: {
 		container: ".autoplay",
@@ -64,9 +66,9 @@ var config = {
 		container: ".disabledTouch",
 		touchDrag: false
 	},
-	enabledMouse: {
-		container: ".enabledMouse",
-		mouseDrag: true
+	disabledMouse: {
+		container: ".disabledMouse",
+		mouseDrag: false
 	},
 	customLabels: {
 		container: ".customLabels",
@@ -78,16 +80,19 @@ var config = {
 	customAnim: {
 		container: ".customAnim",
 		items: 3,
-		mouseDrag: true,
 		touchSwipeThreshold: 1,
 		touchMaxSlideDist: 1000,
 		swipeSmooth: 0.2,
 		slideChangeDuration: 1.2
 	},
+	keyboardNav: {
+		container: ".keyboardNav",
+		items: 3,
+		keyboardNavigation: true
+	},
 	events: {
 		container: ".events",
 		items: 2,
-		mouseDrag: true,
 		touchSwipeThreshold: 1,
 		swipeSmooth: 0.2,
 		slideChangeDuration: 1.2,
@@ -183,11 +188,13 @@ document.addEventListener("DOMContentLoaded", function () {
 		vertical = ddcarousel(config['vertical']),
 		url = ddcarousel(config['url']),
 		autoplay = ddcarousel(config['autoplay']),
-		enabledmouse = ddcarousel(config['enabledMouse']),
+		disabledMouse = ddcarousel(config['disabledMouse']),
 		disabledTouch = ddcarousel(config['disabledTouch']),
 		customLabels = ddcarousel(config['customLabels']),
 		customAnim = ddcarousel(config['customAnim']),
-		events = ddcarousel(config['events']);
+		events = ddcarousel(config['events']),
+		lazy = ddcarousel(config['lazy']),
+		keyboardNav = ddcarousel(config['keyboardNav']);
 
 	//autoplay controls
 	document.getElementById("apStop").addEventListener("click", function () {
@@ -229,6 +236,13 @@ document.addEventListener("DOMContentLoaded", function () {
 	});
 	document.getElementById("eventsNextSlide").addEventListener("click", function () {
 		events.nextPage();
+	});
+	document.getElementById("eventsGetStatus").addEventListener("click", function () {
+		const status = events.getStatus();
+		console.log(status);
+		writeLog("getStatus()");
+		writeLog(JSON.stringify(status, null, "  "));
+		writeLog("End of getStatus()... Open your console and then you trigger again for more details.");
 	});
 	document.getElementById("eventsGetCurrentPage").addEventListener("click", function () {
 		writeLog(events.getCurrentPage())

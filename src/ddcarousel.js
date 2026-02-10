@@ -11,13 +11,16 @@ var ddcarousel = function (options) {
 			next: "ddcarousel-next",
 			vert: "ddcarousel-vertical",
 			url: "ddcarousel-urls",
+			prog: "ddcarousel-progress",
+			progb: "ddcarousel-progress-bar",
 			fullW: "full-width",
 			disable: "disabled"
 		},
 		dataTags = {
 			slide: "data-slide",
 			id: "data-id",
-			title: "data-title"
+			title: "data-title",
+			lazyImg: "data-src"
 		},
 		triggers = [
 			"onInitialize",
@@ -48,7 +51,7 @@ var ddcarousel = function (options) {
 		totalPages,
 		//autoplay
 		autoPlay,
-		autoPlayStartEvents = ["mouseover", "touchstart"],
+		autoPlayStartEvents = ["mouseenter", "touchstart"],
 		autoPlayStopEvents = ["mouseleave", "touchend"],
 		//touch and mouse
 		startDrag = ["touchstart", "mousedown"],
@@ -96,12 +99,18 @@ var ddcarousel = function (options) {
 			vertical: false,
 			verticalMaxContentWidth: false,
 			urlNav: false,
+			lazyLoad: false,
+			lazyPreload: false,
+			lazyPreloadSlides: 1,
 			responsive: [],
 			autoplay: false,
-			autoplaySpeed: 1000,
+			autoplaySpeed: 5000,
 			autoplayPauseHover: false,
+			autoplayProgress: true,
+			autoplayPauseOnTabHidden: true,
 			touchDrag: true,
-			mouseDrag: false,
+			mouseDrag: true,
+			keyboardNavigation: false,
 			centerSlide: false,
 			touchSwipeThreshold: 60,
 			touchMaxSlideDist: 500,
@@ -128,6 +137,7 @@ var ddcarousel = function (options) {
 				createNav();
 				createDots();
 				createUrls();
+				createAutoplayProgress();
 				setActiveSlides();
 				changePage(config.startPage > 0 ? config.startPage : 0, false);
 				refresh();
@@ -135,6 +145,12 @@ var ddcarousel = function (options) {
 				trigger("onInitialized");
 				appCreated = true;
 			}
+		}
+
+		if (config.autoplayPauseOnTabHidden) {
+			document.addEventListener("visibilitychange", () => {
+				document.hidden ? autoplayStop() : autoplayStart();
+			});
 		}
 	}
 
@@ -487,6 +503,53 @@ var ddcarousel = function (options) {
 		}
 	}
 
+	function createAutoplayProgress() {
+		if (!config.autoplay)
+			return;
+
+		removeAutoplayProgress();
+
+		if (config.autoplayProgress) {
+			const progress = newEl("div"),
+				progressBar = newEl("div");
+
+			progress.classList.add(cssClass.prog);
+			progressBar.classList.add(cssClass.progb);
+
+			progress.appendChild(progressBar);
+			container.appendChild(progress);
+		}
+	}
+
+	function removeAutoplayProgress() {
+		const progress = getEl(`.${cssClass.prog}`);
+		if (progress)
+			progress.remove();
+	}
+
+	function lazyLoad() {
+		if (config.lazyLoad) {
+			if (config.lazyPreload) {
+				const lastActiveIndex = activeSlides[activeSlides.length - 1];
+				for (var i = lastActiveIndex + 1; i <= lastActiveIndex + config.lazyPreloadSlides; i++)
+					if (i < slides.length && activeSlides.indexOf(i) == -1)
+						activeSlides.push(i);
+			}
+
+			activeSlides.forEach(i => {
+				const images = getEl(`[${dataTags.slide}="${i}"] img[data-src]`, true);
+				images.forEach(i => enableImageSrc(i));
+			});
+		}
+	}
+
+	function enableImageSrc(slideImg) {
+		if (slideImg && slideImg.getAttribute(dataTags.lazyImg) && !slideImg.src) {
+			slideImg.src = slideImg.getAttribute(dataTags.lazyImg);
+			slideImg.removeAttribute(dataTags.lazyImg);
+		}
+	}
+
 	function attachEvents() {
 		dragStartElement = ie10 ? stage : window;
 
@@ -503,6 +566,9 @@ var ddcarousel = function (options) {
 		} else {
 			detachAutoplay();
 		}
+
+		if (config.keyboardNavigation)
+			window.addEventListener("keydown", keyboardHandler);
 	}
 
 	function detachEvents() {
@@ -514,6 +580,9 @@ var ddcarousel = function (options) {
 		window.removeEventListener("resize", resizeEvent);
 		stage.removeEventListener(whichTransitionEvent(), transitionEvent);
 		detachAutoplay();
+
+		if (config.keyboardNavigation)
+			window.removeEventListener("keydown", keyboardHandler);
 	}
 
 	function attachAutoplay() {
@@ -554,6 +623,7 @@ var ddcarousel = function (options) {
 		calculateStage();
 		createNav();
 		createDots();
+		createAutoplayProgress();
 		setActiveDot();
 		setActiveSlides();
 		createUrls();
@@ -631,6 +701,25 @@ var ddcarousel = function (options) {
 		}
 	}
 
+	function keyboardHandler(e) {
+		// don't trigger while typing
+		if (document.activeElement.tagName === 'INPUT' || document.activeElement.tagName === 'TEXTAREA')
+			return;
+
+		switch (e.key) {
+			case "ArrowLeft":
+			case "ArrowUp":
+				prevPage();
+				e.preventDefault();
+				break;
+			case "ArrowRight":
+			case "ArrowDown":
+				nextPage();
+				e.preventDefault();
+				break;
+		}
+	}
+
 	function refreshNav() {
 		if (checkNavStatus()) {
 			var inactive = "inactive";
@@ -704,6 +793,7 @@ var ddcarousel = function (options) {
 		setActiveDot();
 		updateSlide();
 		refreshNav();
+		resetAutoplay();
 
 		//change stage height if this options is enabled
 		if (config.autoHeight) {
@@ -781,6 +871,8 @@ var ddcarousel = function (options) {
 		activeSlides.forEach(i => {
 			getEl(`[${dataTags.slide}="${i}"]`).classList.add("active");
 		});
+
+		lazyLoad();
 	}
 
 	function setActiveDot() {
@@ -794,16 +886,61 @@ var ddcarousel = function (options) {
 	}
 
 	function autoplayStart() {
-		if (autoPlay == undefined) {
-			autoPlay = setInterval(() => nextPage(), config.autoplaySpeed);
+		if (!config.autoplay || autoPlay != null)
+			return;
+
+		if (currentPage == totalPages)
+			return;
+
+		// reset progress bar
+		restartAutoplayProgressBar();
+
+		autoPlay = setInterval(() => {
+			nextPage();
+			restartAutoplayProgressBar();
+
+			if (currentPage == totalPages) {
+				clearInterval(autoPlay);
+				autoPlay = undefined;
+				removeAutoplayProgress();
+			}
+		}, config.autoplaySpeed);
+	}
+
+	function restartAutoplayProgressBar() {
+		let bar = getEl(`.${cssClass.progb}`);
+		if (!bar) {
+			createAutoplayProgress();
+			bar = getEl(`.${cssClass.progb}`);
 		}
+
+		if (!bar)
+			return;
+
+		const duration = config.autoplaySpeed;
+
+		bar.style.transition = 'none';
+		bar.style.width = '0%';
+
+		requestAnimationFrame(() => {
+			requestAnimationFrame(() => {
+				bar.style.transition = `width ${duration}ms linear`;
+				bar.style.width = '100%';
+			});
+		});
 	}
 
 	function autoplayStop() {
-		if (autoPlay > 0) {
-			clearTimeout(autoPlay);
+		if (autoPlay != null) {
+			clearInterval(autoPlay);
 			autoPlay = undefined;
+			removeAutoplayProgress();
 		}
+	}
+
+	function resetAutoplay() {
+		autoplayStop();
+		autoplayStart();
 	}
 
 	function nextPage() {
@@ -861,7 +998,13 @@ var ddcarousel = function (options) {
 
 	function getStatus() {
 		return new Object({
-			created: appCreated === undefined ? false : true
+			created: appCreated === undefined ? false : true,
+			currentPage: currentPage,
+			totalPages: totalPages,
+			totalSlides: slides.length,
+			activeSlides: [...activeSlides],
+			config: { ...config },
+			currentTranslate: currentTranslate,
 		});
 	}
 

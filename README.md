@@ -1,12 +1,12 @@
 # DDCarousel
 
-![GitHub package.json version](https://img.shields.io/github/package-json/v/danaildinev/ddcarousel) ![Travis (.org) branch](https://img.shields.io/travis/danaildinev/ddcarousel/master) ![GitHub](https://img.shields.io/github/license/danaildinev/ddcarousel)
+![GitHub package.json version](https://img.shields.io/github/package-json/v/danaildinev/ddcarousel) ![GitHub](https://img.shields.io/github/license/danaildinev/ddcarousel)
 
-Simple and fast carousel slider written in vannila JS.
+Simple, fast and lightweight carousel slider written in vannila JS.
 
 **Browser compatibility:** IE10+, Edge 15+, Chrome 37+, Firefox 32+, Opera 23+, Safari 6.2+, Safari iOS 9+
 
-(May work on older browsers but these are minimum versions tested.)
+(May work on older browsers, but these are minimum versions tested.)
 
 ## Getting started
 
@@ -32,7 +32,7 @@ Put the required base style and script:
 
 **Usage**
 
-Wrap all items in container (`ddcarousel` is required class)
+Wrap all items in container (`ddcarousel` is required class) and keep each slide contents in a separate div container.
 
 ```html
 <div class="sample ddcarousel">
@@ -48,9 +48,9 @@ ddcarousel({
 	container: ".sample"
 });
 ```
-or
+or you can initialize it later:
 ```js
-var config = {
+const config = {
 	container: ".sample"
 },
 carousel = ddcarousel();
@@ -86,19 +86,31 @@ import ddcarousel from 'ddcarousel';
 
 - `responsive` - Object with options for different queries (object, default: empty object)
 
+- `lazyLoad` **(new)** - Lazy load all images for the current active slides (boolean, default: false)
+
+- `lazyPreload` **(new)** - Preload images from next slide(s) (default - next 1 slide). Requires `lazyLoad: true`. (boolean, default: false)
+
+- `lazyPreloadSlides` **(new)** - Specify how many slides to preload images. Requires `lazyPreload: true`. (boolean, default: 1)
+
 - `urlNav` - Creates url navigation based navigation for slides (you may need to enagle `itemPerPage` for better experience). To use this feature, you must add `data-id` and `data-title` on every slide you want to include in nativagion. (boolean, default: false)
 
 - `touchDrag` - Toggle touch drag (boolean, default: true)
 
-- `mouseDrag` - Toggle mouse drag (boolean, default: false)
+- `mouseDrag` - Toggle mouse drag (boolean, default: true)
+
+- `keyboardNavigation` **(new)** - Use keyboard arrow keys to navigate through slides. (boolean, default: false)
 
 - `vertical` - Change to vertical orientation (boolean, default: false)
 
-- `verticalMaxContentWidth` **(new)** - Changes the width of the carousel relative to the longest slide inside. When enabled it will turn off `fullWidth` option (boolean, default: false)
+- `verticalMaxContentWidth` - Changes the width of the carousel relative to the longest slide inside. When enabled it will turn off `fullWidth` option (boolean, default: false)
 
 - `autoplay` - Autoplay feature (boolean, default: false)
 
-- `autoplaySpeed` - Autoplay interval timeout (int, default: 2000)
+- `autoplaySpeed` - Autoplay interval timeout (int, default: 5000)
+
+- `autoplayProgress` **(new)** - Show autoplay progress indicator. Requires `autoplay: true` (bool, default: true)
+
+- `autoplayPauseOnTabHidden` **(new)** - Pause autoplay when browser tab loses focus (bool, default: true)
 
 - `autoplayPauseHover` - Pause autoplay on hover or touch (boolean, default: false)
 
@@ -120,9 +132,9 @@ import ddcarousel from 'ddcarousel';
 
 ## Methods
 
-- `init()` **(new)** - Initialize carousel with config as method parameter.
+- `init()` - Initialize carousel with config as method parameter.
 
-- `destroy()` **(new)** - Destroy carousel. (revert container to state before initialization or fully wipe it with `destroy(true)`)
+- `destroy()` - Destroy carousel. (revert container to state before initialization or fully wipe it with `destroy(true)`)
 
 - `prevPage()` - Go to previous page
 
@@ -134,13 +146,13 @@ import ddcarousel from 'ddcarousel';
 
 - `on(event, callback)` - Event listener
 
-- `goToUrl(name, enableAnim)` - Go to specified slide title. `urlNav` must be enabled for this to work.
+- `goToUrl(name, enableAnim)` - Go to specified slide title. `urlNav` option must be enabled for this to work.
 
 - `autoplayStart()` - Start autoplay (if enabled from options)
 
 - `autoplayStop()` - Stop autoplay (if enabled from options)
 
-- `getStatus()` **(new)** - Get carousel info (experimental feature)
+- `getStatus()` **(new)** - Get the current state of the carousel (like current page, active slides, total slides, loop info, config and etc.)
 
 - `getCurrentPage()` - Get the current page
 
@@ -150,19 +162,15 @@ import ddcarousel from 'ddcarousel';
 
 ## Events
 
-Using example:
+Events example:
 
 ```js
-var carousel = ddcarousel({
+const carousel = ddcarousel({
 	container: ".carousel",
-	onInitialized: function (e) {
-		console.log(e);
-	}
+	onInitialized: e => console.log(e)
 });
 // or like this..
-carousel.on("onChanged", function (e) => {
-	console.log(e);
-});
+carousel.on("onChanged", e => console.log(e));
 ```
 
 - `onInitialize` - Before plugin init
@@ -181,19 +189,31 @@ carousel.on("onChanged", function (e) => {
 
 - `onResized` - Carousel container width is changed (you can use it with `refresh()` method)
 
-- `onDestroy` **(new)** - Begin destroying carousel
+- `onDestroy` - Begin destroying carousel
 
-- `onDestroyed` **(new)** - After destroying carousel
+- `onDestroyed` - After destroying carousel
 
 **Note**: `onInitialize` and `onInitialized` events are working only when declared in plugin constructor (see first example)
 
 ## Building
 
-Run these two commands in the root dir:
+1. `npm install`
+2. Use available npm scripts. All of the commands will output to `src` folder:
+	- `dist` - build full package of the slider
+	- `babeljs` - build js only
+	- `minifyjs` - minify js
+	- `buildcss` - compile and compress css
+	- `minifycss` - minify css
+	- `license` - append license header information in dist files
 
-1. `npm install` (run once)
-2. Open package.json and see available build scripts.
+3. Scripts you can use then testing the carousel. All of the commands will output to `src/testing` folder. It is added in `.gitignore`, so you are free to use it as a testnig playground.
+	- `testjs` - build js in `src/testing`
+	- `watchsass` - watch and compile scss in `src/testing` folder
+
+4. Demo folder will load non-minifed script directly from `dist`, so it can be used as final testing.
 
 ## License
 
 The code is released under the [MIT License](https://github.com/danaildinev/ddcarousel/blob/master/LICENSE).
+
+:)
