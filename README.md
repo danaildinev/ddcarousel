@@ -102,7 +102,7 @@ import ddcarousel from 'ddcarousel';
 
 - `vertical` - Change to vertical orientation (boolean, default: false)
 
-- `verticalMaxContentWidth` **(new)** - Changes the width of the carousel relative to the longest slide inside. When enabled it will turn off `fullWidth` option (boolean, default: false)
+- `verticalMaxContentWidth` - Changes the width of the carousel relative to the longest slide inside. When enabled it will turn off `fullWidth` option (boolean, default: false)
 
 - `autoplay` - Autoplay feature (boolean, default: false)
 
@@ -132,9 +132,9 @@ import ddcarousel from 'ddcarousel';
 
 ## Methods
 
-- `init()` **(new)** - Initialize carousel with config as method parameter.
+- `init()` - Initialize carousel with config as method parameter.
 
-- `destroy()` **(new)** - Destroy carousel. (revert container to state before initialization or fully wipe it with `destroy(true)`)
+- `destroy()` - Destroy carousel. (revert container to state before initialization or fully wipe it with `destroy(true)`)
 
 - `prevPage()` - Go to previous page
 
@@ -193,9 +193,9 @@ carousel.on("onChanged", function (e) => {
 
 - `onResized` - Carousel container width is changed (you can use it with `refresh()` method)
 
-- `onDestroy` **(new)** - Begin destroying carousel
+- `onDestroy` - Begin destroying carousel
 
-- `onDestroyed` **(new)** - After destroying carousel
+- `onDestroyed` - After destroying carousel
 
 **Note**: `onInitialize` and `onInitialized` events are working only when declared in plugin constructor (see first example)
 
