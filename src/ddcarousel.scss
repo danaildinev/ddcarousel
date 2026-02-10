@@ -119,13 +119,11 @@
 		left: 0;
 		width: 100%;
 		height: 4px;
-		overflow: hidden;
 	}
 
 	.ddcarousel-progress-bar {
 		height: 100%;
-		width: 0%;
-		background: #007ec2; /* progress color */
+		background: #007ec2;
 		transition: width linear;
 	}
 }
