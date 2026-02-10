@@ -8,10 +8,11 @@
 - Added an option to navigate slides using the keyboard
 - Fix autoplay repeatedly trying to go to the next page when already on the last page
 - Fix autoplay not reseting timer when changing pages
-- Exposed more properties to `getStatus()` methods: current page, total pages, total slides, current active slides, current translate and current config
 - Changed default autoplay speed to 5 seconds
+- Exposed more properties to `getStatus()` methods: current page, total pages, total slides, current active slides, current translate and current config
+- Configure Babel preset-env to use Browserslist targets
 - Updated generated header information for distribution files
-- Updated npm packages to latest versions
+- Updated some npm packages to latest versions
 - Removed deprecated npm packages
 
 ## v1.3.1 (2021 March 31)
