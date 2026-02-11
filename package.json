@@ -1,6 +1,6 @@
 {
 	"name": "ddcarousel",
-	"version": "1.4.0",
+	"version": "1.4.1",
 	"description": "Simple and fast carousel slider written in vannila JS",
 	"main": "index.js",
 	"scripts": {
