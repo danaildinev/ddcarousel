@@ -1,5 +1,8 @@
 # Changelog
 
+## v1.4.1 (2026 February 12)
+- Bump version for npm re-publish
+
 ## v1.4 (2026 February 10)
 - Added an option to enable lazy loading for images in slides
 - Added an option to preload images in upcoming slides and an option to change the number of upcoming slides
