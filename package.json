@@ -14,7 +14,8 @@
 		"license": "node utils/post-dist.js",
 		"type-check": "tsc --noEmit",
 		"test": "npm run dist",
-		"webpack": "webpack"
+		"build:prod": "webpack",
+		"build:dev": "webpack serve --env dev"
 	},
 	"repository": {
 		"type": "git",
