@@ -1,4 +1,4 @@
-import type { CarouselConfig } from "../types/carousel.config";
+import type { CarouselConfig } from "../types/carousel.types";
 
 export class Config {
     default: CarouselConfig;
