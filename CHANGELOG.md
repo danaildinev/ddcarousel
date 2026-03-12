@@ -1,5 +1,8 @@
 # Changelog
 
+## v1.4.2 (2026 March 12)
+- Updated dependencies: bumped immutable and minimatch to the latest versions to address security vulnerabilities (CVE-2026-29063, CVE-2026-27903)
+
 ## v1.4.1 (2026 February 12)
 - Bump version for npm re-publish
 
