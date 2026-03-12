@@ -1,10 +1,14 @@
 import { CSS_CLASSES } from "../constants/css-classes";
 import { DATA_ATTRS, DATA_SET } from "../constants/data-attrs";
+import { EVENTS } from "../constants/events-list";
 import type { CarouselConfig } from "../types/carousel.types";
+import type { CarouselEvents } from "../types/event.types";
 import type { Config } from "./config";
+import type { Events } from "./events";
 
 export default class Stage {
-    #config: CarouselConfig;
+    #config!: CarouselConfig;
+    #events!: Events;
 
     #container!: HTMLDivElement;
     #containerName!: string;
@@ -18,8 +22,9 @@ export default class Stage {
     currentPage: number = 0;
     totalPages: number = 0;
 
-    constructor(config: Config) {
+    constructor(config: Config, events: Events) {
         this.#config = config.config;
+        this.#events = events;
 
         const targetContainer = document.querySelector<HTMLDivElement>(this.#config.container);
         if (targetContainer != null) {
@@ -29,7 +34,24 @@ export default class Stage {
             throw Error("Invalid container!");
         }
 
+        this.initialize();
+    }
+
+    initialize() {
+        this.currentPage = 0;
+        this.totalPages = 0;
+        this.currentTranslate = 0;
+
         this.#createStage();
+        //todo confirm if stage is created
+        this.#calculateStage();
+
+        this.#changePage(this.#config.startPage > 0 ? this.#config.startPage : 0, false);
+
+        this.#events.on(EVENTS.PAGE_CHANGE, this.#onPageChange);
+        //todo add stage resize event to recalculate and etc...
+
+        //add new stage init/created event?
     }
 
     #createStage() {
@@ -73,8 +95,6 @@ export default class Stage {
             // ... create url nav
             this.#slides.push(slide);
         }
-
-        this.#calculateStage();
     }
 
     #calculateStage() {
@@ -168,9 +188,12 @@ export default class Stage {
             this.#calculatecontainerHeight();
         }
 
-        //if (slideWidth != firstSlide.style.width)
-        //event resize
+        if (slideWidth != firstSlide.style.width)
+            this.#events.emit(EVENTS.STAGE_RESIZED);
     }
+
+    getSlidesCount = () => this.#slides?.length;
+
 
     #getOuterHeight(el: HTMLDivElement) {
         var height = el.offsetHeight,
@@ -246,15 +269,18 @@ export default class Stage {
         }
     }
 
-    changePage(index: number | string, enableAnim = true) {
+    #onPageChange = (e: CarouselEvents[typeof EVENTS.PAGE_CHANGE]) => this.#changePage(e.index);
+
+    #changePage(index: number | string, enableAnim = true) {
         if (this.#stage == null)
             return;
 
-        let old = this.currentPage;
+        let origPage = this.currentPage;
 
         if (!enableAnim) {
             this.#stage.style.transitionDuration = "0s";
-            //transition event
+            this.#events.emit(EVENTS.TRANSITION_END);
+            // orig: this.#stage.addEventListener("transitionend", () => this.#stage.style.transitionDuration = this.#config.slideChangeDuration + "0s");
         } else {
             this.#stage.style.transitionDuration = this.#config.slideChangeDuration + "s";
         }
@@ -280,8 +306,10 @@ export default class Stage {
         this.#updateSlide();
 
         //fire change trigger
-        if (old != this.currentPage) {
-            //trigger("onChanged");
+        if (origPage != this.currentPage) {
+            this.#events.emit(EVENTS.PAGE_CHANGE, {
+                currentPage: this.currentPage
+            });
         }
     }
 

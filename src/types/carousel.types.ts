@@ -31,3 +31,12 @@ export type CarouselConfig = {
     labelNavPrev: string;
     labelNavNext: string;
 }
+
+export type CarouselStatus = {
+    created: boolean;
+    currentPage: number;
+    totalPages: number;
+    totalSlides: number;
+    activeSlides: number[];
+    currentTranslate: number;
+}
