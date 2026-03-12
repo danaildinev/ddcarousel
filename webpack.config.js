@@ -2,10 +2,18 @@ import path from "path";
 import { fileURLToPath } from 'url';
 import MiniCssExtractPlugin from "mini-css-extract-plugin";
 import webpack from "webpack";
+import pkg from './package.json' with { type: 'json' };
 import TerserPlugin from "terser-webpack-plugin";
 
 const __filename = fileURLToPath(import.meta.url); // get the resolved path to the file
 const __dirname = path.dirname(__filename); // get the name of the directory
+
+const licenseMsg = `/*! 
+* ${pkg.name} v${pkg.version}
+* (c) ${new Date().getFullYear()} ${pkg.author} 
+* MIT License
+* ${pkg.repository.url}
+*/`;
 
 const createBaseConfig = (sassStyle = "compressed") => ({
     entry: "./src/ddcarousel.ts",
@@ -101,9 +109,26 @@ function esmProdConfig() {
             new MiniCssExtractPlugin({
                 filename: "ddcarousel.css"
             }),
+            new webpack.BannerPlugin({
+                banner: licenseMsg,
+                raw: true,
+                entryOnly: true
+            })
         ],
         optimization: {
             minimize: true, // removes user comments
+            minimizer: [
+                new TerserPlugin({
+                    extractComments: false, // prevent .LICENSE.txt
+                    terserOptions: {
+                        compress: false,
+                        mangle: false,
+                        format: {
+                            comments: /@license|^!/
+                        }
+                    }
+                })
+            ]
         },
         experiments: {
             outputModule: true
@@ -130,6 +155,11 @@ function umdConfig() {
             new MiniCssExtractPlugin({
                 filename: "ddcarousel.min.css"
             }),
+            new webpack.BannerPlugin({
+                banner: licenseMsg,
+                raw: true,
+                entryOnly: true
+            })
         ],
         optimization: {
             minimize: true,
