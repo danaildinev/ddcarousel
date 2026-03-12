@@ -6,7 +6,9 @@ export const EVENTS = {
     DESTROYED: 'carousel:destroyed',
 
     // carousel 
+    STAGE_CREATED: 'stage:created',
     STAGE_RESIZED: 'stage:resized',
+    PAGE_CHANGE_REQUEST: 'page:change:request',
     PAGE_CHANGE: 'page:change',
     TRANSITION_END: 'transition:end',
 

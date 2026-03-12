@@ -46,14 +46,14 @@ export default class Carousel {
 
     on = (name: string, callback: any) => this.#events.on(name, callback);
 
-    changePage = (page: number, animate: boolean) => this.#events.emit(EVENTS.PAGE_CHANGE, {
+    changePage = (page: number, animate: boolean) => this.#events.emit(EVENTS.PAGE_CHANGE_REQUEST, {
         index: page,
         animate: animate
     });
 
-    nextPage = () => this.#events.emit(EVENTS.PAGE_CHANGE, { index: "next" });
+    nextPage = () => this.#events.emit(EVENTS.PAGE_CHANGE_REQUEST, { index: "next" });
 
-    prevPage = () => this.#events.emit(EVENTS.PAGE_CHANGE, { index: "prev" });
+    prevPage = () => this.#events.emit(EVENTS.PAGE_CHANGE_REQUEST, { index: "prev" });
 
     getStatus(): CarouselStatus {
         return {

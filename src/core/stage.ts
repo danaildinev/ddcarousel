@@ -48,10 +48,12 @@ export default class Stage {
 
         this.#changePage(this.#config.startPage > 0 ? this.#config.startPage : 0, false);
 
-        this.#events.on(EVENTS.PAGE_CHANGE, this.#onPageChange);
-        //todo add stage resize event to recalculate and etc...
+        this.#events.emit(EVENTS.STAGE_CREATED);
 
-        //add new stage init/created event?
+        this.#events.on(EVENTS.PAGE_CHANGE_REQUEST, this.#onPageChangeRequest);
+        this.#events.on(EVENTS.PAGE_CHANGE, this.#onPageChange);
+
+        //todo add stage resize event to recalculate and etc...
     }
 
     #createStage() {
@@ -194,7 +196,6 @@ export default class Stage {
 
     getSlidesCount = () => this.#slides?.length;
 
-
     #getOuterHeight(el: HTMLDivElement) {
         var height = el.offsetHeight,
             style = getComputedStyle(el);
@@ -269,7 +270,9 @@ export default class Stage {
         }
     }
 
-    #onPageChange = (e: CarouselEvents[typeof EVENTS.PAGE_CHANGE]) => this.#changePage(e.index);
+    #onPageChange = (e: CarouselEvents[typeof EVENTS.PAGE_CHANGE]) => this.#changePage(e.currentPage);
+
+    #onPageChangeRequest = (e: CarouselEvents[typeof EVENTS.PAGE_CHANGE_REQUEST]) => this.#changePage(e.index);
 
     #changePage(index: number | string, enableAnim = true) {
         if (this.#stage == null)
