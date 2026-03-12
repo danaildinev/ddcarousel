@@ -1,8 +1,6 @@
-node_modules
-src/testing
-src/ddcarousel.css
-src/ddcarousel.css.map
-testing
+node_modules/
+dist/
+testing/
 NOTES.md
 
 # Windows
@@ -14,3 +12,12 @@ desktop.ini
 .Spotlight-V100
 .Trashes
 ._*
+
+# TypeScript
+*.tsbuildinfo
+*.js.map
+*.d.ts.map
+dist/types/     # todo: for later when build types in dist
+
+# Editors
+.vscode/
