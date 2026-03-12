@@ -3,6 +3,8 @@
 	"version": "1.4.2",
 	"description": "Simple and fast carousel slider written in vannila JS",
 	"type": "module",
+	"main": "dist/ddcarousel.umd.min.js",
+	"module": "dist/ddcarousel.esm.js",
 	"scripts": {
 		"build:prod": "webpack",
 		"build:dev": "webpack serve --env dev",

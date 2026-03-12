@@ -1,8 +1,10 @@
 import type { CarouselConfig } from "../types/carousel.types";
 import { Config } from "./config";
+import Stage from "./stage";
 
 export default class Carousel {
     #config!: Config;
+    #stage!: Stage;
     #initialized: boolean = false;
 
     constructor(config: CarouselConfig) {
@@ -20,6 +22,9 @@ export default class Carousel {
         }
 
         this.#config = new Config(config);
+        this.#stage = new Stage(this.#config);
+
+        this.#stage.changePage(this.#config.config.startPage > 0 ? this.#config.config.startPage : 0, false);
 
         this.#initialized = true;
     }
