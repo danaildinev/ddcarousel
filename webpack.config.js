@@ -10,9 +10,8 @@ const __dirname = path.dirname(__filename); // get the name of the directory
 
 const licenseMsg = `/*! 
 * ${pkg.name} v${pkg.version}
-* (c) ${new Date().getFullYear()} ${pkg.author} 
-* MIT License
-* ${pkg.repository.url}
+* (c) 2019-${new Date().getFullYear()} ${pkg.author} 
+* MIT License / ${pkg.repository.url}
 */`;
 
 const createBaseConfig = (sassStyle = "compressed") => ({

@@ -6,6 +6,7 @@
 	"scripts": {
 		"build:prod": "webpack",
 		"build:dev": "webpack serve --env dev",
+		"build:types": "tsc --emitDeclarationOnly",
 		"type-check": "tsc --noEmit"
 	},
 	"repository": {
