@@ -4,10 +4,9 @@
 	"description": "Simple and fast carousel slider written in vannila JS",
 	"type": "module",
 	"scripts": {
-		"babeljs": "babel src/ddcarousel.js --out-file dist/ddcarousel.js --source-maps --presets=@babel/preset-env",
-		"type-check": "tsc --noEmit",
 		"build:prod": "webpack",
-		"build:dev": "webpack serve --env dev"
+		"build:dev": "webpack serve --env dev",
+		"type-check": "tsc --noEmit"
 	},
 	"repository": {
 		"type": "git",
@@ -26,24 +25,7 @@
 		"url": "https://github.com/danaildinev/ddcarousel/issues"
 	},
 	"homepage": "https://github.com/danaildinev/ddcarousel#readme",
-	"browserslist": [
-		"ie >= 10",
-		"edge >= 15",
-		"chrome >= 37",
-		"firefox >= 32",
-		"opera >= 23",
-		"safari >= 6.2",
-		"ios >= 9"
-	],
 	"devDependencies": {
-		"@babel/cli": "^7.13.14",
-		"@babel/core": "^7.14.3",
-		"@babel/preset-env": "^7.14.4",
-		"babel-plugin-minify-mangle-names": "^0.5.0",
-		"babel-plugin-minify-simplify": "^0.5.1",
-		"babel-plugin-remove-import-export": "^1.1.1",
-		"babel-plugin-transform-minify-booleans": "^6.9.4",
-		"babel-plugin-transform-remove-console": "^6.9.4",
 		"css-loader": "^7.1.4",
 		"mini-css-extract-plugin": "^2.10.1",
 		"sass": "^1.97.3",
