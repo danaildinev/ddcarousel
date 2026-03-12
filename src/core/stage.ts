@@ -15,6 +15,8 @@ export default class Stage {
     #stage: HTMLDivElement | null = null;
     #slides: HTMLDivElement[] = [];
     #slidesHeights: number[] = [];
+    #resizeThrottled: boolean = false;
+    #resizeObserver: ResizeObserver | null = null;
 
     originalClasses: string = "";
     slidesActive: number[] = [];
@@ -53,7 +55,10 @@ export default class Stage {
         this.#events.on(EVENTS.PAGE_CHANGE_REQUEST, this.#onPageChangeRequest);
         this.#events.on(EVENTS.PAGE_CHANGE, this.#onPageChange);
 
-        //todo add stage resize event to recalculate and etc...
+        this.#resizeObserver = new ResizeObserver(() => this.#resizeEvent());
+        this.#resizeObserver.observe(this.#container);
+
+        //this.#container.addEventListener("resize", this.#resizeEvent);
     }
 
     #createStage() {
@@ -361,5 +366,17 @@ export default class Stage {
 
         const output = this.#config.vertical ? `translateY(${int}px)` : `translateX(${int}px)`;
         this.#stage.style.transform = output;
+    }
+
+    #resizeEvent = () => {
+        if (this.#resizeThrottled)
+            return;
+
+        this.#resizeThrottled = true;
+
+        setTimeout(() => {
+            this.#calculateStage();
+            this.#resizeThrottled = false;
+        }, this.#config.resizeRefresh);
     }
 }
