@@ -33,7 +33,7 @@ export default class Carousel {
         //config events wong execute
         this.#events.emit(EVENTS.INITIALIZE);
 
-        this.#config = new Config(config);
+        this.#config = new Config(config, this.#events);
         this.#stage = new Stage(this.#config, this.#events);
 
         this.#initialized = true;

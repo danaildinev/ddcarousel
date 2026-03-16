@@ -1,12 +1,17 @@
 import type { CarouselConfig } from "../types/carousel.types";
+import type { Events } from "./events";
 
 export class Config {
+    #events: Events;
+
     default: CarouselConfig;
     current: CarouselConfig;
-    user: CarouselConfig | null;
+    user: CarouselConfig;
     responsive: CarouselConfig | null;
 
-    constructor(userConfig: CarouselConfig) {
+    constructor(userConfig: CarouselConfig, events: Events) {
+        this.#events = events;
+
         this.default = this.#setDefaultConfig();
         this.user = userConfig === undefined ? structuredClone(this.default) : userConfig;
         this.current = structuredClone(this.default);
@@ -53,12 +58,21 @@ export class Config {
     }
 
     updateSettings(config?: Partial<CarouselConfig>) {
-        const targetConfig = config === undefined ? this.current : config;;
+        const targetConfig = config === undefined ? this.current : config;
 
         Object.assign(this.current, targetConfig);
 
         if (this.current.items === 0)
             this.current.itemPerPage = false;
+
+        for (const [key, value] of Object.entries(targetConfig)) {
+            if (key.startsWith("on:") && typeof value === "function") {
+                const name = key.slice(3),
+                    payload = value as (payload?: any) => void; //tricky but it worked ;d
+
+                this.#events.on(name, payload);
+            }
+        }
 
         //check responsive options
         /*var keys = Object.keys(configResponsive);
@@ -76,6 +90,5 @@ export class Config {
         this.user = structuredClone(this.default);
         this.current = structuredClone(this.default);
         this.responsive = {} as CarouselConfig;
-
     }
 }
