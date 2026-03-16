@@ -191,6 +191,10 @@ export default class Stage {
         this.totalPages = pages;
     }
 
+    getSlidesCount = () => this.#slides?.length;
+
+    getSlides = (): HTMLDivElement[] => Object.assign({}, this.#slides);
+
     #getSlidesHeights(): number[] {
         if (this.#slides == null)
             return [];
@@ -232,8 +236,6 @@ export default class Stage {
             slide.style.width = slideBounds.width + "px";
         }
     }
-
-    getSlidesCount = () => this.#slides?.length;
 
     #getOuterHeight(el: HTMLDivElement) {
         var height = el.offsetHeight,

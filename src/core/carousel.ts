@@ -52,6 +52,12 @@ export default class Carousel {
         animate: animate
     });
 
+    getCurrentPage = () => this.#stage.currentPage;
+
+    getTotalPages = () => this.#stage.totalPages;
+
+    getTotalSlides = () => this.#stage.getSlidesCount();
+
     nextPage = () => this.#events.emit(EVENTS.PAGE_CHANGE_REQUEST, { index: "next" });
 
     prevPage = () => this.#events.emit(EVENTS.PAGE_CHANGE_REQUEST, { index: "prev" });
@@ -61,8 +67,10 @@ export default class Carousel {
             created: this.#initialized !== undefined,
             currentPage: this.#stage.currentPage,
             totalPages: this.#stage.totalPages,
+            slides: this.#stage.getSlides(),
             totalSlides: this.#stage.getSlidesCount(),
             activeSlides: this.#stage.slidesActive,
+            config: this.#config.config,
             currentTranslate: this.#stage.currentTranslate,
         };
     }
