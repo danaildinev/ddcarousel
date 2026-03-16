@@ -1,5 +1,5 @@
 import { CSS_CLASSES } from "../constants/css-classes";
-import { DATA_ATTRS, DATA_SET } from "../constants/data-attrs";
+import { DATA } from "../constants/data-attrs";
 import { EVENTS } from "../constants/events-list";
 import type { CarouselConfig } from "../types/carousel.types";
 import type { CarouselEvents } from "../types/event.types";
@@ -13,7 +13,6 @@ export default class Stage {
     #events!: Events;
 
     #container!: HTMLDivElement;
-    #containerName!: string;
     #containerWidth: number = 0;
     #containerHeight: number = 0;
     #stage: HTMLDivElement | null = null;
@@ -36,7 +35,6 @@ export default class Stage {
         const targetContainer = document.querySelector<HTMLDivElement>(this.#config.container);
         if (targetContainer != null) {
             this.#container = targetContainer;
-            this.#containerName = this.#config.container;
         } else {
             throw error("Invalid container!");
         }
@@ -49,10 +47,9 @@ export default class Stage {
         this.totalPages = 0;
         this.currentTranslate = 0;
 
-        this.#createStage();
+        this.#create();
         //todo confirm if stage is created
         this.#update();
-
         this.#changePage(this.#config.startPage > 0 ? this.#config.startPage : 0, false);
 
         this.#events.emit(EVENTS.STAGE_CREATED);
@@ -69,7 +66,7 @@ export default class Stage {
         //this.#container.addEventListener("resize", this.#resizeEvent);
     }
 
-    #createStage() {
+    #create() {
         if (this.#container == null)
             throw error("Container not found!");
 
@@ -107,7 +104,7 @@ export default class Stage {
                 continue;
 
             slide.classList.add(CSS_CLASSES.item);
-            slide.dataset[DATA_SET.slide] = i.toString();
+            slide.dataset[DATA.dataset.slide] = i.toString();
             slide.appendChild(source);
             stageDiv.appendChild(slide);
             // ... create url nav
@@ -210,7 +207,7 @@ export default class Stage {
 
             this.#updateSlideDimensions(slide);
 
-            const slideCurrent = this.#container.querySelector<HTMLDivElement>(`[${DATA_ATTRS.slide}="${i}"] > div`);
+            const slideCurrent = this.#container.querySelector<HTMLDivElement>(`[${DATA.attrs.slide}="${i}"] > div`);
             if (slideCurrent === null) {
                 console.warn(`Slide ${i} was not found and height won't be calculated!`);
                 continue;
@@ -247,7 +244,7 @@ export default class Stage {
 
     #setActiveSlides() {
         if (this.slidesActive != null)
-            this.slidesActive.forEach(i => document.querySelector(`${this.#containerName} [${DATA_ATTRS.slide}="${i}"]`)?.classList.remove("active"));
+            this.slidesActive.forEach(i => this.#container.querySelector(`[${DATA.attrs.slide}="${i}"]`)?.classList.remove("active"));
 
         this.slidesActive = [];
         const slideIndex = this.currentPage * (this.#config.items > 0 ? this.#config.items : 1),
@@ -277,7 +274,7 @@ export default class Stage {
             }
         }
 
-        this.slidesActive.forEach(i => document.querySelector(`${this.#containerName} [${DATA_ATTRS.slide}="${i}"]`)?.classList.add("active"));
+        this.slidesActive.forEach(i => this.#container.querySelector(`[${DATA.attrs.slide}="${i}"]`)?.classList.add("active"));
     }
 
     #updateContainerHeight() {
@@ -369,7 +366,7 @@ export default class Stage {
         return slide.style;
     }
 
-    #getCurrentSlideDom = () => this.#container.querySelector<HTMLDivElement>(`[${DATA_ATTRS.slide}].active`);
+    #getCurrentSlideDom = () => this.#container.querySelector<HTMLDivElement>(`[${DATA.attrs.slide}].active`);
 
 
     #scrollToSlide(slide?: HTMLDivElement) {
