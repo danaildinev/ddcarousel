@@ -8,6 +8,7 @@ import type { Events } from "./events";
 
 export default class Stage {
     #config!: CarouselConfig;
+    #configClass!: Config;
     #events!: Events;
 
     #container!: HTMLDivElement;
@@ -27,6 +28,7 @@ export default class Stage {
     totalPages: number = 0;
 
     constructor(config: Config, events: Events) {
+        this.#configClass = config;
         this.#config = config.config;
         this.#events = events;
 
@@ -130,6 +132,9 @@ export default class Stage {
 
         if (this.#config.vertical) {
             this.#container.classList.add(CSS_CLASSES.vertical);
+            this.#configClass.updateSettings({
+                autoHeight: false
+            });
         }
         else {
             this.#container.classList.remove(CSS_CLASSES.vertical);
@@ -143,8 +148,8 @@ export default class Stage {
 
         this.#calculateTotalPages();
 
-        //if (!this.#config.vertical)
-        //this.#stage.style.width = this.#config.items == 0 ? (width + "px") : ((containerWidth * this.#slides.length) + "px");
+        if (!this.#config.vertical)
+            this.#stage.style.width = (this.#containerWidth * this.#slides.length) + "px";
 
         if (this.#config.verticalMaxContentWidth) {
             let maxWidth = 0,

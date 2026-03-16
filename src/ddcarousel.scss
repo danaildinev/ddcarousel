@@ -5,16 +5,17 @@
 	&.full-width {
 		width: 100%;
 	}
-	&.ddcarousel-vertical {
+	&-vertical {
 		.ddcarousel-stage {
 			height: auto;
 			flex-direction: column;
-			-ms-flex-direction: column;
-			-webkit-flex-direction: column;
 		}
 		.ddcarousel-stage,
 		.ddcarousel-item {
 			width: 100%;
+		}
+		.ddcarousel-item > div {
+			height: 100%;
 		}
 	}
 	.ddcarousel-container {

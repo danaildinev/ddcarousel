@@ -52,7 +52,7 @@ export class Config {
         }
     }
 
-    updateSettings(config?: CarouselConfig) {
+    updateSettings(config?: Partial<CarouselConfig>) {
         const targetConfig = config === undefined ? this.config : config;;
 
         Object.assign(this.config, targetConfig);
