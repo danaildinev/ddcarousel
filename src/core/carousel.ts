@@ -3,12 +3,15 @@ import type { CarouselConfig, CarouselStatus } from "../types/carousel.types";
 import { error } from "../utils/error-handler";
 import { Config } from "./config";
 import { Events } from "./events";
+import ModuleLoader from "./module-loader";
 import Stage from "./stage";
 
 export default class Carousel {
     #config!: Config;
     #stage!: Stage;
     #events: Events;
+    #moduleLoader!: ModuleLoader;
+
     #initialized: boolean = false;
 
     constructor(config: CarouselConfig) {
@@ -35,6 +38,9 @@ export default class Carousel {
 
         this.#config = new Config(config, this.#events);
         this.#stage = new Stage(this.#config, this.#events);
+
+        this.#moduleLoader = new ModuleLoader(this.#config, this.#events, this.getStatus());
+        this.#moduleLoader.loadAll();
 
         this.#initialized = true;
         this.#events.emit(EVENTS.INITIALIZED, this.getStatus());

@@ -5,17 +5,22 @@ export const EVENTS = {
     DESTROY: 'carousel:destroy',
     DESTROYED: 'carousel:destroyed',
 
-    // carousel 
+    //modules
+    MODULE_INITIALIZED: 'module:initalized',
+    MODULE_LOADED: 'module:loaded',
+    MODULE_UNLOADED: 'module:unloaded',
+
+    // stage
     STAGE_CREATED: 'stage:created',
     STAGE_RESIZED: 'stage:resized',
     PAGE_CHANGE_REQUEST: 'page:change:request',
     PAGE_CHANGE: 'page:change',
-    TRANSITION_END: 'transition:end',
 
     // user interaction
     DRAG_START: 'drag:start',
     DRAG_DRAGGING: 'drag:dragging',
     DRAG_END: 'drag:end',
+    TRANSITION_END: 'transition:end',
 } as const;
 
 export const LEGACY_EVENT_MAP: Record<string, string> = {
