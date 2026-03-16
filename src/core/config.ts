@@ -1,3 +1,4 @@
+import { LEGACY_EVENT_MAP } from "../constants/events-list";
 import type { CarouselConfig } from "../types/carousel.types";
 import type { Events } from "./events";
 
@@ -66,12 +67,22 @@ export class Config {
             this.current.itemPerPage = false;
 
         for (const [key, value] of Object.entries(targetConfig)) {
-            if (key.startsWith("on:") && typeof value === "function") {
-                const name = key.slice(3),
-                    payload = value as (payload?: any) => void; //tricky but it worked ;d
+            if (typeof value !== "function")
+                continue;
 
-                this.#events.on(name, payload);
+            const callback = value as (payload?: any) => void; //tricky but it worked ;d
+
+            // new format: on:carousel:initialize
+            if (key.startsWith("on:")) {
+                const name = key.slice(3);
+                this.#events.on(name, callback);
+                continue;
             }
+
+            // legacy format: onInitialize
+            const mapped = LEGACY_EVENT_MAP[key];
+            if (mapped)
+                this.#events.on(mapped, callback);
         }
 
         //check responsive options

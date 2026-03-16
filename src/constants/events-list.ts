@@ -17,3 +17,16 @@ export const EVENTS = {
     DRAG_DRAGGING: 'drag:dragging',
     DRAG_END: 'drag:end',
 } as const;
+
+export const LEGACY_EVENT_MAP: Record<string, string> = {
+    onInitialize: EVENTS.INITIALIZE,
+    onInitialized: EVENTS.INITIALIZED,
+    onDrag: EVENTS.DRAG_START,
+    onDragging: EVENTS.DRAG_DRAGGING,
+    onDragged: EVENTS.DRAG_END,
+    onTransitionend: EVENTS.TRANSITION_END,
+    onChanged: EVENTS.PAGE_CHANGE,
+    onResized: EVENTS.STAGE_RESIZED,
+    onDestroy: EVENTS.DESTROY,
+    onDestroyed: EVENTS.DESTROYED
+};
