@@ -39,6 +39,10 @@ export type CarouselStatus = {
     slides: HTMLDivElement[];
     totalSlides: number;
     activeSlides: number[];
-    config: CarouselConfig;
+    config: CarouselStatusConfig;
     currentTranslate: number;
+}
+
+export type CarouselStatusConfig = {
+    current?: CarouselConfig
 }

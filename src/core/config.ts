@@ -2,14 +2,14 @@ import type { CarouselConfig } from "../types/carousel.types";
 
 export class Config {
     default: CarouselConfig;
-    config: CarouselConfig;
+    current: CarouselConfig;
     user: CarouselConfig | null;
     responsive: CarouselConfig | null;
 
     constructor(userConfig: CarouselConfig) {
         this.default = this.#setDefaultConfig();
         this.user = userConfig === undefined ? structuredClone(this.default) : userConfig;
-        this.config = structuredClone(this.default);
+        this.current = structuredClone(this.default);
         this.responsive = {} as CarouselConfig;
 
         this.updateSettings(this.user);
@@ -53,12 +53,12 @@ export class Config {
     }
 
     updateSettings(config?: Partial<CarouselConfig>) {
-        const targetConfig = config === undefined ? this.config : config;;
+        const targetConfig = config === undefined ? this.current : config;;
 
-        Object.assign(this.config, targetConfig);
+        Object.assign(this.current, targetConfig);
 
-        if (this.config.items === 0)
-            this.config.itemPerPage = false;
+        if (this.current.items === 0)
+            this.current.itemPerPage = false;
 
         //check responsive options
         /*var keys = Object.keys(configResponsive);
@@ -74,7 +74,7 @@ export class Config {
     reset() {
         this.default = this.#setDefaultConfig();
         this.user = structuredClone(this.default);
-        this.config = structuredClone(this.default);
+        this.current = structuredClone(this.default);
         this.responsive = {} as CarouselConfig;
 
     }

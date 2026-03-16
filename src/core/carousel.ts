@@ -70,7 +70,9 @@ export default class Carousel {
             slides: this.#stage.getSlides(),
             totalSlides: this.#stage.getSlidesCount(),
             activeSlides: this.#stage.slidesActive,
-            config: this.#config.config,
+            config: {
+                current: this.#config.current
+            },
             currentTranslate: this.#stage.currentTranslate,
         };
     }

@@ -29,7 +29,7 @@ export default class Stage {
 
     constructor(config: Config, events: Events) {
         this.#configClass = config;
-        this.#config = config.config;
+        this.#config = config.current;
         this.#events = events;
 
         const targetContainer = document.querySelector<HTMLDivElement>(this.#config.container);
