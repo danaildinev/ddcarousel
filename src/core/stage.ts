@@ -3,6 +3,7 @@ import { DATA_ATTRS, DATA_SET } from "../constants/data-attrs";
 import { EVENTS } from "../constants/events-list";
 import type { CarouselConfig } from "../types/carousel.types";
 import type { CarouselEvents } from "../types/event.types";
+import { error } from "../utils/error-handler";
 import type { Config } from "./config";
 import type { Events } from "./events";
 
@@ -37,7 +38,7 @@ export default class Stage {
             this.#container = targetContainer;
             this.#containerName = this.#config.container;
         } else {
-            throw Error("Invalid container!");
+            throw error("Invalid container!");
         }
 
         this.initialize();
@@ -70,7 +71,7 @@ export default class Stage {
 
     #createStage() {
         if (this.#container == null)
-            throw Error("Container not found!");
+            throw error("Container not found!");
 
         const stateContainer = document.createElement("div"),
             stageDiv = document.createElement("div"),
@@ -86,12 +87,12 @@ export default class Stage {
         //get stage DOM
         const stage = this.#container.querySelector<HTMLDivElement>(`.${CSS_CLASSES.stage}`);
         if (stage == null)
-            throw Error("Invalid stage element");
+            throw error("Invalid stage element");
 
         this.#stage = stage;
 
         if (slidesSource.length == 0) {
-            throw Error(`No content found in container. Destroying carousel...`);
+            throw error(`No content found in container. Destroying carousel...`);
             //destroy(); //todo
             return;
         }
@@ -372,12 +373,12 @@ export default class Stage {
     #scrollToSlide(slide?: HTMLDivElement) {
         const currentSlide = this.#getCurrentSlideDom();
         if (currentSlide === null)
-            throw Error(`Scrolling to slide failed! Can't find current slide in DOM!`);
+            throw error(`Scrolling to slide failed! Can't find current slide in DOM!`);
 
         if (this.#config.centerSlide && this.#config.items > 0) {
             const slideStyle = this.#getFirstSlideStyle();
             if (slideStyle === undefined)
-                throw Error(`Scrolling to slide failed! Slide style was not found!`);
+                throw error(`Scrolling to slide failed! Slide style was not found!`);
 
             const output =
                 -this.#getSlidePos(currentSlide) -
@@ -393,7 +394,7 @@ export default class Stage {
 
     #getSlidePos(slide: HTMLDivElement) {
         if (!this.#stage)
-            throw new Error("Stage not found!");
+            throw error("Stage not found!");
 
         const stageRect = this.#stage.getBoundingClientRect(),
             slideRect = slide.getBoundingClientRect();

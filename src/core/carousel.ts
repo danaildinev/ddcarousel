@@ -1,5 +1,6 @@
 import { EVENTS } from "../constants/events-list";
 import type { CarouselConfig, CarouselStatus } from "../types/carousel.types";
+import { error } from "../utils/error-handler";
 import { Config } from "./config";
 import { Events } from "./events";
 import Stage from "./stage";
@@ -12,7 +13,7 @@ export default class Carousel {
 
     constructor(config: CarouselConfig) {
         if (this.#initialized)
-            throw Error("Already initialized!");
+            throw error("Already initialized!");
 
         this.#events = new Events();
 

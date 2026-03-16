@@ -1,4 +1,5 @@
 import type { CarouselEvents } from "../types/event.types";
+import { error } from "../utils/error-handler";
 
 export class Events {
     #events = new Map<string, Set<(payload: any) => void>>(); //unique used events
@@ -34,7 +35,7 @@ export class Events {
     off(name: string, callback: (payload?: any) => void) {
         const eventName = this.#events.get(name);
         if (eventName === undefined)
-            throw Error(`Event name '${name}' is not found!`);
+            throw error(`Event name '${name}' is not found!`);
 
         eventName.delete(callback);
     }
