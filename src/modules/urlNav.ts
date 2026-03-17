@@ -10,7 +10,6 @@ import { error } from "../utils/error-handler";
 
 export default class UrlNav extends BaseModule {
     name: ModuleName = ModuleName.UrlNav;
-    file: string = "url-nav";
 
     #events: Events;
     #config: CarouselConfig;
@@ -84,9 +83,6 @@ export default class UrlNav extends BaseModule {
         this.#remove();
         this.emitUnloaded();
     }
-
-    attachEvents() { }
-    detachEvents() { }
 
     goToUrl(name: string, enableAnim = true) {
         const slide = this.container.querySelector<HTMLDivElement>(`.${CSS_CLASSES.item} [${DATA.attrs.id}="${name}"]`);

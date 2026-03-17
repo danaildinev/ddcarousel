@@ -30,8 +30,6 @@ export abstract class BaseModule implements Module {
     abstract get loadCondition(): boolean;
     abstract init(): void;
     abstract destroy(): void;
-    abstract attachEvents(): void;
-    abstract detachEvents(): void;
 
     toggle(): void {
         if (this.loadCondition) {

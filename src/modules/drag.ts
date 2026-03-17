@@ -9,7 +9,6 @@ import { scrollToPos } from "../utils/scroll";
 
 export default class Drag extends BaseModule {
     name: ModuleName = ModuleName.Drag;
-    file: string = ModuleName.Drag;
 
     #stageDom: HTMLDivElement;
 
@@ -42,20 +41,20 @@ export default class Drag extends BaseModule {
     }
 
     init() {
-        this.attachEvents();
+        this.#attachEvents();
         this.#stageDom.classList.add(CSS_CLASSES.disabled);
 
         this.emitLoaded();
     }
 
     destroy() {
-        this.detachEvents();
+        this.#detachEvents();
         this.#stageDom.classList.remove(CSS_CLASSES.disabled);
 
         this.emitUnloaded();
     }
 
-    attachEvents() {
+    #attachEvents() {
         const status: CarouselEvents[typeof EVENTS.PAGE_CHANGE] = {
             currentTranslate: this.status.currentTranslate,
             currentPage: this.status.currentPage,
@@ -70,7 +69,7 @@ export default class Drag extends BaseModule {
         this.events.on(EVENTS.PAGE_CHANGE, this.#updateProps);
     }
 
-    detachEvents() {
+    #detachEvents() {
         window.removeEventListener("pointerdown", this.#dragStart);
         window.removeEventListener("pointermove", this.#dragMove);
         window.removeEventListener("pointerup", this.#dragEnd);

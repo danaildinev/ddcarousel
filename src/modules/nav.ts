@@ -109,7 +109,4 @@ export default class Nav extends BaseModule {
 
         next.classList.toggle(this.#inactiveClass, this.#currentPage === this.#totalPages);
     }
-
-    attachEvents() { }
-    detachEvents() { }
 }
