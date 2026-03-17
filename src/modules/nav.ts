@@ -1,11 +1,9 @@
 import { CSS_CLASSES } from "../constants/css-classes";
 import { EVENTS } from "../constants/events-list";
 import { BaseModule } from "../core/base-module";
-import type { Config } from "../core/config";
-import type { Events } from "../core/events";
 import { ModuleName } from "../core/module-names";
-import type { CarouselStatus } from "../types/carousel.types";
 import type { CarouselEvents } from "../types/event.types";
+import type { ModuleLoaderParams } from "../types/module.params";
 import { error } from "../utils/error-handler";
 
 export default class Nav extends BaseModule {
@@ -18,8 +16,8 @@ export default class Nav extends BaseModule {
 
     #inactiveClass = "inactive";
 
-    constructor(config: Config, events: Events, status: CarouselStatus) {
-        super(config, events, status);
+    constructor(params: ModuleLoaderParams) {
+        super(params);
 
         this.#currentPage = this.status.currentPage;
         this.#totalPages = this.status.totalPages;

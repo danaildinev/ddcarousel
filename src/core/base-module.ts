@@ -1,5 +1,6 @@
 import type { CarouselConfig, CarouselStatus } from "../types/carousel.types";
-import type { Config } from "./config";
+import type { ModuleLoaderParams } from "../types/module.params";
+import { error } from "../utils/error-handler";
 import type { Events } from "./events";
 import type { Module } from "./module";
 import type { ModuleName } from "./module-names";
@@ -10,11 +11,17 @@ export abstract class BaseModule implements Module {
     protected config: CarouselConfig;
     protected events: Events;
     protected status: CarouselStatus;
+    protected container: HTMLDivElement;
 
-    constructor(config: Config, events: Events, status: CarouselStatus) {
-        this.config = config.current;
-        this.events = events;
-        this.status = status;
+    constructor(params: ModuleLoaderParams) {
+        this.config = params.config.current;
+        this.events = params.events;
+        this.status = params.status;
+
+        const containerDiv = document.querySelector<HTMLDivElement>(`${this.config.container}`);
+        if (containerDiv === null)
+            throw error("Module won't initialize! Stage DOM was not found!");
+        this.container = containerDiv;
     }
 
     abstract init(): void;

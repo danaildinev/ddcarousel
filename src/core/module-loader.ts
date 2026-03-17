@@ -1,19 +1,13 @@
-import type { CarouselStatus } from "../types/carousel.types";
+import type { ModuleLoaderParams } from "../types/module.params";
 import type { BaseModule } from "./base-module";
-import type { Config } from "./config";
-import type { Events } from "./events";
 import { ModuleName } from "./module-names";
 
 export default class ModuleLoader {
     #instances = new Map<ModuleName, BaseModule>();
-    #config: Config;
-    #events: Events;
-    #status: CarouselStatus;
+    #params: ModuleLoaderParams;
 
-    constructor(config: Config, events: Events, status: CarouselStatus) {
-        this.#config = config;
-        this.#events = events;
-        this.#status = status;
+    constructor(params: ModuleLoaderParams) {
+        this.#params = params;
     }
 
     async loadAll() {
@@ -29,7 +23,7 @@ export default class ModuleLoader {
         const mod = await import(`../modules/${moduleName}`);
         const ModuleClass = mod.default;
 
-        const instance: BaseModule = new ModuleClass(this.#config, this.#events, this.#status);
+        const instance: BaseModule = new ModuleClass(this.#params);
 
         instance.init();
 

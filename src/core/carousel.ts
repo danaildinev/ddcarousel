@@ -39,7 +39,11 @@ export default class Carousel {
         this.#config = new Config(config, this.#events);
         this.#stage = new Stage(this.#config, this.#events);
 
-        this.#moduleLoader = new ModuleLoader(this.#config, this.#events, this.getStatus());
+        this.#moduleLoader = new ModuleLoader({
+            config: this.#config,
+            events: this.#events,
+            status: this.getStatus()
+        });
         this.#moduleLoader.loadAll();
 
         this.#initialized = true;
