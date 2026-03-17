@@ -31,7 +31,7 @@ export default class UrlNav extends BaseModule {
             throw error("Url nav module won't initialize! Stage DOM was not found!");
         this.#container = container;
 
-        this.events.emit(EVENTS.MODULE_INITIALIZED);
+        this.emitInitialized();
     }
 
     get loadCondition() {
@@ -77,12 +77,12 @@ export default class UrlNav extends BaseModule {
             throw error("Url nav container is not found!");
         this.#urlNavContainer = urlNavContainer;
 
-        this.events.emit(EVENTS.MODULE_LOADED);
+        this.emitLoaded();
     }
 
     destroy() {
         this.#remove();
-        this.events.emit(EVENTS.MODULE_UNLOADED);
+        this.emitUnloaded();
     }
 
     attachEvents() { }

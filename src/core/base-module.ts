@@ -1,3 +1,4 @@
+import { EVENTS } from "../constants/events-list";
 import type { CarouselConfig, CarouselStatus } from "../types/carousel.types";
 import type { ModuleLoaderParams } from "../types/module.params";
 import { error } from "../utils/error-handler";
@@ -45,5 +46,23 @@ export abstract class BaseModule implements Module {
                 this.isInitialized = false;
             }
         }
+    }
+
+    protected emitInitialized() {
+        this.events.emit(EVENTS.MODULE_INITIALIZED, {
+            name: this.name
+        });
+    }
+
+    protected emitLoaded() {
+        this.events.emit(EVENTS.MODULE_LOADED, {
+            name: this.name
+        });
+    }
+
+    protected emitUnloaded() {
+        this.events.emit(EVENTS.MODULE_UNLOADED, {
+            name: this.name
+        });
     }
 }

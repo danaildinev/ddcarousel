@@ -30,7 +30,7 @@ export default class Nav extends BaseModule {
 
         this.events.on(EVENTS.PAGE_CHANGE, this.#onChangePage);
 
-        this.events.emit(EVENTS.MODULE_INITIALIZED);
+        this.emitInitialized();
     }
 
     get loadCondition() {
@@ -70,14 +70,14 @@ export default class Nav extends BaseModule {
 
         this.#refreshNav();
 
-        this.events.emit(EVENTS.MODULE_LOADED);
+        this.emitLoaded();
     }
 
     destroy() {
         this.events.off(EVENTS.PAGE_CHANGE, this.#onChangePage);
 
         this.#remove();
-        this.events.emit(EVENTS.MODULE_LOADED);
+        this.emitUnloaded();
     }
 
     #remove() {
