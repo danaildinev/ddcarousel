@@ -13,6 +13,8 @@ export abstract class BaseModule implements Module {
     protected status: CarouselStatus;
     protected container: HTMLDivElement;
 
+    isInitialized: boolean = false;
+
     constructor(params: ModuleLoaderParams) {
         this.config = params.config.current;
         this.events = params.events;
@@ -24,8 +26,24 @@ export abstract class BaseModule implements Module {
         this.container = containerDiv;
     }
 
+    abstract get loadCondition(): boolean;
     abstract init(): void;
     abstract destroy(): void;
     abstract attachEvents(): void;
     abstract detachEvents(): void;
+
+    toggle(): void {
+        if (this.loadCondition) {
+            if (!this.isInitialized) {
+                this.init();
+                this.isInitialized = true;
+            }
+        }
+        else {
+            if (this.isInitialized) {
+                this.destroy();
+                this.isInitialized = false;
+            }
+        }
+    }
 }

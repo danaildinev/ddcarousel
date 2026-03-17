@@ -24,8 +24,7 @@ export default class ModuleLoader {
         const ModuleClass = mod.default;
 
         const instance: BaseModule = new ModuleClass(this.#params);
-
-        instance.init();
+        instance.toggle();
 
         this.#instances.set(moduleName, instance);
     }
