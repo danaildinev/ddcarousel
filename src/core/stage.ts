@@ -350,7 +350,9 @@ export default class Stage {
         //fire change trigger
         if (origPage != this.currentPage) {
             this.#events.emit(EVENTS.PAGE_CHANGE, {
-                currentPage: this.currentPage
+                currentPage: this.currentPage,
+                currentTranslate: this.currentTranslate,
+                slidesActive: this.slidesActive
             });
         }
     }

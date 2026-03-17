@@ -9,7 +9,20 @@ export type CarouselEvents = {
 
     [EVENTS.PAGE_CHANGE]: {
         currentPage: number;
+        currentTranslate: number;
     }
+
+    [EVENTS.MODULE_INITIALIZED]: {
+        name: string
+    };
+
+    [EVENTS.MODULE_LOADED]: {
+        name: string
+    };
+
+    [EVENTS.MODULE_UNLOADED]: {
+        name: string
+    };
 }
 
 export type CarouselEventName = keyof CarouselEvents | string;
