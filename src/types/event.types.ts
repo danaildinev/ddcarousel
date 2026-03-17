@@ -10,6 +10,7 @@ export type CarouselEvents = {
     [EVENTS.PAGE_CHANGE]: {
         currentPage: number;
         currentTranslate: number;
+        slidesActive: number[];
     }
 
     [EVENTS.MODULE_INITIALIZED]: {

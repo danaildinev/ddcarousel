@@ -58,6 +58,7 @@ export default class Drag extends BaseModule {
         const status: CarouselEvents[typeof EVENTS.PAGE_CHANGE] = {
             currentTranslate: this.status.currentTranslate,
             currentPage: this.status.currentPage,
+            slidesActive: []
         }
 
         this.#updateProps(status);
