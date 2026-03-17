@@ -4,6 +4,7 @@ import { EVENTS } from "../constants/events-list";
 import type { CarouselConfig } from "../types/carousel.types";
 import type { CarouselEvents } from "../types/event.types";
 import { error } from "../utils/error-handler";
+import { scrollToPos } from "../utils/scroll";
 import type { Config } from "./config";
 import type { Events } from "./events";
 
@@ -370,25 +371,30 @@ export default class Stage {
 
 
     #scrollToSlide(slide?: HTMLDivElement) {
+        if (this.#stage === null)
+            return;
+
         const currentSlide = this.#getCurrentSlideDom();
         if (currentSlide === null)
             throw error(`Scrolling to slide failed! Can't find current slide in DOM!`);
+
+        let position: number;
 
         if (this.#config.centerSlide && this.#config.items > 0) {
             const slideStyle = this.#getFirstSlideStyle();
             if (slideStyle === undefined)
                 throw error(`Scrolling to slide failed! Slide style was not found!`);
 
-            const output =
+            position =
                 -this.#getSlidePos(currentSlide) -
                 -(parseInt(slideStyle.width) * Math.floor(this.#config.items / 2));
-
-            this.currentTranslate = output;
-            this.#scrollToPos(output);
         } else {
-            this.currentTranslate = -this.#getSlidePos(slide ?? currentSlide);
-            this.#scrollToPos(this.currentTranslate);
+            position = -this.#getSlidePos(slide ?? currentSlide);
         }
+
+        this.currentTranslate = position;
+
+        scrollToPos(this.#stage, this.currentTranslate, this.#config.vertical);
     }
 
     #getSlidePos(slide: HTMLDivElement) {
@@ -401,14 +407,6 @@ export default class Stage {
         return this.#config.vertical
             ? slideRect.top - stageRect.top
             : slideRect.left - stageRect.left;
-    }
-
-    #scrollToPos(int: number) {
-        if (this.#stage == null)
-            return;
-
-        const output = this.#config.vertical ? `translateY(${int}px)` : `translateX(${int}px)`;
-        this.#stage.style.transform = output;
     }
 
     #resizeEvent = () => {
