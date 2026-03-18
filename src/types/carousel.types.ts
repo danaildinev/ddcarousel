@@ -13,7 +13,7 @@ export type CarouselConfig = {
     lazyLoad: boolean;
     lazyPreload: boolean;
     lazyPreloadSlides: number;
-    responsive?: {};
+    responsive?: CarouselConfig[] | null;
     autoplay: boolean;
     autoplaySpeed: number;
     autoplayPauseHover: boolean;

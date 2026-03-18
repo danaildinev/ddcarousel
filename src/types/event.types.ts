@@ -1,4 +1,5 @@
 import type { EVENTS } from "../constants/events-list";
+import type { CarouselConfig } from "./carousel.types";
 
 export type CarouselEvents = {
     [EVENTS.PAGE_CHANGE_REQUEST]: {
@@ -23,6 +24,12 @@ export type CarouselEvents = {
 
     [EVENTS.MODULE_UNLOADED]: {
         name: string
+    };
+
+    [EVENTS.CONFIG_CHANGED]: {
+        default: CarouselConfig,
+        old: CarouselConfig,
+        new: CarouselConfig
     };
 }
 

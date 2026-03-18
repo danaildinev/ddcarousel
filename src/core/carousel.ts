@@ -45,6 +45,7 @@ export default class Carousel {
             status: this.getStatus()
         });
         this.#moduleLoader.loadAll();
+        this.#events.on(EVENTS.CONFIG_CHANGED, this.#moduleLoader.toggleAll);
 
         this.#initialized = true;
         this.#events.emit(EVENTS.INITIALIZED, this.getStatus());

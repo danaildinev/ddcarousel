@@ -419,6 +419,14 @@ export default class Stage {
 
         setTimeout(() => {
             this.#update();
+
+            const slide = this.#getCurrentSlideDom();
+            if (slide != null)
+                this.#scrollToSlide(slide);
+
+            const containerWidth = this.#container.getBoundingClientRect().width;
+            this.#configClass.refreshResponsive(containerWidth);
+
             this.#resizeThrottled = false;
         }, this.#config.resizeRefresh);
     }

@@ -1,14 +1,17 @@
-import { LEGACY_EVENT_MAP } from "../constants/events-list";
+import { EVENTS, LEGACY_EVENT_MAP } from "../constants/events-list";
 import type { CarouselConfig } from "../types/carousel.types";
 import type { Events } from "./events";
 
 export class Config {
     #events: Events;
 
+    #lastResponsiveBp: number | null = 0;
+    #responsiveLoaded: boolean = false;
+
     default: CarouselConfig;
     current: CarouselConfig;
     user: CarouselConfig;
-    responsive: CarouselConfig | null;
+    //responsive: CarouselConfig | null;
 
     constructor(userConfig: CarouselConfig, events: Events) {
         this.#events = events;
@@ -16,7 +19,7 @@ export class Config {
         this.default = this.#setDefaultConfig();
         this.user = userConfig === undefined ? structuredClone(this.default) : userConfig;
         this.current = structuredClone(this.default);
-        this.responsive = {} as CarouselConfig;
+        //this.responsive = {} as CarouselConfig;
 
         this.updateSettings(this.user);
     }
@@ -38,7 +41,7 @@ export class Config {
             lazyLoad: false,
             lazyPreload: false,
             lazyPreloadSlides: 1,
-            responsive: {},
+            responsive: null,
             autoplay: false,
             autoplaySpeed: 5000,
             autoplayPauseHover: false,
@@ -59,7 +62,8 @@ export class Config {
     }
 
     updateSettings(config?: Partial<CarouselConfig>) {
-        const targetConfig = config === undefined ? this.current : config;
+        const targetConfig = config === undefined ? this.current : config,
+            oldConfig = Object.assign({}, this.current);
 
         Object.assign(this.current, targetConfig);
 
@@ -85,21 +89,56 @@ export class Config {
                 this.#events.on(mapped, callback);
         }
 
-        //check responsive options
-        /*var keys = Object.keys(configResponsive);
-        for (var i = keys.length - 1; i >= 0; i--) {
-            if (document.body.clientWidth < keys[i]) {
-                updateSettings(Object.values(configResponsive)[i]);
-            } else if (document.body.clientWidth >= keys[keys.length - 1]) {
-                setDefaults();
+        this.#events.emit(EVENTS.CONFIG_CHANGED, {
+            default: this.default,
+            old: oldConfig,
+            new: targetConfig
+        });
+    }
+
+    refreshResponsive = (width: number) => {
+        if (this.user.responsive == null)
+            return;
+
+        const breakpoints = Object.keys(this.user.responsive).map(k => parseInt(k)).sort((a, b) => a - b); // smallest → largest
+
+        let matched: number | null = null;
+
+        // loop and find first matching breakpoint
+        for (const breakpoint of breakpoints) {
+            if (width < breakpoint) {
+                matched = breakpoint;
+                break;
             }
-        }*/
+        }
+
+        if (matched !== null) {
+            if (!this.#responsiveLoaded || this.#lastResponsiveBp !== matched) {
+                this.updateSettings(this.user.responsive[matched]);
+                this.#responsiveLoaded = true;
+                this.#lastResponsiveBp = matched;
+            }
+        }
+        else if (this.#responsiveLoaded) {
+            this.revertToUserSettings();
+            this.#responsiveLoaded = false;
+            this.#lastResponsiveBp = null;
+        }
+    }
+
+    revertToUserSettings = () => {
+        this.#lastResponsiveBp = 0;
+        this.#responsiveLoaded = false;
+        Object.assign(this.current, this.user);
+        this.updateSettings();
     }
 
     reset() {
         this.default = this.#setDefaultConfig();
         this.user = structuredClone(this.default);
         this.current = structuredClone(this.default);
-        this.responsive = {} as CarouselConfig;
+
+        this.#lastResponsiveBp = 0;
+        this.#responsiveLoaded = false;
     }
 }
