@@ -54,9 +54,23 @@ export default class Carousel {
         this.#events.emit(EVENTS.INITIALIZED, this.getStatus());
     }
 
-    destroy(fullReset: boolean) {
+    destroy(restoreSlides: boolean) {
+        this.#events.emit(EVENTS.DESTROY);
+
+        this.#stage.destroy(restoreSlides);
         this.#config.reset();
+        this.#events.off(EVENTS.CONFIG_CHANGED, this.#moduleLoader.toggleAll);
+        this.#moduleLoader.reset();
+
         this.#config = null!;
+        this.#stage = null!;
+        this.#moduleLoader = null!;
+
+        this.#events.emit(EVENTS.DESTROYED);
+        this.#events.reset();
+        this.#events = null!;
+
+        this.#initialized = false;
     }
 
     module = (name: ModuleName) => this.#moduleLoader?.modules.find(m => m.name === name);

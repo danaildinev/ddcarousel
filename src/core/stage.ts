@@ -36,6 +36,7 @@ export default class Stage {
         const targetContainer = document.querySelector<HTMLDivElement>(this.#config.container);
         if (targetContainer != null) {
             this.#container = targetContainer;
+            this.originalClasses = this.#container.className;
         } else {
             throw error("Invalid container!");
         }
@@ -110,6 +111,47 @@ export default class Stage {
             stageDiv.appendChild(slide);
             // ... create url nav
             this.#slides.push(slide);
+        }
+    }
+
+    destroy(restoreSlides: boolean) {
+        this.restoreOriginalSlides(restoreSlides);
+        this.#stage?.remove();
+
+        this.currentPage = 0;
+        this.totalPages = 0;
+        this.#slides = [];
+        this.slidesActive = [];
+        this.currentTranslate = 0;
+        this.originalClasses = "";
+
+        this.#containerWidth = 0;
+        this.#containerHeight = 0;
+        this.#stage = null;
+        this.#slides = [];
+        this.#slidesHeights = [];
+        this.#resizeThrottled = false;
+
+        window.removeEventListener("keydown", this.#keyboardHandler);
+        this.#events.off(EVENTS.PAGE_CHANGE_REQUEST, this.#onPageChange);
+        this.#events.off(EVENTS.PAGE_CHANGE, this.#onPageChange);
+        this.#resizeObserver?.disconnect();
+    }
+
+    restoreOriginalSlides(restoreSlides: boolean) {
+        const origContainer = document.querySelector(this.#config.container);
+        if (origContainer == null)
+            return;
+
+        this.#container.querySelector(`.${CSS_CLASSES.container}`)?.remove();
+        origContainer.className = this.originalClasses;
+
+        if (restoreSlides) {
+            this.#slides.forEach(el => {
+                const slideContent = el.firstChild;
+                if (slideContent != null)
+                    origContainer.appendChild(slideContent);
+            });
         }
     }
 
