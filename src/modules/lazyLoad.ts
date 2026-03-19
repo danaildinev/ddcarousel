@@ -14,14 +14,14 @@ export default class LazyLoad extends BaseModule {
 
         this.events.on(EVENTS.PAGE_CHANGE, this.#onChangePage);
 
-        this.emitInitialized();
+        this.emitCreated();
     }
 
-    get loadCondition() {
+    get shouldInitialize() {
         return this.config.lazyLoad;
     }
 
-    init(slidesActive?: number[]) {
+    initialize(slidesActive?: number[]) {
         slidesActive ??= this.status.activeSlides;
 
         if (!slidesActive)
@@ -42,18 +42,19 @@ export default class LazyLoad extends BaseModule {
             images.forEach((i) => this.#enableImageSrc(i as HTMLImageElement));
         });
 
-        this.emitLoaded();
+        this.emitInitialized();
     }
 
     destroy() {
         this.events.off(EVENTS.PAGE_CHANGE, this.#onChangePage);
+        this.emitDestroyed();
     }
 
     #onChangePage = (e: CarouselEvents[typeof EVENTS.PAGE_CHANGE]) => {
-        if (!this.loadCondition)
+        if (!this.shouldInitialize)
             return;
 
-        this.init(e.slidesActive);
+        this.initialize(e.slidesActive);
     }
 
     #enableImageSrc(slideImg?: HTMLImageElement) {

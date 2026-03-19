@@ -33,25 +33,25 @@ export default class Drag extends BaseModule {
 
         this.#stageDom = stage;
 
-        this.emitInitialized();
+        this.emitCreated();
     }
 
-    get loadCondition() {
+    get shouldInitialize() {
         return this.config.touchDrag || this.config.mouseDrag;
     }
 
-    init() {
+    initialize() {
         this.#attachEvents();
         this.#stageDom.classList.add(CSS_CLASSES.disabled);
 
-        this.emitLoaded();
+        this.emitInitialized();
     }
 
     destroy() {
         this.#detachEvents();
         this.#stageDom.classList.remove(CSS_CLASSES.disabled);
 
-        this.emitUnloaded();
+        this.emitDestroyed();
     }
 
     #attachEvents() {

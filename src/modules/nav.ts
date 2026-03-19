@@ -30,14 +30,14 @@ export default class Nav extends BaseModule {
 
         this.events.on(EVENTS.PAGE_CHANGE, this.#onChangePage);
 
-        this.emitInitialized();
+        this.emitCreated();
     }
 
-    get loadCondition() {
+    get shouldInitialize() {
         return this.config.nav;
     }
 
-    init() {
+    initialize() {
         //this.#remove();
 
         if (this.status.totalPages == 0)
@@ -70,23 +70,18 @@ export default class Nav extends BaseModule {
 
         this.#refreshNav();
 
-        this.emitLoaded();
+        this.emitInitialized();
     }
 
     destroy() {
         this.events.off(EVENTS.PAGE_CHANGE, this.#onChangePage);
 
-        this.#remove();
-        this.emitUnloaded();
-    }
-
-    #remove() {
-        if (this.#navContainer != null)
-            this.#navContainer.remove();
+        this.#navContainer?.remove();
+        this.emitDestroyed();
     }
 
     #onChangePage = (e: CarouselEvents[typeof EVENTS.PAGE_CHANGE]) => {
-        if (!this.loadCondition)
+        if (!this.shouldInitialize)
             return;
 
         this.#currentPage = e.currentPage;

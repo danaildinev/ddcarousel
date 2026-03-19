@@ -14,15 +14,15 @@ export type CarouselEvents = {
         slidesActive: number[];
     }
 
+    [EVENTS.MODULE_CREATED]: {
+        name: string
+    };
+
     [EVENTS.MODULE_INITIALIZED]: {
         name: string
     };
 
-    [EVENTS.MODULE_LOADED]: {
-        name: string
-    };
-
-    [EVENTS.MODULE_UNLOADED]: {
+    [EVENTS.MODULE_DESTROYED]: {
         name: string
     };
 

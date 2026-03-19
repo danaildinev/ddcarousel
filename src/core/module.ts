@@ -3,6 +3,6 @@ import type { ModuleName } from './module-names';
 export interface Module {
     readonly name: ModuleName;
 
-    init(): void;
+    initialize(): void;
     destroy(): void;
 }

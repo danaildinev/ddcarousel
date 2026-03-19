@@ -30,16 +30,14 @@ export default class UrlNav extends BaseModule {
             throw error("Url nav module won't initialize! Stage DOM was not found!");
         this.#container = container;
 
-        this.emitInitialized();
+        this.emitCreated();
     }
 
-    get loadCondition() {
+    get shouldInitialize() {
         return this.#config.urlNav;
     }
 
-    init() {
-        //this.#remove();
-
+    initialize() {
         let urlNavItems = document.createElement("div"),
             list = document.createElement("ul");
 
@@ -76,12 +74,12 @@ export default class UrlNav extends BaseModule {
             throw error("Url nav container is not found!");
         this.#urlNavContainer = urlNavContainer;
 
-        this.emitLoaded();
+        this.emitInitialized();
     }
 
     destroy() {
-        this.#remove();
-        this.emitUnloaded();
+        this.#urlNavContainer?.remove();
+        this.emitDestroyed();
     }
 
     goToUrl(name: string, enableAnim = true) {
@@ -95,10 +93,5 @@ export default class UrlNav extends BaseModule {
 
         const id = parent.dataset[DATA.dataset.slide];
         this.#events.emit(EVENTS.PAGE_CHANGE_REQUEST, { index: id, enableAnim })
-    }
-
-    #remove() {
-        if (this.#urlNavContainer != null)
-            this.#urlNavContainer.remove();
     }
 }

@@ -22,16 +22,14 @@ export default class Dots extends BaseModule {
 
         this.events.on(EVENTS.PAGE_CHANGE, this.#onChangePage);
 
-        this.emitInitialized();
+        this.emitCreated();
     }
 
-    get loadCondition() {
+    get shouldInitialize() {
         return this.config.dots;
     }
 
-    init() {
-        //this.#remove();
-
+    initialize() {
         if (this.status.totalPages == 0)
             return;
 
@@ -63,18 +61,18 @@ export default class Dots extends BaseModule {
 
         this.#setActiveDot();
 
-        this.emitLoaded();
+        this.emitInitialized();
     }
 
     destroy() {
         this.events.off(EVENTS.PAGE_CHANGE, this.#onChangePage);
 
-        this.#remove();
-        this.emitUnloaded();
+        this.#dotsContainer?.remove();
+        this.emitDestroyed();
     }
 
     #onChangePage = (e: CarouselEvents[typeof EVENTS.PAGE_CHANGE]) => {
-        if (!this.loadCondition)
+        if (!this.shouldInitialize)
             return;
 
         if (e.currentPage === undefined)
@@ -82,11 +80,6 @@ export default class Dots extends BaseModule {
 
         this.#currentPage = e.currentPage;
         this.#setActiveDot();
-    }
-
-    #remove() {
-        if (this.#dotsContainer != null)
-            this.#dotsContainer.remove();
     }
 
     #setActiveDot() {

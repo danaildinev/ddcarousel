@@ -26,21 +26,21 @@ export default class Autoplay extends BaseModule {
 
         this.events.on(EVENTS.PAGE_CHANGE, this.#onChangePage);
 
-        this.emitInitialized();
+        this.emitCreated();
     }
 
-    get loadCondition() {
+    get shouldInitialize() {
         return this.config.autoplay;
     }
 
-    init() {
+    initialize() {
         if (this.config.autoplayPauseOnTabHidden)
             document.addEventListener("visibilitychange", this.#stopOnTabHidden);
 
         this.#attachEvents();
         this.start();
 
-        this.emitLoaded();
+        this.emitInitialized();
     }
 
     destroy() {
@@ -51,12 +51,11 @@ export default class Autoplay extends BaseModule {
         this.#destroyProgressBar();
         this.#detachEvents();
 
-        this.emitUnloaded();
+        this.emitDestroyed();
     }
 
     #onChangePage = (e: CarouselEvents[typeof EVENTS.PAGE_CHANGE]) => {
-
-        if (!this.loadCondition)
+        if (!this.shouldInitialize)
             return;
 
         this.#currentPage = e.currentPage;

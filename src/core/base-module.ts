@@ -27,14 +27,14 @@ export abstract class BaseModule implements Module {
         this.container = containerDiv;
     }
 
-    abstract get loadCondition(): boolean;
-    abstract init(): void;
+    abstract get shouldInitialize(): boolean;
+    abstract initialize(): void;
     abstract destroy(): void;
 
     toggle(): void {
-        if (this.loadCondition) {
+        if (this.shouldInitialize) {
             if (!this.isInitialized) {
-                this.init();
+                this.initialize();
                 this.isInitialized = true;
             }
         }
@@ -46,20 +46,20 @@ export abstract class BaseModule implements Module {
         }
     }
 
+    protected emitCreated() {
+        this.events.emit(EVENTS.MODULE_CREATED, {
+            name: this.name
+        });
+    }
+
     protected emitInitialized() {
         this.events.emit(EVENTS.MODULE_INITIALIZED, {
             name: this.name
         });
     }
 
-    protected emitLoaded() {
-        this.events.emit(EVENTS.MODULE_LOADED, {
-            name: this.name
-        });
-    }
-
-    protected emitUnloaded() {
-        this.events.emit(EVENTS.MODULE_UNLOADED, {
+    protected emitDestroyed() {
+        this.events.emit(EVENTS.MODULE_DESTROYED, {
             name: this.name
         });
     }
