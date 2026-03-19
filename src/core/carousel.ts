@@ -1,9 +1,12 @@
 import { EVENTS } from "../constants/events-list";
+import type Autoplay from "../modules/autoplay";
+import type UrlNav from "../modules/urlNav";
 import type { CarouselConfig, CarouselStatus } from "../types/carousel.types";
 import { error } from "../utils/error-handler";
 import { Config } from "./config";
 import { Events } from "./events";
 import ModuleLoader from "./module-loader";
+import { ModuleName } from "./module-names";
 import Stage from "./stage";
 
 export default class Carousel {
@@ -56,6 +59,8 @@ export default class Carousel {
         this.#config = null!;
     }
 
+    module = (name: ModuleName) => this.#moduleLoader?.modules.find(m => m.name === name);
+
     on = (name: string, callback: any) => this.#events.on(name, callback);
 
     changePage = (page: number, animate: boolean) => this.#events.emit(EVENTS.PAGE_CHANGE_REQUEST, {
@@ -72,6 +77,23 @@ export default class Carousel {
     nextPage = () => this.#events.emit(EVENTS.PAGE_CHANGE_REQUEST, { index: "next" });
 
     prevPage = () => this.#events.emit(EVENTS.PAGE_CHANGE_REQUEST, { index: "prev" });
+
+    refresh = () => console.warn("refresh() is deprecated!");
+
+    autoplayStart = () => {
+        console.warn("autoplayStart() is deprecated: use carousel.module('autoplay').start()!");
+        (this.module(ModuleName.Autoplay) as Autoplay)?.start();
+    }
+
+    autoplayStop = () => {
+        console.warn("autoplayStop() is deprecated: use carousel.module('autoplay').stop()!");
+        (this.module(ModuleName.Autoplay) as Autoplay)?.stop();
+    }
+
+    goToUrl = (name: string, enabmeAnim: boolean) => {
+        console.warn("goToUrl() is deprecated: use carousel.module('urlNav').goToUrl()!");
+        (this.module(ModuleName.UrlNav) as UrlNav)?.goToUrl(name, enabmeAnim);
+    }
 
     getStatus(): CarouselStatus {
         return {
