@@ -25,7 +25,7 @@ export default class Stage {
     #originalClasses: string = "";
     slidesActive: number[] = [];
     currentTranslate: number = 0;
-    currentPage: number = 0;
+    currentPage: number = -1;
     totalPages: number = 0;
 
     constructor(config: Config, events: Events) {
@@ -45,6 +45,8 @@ export default class Stage {
     }
 
     initialize() {
+        const events = this.#events;
+
         this.currentPage = 0;
         this.totalPages = 0;
         this.currentTranslate = 0;
@@ -52,12 +54,12 @@ export default class Stage {
         this.#create();
         //todo confirm if stage is created
         this.#update();
-        this.#changePage(this.#config.startPage > 0 ? this.#config.startPage : 0, false);
+        events.emit(EVENTS.STAGE_CREATED);
 
-        this.#events.emit(EVENTS.STAGE_CREATED);
-
-        this.#events.on(EVENTS.PAGE_CHANGE_REQUEST, this.#onPageChangeRequest);
-        this.#events.on(EVENTS.PAGE_CHANGE, this.#onPageChange);
+        events.on(EVENTS.PAGE_CHANGE_REQUEST, this.#onPageChangeRequest);
+        events.emit(EVENTS.PAGE_CHANGE_REQUEST, {
+            index: this.#config.startPage > 0 ? this.#config.startPage : 0
+        });
 
         this.#resizeObserver = new ResizeObserver(() => this.#resizeEvent());
         this.#resizeObserver.observe(this.#container);
@@ -355,7 +357,26 @@ export default class Stage {
 
     #onPageChange = (e: CarouselEvents[typeof EVENTS.PAGE_CHANGE]) => this.#changePage(e.currentPage);
 
-    #onPageChangeRequest = (e: CarouselEvents[typeof EVENTS.PAGE_CHANGE_REQUEST]) => this.#changePage(e.index);
+    #onPageChangeRequest = (e: CarouselEvents[typeof EVENTS.PAGE_CHANGE_REQUEST]) => {
+        const index = this.#processRequestPageIndex(e.index);
+        if (index >= 0 && index <= this.totalPages)
+            this.#changePage(e.index)
+    };
+
+    #processRequestPageIndex(index: number | string): number {
+        let page = this.currentPage;
+        if (index == "prev") {
+            page--;
+        } else if (index == "next") {
+            page++;
+        } else {
+            //} else if (Number.isInteger(index) && index > -1 && index <= this.totalPages) {
+            const number = parseInt(String(index), 10);
+            if (number > -1)
+                page = number;
+        }
+        return page;
+    }
 
     #changePage(index: number | string, enableAnim = true) {
         if (this.#stage == null)
