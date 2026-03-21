@@ -1,3 +1,5 @@
+import type { BaseModule } from "../core/base-module";
+
 export type CarouselConfig = {
     container: string;
     nav: boolean;
@@ -7,6 +9,7 @@ export type CarouselConfig = {
     startPage: number;
     items: number;
     itemPerPage: boolean;
+    loop: boolean;
     vertical: boolean;
     verticalMaxContentWidth: boolean;
     urlNav: boolean;
@@ -41,6 +44,7 @@ export type CarouselStatus = {
     activeSlides: number[];
     config: CarouselStatusConfig;
     currentTranslate: number;
+    modules: BaseModule[] | undefined
 }
 
 export type CarouselStatusConfig = {

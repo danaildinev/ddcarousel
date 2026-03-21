@@ -1,3 +1,4 @@
+import { LEGACY_EVENT_MAP } from "../constants/events-list";
 import type { CarouselEvents } from "../types/event.types";
 import { error } from "../utils/error-handler";
 
@@ -10,6 +11,11 @@ export class Events {
     on<K extends keyof CarouselEvents>(name: K, callback: (payload: CarouselEvents[K]) => void): void;
     on(name: string, callback: (payload?: any) => void): void;
     on(name: string, callback: (payload?: any) => void): void {
+        // support legacy format
+        const mapped = LEGACY_EVENT_MAP[name];
+        if (mapped)
+            name = mapped;
+
         let handlers = this.#events.get(name);
 
         if (!handlers) {

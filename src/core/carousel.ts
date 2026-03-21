@@ -121,6 +121,7 @@ export default class Carousel {
                 current: this.#config.current
             },
             currentTranslate: this.#stage.currentTranslate,
+            modules: this.#moduleLoader?.modules
         };
     }
 }
