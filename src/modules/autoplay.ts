@@ -59,10 +59,13 @@ export default class Autoplay extends BaseModule {
             return;
 
         this.#currentPage = e.currentPage;
-        if (this.#currentPage < this.status.totalPages)
-            this.restart();
-        else
+        if (this.#currentPage < this.status.totalPages) {
+            this.start();
+        }
+        else {
+            this.stop();
             this.#toggleProgressBar(false);
+        }
     };
 
     #stopOnTabHidden = () => document.hidden ? this.stop() : this.start();
@@ -82,6 +85,8 @@ export default class Autoplay extends BaseModule {
         this.#restartProgressBar();
 
         this.#autoPlay = setInterval(() => this.#handler(), this.config.autoplaySpeed);
+
+        this.events.emit(EVENTS.MODULE_AUTOPLAY_STARTED);
     }
 
     #handler() {
@@ -101,11 +106,7 @@ export default class Autoplay extends BaseModule {
         clearInterval(this.#autoPlay);
         this.#autoPlay = undefined;
         this.#toggleProgressBar(false);
-    }
-
-    restart() {
-        this.stop();
-        this.start();
+        this.events.emit(EVENTS.MODULE_AUTOPLAY_STOPPED);
     }
 
     #toggleProgressBar = (visible: boolean) => {
