@@ -22,7 +22,7 @@ export default class Stage {
     #resizeThrottled: boolean = false;
     #resizeObserver: ResizeObserver | null = null;
 
-    originalClasses: string = "";
+    #originalClasses: string = "";
     slidesActive: number[] = [];
     currentTranslate: number = 0;
     currentPage: number = 0;
@@ -36,7 +36,7 @@ export default class Stage {
         const targetContainer = document.querySelector<HTMLDivElement>(this.#config.container);
         if (targetContainer != null) {
             this.#container = targetContainer;
-            this.originalClasses = this.#container.className;
+            this.#originalClasses = this.#container.className;
         } else {
             throw error("Invalid container!");
         }
@@ -123,7 +123,7 @@ export default class Stage {
         this.#slides = [];
         this.slidesActive = [];
         this.currentTranslate = 0;
-        this.originalClasses = "";
+        this.#originalClasses = "";
 
         this.#containerWidth = 0;
         this.#containerHeight = 0;
@@ -144,7 +144,7 @@ export default class Stage {
             return;
 
         this.#container.querySelector(`.${CSS_CLASSES.container}`)?.remove();
-        origContainer.className = this.originalClasses;
+        origContainer.className = this.#originalClasses;
 
         if (restoreSlides) {
             this.#slides.forEach(el => {
@@ -164,49 +164,50 @@ export default class Stage {
             return;
 
         const slideWidth = firstSlide.style.width,
-            containerStyle = window.getComputedStyle(this.#container);
+            containerStyle = window.getComputedStyle(this.#container),
+            container = this.#container,
+            slides = this.#slides,
+            config = this.#config;
 
-        if (this.#config.fullWidth && !this.#config.verticalMaxContentWidth)
-            this.#container.classList.add(CSS_CLASSES.fullWidth);
-        else
-            this.#container.classList.remove(CSS_CLASSES.fullWidth);
+        // full width?
+        container.classList.toggle(CSS_CLASSES.fullWidth, config.fullWidth && !config.verticalMaxContentWidth);
 
-        if (this.#config.vertical) {
-            this.#container.classList.add(CSS_CLASSES.vertical);
+        if (config.vertical) {
+            container.classList.add(CSS_CLASSES.vertical);
             this.#configClass.updateSettings({
                 autoHeight: false
             });
         }
         else {
-            this.#container.classList.remove(CSS_CLASSES.vertical);
+            container.classList.remove(CSS_CLASSES.vertical);
         }
 
         this.#containerWidth = parseInt(containerStyle.width);
         this.#containerHeight = parseInt(containerStyle.height);
 
-        if (this.#slides.length <= this.#config.items)
-            this.#config.items = this.#slides.length;
+        if (slides.length <= config.items)
+            config.items = slides.length;
 
         this.#calculateTotalPages();
 
-        if (!this.#config.vertical)
-            this.#stage.style.width = (this.#containerWidth * this.#slides.length) + "px";
+        if (!config.vertical)
+            this.#stage.style.width = `${this.#containerWidth * slides.length}px`;
 
-        if (this.#config.verticalMaxContentWidth) {
+        if (config.verticalMaxContentWidth) {
             let maxWidth = 0,
                 elWidth;
 
-            this.#slides.forEach(el => {
+            slides.forEach(el => {
                 elWidth = el.getBoundingClientRect().width;
                 if (elWidth > maxWidth)
                     maxWidth = elWidth;
             });
-            this.#container.style.width = maxWidth + "px";
+            container.style.width = maxWidth + "px";
         }
 
         this.#slidesHeights = this.#getSlidesHeights();
 
-        if (this.#config.autoHeight) {
+        if (config.autoHeight) {
             //this.#setActiveSlides();
             this.#updateContainerHeight();
         }
@@ -290,25 +291,26 @@ export default class Stage {
             this.slidesActive.forEach(i => this.#container.querySelector(`[${DATA.attrs.slide}="${i}"]`)?.classList.remove("active"));
 
         this.slidesActive = [];
-        const slideIndex = this.currentPage * (this.#config.items > 0 ? this.#config.items : 1),
+        const config = this.#config,
+            slideIndex = this.currentPage * (config.items > 0 ? config.items : 1),
             slidesLength = this.#slides.length;
 
-        if (this.#config.centerSlide) {
+        if (config.centerSlide) {
             this.slidesActive.push(this.currentPage);
-        } else if (this.#config.itemPerPage) {
-            for (let i = this.currentPage; i < this.currentPage + this.#config.items; i++) {
+        } else if (config.itemPerPage) {
+            for (let i = this.currentPage; i < this.currentPage + config.items; i++) {
                 this.slidesActive.push(i);
             }
         } else {
-            if (slideIndex + this.#config.items > slidesLength) {
-                for (let i = slidesLength - this.#config.items; i < slidesLength; i++) {
+            if (slideIndex + config.items > slidesLength) {
+                for (let i = slidesLength - config.items; i < slidesLength; i++) {
                     this.slidesActive.push(i);
                 }
             } else {
-                if (this.#config.items == 0) {
+                if (config.items == 0) {
                     this.slidesActive.push(slideIndex);
                 } else {
-                    for (let i = slideIndex; i < slideIndex + this.#config.items; i++) {
+                    for (let i = slideIndex; i < slideIndex + config.items; i++) {
                         if (i < slidesLength) {
                             this.slidesActive.push(i);
                         }
@@ -418,27 +420,30 @@ export default class Stage {
         if (this.#stage === null)
             return;
 
-        const currentSlide = this.#getCurrentSlideDom();
+        const currentSlide = this.#getCurrentSlideDom(),
+            err = "Scrolling to slide failed!",
+            config = this.#config;
+
         if (currentSlide === null)
-            throw error(`Scrolling to slide failed! Can't find current slide in DOM!`);
+            throw error(err + "Current slide was not found!");
 
         let position: number;
 
-        if (this.#config.centerSlide && this.#config.items > 0) {
+        if (config.centerSlide && config.items > 0) {
             const slideStyle = this.#getFirstSlideStyle();
             if (slideStyle === undefined)
-                throw error(`Scrolling to slide failed! Slide style was not found!`);
+                throw error(err + "Slide style was not found!");
 
             position =
                 -this.#getSlidePos(currentSlide) -
-                -(parseInt(slideStyle.width) * Math.floor(this.#config.items / 2));
+                -(parseInt(slideStyle.width) * Math.floor(config.items / 2));
         } else {
             position = -this.#getSlidePos(slide ?? currentSlide);
         }
 
         this.currentTranslate = position;
 
-        scrollToPos(this.#stage, this.currentTranslate, this.#config.vertical);
+        scrollToPos(this.#stage, this.currentTranslate, config.vertical);
     }
 
     #getSlidePos(slide: HTMLDivElement) {
