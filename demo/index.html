@@ -28,12 +28,12 @@
 			<li><a href="#responsive">Responsive + fullWidth</a></li>
 			<li><a href="#vertical">Vertical orientation </a></li>
 			<li><a href="#urlnav">Url navigation</a></li>
-			<li><a href="#lazydemo">Lazy loading <strong>(new)</strong></a></li>
+			<li><a href="#lazydemo">Lazy loading</a></li>
 			<li><a href="#autoplay">Autoplay </a></li>
 			<li><a href="#disabledTouch">Disabled touch drag</a></li>
 			<li><a href="#customLabels">Custom navigation labels</a></li>
 			<li><a href="#customanim">Custom animation config</a></li>
-			<li><a href="#keyboardNav">Keyboard navigation <strong>(new)</strong></a></li>
+			<li><a href="#keyboardNav">Keyboard navigation</a></li>
 			<li><a href="#events">Events + methods</a></li>
 		</ul>
 	</nav>
@@ -131,7 +131,7 @@
 	</div>
 	<div id="lazydemo" class="carousel-section">
 		<div class="container">
-			<h2>Lazy load images <strong>(new)</strong></h2>
+			<h2>Lazy load images</h2>
 			<p>Lazy loading of images in carousel. This demo will lazy load images on changing active slides and also
 				preload the next 2 images (total of 4 images loaded).</p>
 			<div class="ddcarousel lazy">
@@ -215,7 +215,7 @@
 	</div>
 	<div id="keyboardNav" class="carousel-section">
 		<div class="container">
-			<h2>Keyboard navigation <strong>(new)</strong></h2>
+			<h2>Keyboard navigation</h2>
 			<p>
 				Use arrow keys on your keyboard to change slides.</p>
 			<p>
@@ -225,41 +225,64 @@
 	</div>
 	<div id="events" class="carousel-section">
 		<div class="container">
-			<h2>Events <strong>(new)</strong></h2>
-			<p>Try to scroll or change slide.</p>
-			<div class="ddcarousel events"></div>
+			<h2>Events</h2>
 			<div class="code-container">
 				<div>
+					<h3>All events</h3>
 					<ul class="events-list">
-						<li data-event="onInitialize"><span class="status"></span>Initialize</li>
-						<li data-event="onInitialized"><span class="status"></span>Initialized</li>
-						<li data-event="onDrag"><span class="status"></span>Drag</li>
-						<li data-event="onDragging"><span class="status"></span>Dragging</li>
-						<li data-event="onDragged"><span class="status"></span>Dragged</li>
-						<li data-event="onChanged"><span class="status"></span>Changed</li>
-						<li data-event="onTransitionend"><span class="status"></span>Transition end</li>
-						<li data-event="onResized"><span class="status"></span>Resized</li>
-						<li data-event="onDestroy"><span class="status"></span>Destroy</li>
-						<li data-event="onDestroyed"><span class="status"></span>Destroyed</li>
+						<li data-event="carousel:initalize"><span class="status"></span>Initialize</li>
+						<li data-event="carousel:initalized"><span class="status"></span>Initialized</li>
+						<li data-event="config:changed">
+							<span class="status"></span>Config changed <strong>(new)</strong>
+						</li>
+						<li data-event="module:created">
+							<span class="status"></span>Module created <strong>(new)</strong>
+						</li>
+						<li data-event="module:initialized">
+							<span class="status"></span>Module initialized <strong>(new)</strong>
+						</li>
+						<li data-event="module:destroyed">
+							<span class="status"></span>Module destroyed <strong>(new)</strong>
+						</li>
+						<li data-event="stage:created">
+							<span class="status"></span>Stage created <strong>(new)</strong>
+						</li>
+						<li data-event="stage:resized">
+							<span class="status"></span>Stage resized <strong>(new)</strong>
+						</li>
+						<li data-event="page:change">
+							<span class="status"></span>Page change
+						</li>
+						<li data-event="page:change:request">
+							<span class="status"></span>Page change request <strong>(new)</strong>
+						</li>
+						<li data-event="transition:end"><span class="status"></span>Transition end</li>
+						<li data-event="drag:start"><span class="status"></span>Drag start</li>
+						<li data-event="drag:dragging"><span class="status"></span>Dragging</li>
+						<li data-event="drag:end"><span class="status"></span>Drag end</li>
+						<li data-event="module:autoplay:started">
+							<span class="status"></span>Autoplay started <strong>(new)</strong>
+						</li>
+						<li data-event="module:autoplay:stopped">
+							<span class="status"></span>Autoplay stopped <strong>(new)</strong>
+						</li>
 					</ul>
 				</div>
 				<div>
+					<h3>Events history</h3>
 					<textarea id="eventLog" readonly></textarea>
 				</div>
 			</div>
-			<p>
-				Resize event is called when you change carousel container size and then call the
-				<strong>refresh()</strong> method. Try resizing and re-calculate the carousel:
-				<button class="btn" id="resizeContainer">Resize random</button>
-				<button class="btn" id="eventsRefresh">Refresh</button>
-			</p>
 			<h3>Methods</h3>
 			<p>
 				<input id="inputGoToSlide" type="number" value="2" placeholder="1" style="width: 60px;">
 				<button class="btn" id="eventsGoToSlide">Go</button>
 				<button class="btn" id="eventsPrevSlide">Previous</button>
 				<button class="btn" id="eventsNextSlide">Next</button>
-				<button class="btn" id="eventsGetStatus">Get status <strong>(new)</strong></button>
+				<button class="btn" id="eventsApStart">Start autoplay</button>
+				<button class="btn" id="eventsApStop">Stop autoplay</button>
+				<button class="btn" id="eventsGetStatus">Get status</button>
+				<button class="btn" id="resizeContainer">Resize random</button>
 				<button class="btn" id="eventsGetCurrentPage">Get current page</button>
 				<button class="btn" id="eventsGetTotalPages">Get total pages</button>
 				<button class="btn" id="eventsGetTotalSlides">Get total slides</button>
@@ -268,10 +291,11 @@
 				<button class="btn" id="eventsInit">Initialize</button>
 				<button class="btn" id="eventsAddSlide">Add new slide (after destroy)</button>
 			</p>
+			<div class="ddcarousel events"></div>
 		</div>
 	</div>
 </body>
-<script src="../dist/ddcarousel.js"></script>
+<script src="../dist/ddcarousel.umd.min.js"></script>
 <script src="js/main.js"></script>
 
 </html>
