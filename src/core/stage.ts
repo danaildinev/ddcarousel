@@ -360,25 +360,25 @@ export default class Stage {
     #onPageChangeRequest = (e: CarouselEvents[typeof EVENTS.PAGE_CHANGE_REQUEST]) => {
         const index = this.#processRequestPageIndex(e.index);
         if (index >= 0 && index <= this.totalPages)
-            this.#changePage(e.index)
+            this.#changePage(index)
     };
 
     #processRequestPageIndex(index: number | string): number {
         let page = this.currentPage;
-        if (index == "prev") {
+        if (index == "prev" && this.currentPage > 0) {
             page--;
-        } else if (index == "next") {
+        } else if (index == "next" && this.currentPage < this.totalPages) {
             page++;
         } else {
             //} else if (Number.isInteger(index) && index > -1 && index <= this.totalPages) {
             const number = parseInt(String(index), 10);
-            if (number > -1)
+            if (number > -1 && number <= this.totalPages)
                 page = number;
         }
         return page;
     }
 
-    #changePage(index: number | string, enableAnim = true) {
+    #changePage(index: number, enableAnim = true) {
         if (this.#stage == null)
             return;
 
@@ -392,17 +392,7 @@ export default class Stage {
             this.#stage.style.transitionDuration = this.#config.slideChangeDuration + "s";
         }
 
-        //change slide based on parameter
-        if (index == "prev" && this.currentPage != 0) {
-            this.currentPage--;
-        } else if (index == "next" && this.currentPage < this.totalPages) {
-            this.currentPage++;
-        } else {
-            //} else if (Number.isInteger(index) && index > -1 && index <= this.totalPages) {
-            const number = parseInt(String(index), 10);
-            if (number > -1 && number <= this.totalPages)
-                this.currentPage = number;
-        }
+        this.currentPage = index;
 
         //update frontend
         this.#setActiveSlides();
