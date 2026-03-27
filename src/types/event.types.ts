@@ -6,12 +6,23 @@ export type CarouselEvents = {
         index: number | string;
         animate?: boolean;
         emit?: boolean;
+        force?: boolean;
     };
 
     [EVENTS.PAGE_CHANGE]: {
         currentPage: number;
         currentTranslate: number;
         slidesActive: number[];
+    }
+
+    [EVENTS.PAGE_CHANGE_SCROLL_BEFORE]: {
+        currentPage: number;
+        slidesCount: number;
+        currentTranslate: number
+    }
+
+    [EVENTS.PAGE_CHANGE_INDEX]: {
+        index: number,
     }
 
     [EVENTS.MODULE_CREATED]: {
@@ -30,6 +41,12 @@ export type CarouselEvents = {
         default: CarouselConfig,
         old: CarouselConfig,
         new: CarouselConfig
+    };
+
+    [EVENTS.SLIDE_SCROLL]: {
+        slide?: HTMLDivElement,
+        animate: boolean;
+        specifiedPosition: number;
     };
 }
 

@@ -56,6 +56,7 @@ export default class Stage {
         this.#update();
         events.emit(EVENTS.STAGE_CREATED);
 
+        events.on(EVENTS.SLIDE_SCROLL, this.#onSlideScroll);
         events.on(EVENTS.PAGE_CHANGE_REQUEST, this.#onPageChangeRequest);
         events.emit(EVENTS.PAGE_CHANGE_REQUEST, {
             index: this.#config.startPage > 0 ? this.#config.startPage : 0
@@ -364,6 +365,12 @@ export default class Stage {
 
     #onPageChangeRequest = (e: CarouselEvents[typeof EVENTS.PAGE_CHANGE_REQUEST]) => {
         const index = this.#processRequestPageIndex(e.index);
+
+        if (e.force) {
+            this.#changePage(index, e.animate)
+            return;
+        }
+
         if (index >= 0 && index <= this.totalPages)
             this.#changePage(index, e.animate)
     };
@@ -380,6 +387,11 @@ export default class Stage {
             if (number > -1 && number <= this.totalPages)
                 page = number;
         }
+
+        this.#events.emit(EVENTS.PAGE_CHANGE_INDEX, {
+            index: index,
+        });
+
         return page;
     }
 
@@ -400,7 +412,16 @@ export default class Stage {
 
         //update frontend
         this.#setActiveSlides();
+
+        this.#events.emit(EVENTS.PAGE_CHANGE_SCROLL_BEFORE, {
+            currentPage: this.currentPage,
+            slidesCount: this.getSlidesCount(),
+            currentTranslate: this.currentTranslate
+        });
+
         this.#scrollToSlide(this.#getSlideDom(), enableAnim);
+
+        this.#events.emit(EVENTS.PAGE_CHANGE_SCROLL_AFTER);
 
         //change stage height if this options is enabled
         if (config.autoHeight)
@@ -433,6 +454,8 @@ export default class Stage {
         let selector = index > -1 ? `[${attr}='${index}']` : `[${attr}].active`;
         return this.#container.querySelector<HTMLDivElement>(selector);
     }
+
+    #onSlideScroll = (e: CarouselEvents[typeof EVENTS.SLIDE_SCROLL]) => this.#scrollToSlide(e.slide, e.animate, e.specifiedPosition);
 
     #scrollToSlide(slide?: HTMLDivElement | null, animate: boolean = true, specifiedPosition: number | null = null) {
         if (this.#stage === null)
