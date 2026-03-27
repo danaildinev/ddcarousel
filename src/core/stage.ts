@@ -59,7 +59,8 @@ export default class Stage {
         events.on(EVENTS.SLIDE_SCROLL, this.#onSlideScroll);
         events.on(EVENTS.PAGE_CHANGE_REQUEST, this.#onPageChangeRequest);
         events.emit(EVENTS.PAGE_CHANGE_REQUEST, {
-            index: this.#config.startPage > 0 ? this.#config.startPage : 0
+            index: this.#config.startPage > 0 ? this.#config.startPage : 0,
+            animate: false
         });
 
         this.#resizeObserver = new ResizeObserver(() => this.#resizeEvent());
@@ -473,16 +474,16 @@ export default class Stage {
         if (specifiedPosition !== null) {
             position = specifiedPosition
         } else {
-        if (config.centerSlide && config.items > 0) {
-            const slideStyle = this.#getFirstSlideStyle();
-            if (slideStyle === undefined)
-                throw error(err + "Slide style was not found!");
+            if (config.centerSlide && config.items > 0) {
+                const slideStyle = this.#getFirstSlideStyle();
+                if (slideStyle === undefined)
+                    throw error(err + "Slide style was not found!");
 
-            position =
-                -this.#getSlidePos(currentSlide) -
-                -(parseInt(slideStyle.width) * Math.floor(config.items / 2));
-        } else {
-            position = -this.#getSlidePos(slide ?? currentSlide);
+                position =
+                    -this.#getSlidePos(currentSlide) -
+                    -(parseInt(slideStyle.width) * Math.floor(config.items / 2));
+            } else {
+                position = -this.#getSlidePos(slide ?? currentSlide);
             }
         }
 
