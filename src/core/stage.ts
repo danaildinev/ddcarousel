@@ -66,8 +66,6 @@ export default class Stage {
 
         if (this.#config.keyboardNavigation)
             window.addEventListener("keydown", this.#keyboardHandler);
-
-        //this.#container.addEventListener("resize", this.#resizeEvent);
     }
 
     #create() {
@@ -114,11 +112,16 @@ export default class Stage {
             // ... create url nav
             this.#slides.push(slide);
         }
+
+        this.#stage.addEventListener("transitionend", this.#onStageTransitionEnd);
     }
 
     destroy(restoreSlides: boolean) {
         this.restoreOriginalSlides(restoreSlides);
-        this.#stage?.remove();
+        if (this.#stage !== null) {
+            this.#stage.removeEventListener("transitionend", this.#onStageTransitionEnd);
+            this.#stage.remove();
+        }
 
         this.currentPage = 0;
         this.totalPages = 0;
@@ -355,12 +358,14 @@ export default class Stage {
         }
     }
 
+    #onStageTransitionEnd = () => this.#events.emit(EVENTS.TRANSITION_END);
+
     #onPageChange = (e: CarouselEvents[typeof EVENTS.PAGE_CHANGE]) => this.#changePage(e.currentPage);
 
     #onPageChangeRequest = (e: CarouselEvents[typeof EVENTS.PAGE_CHANGE_REQUEST]) => {
         const index = this.#processRequestPageIndex(e.index);
         if (index >= 0 && index <= this.totalPages)
-            this.#changePage(index)
+            this.#changePage(index, e.animate)
     };
 
     #processRequestPageIndex(index: number | string): number {
@@ -383,13 +388,14 @@ export default class Stage {
             return;
 
         let origPage = this.currentPage;
+        const config = this.#config;
 
         if (!enableAnim) {
             this.#stage.style.transitionDuration = "0s";
             this.#events.emit(EVENTS.TRANSITION_END);
             // orig: this.#stage.addEventListener("transitionend", () => this.#stage.style.transitionDuration = this.#config.slideChangeDuration + "0s");
         } else {
-            this.#stage.style.transitionDuration = this.#config.slideChangeDuration + "s";
+            this.#stage.style.transitionDuration = config.slideChangeDuration + "s";
         }
 
         this.currentPage = index;
@@ -399,7 +405,7 @@ export default class Stage {
         this.#scrollToSlide();
 
         //change stage height if this options is enabled
-        if (this.#config.autoHeight)
+        if (config.autoHeight)
             this.#updateContainerHeight();
 
         //fire change trigger
