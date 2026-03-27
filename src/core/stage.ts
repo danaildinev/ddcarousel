@@ -392,8 +392,6 @@ export default class Stage {
 
         if (!enableAnim) {
             this.#stage.style.transitionDuration = "0s";
-            this.#events.emit(EVENTS.TRANSITION_END);
-            // orig: this.#stage.addEventListener("transitionend", () => this.#stage.style.transitionDuration = this.#config.slideChangeDuration + "0s");
         } else {
             this.#stage.style.transitionDuration = config.slideChangeDuration + "s";
         }
@@ -402,7 +400,7 @@ export default class Stage {
 
         //update frontend
         this.#setActiveSlides();
-        this.#scrollToSlide();
+        this.#scrollToSlide(this.#getSlideDom(), enableAnim);
 
         //change stage height if this options is enabled
         if (config.autoHeight)
@@ -430,14 +428,17 @@ export default class Stage {
         return slide.style;
     }
 
-    #getCurrentSlideDom = () => this.#container.querySelector<HTMLDivElement>(`[${DATA.attrs.slide}].active`);
+    #getSlideDom = (index = -1): HTMLDivElement | null => {
+        const attr = DATA.attrs.slide;
+        let selector = index > -1 ? `[${attr}='${index}']` : `[${attr}].active`;
+        return this.#container.querySelector<HTMLDivElement>(selector);
+    }
 
-
-    #scrollToSlide(slide?: HTMLDivElement) {
+    #scrollToSlide(slide?: HTMLDivElement | null, animate: boolean = true, specifiedPosition: number | null = null) {
         if (this.#stage === null)
             return;
 
-        const currentSlide = this.#getCurrentSlideDom(),
+        const currentSlide = this.#getSlideDom(),
             err = "Scrolling to slide failed!",
             config = this.#config;
 
@@ -446,6 +447,9 @@ export default class Stage {
 
         let position: number;
 
+        if (specifiedPosition !== null) {
+            position = specifiedPosition
+        } else {
         if (config.centerSlide && config.items > 0) {
             const slideStyle = this.#getFirstSlideStyle();
             if (slideStyle === undefined)
@@ -456,9 +460,18 @@ export default class Stage {
                 -(parseInt(slideStyle.width) * Math.floor(config.items / 2));
         } else {
             position = -this.#getSlidePos(slide ?? currentSlide);
+            }
         }
 
         this.currentTranslate = position;
+
+        if (!animate) {
+            this.#stage.style.transitionDuration = "0s";
+            scrollToPos(this.#stage, this.currentTranslate, config.vertical);
+            this.#stage.offsetHeight;  // force reflow
+            this.#stage.style.transitionDuration = this.#config.slideChangeDuration + "s";
+            return;
+        }
 
         scrollToPos(this.#stage, this.currentTranslate, config.vertical);
     }
@@ -484,7 +497,7 @@ export default class Stage {
         setTimeout(() => {
             this.#update();
 
-            const slide = this.#getCurrentSlideDom();
+            const slide = this.#getSlideDom();
             if (slide != null)
                 this.#scrollToSlide(slide);
 
