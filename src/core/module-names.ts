@@ -3,6 +3,7 @@ export enum ModuleName {
     Dots = "dots",
     Drag = "drag",
     Lazyload = "lazyLoad",
+    Loop = "loop",
     Nav = "nav",
     UrlNav = "urlNav",
 }

@@ -12,5 +12,7 @@ export const CSS_CLASSES = {
     progress: "ddcarousel-progress",
     progressBar: "ddcarousel-progress-bar",
     fullWidth: "full-width",
-    disabled: "disabled"
+    disabled: "disabled",
+    slidePrev: "slide-prev",
+    slideNext: "slide-next",
 } as const;
