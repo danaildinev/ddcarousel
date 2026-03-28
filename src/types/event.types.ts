@@ -1,5 +1,6 @@
 import type { EVENTS } from "../constants/events-list";
 import type { CarouselConfig } from "./carousel.types";
+import type { PageChangePayload } from "./pageChangePayload";
 
 export type CarouselEvents = {
     [EVENTS.PAGE_CHANGE_REQUEST]: {
@@ -21,9 +22,7 @@ export type CarouselEvents = {
         currentTranslate: number
     }
 
-    [EVENTS.PAGE_CHANGE_INDEX]: {
-        index: number,
-    }
+    [EVENTS.PAGE_CHANGE_INDEX]: PageChangePayload
 
     [EVENTS.MODULE_CREATED]: {
         name: string

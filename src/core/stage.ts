@@ -377,23 +377,33 @@ export default class Stage {
     };
 
     #processRequestPageIndex(index: number | string): number {
-        let page = this.currentPage;
-        if (index == "prev" && this.currentPage > 0) {
-            page--;
-        } else if (index == "next" && this.currentPage < this.totalPages) {
-            page++;
-        } else {
-            //} else if (Number.isInteger(index) && index > -1 && index <= this.totalPages) {
-            const number = parseInt(String(index), 10);
-            if (number > -1 && number <= this.totalPages)
-                page = number;
+        const payload = {
+            request: index,
+            page: this.currentPage,
+            currentPage: this.currentPage,
+            totalPages: this.totalPages,
+            handled: false,
+            priority: -1
+        };
+
+        // allow modules to intercept and try to override the requested page
+        this.#events.emit(EVENTS.PAGE_CHANGE_INDEX, payload);
+
+        // if no module handles this request, then fallback to default logic
+        if (!payload.handled) {
+            if (index === "prev" && this.currentPage > 0) {
+                payload.page = this.currentPage - 1;
+            } else if (index === "next" && this.currentPage < this.totalPages) {
+                payload.page = this.currentPage + 1;
+            } else {
+                const number = parseInt(String(index), 10);
+                if (number > -1 && number <= this.totalPages) {
+                    payload.page = number;
+                }
+            }
         }
 
-        this.#events.emit(EVENTS.PAGE_CHANGE_INDEX, {
-            index: index,
-        });
-
-        return page;
+        return payload.page;
     }
 
     #changePage(index: number, enableAnim = true) {

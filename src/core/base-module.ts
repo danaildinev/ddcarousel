@@ -1,6 +1,7 @@
 import { EVENTS } from "../constants/events-list";
 import type { CarouselConfig, CarouselStatus } from "../types/carousel.types";
 import type { ModuleLoaderParams } from "../types/module.params";
+import type { PageChangePayload } from "../types/pageChangePayload";
 import { error } from "../utils/error-handler";
 import type { Events } from "./events";
 import type { Module } from "./module";
@@ -44,6 +45,25 @@ export abstract class BaseModule implements Module {
                 this.isInitialized = false;
             }
         }
+    }
+
+    tryOverridePriority(payload: PageChangePayload, prio: number): boolean {
+        const moduleName = this.name;
+
+        if (payload.priority === prio) {
+            console.warn(`Module "${moduleName}" tried to use priority ${prio}, but it is already claimed by "${payload.source}". Override ignored!`);
+            return false;
+        }
+
+        // override if current payload priority is lower
+        if (payload.priority < prio) {
+            payload.priority = prio;
+            payload.source = moduleName;
+            payload.handled = true;
+            return true;
+        }
+
+        return false;
     }
 
     protected emitCreated() {
