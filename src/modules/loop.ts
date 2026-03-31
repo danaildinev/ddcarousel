@@ -63,51 +63,80 @@ export default class Loop extends BaseModule {
         if (!this.#stage)
             return;
 
-        const stageItems = this.#stage.children;
-        if (stageItems === undefined)
+        const allSlides = this.#stage.children,
+            activeSlides = e.activeSlides,
+            firstCurrentIndex = activeSlides[0],
+            lastCurrentIndex = activeSlides[activeSlides.length - 1];
+
+        if (firstCurrentIndex === undefined || lastCurrentIndex === undefined)
             return;
 
-        this.#clearSlidesForLoop();
+        const
+            totalSlides = e.slidesCount - 1,
+            slidesToMove = this.container.querySelectorAll<HTMLDivElement>(`.${CSS_CLASSES.item}.active`),
+            prev = firstCurrentIndex - 1 < 0 ? totalSlides : firstCurrentIndex - 1,
+            next = lastCurrentIndex + 1 > totalSlides ? 0 : lastCurrentIndex + 1,
+            firstSlide = allSlides[0] as HTMLDivElement,
+            lastSlide = allSlides[allSlides.length - 1] as HTMLDivElement,
+            lastSlideId = Number(lastSlide.dataset[DATA.dataset.slide]),
+            isSlidingForward = e.isForward,
+            isAtEnd = lastCurrentIndex === lastSlideId,
+            isAtStartBoundary = lastSlide.classList.contains("active"),
+            hasReachedEndBound = firstSlide.classList.contains(CSS_CLASSES.slideNext);
 
-        const slidesArr = Array.from(stageItems),
-            currentIndex = e.currentPage,
-            currentSlide = this.#getSlideDom(currentIndex),
-            lastSlide = slidesArr[slidesArr.length - 1] as HTMLDivElement;
-
-        if (!currentSlide)
-            return;
-
-        const total = e.slidesCount - 1;
-        let prev = currentIndex - 1 < 0 ? total : currentIndex - 1,
-            next = currentIndex + 1 > total ? 0 : currentIndex + 1;
-
-        // current slide is last slide, always keep it at the end
-        const lastSlideNumber = Number(lastSlide.dataset[DATA.dataset.slide]);
-        if (currentIndex === lastSlideNumber) {
-            lastSlide.after(currentSlide);
-        }
-        // loop backwards when first slide is active
-        else if (slidesArr[0]?.classList.contains("active")) {
-            const slideWidth = lastSlide.getBoundingClientRect().width;
-
-            // shift instantly without no animation
-            this.events.emit(EVENTS.SLIDE_SCROLL, {
-                specifiedPosition: e.currentTranslate + slideWidth,
-                animate: false,
-            })
-
-            // reorder DOM - move current slide after last
-            lastSlide.after(currentSlide);
-
-            // recompute prev/next indexes after reordering - next slide is always the first slide index in the stage
-            let newFirst = this.#stage.children[0] as HTMLDivElement;
-            prev = lastSlideNumber;
-            next = Number(newFirst.dataset[DATA.dataset.slide]);
-        }
+        // if the current slide/s is the last - always keep it at the end
+        if (isAtEnd && isSlidingForward)
+            this.#handleLastSlide(lastCurrentIndex, lastSlide);
+        // if scrolling right - shift slides backwards when all active slides reached the end
+        else if (hasReachedEndBound && isSlidingForward)
+            this.#shiftAndReorderEnd(e, lastSlide, activeSlides.length, slidesToMove);
+        // if scrolling left - opposite to the above logic
+        else if (isAtStartBoundary && !isSlidingForward)
+            this.#handleStartBoundaryShift(e, firstSlide, lastSlide, activeSlides.length, slidesToMove, allSlides);
 
         // mark prev/next slides
+        this.#clearSlidesForLoop();
         this.#getSlideDom(prev)?.classList.add(CSS_CLASSES.slidePrev);
         this.#getSlideDom(next)?.classList.add(CSS_CLASSES.slideNext);
+    }
+
+    #handleLastSlide(index: number, anchor: HTMLDivElement) {
+        const currentSlide = this.#getSlideDom(index);
+        if (currentSlide)
+            anchor.after(currentSlide);
+    }
+
+    #shiftAndReorderEnd(e: CarouselEvents[typeof EVENTS.PAGE_CHANGE_SCROLL_BEFORE], anchor: HTMLElement, length: number, slidesToMove: NodeListOf<HTMLDivElement>) {
+        this.#shiftStage(e, anchor, length);
+
+        // reorder DOM - keep current slides in the end (after the last DOM item)
+        Array.from(slidesToMove)
+            .sort((a, b) => Number(b.dataset[DATA.dataset.slide]) - Number(a.dataset[DATA.dataset.slide]))
+            .forEach(el => anchor.after(el));
+    }
+
+    #shiftStage(e: CarouselEvents[typeof EVENTS.PAGE_CHANGE_SCROLL_BEFORE], baseSlideWidth: HTMLElement, length: number, forward: boolean = true) {
+        let scrollAmount = (baseSlideWidth.getBoundingClientRect().width * length);
+
+        this.events.emit(EVENTS.SLIDE_SCROLL, {
+            specifiedPosition: e.currentTranslate - (forward ? -scrollAmount : scrollAmount),
+            animate: false,
+        })
+    }
+
+    #handleStartBoundaryShift(e: CarouselEvents[typeof EVENTS.PAGE_CHANGE_SCROLL_BEFORE], firstDom: HTMLDivElement, lastDom: HTMLDivElement, length:
+        number, slidesToMove: NodeListOf<HTMLDivElement>, allSlides: HTMLDivElement[]) {
+
+        const nextSlide = allSlides[this.config.items],
+            isNextInvalid = !nextSlide?.classList.contains(CSS_CLASSES.slideNext);
+
+        if (isNextInvalid)
+            return;
+
+        this.#shiftStage(e, lastDom, length, false);
+
+        // active slides must be at beginning
+        slidesToMove.forEach(el => firstDom.before(el));
     }
 
     #getSlideDom = (index: number): HTMLDivElement | null =>

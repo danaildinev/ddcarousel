@@ -419,20 +419,29 @@ export default class Stage {
             this.#stage.style.transitionDuration = config.slideChangeDuration + "s";
         }
 
+        const isForward = (index > this.currentPage ||
+            (index === 0 && this.currentPage === this.totalPages)) &&
+            !(index === this.totalPages && this.currentPage === 0);
+
         this.currentPage = index;
 
         //update frontend
         this.#setActiveSlides();
 
-        this.#events.emit(EVENTS.PAGE_CHANGE_SCROLL_BEFORE, {
+        const scrollStatus = {
             currentPage: this.currentPage,
             slidesCount: this.getSlidesCount(),
-            currentTranslate: this.currentTranslate
-        });
+            currentTranslate: this.currentTranslate,
+            activeSlides: this.slidesActive,
+            isForward: isForward
+        };
+
+        this.#events.emit(EVENTS.PAGE_CHANGE_SCROLL_BEFORE, scrollStatus);
 
         this.#scrollToSlide(this.#getSlideDom(), enableAnim);
 
-        this.#events.emit(EVENTS.PAGE_CHANGE_SCROLL_AFTER);
+        scrollStatus.currentTranslate = this.currentTranslate;
+        this.#events.emit(EVENTS.PAGE_CHANGE_SCROLL_AFTER, scrollStatus);
 
         //change stage height if this options is enabled
         if (config.autoHeight)

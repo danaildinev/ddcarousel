@@ -20,6 +20,8 @@ export type CarouselEvents = {
         currentPage: number;
         slidesCount: number;
         currentTranslate: number
+        activeSlides: number[],
+        isForward: boolean,
     }
 
     [EVENTS.PAGE_CHANGE_INDEX]: PageChangePayload
