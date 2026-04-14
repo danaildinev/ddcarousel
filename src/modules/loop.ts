@@ -125,7 +125,7 @@ export default class Loop extends BaseModule {
     }
 
     #handleStartBoundaryShift(e: CarouselEvents[typeof EVENTS.PAGE_CHANGE_SCROLL_BEFORE], firstDom: HTMLDivElement, lastDom: HTMLDivElement, length:
-        number, slidesToMove: NodeListOf<HTMLDivElement>, allSlides: HTMLDivElement[]) {
+        number, slidesToMove: NodeListOf<HTMLDivElement>, allSlides: HTMLCollection) {
 
         const nextSlide = allSlides[this.config.items],
             isNextInvalid = !nextSlide?.classList.contains(CSS_CLASSES.slideNext);
