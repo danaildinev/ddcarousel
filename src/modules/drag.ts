@@ -155,13 +155,13 @@ export default class Drag extends BaseModule {
         }
 
         const isLeftDirection = this.#currentTouch > this.#origPosition;
-        const targetIndex = isLeftDirection ? this.#currentPage - 1 : this.#currentPage + 1;
+        const targetIndex = isLeftDirection ? "prev" : "next";
 
         // if out of bounds, scroll to original position
-        if (targetIndex < 0 || targetIndex >= this.#totalPages) {
+        /*if (targetIndex < 0 || targetIndex >= this.#totalPages) {
             this.#revertDrag();
             return;
-        }
+        }*/
 
         this.events.emit(EVENTS.PAGE_CHANGE_REQUEST, { index: targetIndex });
 
