@@ -32,6 +32,13 @@ export default class Loop extends BaseModule {
         this.events.on(EVENTS.PAGE_CHANGE_INDEX, this.#onPageChangeIndex);
         this.events.on(EVENTS.PAGE_CHANGE_SCROLL_BEFORE, this.#onChangePageScrollBefore);
 
+        const prevNextSlides = this.#calculatePrevAndNextSlides(this.status.activeSlides),
+            prev = prevNextSlides?.prev,
+            next = prevNextSlides?.next;
+
+        if (prev !== undefined && next !== undefined)
+            this.#markPrevAndNextSlides(prev, next);
+
         this.emitInitialized();
     }
 
@@ -59,23 +66,42 @@ export default class Loop extends BaseModule {
             e.handled = false;
     }
 
-    #onChangePageScrollBefore = (e: CarouselEvents[typeof EVENTS.PAGE_CHANGE_SCROLL_BEFORE]) => {
-        if (!this.#stage)
-            return;
-
-        const allSlides = this.#stage.children,
-            activeSlides = e.activeSlides,
+    #calculatePrevAndNextSlides(activeSlides: number[]) {
+        const totalSlides = this.status.totalSlides - 1,
             firstCurrentIndex = activeSlides[0],
             lastCurrentIndex = activeSlides[activeSlides.length - 1];
 
         if (firstCurrentIndex === undefined || lastCurrentIndex === undefined)
             return;
 
+        const prev = firstCurrentIndex - 1 < 0 ? totalSlides : firstCurrentIndex - 1,
+            next = lastCurrentIndex + 1 > totalSlides ? 0 : lastCurrentIndex + 1;
+
+        return { prev, next };
+    }
+
+    #markPrevAndNextSlides(prev: number, next: number) {
+        this.#clearSlidesForLoop();
+        this.#getSlideDom(prev)?.classList.add(CSS_CLASSES.slidePrev);
+        this.#getSlideDom(next)?.classList.add(CSS_CLASSES.slideNext);
+    }
+
+    #onChangePageScrollBefore = (e: CarouselEvents[typeof EVENTS.PAGE_CHANGE_SCROLL_BEFORE]) => {
+        if (!this.#stage)
+            return;
+
+        const prevNextSlides = this.#calculatePrevAndNextSlides(e.activeSlides),
+            prev = prevNextSlides?.prev,
+            next = prevNextSlides?.next;
+
+        if (prev === undefined || next === undefined)
+            return;
+
         const
-            totalSlides = e.slidesCount - 1,
+            activeSlides = e.activeSlides,
+            allSlides = this.#stage.children,
+            lastCurrentIndex = activeSlides[activeSlides.length - 1],
             slidesToMove = this.container.querySelectorAll<HTMLDivElement>(`.${CSS_CLASSES.item}.active`),
-            prev = firstCurrentIndex - 1 < 0 ? totalSlides : firstCurrentIndex - 1,
-            next = lastCurrentIndex + 1 > totalSlides ? 0 : lastCurrentIndex + 1,
             firstSlide = allSlides[0] as HTMLDivElement,
             lastSlide = allSlides[allSlides.length - 1] as HTMLDivElement,
             lastSlideId = Number(lastSlide.dataset[DATA.dataset.slide]),
@@ -94,10 +120,7 @@ export default class Loop extends BaseModule {
         else if (isAtStartBoundary && !isSlidingForward)
             this.#handleStartBoundaryShift(e, firstSlide, lastSlide, activeSlides.length, slidesToMove, allSlides);
 
-        // mark prev/next slides
-        this.#clearSlidesForLoop();
-        this.#getSlideDom(prev)?.classList.add(CSS_CLASSES.slidePrev);
-        this.#getSlideDom(next)?.classList.add(CSS_CLASSES.slideNext);
+        this.#markPrevAndNextSlides(prev, next);
     }
 
     #handleLastSlide(index: number, anchor: HTMLDivElement) {
