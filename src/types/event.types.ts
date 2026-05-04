@@ -53,6 +53,12 @@ export type CarouselEvents = {
     [EVENTS.DRAG_PRE_START]: {
         currentTranslate: number;
     };
+
+    [EVENTS.DRAG_DRAGGING]: {
+        currentTranslate: number;
+        delta: number;
+        direction: "left" | "right";
+    };
 }
 
 export type CarouselEventName = keyof CarouselEvents | string;

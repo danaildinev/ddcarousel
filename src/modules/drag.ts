@@ -20,6 +20,7 @@ export default class Drag extends BaseModule {
     #swipeDistance!: number;
     #currentTouch!: number;
     #currentTranslate!: number;
+    #lastTouch: number = 0;
 
     #currentPage!: number;
     #totalPages!: number;
@@ -120,6 +121,7 @@ export default class Drag extends BaseModule {
         this.#touchStartCords = this.#touchStartRawCords + -(this.#currentTranslate);
         this.#origPosition = this.#currentTranslate;
         this.#stayOnThisSlide = false;
+        this.#lastTouch = 0;
         this.events.emit(EVENTS.DRAG_START);
     }
 
@@ -132,6 +134,8 @@ export default class Drag extends BaseModule {
 
         const input = this.#getInput(e);
 
+        this.#lastTouch = this.#currentTouch;
+
         //disable transition to get more responsive dragging
         this.#stageDom.style.transitionDuration = this.config.swipeSmooth + "s";
 
@@ -143,7 +147,11 @@ export default class Drag extends BaseModule {
 
         //move slider until max swipe lenght is reached
         if (this.#swipeDistance <= this.config.touchMaxSlideDist) {
-            this.events.emit(EVENTS.DRAG_DRAGGING);
+            this.events.emit(EVENTS.DRAG_DRAGGING, {
+                currentTranslate: this.#currentTouch,
+                delta: this.#swipeDistance,
+                direction: this.#currentTouch < this.#lastTouch ? "left" : "right"
+            });
             scrollToPos(this.#stageDom, this.#currentTouch, this.config.vertical);
         } else {
             this.#stayOnThisSlide = true;
