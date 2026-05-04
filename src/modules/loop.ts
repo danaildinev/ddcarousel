@@ -30,6 +30,7 @@ export default class Loop extends BaseModule {
     }
 
     initialize() {
+        this.events.on(EVENTS.DRAG_PRE_START, this.#onDragPreStart);
         this.events.on(EVENTS.PAGE_CHANGE, this.#onPageChange);
         this.events.on(EVENTS.PAGE_CHANGE_INDEX, this.#onPageChangeIndex);
         this.events.on(EVENTS.PAGE_CHANGE_SCROLL_BEFORE, this.#onChangePageScrollBefore);
@@ -177,5 +178,38 @@ export default class Loop extends BaseModule {
     #clearSlidesForLoop() {
         this.container.querySelectorAll<HTMLDivElement>(`.${CSS_CLASSES.slidePrev}, .${CSS_CLASSES.slideNext}`)
             .forEach(e => e.classList.remove(CSS_CLASSES.slidePrev, CSS_CLASSES.slideNext));
+    }
+
+    #onDragPreStart = (e: CarouselEvents[typeof EVENTS.DRAG_PRE_START]) => {
+        let newTranslate = e.currentTranslate;
+        const
+            stageChilden = this.#stage.children,
+            arrayChildren = Array.from(stageChilden),
+            firstSlides = arrayChildren.slice(0, this.config.items) as HTMLDivElement[],
+            firstSlide = firstSlides[0] as HTMLDivElement,
+            lastSlides = arrayChildren.slice(stageChilden.length - this.config.items, stageChilden.length) as HTMLDivElement[],
+            lastSlide = lastSlides[lastSlides.length - 1] as HTMLDivElement;
+
+        if (firstSlide === undefined || lastSlide === undefined)
+            return;
+
+        const activeSet = new Set(this.#activeSlides),
+            isNearStart = firstSlides.every(slide => activeSet.has(Number(slide.dataset[DATA.dataset.slide]))),
+            isNearEnd = lastSlides.every(slide => activeSet.has(Number(slide.dataset[DATA.dataset.slide])));
+
+        if (isNearStart) {
+            lastSlides.forEach(slide => newTranslate -= slide.getBoundingClientRect().width);
+            firstSlide.before(...lastSlides);
+        } else if (isNearEnd) {
+            firstSlides.forEach(slide => newTranslate += slide.getBoundingClientRect().width);
+            lastSlide.after(...firstSlides);
+        }
+
+        this.events.emit(EVENTS.SLIDE_SCROLL, {
+            specifiedPosition: newTranslate,
+            animate: false,
+        });
+
+        e.currentTranslate = newTranslate;
     }
 }
