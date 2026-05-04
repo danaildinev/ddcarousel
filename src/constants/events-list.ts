@@ -24,6 +24,7 @@ export const EVENTS = {
     SLIDE_SCROLL: 'slide:scroll',
 
     // user interaction
+    DRAG_PRE_START: 'drag:start:pre',
     DRAG_START: 'drag:start',
     DRAG_DRAGGING: 'drag:dragging',
     DRAG_END: 'drag:end',

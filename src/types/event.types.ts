@@ -49,6 +49,10 @@ export type CarouselEvents = {
         animate: boolean;
         specifiedPosition: number;
     };
+
+    [EVENTS.DRAG_PRE_START]: {
+        currentTranslate: number;
+    };
 }
 
 export type CarouselEventName = keyof CarouselEvents | string;

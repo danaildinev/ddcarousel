@@ -102,6 +102,15 @@ export default class Drag extends BaseModule {
         if (e.pointerType === "mouse" && !this.config.mouseDrag)
             return;
 
+        const dragState = {
+            currentTranslate: this.#currentTranslate
+        };
+
+        this.events.emit(EVENTS.DRAG_PRE_START, dragState);
+
+        // read back modified value
+        this.#currentTranslate = dragState.currentTranslate;
+
         const startPoint = this.#getInput(e);
         if (startPoint == undefined)
             return;
