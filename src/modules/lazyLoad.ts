@@ -22,7 +22,8 @@ export default class LazyLoad extends BaseModule {
     }
 
     initialize(slidesActive?: number[]) {
-        slidesActive ??= this.status.activeSlides;
+        const status = this.getStatus();
+        slidesActive ??= status.activeSlides;
 
         if (!slidesActive)
             return;
@@ -33,7 +34,7 @@ export default class LazyLoad extends BaseModule {
                 return;
 
             for (var i = lastActiveIndex + 1; i <= lastActiveIndex + this.config.lazyPreloadSlides; i++)
-                if (i < this.status.totalSlides && slidesActive.indexOf(i) == -1)
+                if (i < status.totalSlides && slidesActive.indexOf(i) == -1)
                     slidesActive.push(i);
         }
 

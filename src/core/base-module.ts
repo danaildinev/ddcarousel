@@ -12,7 +12,7 @@ export abstract class BaseModule implements Module {
 
     protected config: CarouselConfig;
     protected events: Events;
-    protected status: CarouselStatus;
+    protected getStatus: () => CarouselStatus;
     protected container: HTMLDivElement;
 
     isInitialized: boolean = false;
@@ -20,7 +20,7 @@ export abstract class BaseModule implements Module {
     constructor(params: ModuleLoaderParams) {
         this.config = params.config.current;
         this.events = params.events;
-        this.status = params.status;
+        this.getStatus = params.getStatus;
 
         const containerDiv = document.querySelector<HTMLDivElement>(`${this.config.container}`);
         if (containerDiv === null)

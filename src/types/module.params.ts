@@ -5,5 +5,5 @@ import type { CarouselStatus } from "./carousel.types";
 export type ModuleLoaderParams = {
     config: Config,
     events: Events,
-    status: CarouselStatus
+    getStatus: () => CarouselStatus
 };

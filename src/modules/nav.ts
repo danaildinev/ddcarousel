@@ -19,8 +19,9 @@ export default class Nav extends BaseModule {
     constructor(params: ModuleLoaderParams) {
         super(params);
 
-        this.#currentPage = this.status.currentPage;
-        this.#totalPages = this.status.totalPages;
+        const status = this.getStatus();
+        this.#currentPage = status.currentPage;
+        this.#totalPages = status.totalPages;
 
         const containerDiv = document.querySelector<HTMLDivElement>(`${this.config.container}`);
         if (containerDiv === null)
@@ -40,7 +41,7 @@ export default class Nav extends BaseModule {
     initialize() {
         //this.#remove();
 
-        if (this.status.totalPages == 0)
+        if (this.getStatus().totalPages == 0)
             return;
 
         const navItems = document.createElement("div"),

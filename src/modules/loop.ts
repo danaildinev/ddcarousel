@@ -35,7 +35,7 @@ export default class Loop extends BaseModule {
         this.events.on(EVENTS.PAGE_CHANGE_INDEX, this.#onPageChangeIndex);
         this.events.on(EVENTS.PAGE_CHANGE_SCROLL_BEFORE, this.#onChangePageScrollBefore);
 
-        this.#activeSlides = this.status.activeSlides;
+        this.#activeSlides = this.getStatus().activeSlides;
 
         const prevNextSlides = this.#calculatePrevAndNextSlides(this.#activeSlides),
             prev = prevNextSlides?.prev,
@@ -76,7 +76,7 @@ export default class Loop extends BaseModule {
     }
 
     #calculatePrevAndNextSlides(activeSlides: number[]) {
-        const totalSlides = this.status.totalSlides - 1,
+        const totalSlides = this.getStatus().totalSlides - 1,
             firstCurrentIndex = activeSlides[0],
             lastCurrentIndex = activeSlides[activeSlides.length - 1];
 

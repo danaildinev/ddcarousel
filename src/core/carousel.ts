@@ -45,7 +45,7 @@ export default class Carousel {
         this.#moduleLoader = new ModuleLoader({
             config: this.#config,
             events: this.#events,
-            status: this.getStatus()
+            getStatus: this.getStatus
         });
         this.#moduleLoader.loadAll();
         this.#events.on(EVENTS.CONFIG_CHANGED, this.#moduleLoader.toggleAll);
@@ -109,7 +109,7 @@ export default class Carousel {
         (this.module(ModuleName.UrlNav) as UrlNav)?.goToUrl(name, enabmeAnim);
     }
 
-    getStatus(): CarouselStatus {
+    getStatus = (): CarouselStatus => {
         return {
             created: this.#initialized !== undefined,
             currentPage: this.#stage.currentPage,

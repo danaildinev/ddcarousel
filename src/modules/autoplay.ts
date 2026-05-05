@@ -22,7 +22,7 @@ export default class Autoplay extends BaseModule {
             throw error("Autoplay module won't initialize! Stage DOM was not found!");
         this.#stage = stage;
 
-        this.#currentPage = this.status.currentPage;
+        this.#currentPage = this.getStatus().currentPage;
 
         this.events.on(EVENTS.PAGE_CHANGE, this.#onChangePage);
 
@@ -59,7 +59,7 @@ export default class Autoplay extends BaseModule {
             return;
 
         this.#currentPage = e.currentPage;
-        if (this.#currentPage < this.status.totalPages) {
+        if (this.#currentPage < this.getStatus().totalPages) {
             this.start();
         }
         else {
@@ -74,7 +74,7 @@ export default class Autoplay extends BaseModule {
         if (!this.config.autoplay)
             return;
 
-        if (this.#currentPage == this.status.totalPages)
+        if (this.#currentPage == this.getStatus().totalPages)
             return;
 
         if (this.#autoPlay !== undefined)
@@ -93,7 +93,7 @@ export default class Autoplay extends BaseModule {
         this.events.emit(EVENTS.PAGE_CHANGE_REQUEST, { index: "next" });
         this.#restartProgressBar();
 
-        if (this.#currentPage == this.status.totalPages) {
+        if (this.#currentPage == this.getStatus().totalPages) {
             clearInterval(this.#autoPlay);
             this.#toggleProgressBar(false);
         }

@@ -18,7 +18,7 @@ export default class Dots extends BaseModule {
     constructor(params: ModuleLoaderParams) {
         super(params);
 
-        this.#currentPage = this.status.currentPage;
+        this.#currentPage = this.getStatus().currentPage;
 
         this.events.on(EVENTS.PAGE_CHANGE, this.#onChangePage);
 
@@ -30,7 +30,8 @@ export default class Dots extends BaseModule {
     }
 
     initialize() {
-        if (this.status.totalPages == 0)
+        const status = this.getStatus();
+        if (status.totalPages == 0)
             return;
 
         const dotsElements = document.createElement("div");
@@ -38,9 +39,9 @@ export default class Dots extends BaseModule {
 
         let dotsCount;
         if (this.config.items > 1) {
-            dotsCount = this.config.centerSlide ? this.status.totalSlides : this.status.totalPages + 1;
+            dotsCount = this.config.centerSlide ? status.totalSlides : status.totalPages + 1;
         } else {
-            dotsCount = this.status.totalSlides;
+            dotsCount = status.totalSlides;
         }
 
         for (var i = 0; i < dotsCount; i++) {
