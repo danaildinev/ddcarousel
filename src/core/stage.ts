@@ -330,34 +330,35 @@ export default class Stage {
     }
 
     #updateContainerHeight() {
-        if (this.#slidesHeights == null)
+        const heights = this.#getVisibleSlides()
+            .map(i => this.#slidesHeights[i])
+            .filter((height): height is number => height !== undefined);
+
+        if (heights.length === 0)
             return;
 
-        if (this.#config.items == 1) {
-            this.#container.style.height = this.#slidesHeights[this.currentPage] + "px";
-        } else {
-            const heights = [];
+        this.#container.style.height = Math.max(...heights) + "px";
+    }
 
-            const startSlide = this.slidesActive[0];
-            if (startSlide === undefined)
-                return;
+    #getVisibleSlides(): number[] {
+        const { items, centerSlide } = this.#config;
 
-            const slidesLength = this.slidesActive[this.slidesActive.length - 1];
-            if (slidesLength === undefined)
-                return;
+        if (!centerSlide)
+            return this.slidesActive;
 
-            //get specified slides from global array with heights and then get the highest of it
-            for (let i = startSlide; i <= slidesLength; i++) {
-                const slide = this.#slidesHeights[i];
-                if (slide === undefined) {
-                    console.warn(`Slide height of id ${i} not found!`);
-                    continue;
-                }
-                heights.push(slide);
-            }
+        const center = this.slidesActive[0];
+        if (center === undefined)
+            return [];
 
-            this.#container.style.height = Math.max(...heights) + "px";
-        }
+        const half = Math.floor(items / 2),
+            start = Math.max(0, center - half),
+            end = Math.min(this.#slidesHeights.length - 1, center + half);
+
+        const slides = [];
+        for (let i = start; i <= end; i++)
+            slides.push(i);
+
+        return slides;
     }
 
     #onStageTransitionEnd = () => this.#events.emit(EVENTS.TRANSITION_END);
