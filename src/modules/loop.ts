@@ -44,6 +44,8 @@ export default class Loop extends BaseModule {
         if (prev !== undefined && next !== undefined)
             this.#markPrevAndNextSlides(prev, next);
 
+        this.#reorderForLoop();
+
         this.emitInitialized();
     }
 
@@ -181,35 +183,51 @@ export default class Loop extends BaseModule {
     }
 
     #onDragPreStart = (e: CarouselEvents[typeof EVENTS.DRAG_PRE_START]) => {
-        let newTranslate = e.currentTranslate;
+        const translate = this.#reorderForLoop();
+        e.currentTranslate = translate;
+    }
+
+    #reorderForLoop(): number {
+        const status = this.getStatus();
+        let stageTranslate = status.currentTranslate;
+
         const
             stageChilden = this.#stage.children,
             arrayChildren = Array.from(stageChilden),
-            firstSlides = arrayChildren.slice(0, this.config.items) as HTMLDivElement[],
+            cloneSlidesCount = this.config.items * (this.config.centerSlide ? 2 : 1),
+            firstSlides = arrayChildren.slice(0, cloneSlidesCount) as HTMLDivElement[],
             firstSlide = firstSlides[0] as HTMLDivElement,
-            lastSlides = arrayChildren.slice(stageChilden.length - this.config.items, stageChilden.length) as HTMLDivElement[],
+            lastSlides = arrayChildren.slice(stageChilden.length - cloneSlidesCount, stageChilden.length) as HTMLDivElement[],
             lastSlide = lastSlides[lastSlides.length - 1] as HTMLDivElement;
 
         if (firstSlide === undefined || lastSlide === undefined)
-            return;
+            return stageTranslate;
 
-        const activeSet = new Set(this.#activeSlides),
-            isNearStart = firstSlides.every(slide => activeSet.has(Number(slide.dataset[DATA.dataset.slide]))),
-            isNearEnd = lastSlides.every(slide => activeSet.has(Number(slide.dataset[DATA.dataset.slide])));
+        const activeSet = new Set(this.#activeSlides);
+        let isNearStart, isNearEnd;
+
+        const getSlideId = (el: HTMLDivElement) => Number(el.dataset[DATA.dataset.slide]);
+        if (this.config.centerSlide) {
+            isNearStart = firstSlides.some(s => activeSet.has(getSlideId(s)));
+            isNearEnd = lastSlides.some(s => activeSet.has(getSlideId(s)));
+        } else {
+            isNearStart = firstSlides.every(s => activeSet.has(getSlideId(s)));
+            isNearEnd = lastSlides.every(s => activeSet.has(getSlideId(s)));
+        }
 
         if (isNearStart) {
-            lastSlides.forEach(slide => newTranslate -= slide.getBoundingClientRect().width);
+            lastSlides.forEach(slide => stageTranslate -= slide.getBoundingClientRect().width);
             firstSlide.before(...lastSlides);
         } else if (isNearEnd) {
-            firstSlides.forEach(slide => newTranslate += slide.getBoundingClientRect().width);
+            firstSlides.forEach(slide => stageTranslate += slide.getBoundingClientRect().width);
             lastSlide.after(...firstSlides);
         }
 
         this.events.emit(EVENTS.SLIDE_SCROLL, {
-            specifiedPosition: newTranslate,
+            specifiedPosition: stageTranslate,
             animate: false,
         });
 
-        e.currentTranslate = newTranslate;
+        return stageTranslate;
     }
 }
