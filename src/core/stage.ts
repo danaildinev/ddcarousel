@@ -341,7 +341,7 @@ export default class Stage {
     }
 
     #getVisibleSlides(): number[] {
-        const { items, centerSlide } = this.#config;
+        const { items, centerSlide, loop } = this.#config;
 
         if (!centerSlide)
             return this.slidesActive;
@@ -357,6 +357,18 @@ export default class Stage {
         const slides = [];
         for (let i = start; i <= end; i++)
             slides.push(i);
+
+        if (loop) {
+            const totalSlides = this.#slides.length - 1,
+                currentPage = this.currentPage;
+            if (currentPage < half) {
+                for (let i = totalSlides - (half - currentPage); i < totalSlides; i++)
+                    slides.push(i);
+            } else if (currentPage + half > totalSlides) {
+                for (let i = 0; i < half - (totalSlides - currentPage); i++)
+                    slides.push(i);
+            }
+        }
 
         return slides;
     }
