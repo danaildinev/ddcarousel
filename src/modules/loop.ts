@@ -194,7 +194,7 @@ export default class Loop extends BaseModule {
         const
             stageChilden = this.#stage.children,
             arrayChildren = Array.from(stageChilden),
-            cloneSlidesCount = this.config.items * (this.config.centerSlide ? 2 : 1),
+            cloneSlidesCount = this.config.items,
             firstSlides = arrayChildren.slice(0, cloneSlidesCount) as HTMLDivElement[],
             firstSlide = firstSlides[0] as HTMLDivElement,
             lastSlides = arrayChildren.slice(stageChilden.length - cloneSlidesCount, stageChilden.length) as HTMLDivElement[],
