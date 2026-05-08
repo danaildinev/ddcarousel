@@ -140,8 +140,8 @@ export default class Stage {
         this.#resizeThrottled = false;
 
         window.removeEventListener("keydown", this.#keyboardHandler);
-        this.#events.off(EVENTS.PAGE_CHANGE_REQUEST, this.#onPageChange);
-        this.#events.off(EVENTS.PAGE_CHANGE, this.#onPageChange);
+        this.#events.off(EVENTS.PAGE_CHANGE_REQUEST, this.#onPageChanged);
+        this.#events.off(EVENTS.PAGE_CHANGED, this.#onPageChanged);
         this.#resizeObserver?.disconnect();
     }
 
@@ -375,7 +375,7 @@ export default class Stage {
 
     #onStageTransitionEnd = () => this.#events.emit(EVENTS.TRANSITION_END);
 
-    #onPageChange = (e: CarouselEvents[typeof EVENTS.PAGE_CHANGE]) => this.#changePage(e.currentPage);
+    #onPageChanged = (e: CarouselEvents[typeof EVENTS.PAGE_CHANGED]) => this.#changePage(e.currentPage);
 
     #onPageChangeRequest = (e: CarouselEvents[typeof EVENTS.PAGE_CHANGE_REQUEST]) => {
         const index = this.#processRequestPageIndex(e.index);
@@ -462,7 +462,7 @@ export default class Stage {
 
         //fire change trigger
         if (origPage != this.currentPage) {
-            this.#events.emit(EVENTS.PAGE_CHANGE, {
+            this.#events.emit(EVENTS.PAGE_CHANGED, {
                 currentPage: this.currentPage,
                 currentTranslate: this.currentTranslate,
                 slidesActive: this.slidesActive

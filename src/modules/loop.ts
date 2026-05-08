@@ -31,7 +31,7 @@ export default class Loop extends BaseModule {
 
     initialize() {
         this.events.on(EVENTS.DRAG_PRE_START, this.#onDragPreStart);
-        this.events.on(EVENTS.PAGE_CHANGE, this.#onPageChange);
+        this.events.on(EVENTS.PAGE_CHANGED, this.#onPageChanged);
         this.events.on(EVENTS.PAGE_CHANGE_INDEX, this.#onPageChangeIndex);
         this.events.on(EVENTS.PAGE_CHANGE_SCROLL_BEFORE, this.#onChangePageScrollBefore);
 
@@ -58,7 +58,7 @@ export default class Loop extends BaseModule {
         this.emitDestroyed();
     }
 
-    #onPageChange = (e: CarouselEvents[typeof EVENTS.PAGE_CHANGE]) => {
+    #onPageChanged = (e: CarouselEvents[typeof EVENTS.PAGE_CHANGED]) => {
         this.#activeSlides = e.slidesActive;
     }
 
@@ -187,7 +187,7 @@ export default class Loop extends BaseModule {
         e.currentTranslate = translate;
     }
 
-    #reorderForLoop(): number {
+    #reorderForLoop(emit: boolean = true): number {
         const status = this.getStatus();
         let stageTranslate = status.currentTranslate;
 
@@ -223,10 +223,12 @@ export default class Loop extends BaseModule {
             lastSlide.after(...firstSlides);
         }
 
-        this.events.emit(EVENTS.SLIDE_SCROLL, {
-            specifiedPosition: stageTranslate,
-            animate: false,
-        });
+        if (emit) {
+            this.events.emit(EVENTS.SLIDE_SCROLL, {
+                specifiedPosition: stageTranslate,
+                animate: false,
+            });
+        }
 
         return stageTranslate;
     }

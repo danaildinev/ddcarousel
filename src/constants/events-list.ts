@@ -17,7 +17,7 @@ export const EVENTS = {
     STAGE_CREATED: 'stage:created',
     STAGE_RESIZED: 'stage:resized',
     PAGE_CHANGE_REQUEST: 'page:change:request',
-    PAGE_CHANGE: 'page:change',
+    PAGE_CHANGED: 'page:changed',
     PAGE_CHANGE_INDEX: 'page:changed:index',
     PAGE_CHANGE_SCROLL_BEFORE: 'page:change:scroll:before',
     PAGE_CHANGE_SCROLL_AFTER: 'page:change:scroll:after',
@@ -38,7 +38,7 @@ export const LEGACY_EVENT_MAP: Record<string, string> = {
     onDragging: EVENTS.DRAG_DRAGGING,
     onDragged: EVENTS.DRAG_END,
     onTransitionend: EVENTS.TRANSITION_END,
-    onChanged: EVENTS.PAGE_CHANGE,
+    onChanged: EVENTS.PAGE_CHANGED,
     onResized: EVENTS.STAGE_RESIZED,
     onDestroy: EVENTS.DESTROY,
     onDestroyed: EVENTS.DESTROYED

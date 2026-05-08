@@ -57,7 +57,7 @@ export default class Drag extends BaseModule {
 
     #attachEvents() {
         const carouselStatus = this.getStatus();
-        const status: CarouselEvents[typeof EVENTS.PAGE_CHANGE] = {
+        const status: CarouselEvents[typeof EVENTS.PAGE_CHANGED] = {
             currentTranslate: carouselStatus.currentTranslate,
             currentPage: carouselStatus.currentPage,
             slidesActive: []
@@ -69,7 +69,7 @@ export default class Drag extends BaseModule {
         window.addEventListener("pointermove", this.#dragMove);
         window.addEventListener("pointerup", this.#dragEnd);
 
-        this.events.on(EVENTS.PAGE_CHANGE, this.#updateProps);
+        this.events.on(EVENTS.PAGE_CHANGED, this.#updateProps);
     }
 
     #detachEvents() {
@@ -77,12 +77,12 @@ export default class Drag extends BaseModule {
         window.removeEventListener("pointermove", this.#dragMove);
         window.removeEventListener("pointerup", this.#dragEnd);
 
-        this.events.off(EVENTS.PAGE_CHANGE, this.#updateProps);
+        this.events.off(EVENTS.PAGE_CHANGED, this.#updateProps);
     }
 
     #getInput = (e: PointerEvent) => this.config.vertical ? e.clientY : e.clientX;
 
-    #updateProps = (e: CarouselEvents[typeof EVENTS.PAGE_CHANGE]) => {
+    #updateProps = (e: CarouselEvents[typeof EVENTS.PAGE_CHANGED]) => {
         this.#currentTranslate = e.currentTranslate;
         this.#currentPage = e.currentPage;
     }

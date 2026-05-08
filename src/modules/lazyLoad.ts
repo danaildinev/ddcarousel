@@ -12,7 +12,7 @@ export default class LazyLoad extends BaseModule {
     constructor(params: ModuleLoaderParams) {
         super(params);
 
-        this.events.on(EVENTS.PAGE_CHANGE, this.#onChangePage);
+        this.events.on(EVENTS.PAGE_CHANGED, this.#onChangePaged);
 
         this.emitCreated();
     }
@@ -47,11 +47,11 @@ export default class LazyLoad extends BaseModule {
     }
 
     destroy() {
-        this.events.off(EVENTS.PAGE_CHANGE, this.#onChangePage);
+        this.events.off(EVENTS.PAGE_CHANGED, this.#onChangePaged);
         this.emitDestroyed();
     }
 
-    #onChangePage = (e: CarouselEvents[typeof EVENTS.PAGE_CHANGE]) => {
+    #onChangePaged = (e: CarouselEvents[typeof EVENTS.PAGE_CHANGED]) => {
         if (!this.shouldInitialize)
             return;
 
