@@ -147,7 +147,7 @@ export default class Drag extends BaseModule {
         this.#currentTouch = input - this.#touchStartCords;
 
         //move slider until max swipe lenght is reached
-        if (this.#swipeDistance <= this.config.touchMaxSlideDist) {
+        if (this.config.touchMaxSlideDist < 1 || this.#swipeDistance <= this.config.touchMaxSlideDist) {
             this.events.emit(EVENTS.DRAG_DRAGGING, {
                 currentTranslate: this.#currentTouch,
                 delta: this.#swipeDistance,
