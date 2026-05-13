@@ -1,5 +1,5 @@
 import { EVENTS, LEGACY_EVENT_MAP } from "../constants/events-list";
-import type { CarouselConfig } from "../types/carousel.types";
+import { DragSnapMode, type CarouselConfig } from "../types/carousel.types";
 import type { Events } from "./events";
 
 export class Config {
@@ -49,6 +49,7 @@ export class Config {
             autoplayProgress: true,
             autoplayPauseOnTabHidden: true,
             touchDrag: true,
+            dragSnapMode: DragSnapMode.Swipe,
             mouseDrag: true,
             keyboardNavigation: false,
             centerSlide: false,
@@ -70,6 +71,9 @@ export class Config {
 
         if (this.current.items === 0)
             this.current.itemPerPage = false;
+
+        if (this.current.dragSnapMode === DragSnapMode.Closest)
+            this.current.centerSlide = true;
 
         for (const [key, value] of Object.entries(targetConfig)) {
             if (typeof value !== "function")

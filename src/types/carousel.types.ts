@@ -23,6 +23,7 @@ export type CarouselConfig = {
     autoplayProgress: boolean;
     autoplayPauseOnTabHidden: boolean;
     touchDrag: boolean;
+    dragSnapMode: DragSnapMode,
     mouseDrag: boolean;
     keyboardNavigation: boolean;
     centerSlide: boolean;
@@ -49,4 +50,9 @@ export type CarouselStatus = {
 
 export type CarouselStatusConfig = {
     current?: CarouselConfig
+}
+
+export enum DragSnapMode {
+    Swipe = "swipe",
+    Closest = "closest"
 }

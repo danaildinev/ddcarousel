@@ -6,6 +6,7 @@ import { ModuleName } from "../core/module-names";
 import type { CarouselEvents } from "../types/event.types";
 import { error } from "../utils/error-handler";
 import { scrollToPos } from "../utils/scroll";
+import { DragSnapMode } from "../types/carousel.types";
 
 export default class Drag extends BaseModule {
     name: ModuleName = ModuleName.Drag;
@@ -167,21 +168,26 @@ export default class Drag extends BaseModule {
         this.events.emit(EVENTS.DRAG_END);
 
         // if swipe threshold is not enough, scroll to original position
-        if (this.#swipeDistance < this.config.touchSwipeThreshold || this.#stayOnThisSlide) {
+        if (this.config.dragSnapMode === DragSnapMode.Swipe && (this.#swipeDistance < this.config.touchSwipeThreshold || this.#stayOnThisSlide)) {
             this.#revertDrag();
             return;
         }
 
-        const isLeftDirection = this.#currentTouch > this.#origPosition;
-        const targetIndex = isLeftDirection ? "prev" : "next";
+        if (this.config.dragSnapMode === DragSnapMode.Closest) {
+            const closestIndex = this.#getClosestSlideIndex();
+            this.events.emit(EVENTS.PAGE_CHANGE_REQUEST, { index: closestIndex });
+        } else {
+            const isLeftDirection = this.#currentTouch > this.#origPosition;
+            const targetIndex = isLeftDirection ? "prev" : "next";
 
-        // if out of bounds, scroll to original position
-        /*if (targetIndex < 0 || targetIndex >= this.#totalPages) {
-            this.#revertDrag();
-            return;
-        }*/
+            // if out of bounds, scroll to original position
+            /*if (targetIndex < 0 || targetIndex >= this.#totalPages) {
+                this.#revertDrag();
+                return;
+            }*/
 
-        this.events.emit(EVENTS.PAGE_CHANGE_REQUEST, { index: targetIndex });
+            this.events.emit(EVENTS.PAGE_CHANGE_REQUEST, { index: targetIndex });
+        }
 
         this.#resetTransitionDuration();
         this.#isDragging = false;
@@ -194,4 +200,33 @@ export default class Drag extends BaseModule {
     }
 
     #resetTransitionDuration = () => this.#stageDom.style.transitionDuration = this.config.slideChangeDuration + "s";
+
+    #getClosestSlideIndex() {
+        const slides = Array.from(this.#stageDom.children) as HTMLElement[],
+            container = this.#stageDom.parentElement;
+
+        if (!container)
+            return this.#currentPage;
+
+        const { vertical } = this.config,
+            viewportSize = vertical ? container.clientHeight : container.clientWidth,
+            viewportCenter = -this.#currentTouch + viewportSize / 2;
+
+        let closestIndex = 0,
+            closestDistToCenter = Infinity;
+
+        slides.forEach((slide, index) => {
+            const slideStart = vertical ? slide.offsetTop : slide.offsetLeft,
+                slideSize = vertical ? slide.offsetHeight : slide.offsetWidth,
+                slideCenter = slideStart + slideSize / 2,
+                distance = Math.abs(slideCenter - viewportCenter);
+
+            if (distance < closestDistToCenter) {
+                closestDistToCenter = distance;
+                closestIndex = index;
+            }
+        });
+
+        return closestIndex;
+    }
 }
