@@ -7,6 +7,7 @@ import type { CarouselEvents } from "../types/event.types";
 import { error } from "../utils/error-handler";
 import { scrollToPos } from "../utils/scroll";
 import { DragSnapMode } from "../types/carousel.types";
+import { DATA } from "../constants/data-attrs";
 
 export default class Drag extends BaseModule {
     name: ModuleName = ModuleName.Drag;
@@ -223,7 +224,7 @@ export default class Drag extends BaseModule {
 
             if (distance < closestDistToCenter) {
                 closestDistToCenter = distance;
-                closestIndex = index;
+                closestIndex = Number(slide.dataset[DATA.dataset.slide]);
             }
         });
 
