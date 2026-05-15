@@ -55,12 +55,12 @@ export default class Nav extends BaseModule {
             nextBtn = document.createElement("div");
 
         prevBtn.classList.add(CSS_CLASSES.prev);
-        prevBtn.innerHTML = this.config.labelNavPrev;
+        prevBtn.innerHTML = this.config.labelNavPrev ?? this.config.navPrevContent;
         prevBtn.role = "button";
         prevBtn.addEventListener("click", () => this.events.emit(EVENTS.PAGE_CHANGE_REQUEST, { index: this.#currentPage - 1 }));
 
         nextBtn.classList.add(CSS_CLASSES.next);
-        nextBtn.innerHTML = this.config.labelNavNext;
+        nextBtn.innerHTML = this.config.labelNavNext ?? this.config.navNextContent;
         nextBtn.role = "button";
         nextBtn.addEventListener("click", () => this.events.emit(EVENTS.PAGE_CHANGE_REQUEST, { index: this.#currentPage + 1 }));
 

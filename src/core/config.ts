@@ -30,6 +30,8 @@ export class Config {
         return {
             container: `.ddcarousel`,
             nav: false,
+            navPrevContent: Nav.chevronSvg,
+            navNextContent: Nav.chevronSvg,
             dots: true,
             autoHeight: true,
             fullWidth: true,
@@ -59,8 +61,8 @@ export class Config {
             resizeRefresh: 200,
             swipeSmooth: 0,
             slideChangeDuration: 0.5,
-            labelNavPrev: Nav.chevronSvg,
-            labelNavNext: Nav.chevronSvg
+            labelNavPrev: null,
+            labelNavNext: null
         }
     }
 

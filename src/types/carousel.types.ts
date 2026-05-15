@@ -3,6 +3,8 @@ import type { BaseModule } from "../core/base-module";
 export type CarouselConfig = {
     container: string;
     nav: boolean;
+    navPrevContent: string;
+    navNextContent: string;
     dots: boolean;
     autoHeight: boolean;
     fullWidth: boolean;
@@ -32,8 +34,8 @@ export type CarouselConfig = {
     resizeRefresh: number;
     swipeSmooth: number;
     slideChangeDuration: number;
-    labelNavPrev: string;
-    labelNavNext: string;
+    labelNavPrev: string | null;
+    labelNavNext: string | null;
 }
 
 export type CarouselStatus = {
