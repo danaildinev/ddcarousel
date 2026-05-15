@@ -1,6 +1,7 @@
 :root {
 	--ddcarousel-nav-color: #333;
 	--ddcarousel-nav-font-size: 1rem;
+	--ddcarousel-nav-margin: -32px;
 	--ddcarousel-dots-color: #ccc;
 	--ddcarousel-autoplay-bar-color: #007ec2;
 	--ddcarousel-autoplay-animation: ddcarousel-autoplay-progress;
@@ -53,18 +54,6 @@
 			user-select: none;
 		}
 	}
-	button {
-		background: transparent;
-		border: 0;
-		font-size: 100%;
-		cursor: pointer;
-		margin: 0;
-		padding: 4px 8px;
-		&:focus,
-		&:active {
-			outline: 0;
-		}
-	}
 	&-dots {
 		text-align: center;
 		margin: 16px 0;
@@ -82,17 +71,25 @@
 			}
 		}
 	}
-	&-nav {
-		text-align: center;
-		margin: 16px 0;
-		button {
-			color: var(--ddcarousel-nav-color);
-			font-size: var(--ddcarousel-nav-font-size);
-		}
-		.ddcarousel-prev.inactive,
-		.ddcarousel-next.inactive {
+	&-prev,
+	&-next {
+		position: absolute;
+		top: 50%;
+		transform: translateY(-50%);
+		color: var(--ddcarousel-nav-color);
+		font-size: var(--ddcarousel-nav-font-size);
+		line-height: 0;
+		cursor: pointer;
+		&.inactive {
 			visibility: hidden;
 		}
+	}
+	&-prev {
+		left: var(--ddcarousel-nav-margin);
+	}
+	&-next {
+		right: var(--ddcarousel-nav-margin);
+		transform: translateY(-50%) rotate(180deg);
 	}
 	&-urls {
 		margin: 16px 0;

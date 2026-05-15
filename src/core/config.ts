@@ -1,4 +1,5 @@
 import { EVENTS, LEGACY_EVENT_MAP } from "../constants/events-list";
+import Nav from "../modules/nav";
 import { DragSnapMode, type CarouselConfig } from "../types/carousel.types";
 import type { Events } from "./events";
 
@@ -58,8 +59,8 @@ export class Config {
             resizeRefresh: 200,
             swipeSmooth: 0,
             slideChangeDuration: 0.5,
-            labelNavPrev: "&#x2190;",
-            labelNavNext: "&#x2192;"
+            labelNavPrev: Nav.chevronSvg,
+            labelNavNext: Nav.chevronSvg
         }
     }
 
