@@ -38,10 +38,9 @@ export default class UrlNav extends BaseModule {
     }
 
     initialize() {
-        let urlNavItems = document.createElement("div"),
-            list = document.createElement("ul");
+        let list = document.createElement("ul");
 
-        urlNavItems.classList.add(CSS_CLASSES.urls);
+        list.classList.add(CSS_CLASSES.urls);
         for (const slide of Object.values(this.#status.slides)) {
             const child = slide.firstChild as HTMLElement;
             if (!child)
@@ -66,8 +65,6 @@ export default class UrlNav extends BaseModule {
             list.appendChild(item);
         }
 
-        urlNavItems.appendChild(list);
-
         let appendContainer = this.#container;
         if (this.#config.urlNavContainer) {
             const container = document.querySelector<HTMLDivElement>(this.#config.urlNavContainer);
@@ -77,7 +74,7 @@ export default class UrlNav extends BaseModule {
                 console.warn(`Error appending url navigation: ${this.#config.urlNavContainer} not found!`);
         }
 
-        appendContainer.appendChild(urlNavItems);
+        appendContainer.appendChild(list);
         this.#urlNavContainer = appendContainer;
 
         this.emitInitialized();
