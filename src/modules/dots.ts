@@ -45,9 +45,10 @@ export default class Dots extends BaseModule {
         }
 
         for (var i = 0; i < dotsCount; i++) {
-            let dot = document.createElement("button");
+            let dot = document.createElement("span");
             dot.classList.add(CSS_CLASSES.dot);
             dot.dataset[DATA.dataset.slide] = i.toString();
+            dot.role = "button";
             dot.addEventListener("click", () => this.events.emit(EVENTS.PAGE_CHANGE_REQUEST, { index: dot.dataset[DATA.dataset.slide] }));
             dotsElements.appendChild(dot);
         }
