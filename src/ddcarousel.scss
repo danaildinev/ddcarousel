@@ -2,7 +2,7 @@
 	--ddcarousel-nav-color: #333;
 	--ddcarousel-nav-font-size: 1rem;
 	--ddcarousel-nav-margin: 8px;
-	--ddcarousel-dots-bottom: 32px;
+	--ddcarousel-pagination-bottom: 32px;
 	--ddcarousel-dot-size: 12px;
 	--ddcarousel-dot-spacing: 5px;
 	--ddcarousel-dot-radius: 50%;
@@ -59,13 +59,13 @@
 			user-select: none;
 		}
 	}
-	&-dots {
+	&-pagination {
 		display: flex;
 		justify-content: center;
 		position: relative;
 		left: 50%;
 		transform: translateX(-50%);
-		bottom: var(--ddcarousel-dots-bottom);
+		bottom: var(--ddcarousel-pagination-bottom);
 		width: fit-content;
 		.ddcarousel-dot {
 			display: inline-block;

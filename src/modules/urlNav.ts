@@ -23,7 +23,7 @@ export default class UrlNav extends BaseModule {
 
         this.#config = params.config.current;
         this.#events = params.events;
-        this.#status = params.status;
+        this.#status = params.getStatus();
 
         const container = document.querySelector<HTMLDivElement>(`${this.#config.container}`);
         if (container === null)

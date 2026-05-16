@@ -1,6 +1,6 @@
 export enum ModuleName {
     Autoplay = "autoplay",
-    Dots = "dots",
+    Pagination = "pagination",
     Drag = "drag",
     Lazyload = "lazyLoad",
     Loop = "loop",

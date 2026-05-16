@@ -8,12 +8,12 @@ import type { ModuleLoaderParams } from "../types/module.params";
 import type { CarouselEvents } from "../types/event.types";
 
 export default class Dots extends BaseModule {
-    name: ModuleName = ModuleName.Dots;
+    name: ModuleName = ModuleName.Pagination;
 
-    #dotsContainer!: HTMLDivElement;
+    #paginationContainer!: HTMLDivElement;
     #currentPage: number;
 
-    #activeDotClass = "active";
+    #activeClass = "active";
 
     constructor(params: ModuleLoaderParams) {
         super(params);
@@ -26,7 +26,7 @@ export default class Dots extends BaseModule {
     }
 
     get shouldInitialize() {
-        return this.config.dots;
+        return this.config.dots ?? this.config.pagination;
     }
 
     initialize() {
@@ -34,8 +34,8 @@ export default class Dots extends BaseModule {
         if (status.totalPages == 0)
             return;
 
-        const dotsElements = document.createElement("div");
-        dotsElements.classList.add(CSS_CLASSES.dots);
+        const pagination = document.createElement("div");
+        pagination.classList.add(CSS_CLASSES.pagination, CSS_CLASSES.dots);
 
         let dotsCount;
         if (this.config.items > 1) {
@@ -50,16 +50,16 @@ export default class Dots extends BaseModule {
             dot.dataset[DATA.dataset.slide] = i.toString();
             dot.role = "button";
             dot.addEventListener("click", () => this.events.emit(EVENTS.PAGE_CHANGE_REQUEST, { index: dot.dataset[DATA.dataset.slide] }));
-            dotsElements.appendChild(dot);
+            pagination.appendChild(dot);
         }
 
-        this.container.appendChild(dotsElements);
+        this.container.appendChild(pagination);
 
-        const dotsContainer = this.container.querySelector<HTMLDivElement>(`.${CSS_CLASSES.dots}`);
-        if (dotsContainer == null)
-            throw error("Dots container is not found!");
+        const paginationContainer = this.container.querySelector<HTMLDivElement>(`.${CSS_CLASSES.dots}`);
+        if (paginationContainer == null)
+            throw error("Pagination container is not found!");
 
-        this.#dotsContainer = dotsContainer;
+        this.#paginationContainer = paginationContainer;
 
         this.#setActiveDot();
 
@@ -69,7 +69,7 @@ export default class Dots extends BaseModule {
     destroy() {
         this.events.off(EVENTS.PAGE_CHANGED, this.#onChangePaged);
 
-        this.#dotsContainer?.remove();
+        this.#paginationContainer?.remove();
         this.emitDestroyed();
     }
 
@@ -85,14 +85,14 @@ export default class Dots extends BaseModule {
     }
 
     #setActiveDot() {
-        let active = this.container.querySelector(`.${CSS_CLASSES.dot}[${DATA.attrs.slide}].` + this.#activeDotClass);
+        let active = this.container.querySelector(`.${CSS_CLASSES.dot}[${DATA.attrs.slide}].` + this.#activeClass);
         if (active != null)
-            active.classList.remove(this.#activeDotClass);
+            active.classList.remove(this.#activeClass);
 
         active = this.container.querySelector(`.${CSS_CLASSES.dot}[${DATA.attrs.slide}="${this.#currentPage}"]`);
         if (active == null)
             return;
 
-        active.classList.add(this.#activeDotClass);
+        active.classList.add(this.#activeClass);
     }
 }
