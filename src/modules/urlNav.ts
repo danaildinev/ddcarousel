@@ -15,8 +15,8 @@ export default class UrlNav extends BaseModule {
     #config: CarouselConfig;
     #status: CarouselStatus;
 
-    #container: HTMLDivElement;
-    #urlNavContainer!: HTMLDivElement;
+    #container: HTMLElement;
+    #urlNavContainer!: HTMLElement;
 
     constructor(params: ModuleLoaderParams) {
         super(params);
@@ -67,12 +67,18 @@ export default class UrlNav extends BaseModule {
         }
 
         urlNavItems.appendChild(list);
-        this.#container.appendChild(urlNavItems);
 
-        const urlNavContainer = this.#container.querySelector<HTMLDivElement>(`.${CSS_CLASSES.urls}`);
-        if (urlNavContainer == null)
-            throw error("Url nav container is not found!");
-        this.#urlNavContainer = urlNavContainer;
+        let appendContainer = this.#container;
+        if (this.#config.urlNavContainer) {
+            const container = document.querySelector<HTMLDivElement>(this.#config.urlNavContainer);
+            if (container)
+                appendContainer = container;
+            else
+                console.warn(`Error appending url navigation: ${this.#config.urlNavContainer} not found!`);
+        }
+
+        appendContainer.appendChild(urlNavItems);
+        this.#urlNavContainer = appendContainer;
 
         this.emitInitialized();
     }

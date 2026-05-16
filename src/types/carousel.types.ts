@@ -16,6 +16,7 @@ export type CarouselConfig = {
     vertical: boolean;
     verticalMaxContentWidth: boolean;
     urlNav: boolean;
+    urlNavContainer: string | null;
     lazyLoad: boolean;
     lazyPreload: boolean;
     lazyPreloadSlides: number;

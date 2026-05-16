@@ -43,6 +43,7 @@ export class Config {
             vertical: false,
             verticalMaxContentWidth: false,
             urlNav: false,
+            urlNavContainer: null,
             lazyLoad: false,
             lazyPreload: false,
             lazyPreloadSlides: 1,
