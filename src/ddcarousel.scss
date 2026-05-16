@@ -2,6 +2,8 @@
 	--ddcarousel-nav-color: #333;
 	--ddcarousel-nav-font-size: 1rem;
 	--ddcarousel-nav-margin: 8px;
+	--ddcarousel-url-nav-color: #333;
+	--ddcarousel-url-nav-color-active: #007ec2;
 	--ddcarousel-pagination-bottom: 32px;
 	--ddcarousel-dot-size: 12px;
 	--ddcarousel-dot-spacing: 5px;
@@ -110,6 +112,14 @@
 			margin-right: 14px;
 			&:last-child {
 				margin-right: 0;
+			}
+			a {
+				color: var(--ddcarousel-url-nav-color);
+			}
+			&.active {
+				a {
+					color: var(--ddcarousel-url-nav-color-active);
+				}
 			}
 		}
 	}
