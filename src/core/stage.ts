@@ -53,6 +53,7 @@ export default class Stage {
 
         this.#create();
         //todo confirm if stage is created
+        this.#setInitialDimensions();
         this.#update();
         events.emit(EVENTS.STAGE_CREATED);
 
@@ -162,6 +163,22 @@ export default class Stage {
         }
     }
 
+    #setInitialDimensions() {
+        if (this.#config.verticalMaxContentWidth) {
+            let maxWidth = 0,
+                elWidth;
+
+            this.#slides.forEach(el => {
+                elWidth = el.getBoundingClientRect().width;
+
+                if (elWidth > maxWidth)
+                    maxWidth = elWidth;
+            });
+
+            this.#container.style.width = maxWidth + "px";
+        }
+    }
+
     #update() {
         if (this.#slides == null || this.#stage == null)
             return;
@@ -199,18 +216,6 @@ export default class Stage {
 
         if (!config.vertical)
             this.#stage.style.width = `${this.#containerWidth * slides.length}px`;
-
-        if (config.verticalMaxContentWidth) {
-            let maxWidth = 0,
-                elWidth;
-
-            slides.forEach(el => {
-                elWidth = el.getBoundingClientRect().width;
-                if (elWidth > maxWidth)
-                    maxWidth = elWidth;
-            });
-            container.style.width = maxWidth + "px";
-        }
 
         this.#slidesHeights = this.#getSlidesHeights();
 
