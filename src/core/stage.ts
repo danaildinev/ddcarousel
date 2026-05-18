@@ -175,6 +175,12 @@ export default class Stage {
                     maxWidth = elWidth;
             });
 
+            const maxAvailableWidth = document.body.offsetWidth;
+            if (maxWidth > maxAvailableWidth) {
+                const carouselRect = this.#container.getBoundingClientRect();
+                maxWidth = maxAvailableWidth - carouselRect.left;
+            }
+
             this.#container.style.width = maxWidth + "px";
         }
     }
