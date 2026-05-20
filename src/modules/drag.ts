@@ -9,6 +9,11 @@ import { scrollToPos } from "../utils/scroll";
 import { DragSnapMode } from "../types/carousel.types";
 import { DATA } from "../constants/data-attrs";
 
+export type SlideOffsets = {
+    index: number,
+    center: number,
+}
+
 export default class Drag extends BaseModule {
     name: ModuleName = ModuleName.Drag;
 
@@ -23,6 +28,9 @@ export default class Drag extends BaseModule {
     #currentTouch!: number;
     #currentTranslate!: number;
     #lastTouch: number = 0;
+    #slideOffsets: SlideOffsets[] = [];
+    #slides: HTMLDivElement[] = [];
+    #viewportCenter: number = 0;
 
     #currentPage!: number;
     #totalPages!: number;
@@ -46,6 +54,10 @@ export default class Drag extends BaseModule {
     initialize() {
         this.#attachEvents();
         this.#stageDom.classList.add(CSS_CLASSES.disabled);
+
+        this.#slides = this.#getDomSlides();
+        this.#updateViewportCenter();
+        this.#cacheSlideCenters();
 
         this.emitInitialized();
     }
@@ -72,6 +84,7 @@ export default class Drag extends BaseModule {
         window.addEventListener("pointerup", this.#dragEnd);
 
         this.events.on(EVENTS.PAGE_CHANGED, this.#updateProps);
+        this.events.on(EVENTS.STAGE_RESIZED, this.#onStageResized);
     }
 
     #detachEvents() {
@@ -202,29 +215,52 @@ export default class Drag extends BaseModule {
 
     #resetTransitionDuration = () => this.#stageDom.style.transitionDuration = this.config.slideChangeDuration + "s";
 
-    #getClosestSlideIndex() {
-        const slides = Array.from(this.#stageDom.children) as HTMLElement[],
-            container = this.#stageDom.parentElement;
+    #onStageResized = () => {
+        this.#updateViewportCenter();
+        this.#cacheSlideCenters();
+    }
 
+    #updateViewportCenter() {
+        const container = this.#stageDom.parentElement;
         if (!container)
             return this.#currentPage;
 
-        const { vertical } = this.config,
-            viewportSize = vertical ? container.clientHeight : container.clientWidth,
-            viewportCenter = -this.#currentTouch + viewportSize / 2;
+        const viewportSize = this.config.vertical ? container.clientHeight : container.clientWidth;
 
+        this.#viewportCenter = viewportSize / 2;
+    }
+
+    #getDomSlides = (): HTMLDivElement[] => Array.from(this.#stageDom.children) as HTMLDivElement[];
+
+    #cacheSlideCenters() {
+        const vertical = this.config.vertical;
+
+        this.#slideOffsets = [];
+
+        this.#slides.forEach(slide => {
+            const slideStart = vertical ? slide.offsetTop : slide.offsetLeft,
+                slideSize = vertical ? slide.offsetHeight : slide.offsetWidth,
+                slideCenter = slideStart + slideSize / 2;
+
+            this.#slideOffsets.push({
+                index: Number(slide.dataset[DATA.dataset.slide]),
+                center: slideCenter
+            });
+        })
+    }
+
+    #getClosestSlideIndex(): number {
         let closestIndex = 0,
             closestDistToCenter = Infinity;
 
-        slides.forEach((slide, index) => {
-            const slideStart = vertical ? slide.offsetTop : slide.offsetLeft,
-                slideSize = vertical ? slide.offsetHeight : slide.offsetWidth,
-                slideCenter = slideStart + slideSize / 2,
-                distance = Math.abs(slideCenter - viewportCenter);
+        this.#slideOffsets.forEach(slide => {
+            const
+                viewportCenter = -this.#currentTouch + this.#viewportCenter,
+                distance = Math.abs(slide.center - viewportCenter);
 
             if (distance < closestDistToCenter) {
                 closestDistToCenter = distance;
-                closestIndex = Number(slide.dataset[DATA.dataset.slide]);
+                closestIndex = slide.index;
             }
         });
 
