@@ -506,11 +506,12 @@ export default class Stage {
             return;
 
         const currentSlide = this.#getSlideDom(),
-            err = "Scrolling to slide failed!",
-            config = this.#config;
+            err = "Error scrolling: ",
+            config = this.#config,
+            targetSlide = slide ?? currentSlide;
 
-        if (currentSlide === null)
-            throw error(err + "Current slide was not found!");
+        if (targetSlide === null)
+            throw error(err + "target slide not found!");
 
         let position: number;
 
@@ -523,10 +524,10 @@ export default class Stage {
                     throw error(err + "Slide style was not found!");
 
                 position =
-                    -this.#getSlidePos(currentSlide) -
+                    -this.#getSlidePos(targetSlide) -
                     -(parseInt(slideStyle.width) * Math.floor(config.items / 2));
             } else {
-                position = -this.#getSlidePos(slide ?? currentSlide);
+                position = -this.#getSlidePos(targetSlide);
             }
         }
 
