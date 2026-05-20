@@ -39,6 +39,7 @@ export class Config {
             startPage: 0,
             items: 1,
             itemPerPage: false,
+            gap: 0,
             loop: false,
             vertical: false,
             verticalMaxContentWidth: false,

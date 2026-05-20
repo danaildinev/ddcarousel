@@ -199,6 +199,8 @@ export default class Stage {
             slides = this.#slides,
             config = this.#config;
 
+        this.#setSlidesGap();
+
         // full width?
         container.classList.toggle(CSS_CLASSES.fullWidth, config.fullWidth && !config.verticalMaxContentWidth);
 
@@ -248,6 +250,22 @@ export default class Stage {
             pages = Math.ceil(this.#slides.length / this.#config.items) - 1;
 
         this.totalPages = pages;
+    }
+
+    #setSlidesGap() {
+        const { gap, items } = this.#config;
+
+        if (gap === 0)
+            return;
+
+        const widthOffset = gap - (gap / items);
+
+        this.#slides.forEach(slide => {
+            slide.style.marginRight = `${gap}px`;
+
+            const currentWidth = slide.getBoundingClientRect().width;
+            slide.style.width = `${currentWidth - widthOffset}px`;
+        });
     }
 
     getSlidesCount = () => this.#slides?.length;

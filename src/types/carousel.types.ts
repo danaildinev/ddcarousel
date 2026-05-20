@@ -11,6 +11,7 @@ export type CarouselConfig = {
     fullWidth: boolean;
     startPage: number;
     items: number;
+    gap: number;
     itemPerPage: boolean;
     loop: boolean;
     vertical: boolean;
