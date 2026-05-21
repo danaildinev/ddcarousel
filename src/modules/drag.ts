@@ -18,6 +18,8 @@ type SlideOffsets = {
 
 export type ClosestSlideDirection = "left" | "right" | "center";
 
+type ClosestSlideIndexes = Partial<Record<ClosestSlideDirection, number>>;
+
 export default class Drag extends BaseModule {
     name: ModuleName = ModuleName.Drag;
 
@@ -192,8 +194,8 @@ export default class Drag extends BaseModule {
         }
 
         if (this.config.dragSnapMode === DragSnapMode.Closest) {
-            const closestIndex = this.#getClosestSlideIndex();
-            this.events.emit(EVENTS.PAGE_CHANGE_REQUEST, { index: closestIndex });
+            const closestIndex = this.#getClosestSlideIndexes(["center"]);
+            this.events.emit(EVENTS.PAGE_CHANGE_REQUEST, { index: closestIndex.center });
         } else {
             const isLeftDirection = this.#currentTouch > this.#origPosition;
             const targetIndex = isLeftDirection ? "prev" : "next";
@@ -254,33 +256,50 @@ export default class Drag extends BaseModule {
         });
     }
 
-    #getClosestSlideIndex(direction: ClosestSlideDirection = "center"): number {
+    #getClosestSlideIndexes(directions: ClosestSlideDirection[]): ClosestSlideIndexes {
         const offsets = this.#slideOffsets;
         if (!offsets.length)
-            return -1;
+            return {};
 
-        let closestIndex = 0,
-            closestDistToCenter = Infinity;
+        const viewportCenter = this.#viewportCenter,
+            bases: Record<ClosestSlideDirection, number> = {
+                left: 0,
+                center: viewportCenter,
+                right: viewportCenter * 2
+            };
 
-        const current = -this.#currentTouch + this.#viewportCenter,
-            first = offsets.at(0)?.left,
+        const first = offsets.at(0)?.left,
             last = offsets.at(-1)?.right;
 
         if (first == null || last == null)
-            return -1;
+            return {};
 
-        if (current < first || current > last)
-            return -1;
+        const result: ClosestSlideIndexes = {};
 
-        offsets.forEach(slide => {
-            const distance = Math.abs(slide.center - current);
+        const findOffset = (current: number) => {
+            if (current < first || current > last)
+                return -1;
 
-            if (distance < closestDistToCenter) {
-                closestDistToCenter = distance;
-                closestIndex = slide.index;
-            }
-        });
+            let closestIndex = -1,
+                closestDistToCenter = Infinity;
 
-        return closestIndex;
+            offsets.forEach(slide => {
+                const distance = Math.abs(slide.center - current);
+
+                if (distance < closestDistToCenter) {
+                    closestDistToCenter = distance;
+                    closestIndex = slide.index;
+                }
+            });
+
+            return closestIndex;
+        };
+
+        for (const target of directions) {
+            const current = -this.#currentTouch + bases[target];
+            result[target] = findOffset(current);
+        }
+
+        return result;
     }
 }
