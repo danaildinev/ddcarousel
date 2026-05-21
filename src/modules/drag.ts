@@ -9,10 +9,14 @@ import { scrollToPos } from "../utils/scroll";
 import { DragSnapMode } from "../types/carousel.types";
 import { DATA } from "../constants/data-attrs";
 
-export type SlideOffsets = {
+type SlideOffsets = {
     index: number,
+    left: number,
     center: number,
+    right: number
 }
+
+export type ClosestSlideDirection = "left" | "right" | "center";
 
 export default class Drag extends BaseModule {
     name: ModuleName = ModuleName.Drag;
@@ -57,7 +61,7 @@ export default class Drag extends BaseModule {
 
         this.#slides = this.#getDomSlides();
         this.#updateViewportCenter();
-        this.#cacheSlideCenters();
+        this.#cacheSlideOffsets();
 
         this.emitInitialized();
     }
@@ -217,7 +221,7 @@ export default class Drag extends BaseModule {
 
     #onStageResized = () => {
         this.#updateViewportCenter();
-        this.#cacheSlideCenters();
+        this.#cacheSlideOffsets();
     }
 
     #updateViewportCenter() {
@@ -232,31 +236,44 @@ export default class Drag extends BaseModule {
 
     #getDomSlides = (): HTMLDivElement[] => Array.from(this.#stageDom.children) as HTMLDivElement[];
 
-    #cacheSlideCenters() {
+    #cacheSlideOffsets() {
         const vertical = this.config.vertical;
 
         this.#slideOffsets = [];
 
         this.#slides.forEach(slide => {
-            const slideStart = vertical ? slide.offsetTop : slide.offsetLeft,
-                slideSize = vertical ? slide.offsetHeight : slide.offsetWidth,
-                slideCenter = slideStart + slideSize / 2;
+            const start = vertical ? slide.offsetTop : slide.offsetLeft,
+                size = vertical ? slide.offsetHeight : slide.offsetWidth;
 
             this.#slideOffsets.push({
                 index: Number(slide.dataset[DATA.dataset.slide]),
-                center: slideCenter
+                left: start,
+                center: start + size / 2,
+                right: start + size,
             });
-        })
+        });
     }
 
-    #getClosestSlideIndex(): number {
+    #getClosestSlideIndex(direction: ClosestSlideDirection = "center"): number {
+        const offsets = this.#slideOffsets;
+        if (!offsets.length)
+            return -1;
+
         let closestIndex = 0,
             closestDistToCenter = Infinity;
 
-        this.#slideOffsets.forEach(slide => {
-            const
-                viewportCenter = -this.#currentTouch + this.#viewportCenter,
-                distance = Math.abs(slide.center - viewportCenter);
+        const current = -this.#currentTouch + this.#viewportCenter,
+            first = offsets.at(0)?.left,
+            last = offsets.at(-1)?.right;
+
+        if (first == null || last == null)
+            return -1;
+
+        if (current < first || current > last)
+            return -1;
+
+        offsets.forEach(slide => {
+            const distance = Math.abs(slide.center - current);
 
             if (distance < closestDistToCenter) {
                 closestDistToCenter = distance;
