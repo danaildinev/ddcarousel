@@ -58,6 +58,9 @@ export type CarouselEvents = {
         currentTranslate: number;
         delta: number;
         direction: "left" | "right";
+        slideIndexLeft?: number | undefined;
+        slideIndexCenter?: number | undefined;
+        slideIndexRight?: number | undefined;
     };
 }
 

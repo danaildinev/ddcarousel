@@ -91,6 +91,7 @@ export default class Drag extends BaseModule {
 
         this.events.on(EVENTS.PAGE_CHANGED, this.#updateProps);
         this.events.on(EVENTS.STAGE_RESIZED, this.#onStageResized);
+        this.events.on(EVENTS.STAGE_CHANGED, this.#onStageChanged);
     }
 
     #detachEvents() {
@@ -169,11 +170,19 @@ export default class Drag extends BaseModule {
 
         //move slider until max swipe lenght is reached
         if (this.config.touchMaxSlideDist < 1 || this.#swipeDistance <= this.config.touchMaxSlideDist) {
-            this.events.emit(EVENTS.DRAG_DRAGGING, {
+            const state: CarouselEvents[typeof EVENTS.DRAG_DRAGGING] = {
                 currentTranslate: this.#currentTouch,
                 delta: this.#swipeDistance,
-                direction: this.#currentTouch < this.#lastTouch ? "left" : "right"
-            });
+                direction: this.#currentTouch < this.#lastTouch ? "left" : "right",
+            };
+
+            if (this.config.loop) {
+                const slideIndexes = this.#getClosestSlideIndexes(["left", "right"]);
+                state.slideIndexLeft = slideIndexes.left;
+                state.slideIndexRight = slideIndexes.right;
+            }
+
+            this.events.emit(EVENTS.DRAG_DRAGGING, state);
             scrollToPos(this.#stageDom, this.#currentTouch, this.config.vertical);
         } else {
             this.#stayOnThisSlide = true;
@@ -222,6 +231,12 @@ export default class Drag extends BaseModule {
     #resetTransitionDuration = () => this.#stageDom.style.transitionDuration = this.config.slideChangeDuration + "s";
 
     #onStageResized = () => {
+        this.#updateViewportCenter();
+        this.#cacheSlideOffsets();
+    }
+
+    #onStageChanged = () => {
+        this.#slides = this.#getDomSlides();
         this.#updateViewportCenter();
         this.#cacheSlideOffsets();
     }
