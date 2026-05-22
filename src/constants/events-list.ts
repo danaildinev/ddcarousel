@@ -15,6 +15,7 @@ export const EVENTS = {
     // stage
     CONFIG_CHANGED: 'config:changed',
     STAGE_CREATED: 'stage:created',
+    STAGE_CHANGED: 'stage:changed',
     STAGE_RESIZED: 'stage:resized',
     PAGE_CHANGE_REQUEST: 'page:change:request',
     PAGE_CHANGED: 'page:changed',

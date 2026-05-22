@@ -21,6 +21,7 @@ export default class Stage {
     #slidesHeights: number[] = [];
     #resizeThrottled: boolean = false;
     #resizeObserver: ResizeObserver | null = null;
+    #mutationObserver: MutationObserver | null = null;
 
     #originalClasses: string = "";
     slidesActive: number[] = [];
@@ -52,9 +53,27 @@ export default class Stage {
         this.currentTranslate = 0;
 
         this.#create();
-        //todo confirm if stage is created
+
+        if (this.#stage === null)
+            throw error("Error creating stage!")
+
         this.#setInitialDimensions();
         this.#update();
+
+        const callback = (mutationList: MutationRecord[], observer: MutationObserver) => {
+            for (const mutation of mutationList) {
+                if (mutation.type === "childList") {
+                    this.#events.emit(EVENTS.STAGE_CHANGED, {
+                        log: mutation.type
+                    })
+                }
+            }
+        };
+
+        this.#mutationObserver = new MutationObserver(callback);
+        const config = { attributes: false, childList: true };
+        this.#mutationObserver.observe(this.#stage, config);
+
         events.emit(EVENTS.STAGE_CREATED);
 
         events.on(EVENTS.SLIDE_SCROLL, this.#onSlideScroll);
@@ -143,6 +162,7 @@ export default class Stage {
         window.removeEventListener("keydown", this.#keyboardHandler);
         this.#events.off(EVENTS.PAGE_CHANGE_REQUEST, this.#onPageChanged);
         this.#events.off(EVENTS.PAGE_CHANGED, this.#onPageChanged);
+        this.#mutationObserver?.disconnect();
         this.#resizeObserver?.disconnect();
     }
 
