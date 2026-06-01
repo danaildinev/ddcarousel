@@ -481,9 +481,8 @@ export default class Stage {
             this.#stage.style.transitionDuration = config.slideChangeDuration + "s";
         }
 
-        const isForward = (index > this.currentPage ||
-            (index === 0 && this.currentPage === this.totalPages)) &&
-            !(index === this.totalPages && this.currentPage === 0);
+        const isForward = index > this.currentPage ||
+            (index > this.currentPage && (index === 0 && this.currentPage === this.totalPages));
 
         this.currentPage = index;
 
