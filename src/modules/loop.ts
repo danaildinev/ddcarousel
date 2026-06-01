@@ -188,7 +188,7 @@ export default class Loop extends BaseModule {
         const left = e.slideIndexLeft;
         const right = e.slideIndexRight;
 
-        if (!left || !right) {
+        if (left == null || right == null) {
             return;
         }
 
