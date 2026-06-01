@@ -30,21 +30,23 @@ export default class Loop extends BaseModule {
     }
 
     initialize() {
-        this.events.on(EVENTS.DRAG_PRE_START, this.#onDragPreStart);
-        this.events.on(EVENTS.PAGE_CHANGED, this.#onPageChanged);
-        this.events.on(EVENTS.PAGE_CHANGE_INDEX, this.#onPageChangeIndex);
-        this.events.on(EVENTS.PAGE_CHANGE_SCROLL_BEFORE, this.#onChangePageScrollBefore);
+        this.events.on(EVENTS.DRAG_DRAGGING, this.#onDragging)
+        this.events.on(EVENTS.PAGE_CHANGED, this.#onPageChanged)
+        this.events.on(EVENTS.PAGE_CHANGE_INDEX, this.#onPageChangeIndex)
+        //this.events.on(EVENTS.PAGE_CHANGE_SCROLL_BEFORE, this.#onChangePageScrollBefore);
 
         this.#activeSlides = this.getStatus().activeSlides;
 
-        const prevNextSlides = this.#calculatePrevAndNextSlides(this.#activeSlides),
+        // disable this - may not be needed
+        /*const prevNextSlides = this.#calculatePrevAndNextSlides(this.#activeSlides),
             prev = prevNextSlides?.prev,
             next = prevNextSlides?.next;
 
         if (prev !== undefined && next !== undefined)
-            this.#markPrevAndNextSlides(prev, next);
+            this.#markPrevAndNextSlides(prev, next);*/
 
-        this.#reorderForLoop();
+        // this.#reorderForLoop();
+        this.#initialReorder();
 
         this.emitInitialized();
     }
@@ -53,7 +55,7 @@ export default class Loop extends BaseModule {
         this.#clearSlidesForLoop();
 
         this.events.off(EVENTS.PAGE_CHANGE_INDEX, this.#onPageChangeIndex);
-        this.events.off(EVENTS.PAGE_CHANGE_SCROLL_BEFORE, this.#onChangePageScrollBefore);
+        //this.events.off(EVENTS.PAGE_CHANGE_SCROLL_BEFORE, this.#onChangePageScrollBefore);
 
         this.emitDestroyed();
     }
@@ -182,9 +184,74 @@ export default class Loop extends BaseModule {
             .forEach(e => e.classList.remove(CSS_CLASSES.slidePrev, CSS_CLASSES.slideNext));
     }
 
-    #onDragPreStart = (e: CarouselEvents[typeof EVENTS.DRAG_PRE_START]) => {
-        const translate = this.#reorderForLoop();
-        e.currentTranslate = translate;
+    #onDragging = (e: CarouselEvents[typeof EVENTS.DRAG_DRAGGING]) => {
+        const left = e.slideIndexLeft;
+        const right = e.slideIndexRight;
+
+        if (!left || !right) {
+            return;
+        }
+
+        const slides = Array.from(this.#stage.children);
+        const first = slides.at(0);
+        const last = slides.at(-1);
+
+        if (!first || !last) {
+            return;
+        }
+
+        if (left === -1) {
+            first.before(last);
+            e.currentTranslate -= last.getBoundingClientRect().width;
+            e.rebase = true;
+        } else if (right === -1) {
+            last.after(first);
+            e.currentTranslate += first.getBoundingClientRect().width;
+            e.rebase = true;
+        }
+    }
+
+    #initialReorder() {
+        if (!this.config.centerSlide) {
+            return;
+        }
+
+        const itemsToAdd = Math.floor(this.config.items / 2);
+        const slides = Array.from(this.#stage.children)
+        const status = this.getStatus();
+        const currentPage = status.currentPage;
+        const totalPages = status.totalPages;
+        let modifiedTranslate = status.currentTranslate;
+
+        if (currentPage === 0) {
+            const first = slides.at(0);
+            const last = slides.slice(-itemsToAdd);
+
+            if (!first || !last) {
+                return;
+            }
+
+            first.before(...last);
+            modifiedTranslate = 0;
+        } else if (currentPage + itemsToAdd > totalPages) {
+            const slidesToAppend = (currentPage + itemsToAdd) - totalPages
+            const first = slides.slice(0, slidesToAppend);
+            const last = slides.at(-1);
+
+            if (!first || !last) {
+                return;
+            }
+
+            first.forEach(el => modifiedTranslate += el.getBoundingClientRect().width);
+            last.after(...first);
+        }
+
+        if (status.currentTranslate != modifiedTranslate) {
+            this.events.emit(EVENTS.SLIDE_SCROLL, {
+                specifiedPosition: modifiedTranslate,
+                animate: false,
+            });
+        }
     }
 
     #reorderForLoop(emit: boolean = true): number {

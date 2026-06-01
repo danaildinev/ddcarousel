@@ -80,6 +80,7 @@ export default class Drag extends BaseModule {
         this.events.on(EVENTS.PAGE_CHANGED, this.#updateProps);
         this.events.on(EVENTS.STAGE_RESIZED, this.#onStageResized);
         this.events.on(EVENTS.STAGE_CHANGED, this.#onStageChanged);
+        this.events.on(EVENTS.SLIDE_SCROLL, this.#onSlideScroll);
     }
 
     #detachEvents() {
@@ -242,6 +243,10 @@ export default class Drag extends BaseModule {
     #onStageChanged = () => {
         this.#slides = this.#getDomSlides();
         this.#cacheSlideOffsets();
+    }
+
+    #onSlideScroll = (e: CarouselEvents[typeof EVENTS.SLIDE_SCROLL]) => {
+        this.#currentTranslate = e.specifiedPosition;
     }
 
     #cacheSlideOffsets() {
