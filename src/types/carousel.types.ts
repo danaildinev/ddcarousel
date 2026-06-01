@@ -1,4 +1,5 @@
 import type { BaseModule } from "../core/base-module";
+import type { ClosestSlideIndexes } from "../utils/slide";
 
 export type CarouselConfig = {
     container: string;
@@ -50,7 +51,8 @@ export type CarouselStatus = {
     activeSlides: number[];
     config: CarouselStatusConfig;
     currentTranslate: number;
-    modules: BaseModule[] | undefined
+    modules: BaseModule[] | undefined,
+    closestSlidesIndexes: ClosestSlideIndexes
 }
 
 export type CarouselStatusConfig = {

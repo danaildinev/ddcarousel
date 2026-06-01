@@ -639,4 +639,9 @@ export default class Stage {
 
         this.#events.emit(EVENTS.PAGE_CHANGE_REQUEST, { index: page });
     }
+
+    static getViewportCenter(container: HTMLDivElement, vertical: boolean) {
+        const viewportSize = vertical ? container.clientHeight : container.clientWidth;
+        return viewportSize / 2;
+    }
 }

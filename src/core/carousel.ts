@@ -1,8 +1,10 @@
+import { CSS_CLASSES } from "../constants/css-classes";
 import { EVENTS } from "../constants/events-list";
 import type Autoplay from "../modules/autoplay";
 import type UrlNav from "../modules/urlNav";
 import type { CarouselConfig, CarouselStatus } from "../types/carousel.types";
 import { error } from "../utils/error-handler";
+import { getClosestSlideIndexes, getSlidesOffsets } from "../utils/slide";
 import { Config } from "./config";
 import { Events } from "./events";
 import ModuleLoader from "./module-loader";
@@ -110,6 +112,21 @@ export default class Carousel {
     }
 
     getStatus = (): CarouselStatus => {
+        const container = document.querySelector<HTMLDivElement>(this.#config.current.container);
+        if (!container)
+            throw error("Error: Container not found!");
+
+        const stage = container.querySelector<HTMLDivElement>(`.${CSS_CLASSES.stage}`);
+        if (!stage)
+            throw error("Error: Stage not found!");
+
+        const vertical = this.#config.current.vertical;
+        const viewportCenter = Stage.getViewportCenter(container, vertical);
+        const slides = Array.from(stage?.children) as HTMLElement[];
+        const offsets = getSlidesOffsets(slides, vertical);
+        const currentTranslate = this.#stage.currentTranslate;
+        const closestSlidesIndexes = getClosestSlideIndexes(offsets, viewportCenter, currentTranslate, ["left", "center", "right"]);
+
         return {
             created: this.#initialized !== undefined,
             currentPage: this.#stage.currentPage,
@@ -120,8 +137,9 @@ export default class Carousel {
             config: {
                 current: this.#config.current
             },
-            currentTranslate: this.#stage.currentTranslate,
-            modules: this.#moduleLoader?.modules
+            currentTranslate: currentTranslate,
+            modules: this.#moduleLoader?.modules,
+            closestSlidesIndexes: closestSlidesIndexes
         };
     }
 }
