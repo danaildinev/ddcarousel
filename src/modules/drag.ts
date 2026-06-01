@@ -136,6 +136,16 @@ export default class Drag extends BaseModule {
         this.events.emit(EVENTS.DRAG_START);
     }
 
+    #rebaseDrag(newTranslate: number, currentPointer: number) {
+        this.#currentTranslate = newTranslate;
+        this.#currentTouch = newTranslate;
+        this.#origPosition = newTranslate;
+
+        // recreate drag origin from current pointer
+        this.#touchStartRawCords = currentPointer;
+        this.#touchStartCords = currentPointer - newTranslate;
+    }
+
     #dragMove = (e: PointerEvent) => {
         if (!this.#isDragging)
             return;
@@ -162,6 +172,7 @@ export default class Drag extends BaseModule {
                 currentTranslate: this.#currentTouch,
                 delta: this.#swipeDistance,
                 direction: this.#currentTouch < this.#lastTouch ? "left" : "right",
+                rebase: false
             };
 
             if (this.config.loop) {
@@ -171,6 +182,12 @@ export default class Drag extends BaseModule {
             }
 
             this.events.emit(EVENTS.DRAG_DRAGGING, state);
+
+            this.#currentTouch = state.currentTranslate
+            if (state.rebase) {
+                this.#rebaseDrag(this.#currentTouch, input);
+            }
+
             scrollToPos(this.#stageDom, this.#currentTouch, this.config.vertical);
         } else {
             this.#stayOnThisSlide = true;

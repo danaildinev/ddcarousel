@@ -61,6 +61,7 @@ export type CarouselEvents = {
         slideIndexLeft?: number | undefined;
         slideIndexCenter?: number | undefined;
         slideIndexRight?: number | undefined;
+        rebase?: boolean;
     };
 }
 
