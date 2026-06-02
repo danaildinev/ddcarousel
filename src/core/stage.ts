@@ -28,6 +28,7 @@ export default class Stage {
     currentTranslate: number = 0;
     currentPage: number = -1;
     totalPages: number = 0;
+    pageSlides: number[][] = [];
 
     constructor(config: Config, events: Events) {
         this.#configClass = config;
@@ -261,15 +262,60 @@ export default class Stage {
             return;
 
         let pages;
+        const pageSlides = [];
+        const slidesLength = this.#slides.length;
+        const slidesPerPage = this.#config.items;
 
-        if (this.#config.centerSlide)
-            pages = this.#slides.length - 1
-        else if (this.#config.itemPerPage)
-            pages = this.#slides.length - this.#config.items
-        else
-            pages = Math.ceil(this.#slides.length / this.#config.items) - 1;
+        if (this.#config.centerSlide) {
+            pages = slidesLength - 1;
+
+            // use circular indexing around the current slide
+            for (let page = 0; page < this.#slides.length; page++) {
+                const prev = (page - 1 + this.#slides.length) % this.#slides.length;
+                const next = (page + 1) % this.#slides.length;
+
+                pageSlides.push([prev, page, next]);
+            }
+        }
+        else if (this.#config.itemPerPage) {
+            pages = slidesLength - slidesPerPage;
+
+            for (let i = 0; i <= pages; i++) {
+                const slides = [];
+
+                for (let j = 0; j < slidesPerPage; j++) {
+                    slides.push(i + j);
+                }
+
+                pageSlides.push(slides);
+            }
+        }
+        else {
+            pages = Math.ceil(slidesLength / slidesPerPage) - 1;
+
+            const slideCount = slidesLength;
+            const totalPages = Math.ceil(slideCount / slidesPerPage);
+
+            for (let page = 0; page < totalPages; page++) {
+                let start = page * slidesPerPage;
+
+                // shift the last page back so it always contains `items` slides
+                if (page === totalPages - 1 && slideCount > slidesPerPage) {
+                    start = Math.max(slideCount - slidesPerPage, 0);
+                }
+
+                const end = Math.min(start + slidesPerPage, slideCount);
+
+                pageSlides.push(
+                    Array.from({ length: end - start }, (_, i) => start + i)
+                );
+            }
+        }
 
         this.totalPages = pages;
+        this.pageSlides = pageSlides;
+        console.log(pageSlides);
+
     }
 
     #setSlidesGap() {
@@ -421,6 +467,8 @@ export default class Stage {
 
         return slides;
     }
+
+
 
     #onStageTransitionEnd = () => this.#events.emit(EVENTS.TRANSITION_END);
 
