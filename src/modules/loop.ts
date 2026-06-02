@@ -4,9 +4,11 @@ import { EVENTS } from "../constants/events-list";
 import { PRIORITY } from "../constants/priorities";
 import { BaseModule } from "../core/base-module";
 import { ModuleName } from "../core/module-names";
+import type { CarouselStatus } from "../types/carousel.types";
 import type { CarouselEvents } from "../types/event.types";
 import type { ModuleLoaderParams } from "../types/module.params";
 import { error } from "../utils/error-handler";
+import type { ClosestSlideDirection } from "../utils/slide";
 
 export default class Loop extends BaseModule {
     name: ModuleName = ModuleName.Loop;
@@ -217,13 +219,28 @@ export default class Loop extends BaseModule {
         }
 
         const itemsToAdd = Math.floor(this.config.items / 2);
-        const slides = Array.from(this.#stage.children)
         const status = this.getStatus();
+        const currentPage = status.currentPage;
+        const totalPages = status.totalPages;
+
+        if (currentPage === 0) {
+            if (this.config.items === 1) {
+                return;
+            }
+            this.#appendSlides("left", status);
+        } else if (currentPage + itemsToAdd > totalPages) {
+            this.#appendSlides("right", status);
+        }
+    }
+
+    #appendSlides(direction: ClosestSlideDirection, status: CarouselStatus) {
+        const itemsToAdd = this.config.items;
+        const slides = Array.from(this.#stage.children)
         const currentPage = status.currentPage;
         const totalPages = status.totalPages;
         let modifiedTranslate = status.currentTranslate;
 
-        if (currentPage === 0) {
+        if (direction === "left") {
             const first = slides.at(0);
             const last = slides.slice(-itemsToAdd);
 
@@ -233,8 +250,12 @@ export default class Loop extends BaseModule {
 
             first.before(...last);
             modifiedTranslate = 0;
-        } else if (currentPage + itemsToAdd > totalPages) {
-            const slidesToAppend = (currentPage + itemsToAdd) - totalPages
+        }
+        else if (direction === "right") {
+            let slidesToAppend = (currentPage + itemsToAdd) - totalPages;
+            if (slidesToAppend === 0)
+                slidesToAppend = this.config.items;
+
             const first = slides.slice(0, slidesToAppend);
             const last = slides.at(-1);
 
