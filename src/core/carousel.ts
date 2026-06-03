@@ -8,7 +8,7 @@ import { getClosestSlideIndexes, getSlidesOffsets } from "../utils/slide";
 import { Config } from "./config";
 import { Events } from "./events";
 import ModuleLoader from "./module-loader";
-import { ModuleName } from "./module-names";
+import type { ModuleId } from "./module-registry";
 import Stage from "./stage";
 
 export default class Carousel {
@@ -77,7 +77,7 @@ export default class Carousel {
         this.#initialized = false;
     }
 
-    module = (name: ModuleName) => this.#moduleLoader?.modules.find(m => m.name === name);
+    module = (name: ModuleId) => this.#moduleLoader?.modules.find(m => m.id === name);
 
     on = (name: string, callback: any) => this.#events.on(name, callback);
 
@@ -100,17 +100,17 @@ export default class Carousel {
 
     autoplayStart = () => {
         console.warn("autoplayStart() is deprecated: use carousel.module('autoplay').start()!");
-        (this.module(ModuleName.Autoplay) as Autoplay)?.start();
+        (this.module("autoplay") as Autoplay)?.start();
     }
 
     autoplayStop = () => {
         console.warn("autoplayStop() is deprecated: use carousel.module('autoplay').stop()!");
-        (this.module(ModuleName.Autoplay) as Autoplay)?.stop();
+        (this.module("autoplay") as Autoplay)?.stop();
     }
 
     goToUrl = (name: string, enabmeAnim: boolean) => {
         console.warn("goToUrl() is deprecated: use carousel.module('urlNav').goToUrl()!");
-        (this.module(ModuleName.UrlNav) as UrlNav)?.goToUrl(name, enabmeAnim);
+        (this.module("urlNav") as UrlNav)?.goToUrl(name, enabmeAnim);
     }
 
     getStatus = (): CarouselStatus => {

@@ -3,10 +3,10 @@ import type { CarouselConfig } from "../types/carousel.types";
 import type { CarouselEvents } from "../types/event.types";
 import type { ModuleLoaderParams } from "../types/module.params";
 import type { BaseModule } from "./base-module";
-import { ModuleName } from "./module-names";
+import { MODULE_IDS, type ModuleId } from "./module-registry";
 
 export default class ModuleLoader {
-    #instances = new Map<ModuleName, BaseModule>();
+    #instances = new Map<ModuleId, BaseModule>();
     #params: ModuleLoaderParams;
 
     constructor(params: ModuleLoaderParams) {
@@ -19,33 +19,33 @@ export default class ModuleLoader {
 
     async loadAll() {
         await Promise.all(
-            Object.values(ModuleName).map(m => this.load(m))
+            MODULE_IDS.map(m => this.load(m))
         );
     }
 
-    async load(moduleName: ModuleName) {
-        if (this.#instances.has(moduleName)) {
+    async load(moduleId: ModuleId) {
+        if (this.#instances.has(moduleId)) {
             return;
         }
 
-        const mod = await import(`../modules/${moduleName}`);
+        const mod = await import(`../modules/${moduleId}`);
         const ModuleClass = mod.default;
 
         const instance: BaseModule = new ModuleClass(this.#params);
-        instance.toggle();
+        this.#instances.set(moduleId, instance);
 
-        this.#instances.set(moduleName, instance);
+        instance.toggle();
     }
 
-    async unload(moduleName: ModuleName) {
-        const instance = this.#instances.get(moduleName);
+    async unload(moduleId: ModuleId) {
+        const instance = this.#instances.get(moduleId);
         if (!instance) {
             return;
         }
 
         instance.destroy();
 
-        this.#instances.delete(moduleName);
+        this.#instances.delete(moduleId);
     }
 
     toggleAll = (e: CarouselEvents[typeof EVENTS.CONFIG_CHANGED]) => {
@@ -60,7 +60,7 @@ export default class ModuleLoader {
                     continue;
                 }
 
-                const module = this.modules.find(m => m.name === key);
+                const module = this.modules.find(m => m.id === key);
                 if (module === undefined) {
                     continue;
                 }
@@ -77,7 +77,10 @@ export default class ModuleLoader {
     };
 
     reset() {
-        this.#instances.forEach((module: BaseModule) => module.destroy());
+        for (const module of this.#instances.values()) {
+            module.destroy();
+        }
+
         this.#instances.clear();
     };
 }

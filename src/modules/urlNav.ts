@@ -3,7 +3,7 @@ import { DATA } from "../constants/data-attrs";
 import { EVENTS } from "../constants/events-list";
 import { BaseModule } from "../core/base-module";
 import type { Events } from "../core/events";
-import { ModuleName } from "../core/module-names";
+import type { ModuleId } from "../core/module-registry";
 import type { CarouselConfig, CarouselStatus } from "../types/carousel.types";
 import type { CarouselEvents } from "../types/event.types";
 import type { ModuleLoaderParams } from "../types/module.params";
@@ -17,7 +17,7 @@ export type UrlNavItem = {
 }
 
 export default class UrlNav extends BaseModule {
-    name: ModuleName = ModuleName.UrlNav;
+    id: ModuleId = "urlNav";
 
     #events: Events;
     #config: CarouselConfig;

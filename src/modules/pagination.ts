@@ -3,12 +3,12 @@ import { DATA } from "../constants/data-attrs";
 import { EVENTS } from "../constants/events-list";
 import { error } from "../utils/error-handler";
 import { BaseModule } from "../core/base-module";
-import { ModuleName } from "../core/module-names";
+import type { ModuleId } from "../core/module-registry";
 import type { ModuleLoaderParams } from "../types/module.params";
 import type { CarouselEvents } from "../types/event.types";
 
 export default class Dots extends BaseModule {
-    name: ModuleName = ModuleName.Pagination;
+    id: ModuleId = "pagination";
 
     #paginationContainer!: HTMLDivElement;
     #currentPage: number;

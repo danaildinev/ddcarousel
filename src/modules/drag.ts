@@ -2,7 +2,7 @@ import { CSS_CLASSES } from "../constants/css-classes";
 import { EVENTS } from "../constants/events-list";
 import { BaseModule } from "../core/base-module";
 import type { ModuleLoaderParams } from "../types/module.params";
-import { ModuleName } from "../core/module-names";
+import type { ModuleId } from "../core/module-registry";
 import type { CarouselEvents } from "../types/event.types";
 import { error } from "../utils/error-handler";
 import { scrollToPos } from "../utils/scroll";
@@ -10,7 +10,7 @@ import { DragSnapMode } from "../types/carousel.types";
 import { getSlidesOffsets, getClosestSlideIndexes, type SlideOffsets } from "../utils/slide";
 
 export default class Drag extends BaseModule {
-    name: ModuleName = ModuleName.Drag;
+    id: ModuleId = "autoplay";
 
     #stageDom: HTMLDivElement;
 

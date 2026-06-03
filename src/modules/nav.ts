@@ -1,12 +1,12 @@
 import { CSS_CLASSES } from "../constants/css-classes";
 import { EVENTS } from "../constants/events-list";
 import { BaseModule } from "../core/base-module";
-import { ModuleName } from "../core/module-names";
+import type { ModuleId } from "../core/module-registry";
 import type { CarouselEvents } from "../types/event.types";
 import type { ModuleLoaderParams } from "../types/module.params";
 
 export default class Nav extends BaseModule {
-    name: ModuleName = ModuleName.Nav;
+    id: ModuleId = "nav";
 
     static chevronSvg: string = `
         <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="currentColor" class="chevron" viewBox="0 0 16 16">
@@ -58,7 +58,7 @@ export default class Nav extends BaseModule {
         nextBtn.role = "button";
         nextBtn.addEventListener("click", () => this.events.emit(EVENTS.PAGE_CHANGE_REQUEST, { index: this.#currentPage + 1 }));
 
-        this.#carousel.append(prevBtn, nextBtn);
+        this.container.append(prevBtn, nextBtn);
 
         this.#prevBtn = prevBtn;
         this.#nextBtn = nextBtn;

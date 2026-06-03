@@ -3,7 +3,7 @@ import { DATA } from "../constants/data-attrs";
 import { EVENTS } from "../constants/events-list";
 import { PRIORITY } from "../constants/priorities";
 import { BaseModule } from "../core/base-module";
-import { ModuleName } from "../core/module-names";
+import type { ModuleId } from "../core/module-registry";
 import type { CarouselStatus } from "../types/carousel.types";
 import type { CarouselEvents } from "../types/event.types";
 import type { ModuleLoaderParams } from "../types/module.params";
@@ -11,7 +11,7 @@ import { error } from "../utils/error-handler";
 import type { ClosestSlideDirection } from "../utils/slide";
 
 export default class Loop extends BaseModule {
-    name: ModuleName = ModuleName.Loop;
+    id: ModuleId = "loop";
 
     #stage: HTMLDivElement;
     #activeSlides: number[] = [];

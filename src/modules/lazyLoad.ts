@@ -2,11 +2,11 @@ import { DATA } from "../constants/data-attrs";
 import { EVENTS } from "../constants/events-list";
 import { BaseModule } from "../core/base-module";
 import type { ModuleLoaderParams } from "../types/module.params";
-import { ModuleName } from "../core/module-names";
+import type { ModuleId } from "../core/module-registry";
 import type { CarouselEvents } from "../types/event.types";
 
 export default class LazyLoad extends BaseModule {
-    name: ModuleName = ModuleName.Lazyload;
+    id: ModuleId = "lazyLoad";
     file: string = "lazy-load";
 
     constructor(params: ModuleLoaderParams) {

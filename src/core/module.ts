@@ -1,7 +1,7 @@
-import type { ModuleName } from './module-names';
+import type { ModuleId } from './module-registry';
 
 export interface Module {
-    readonly name: ModuleName;
+    readonly id: ModuleId;
 
     initialize(): void;
     destroy(): void;
