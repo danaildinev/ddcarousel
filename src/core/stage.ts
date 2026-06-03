@@ -78,6 +78,7 @@ export default class Stage {
         events.emit(EVENTS.STAGE_CREATED);
 
         events.on(EVENTS.SLIDE_SCROLL, this.#onSlideScroll);
+        events.on(EVENTS.STAGE_RESIZED, this.#onStageResized);
         events.on(EVENTS.PAGE_CHANGE_REQUEST, this.#onPageChangeRequest);
         events.emit(EVENTS.PAGE_CHANGE_REQUEST, {
             index: this.#config.startPage > 0 ? this.#config.startPage : 0,
@@ -214,8 +215,7 @@ export default class Stage {
         if (firstSlide === undefined)
             return;
 
-        const slideWidth = firstSlide.style.width,
-            containerStyle = window.getComputedStyle(this.#container),
+        const containerStyle = window.getComputedStyle(this.#container),
             container = this.#container,
             slides = this.#slides,
             config = this.#config;
@@ -241,7 +241,7 @@ export default class Stage {
         if (slides.length <= config.items)
             config.items = slides.length;
 
-        this.#calculateTotalPages();
+        this.#calculateTotalPages(); // this may not be needed here
 
         if (!config.vertical)
             this.#stage.style.width = `${this.#containerWidth * slides.length}px`;
@@ -252,9 +252,6 @@ export default class Stage {
             //this.#setActiveSlides();
             this.#updateContainerHeight();
         }
-
-        if (slideWidth != firstSlide.style.width)
-            this.#events.emit(EVENTS.STAGE_RESIZED);
     }
 
     #calculateTotalPages() {
@@ -466,8 +463,6 @@ export default class Stage {
         return slides;
     }
 
-
-
     #onStageTransitionEnd = () => this.#events.emit(EVENTS.TRANSITION_END);
 
     #onPageChanged = (e: CarouselEvents[typeof EVENTS.PAGE_CHANGED]) => this.#changePage(e.currentPage);
@@ -645,18 +640,21 @@ export default class Stage {
 
         this.#resizeThrottled = true;
 
-        setTimeout(() => {
-            this.#update();
+        setTimeout(() => this.#events.emit(EVENTS.STAGE_RESIZED), this.#config.resizeRefresh);
+    }
 
-            const slide = this.#getSlideDom();
-            if (slide != null)
-                this.#scrollToSlide(slide);
+    #onStageResized = () => {
+        this.#update();
+        this.#setSlidesGap();
 
-            const containerWidth = this.#container.getBoundingClientRect().width;
-            this.#configClass.refreshResponsive(containerWidth);
+        const slide = this.#getSlideDom();
+        if (slide != null)
+            this.#scrollToSlide(slide);
 
-            this.#resizeThrottled = false;
-        }, this.#config.resizeRefresh);
+        const containerWidth = this.#container.getBoundingClientRect().width;
+        this.#configClass.refreshResponsive(containerWidth);
+
+        this.#resizeThrottled = false;
     }
 
     #keyboardHandler = (e: KeyboardEvent) => {
