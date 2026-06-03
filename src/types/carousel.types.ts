@@ -48,6 +48,7 @@ export type CarouselStatus = {
     totalPages: number;
     slides: HTMLDivElement[];
     totalSlides: number;
+    pageSlides: number[][];
     activeSlides: number[];
     config: CarouselStatusConfig;
     currentTranslate: number;

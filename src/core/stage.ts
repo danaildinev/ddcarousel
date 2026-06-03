@@ -314,8 +314,6 @@ export default class Stage {
 
         this.totalPages = pages;
         this.pageSlides = pageSlides;
-        console.log(pageSlides);
-
     }
 
     #setSlidesGap() {
