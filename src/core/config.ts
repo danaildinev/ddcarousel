@@ -70,20 +70,28 @@ export class Config {
     }
 
     updateSettings(config?: Partial<CarouselConfig>) {
-        const targetConfig = config === undefined ? this.current : config,
-            oldConfig = Object.assign({}, this.current);
+        const current = this.current,
+            targetConfig = config === undefined ? current : config,
+            oldConfig = Object.assign({}, current);
 
-        Object.assign(this.current, targetConfig);
+        Object.assign(current, targetConfig);
 
-        if (this.current.items === 0)
-            this.current.itemPerPage = false;
+        if (current.items === 0) {
+            current.itemPerPage = false;
+        }
 
-        if (this.current.dragSnapMode === DragSnapMode.Closest)
-            this.current.centerSlide = true;
+        if (current.dragSnapMode === DragSnapMode.Closest) {
+            current.centerSlide = true;
+        }
+
+        if (current.loop) {
+            current.centerSlide = true;
+        }
 
         for (const [key, value] of Object.entries(targetConfig)) {
-            if (typeof value !== "function")
+            if (typeof value !== "function") {
                 continue;
+            }
 
             const callback = value as (payload?: any) => void; //tricky but it worked ;d
 
@@ -96,8 +104,9 @@ export class Config {
 
             // legacy format: onInitialize
             const mapped = LEGACY_EVENT_MAP[key];
-            if (mapped)
+            if (mapped) {
                 this.#events.on(mapped, callback);
+            }
         }
 
         this.#events.emit(EVENTS.CONFIG_CHANGED, {
