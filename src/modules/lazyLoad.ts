@@ -25,17 +25,21 @@ export default class LazyLoad extends BaseModule {
         const status = this.getStatus();
         slidesActive ??= status.activeSlides;
 
-        if (!slidesActive)
+        if (!slidesActive) {
             return;
+        }
 
         if (this.config.lazyPreload) {
             const lastActiveIndex = slidesActive[slidesActive.length - 1];
-            if (lastActiveIndex === undefined)
+            if (lastActiveIndex === undefined) {
                 return;
+            }
 
-            for (var i = lastActiveIndex + 1; i <= lastActiveIndex + this.config.lazyPreloadSlides; i++)
-                if (i < status.totalSlides && slidesActive.indexOf(i) == -1)
+            for (var i = lastActiveIndex + 1; i <= lastActiveIndex + this.config.lazyPreloadSlides; i++) {
+                if (i < status.totalSlides && slidesActive.indexOf(i) == -1) {
                     slidesActive.push(i);
+                }
+            }
         }
 
         slidesActive.forEach(i => {
@@ -52,19 +56,22 @@ export default class LazyLoad extends BaseModule {
     }
 
     #onChangePaged = (e: CarouselEvents[typeof EVENTS.PAGE_CHANGED]) => {
-        if (!this.shouldInitialize)
+        if (!this.shouldInitialize) {
             return;
+        }
 
         this.initialize(e.slidesActive);
     }
 
     #enableImageSrc(slideImg?: HTMLImageElement) {
-        if (!slideImg)
+        if (!slideImg) {
             return;
+        }
 
         const lazySrc = slideImg.dataset[DATA.dataset.lazyImg];
-        if (!lazySrc)
+        if (!lazySrc) {
             return;
+        }
 
         slideImg.src = lazySrc;
         slideImg.removeAttribute(DATA.attrs.lazyImg);

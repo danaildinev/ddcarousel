@@ -31,8 +31,9 @@ export default class Nav extends BaseModule {
         this.#totalPages = status.totalPages;
 
         const carousel = document.querySelector<HTMLDivElement>(`${this.config.container}`);
-        if (carousel === null)
+        if (carousel === null) {
             throw error("Module won't initialize! Stage DOM was not found!");
+        }
 
         this.#carousel = carousel;
 
@@ -48,8 +49,9 @@ export default class Nav extends BaseModule {
     initialize() {
         //this.#remove();
 
-        if (this.getStatus().totalPages == 0)
+        if (this.getStatus().totalPages == 0) {
             return;
+        }
 
         const prevBtn = document.createElement("div"),
             nextBtn = document.createElement("div");
@@ -83,8 +85,9 @@ export default class Nav extends BaseModule {
     }
 
     #onChangePaged = (e: CarouselEvents[typeof EVENTS.PAGE_CHANGED]) => {
-        if (!this.shouldInitialize)
+        if (!this.shouldInitialize) {
             return;
+        }
 
         this.#currentPage = e.currentPage;
         this.#refreshNav();

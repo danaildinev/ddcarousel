@@ -55,8 +55,9 @@ export default class Stage {
 
         this.#create();
 
-        if (this.#stage === null)
+        if (this.#stage === null) {
             throw error("Error creating stage!")
+        }
 
         this.#setInitialDimensions();
         this.#update();
@@ -88,13 +89,15 @@ export default class Stage {
         this.#resizeObserver = new ResizeObserver(() => this.#resizeEvent());
         this.#resizeObserver.observe(this.#container);
 
-        if (this.#config.keyboardNavigation)
+        if (this.#config.keyboardNavigation) {
             window.addEventListener("keydown", this.#keyboardHandler);
+        }
     }
 
     #create() {
-        if (this.#container == null)
+        if (this.#container == null) {
             throw error("Container not found!");
+        }
 
         const stateContainer = document.createElement("div"),
             stageDiv = document.createElement("div"),
@@ -109,8 +112,9 @@ export default class Stage {
 
         //get stage DOM
         const stage = this.#container.querySelector<HTMLDivElement>(`.${CSS_CLASSES.stage}`);
-        if (stage == null)
+        if (stage == null) {
             throw error("Invalid stage element");
+        }
 
         this.#stage = stage;
 
@@ -126,8 +130,9 @@ export default class Stage {
             const slide = document.createElement("div"),
                 source = slidesSource[i];
 
-            if (source === undefined)
+            if (source === undefined) {
                 continue;
+            }
 
             slide.classList.add(CSS_CLASSES.item);
             slide.dataset[DATA.dataset.slide] = i.toString();
@@ -170,8 +175,9 @@ export default class Stage {
 
     restoreOriginalSlides(restoreSlides: boolean) {
         const origContainer = document.querySelector(this.#config.container);
-        if (origContainer == null)
+        if (origContainer == null) {
             return;
+        }
 
         this.#container.querySelector(`.${CSS_CLASSES.container}`)?.remove();
         origContainer.className = this.#originalClasses;
@@ -208,12 +214,14 @@ export default class Stage {
     }
 
     #update() {
-        if (this.#slides == null || this.#stage == null)
+        if (this.#slides == null || this.#stage == null) {
             return;
+        }
 
         const firstSlide = this.#slides[0];
-        if (firstSlide === undefined)
+        if (firstSlide === undefined) {
             return;
+        }
 
         const containerStyle = window.getComputedStyle(this.#container),
             container = this.#container,
@@ -238,13 +246,15 @@ export default class Stage {
         this.#containerWidth = parseInt(containerStyle.width);
         this.#containerHeight = parseInt(containerStyle.height);
 
-        if (slides.length <= config.items)
+        if (slides.length <= config.items) {
             config.items = slides.length;
+        }
 
         this.#calculateTotalPages(); // this may not be needed here
 
-        if (!config.vertical)
+        if (!config.vertical) {
             this.#stage.style.width = `${this.#containerWidth * slides.length}px`;
+        }
 
         this.#slidesHeights = this.#getSlidesHeights();
 
@@ -255,8 +265,9 @@ export default class Stage {
     }
 
     #calculateTotalPages() {
-        if (this.#slides == null)
+        if (this.#slides == null) {
             return;
+        }
 
         let pages;
         const pageSlides = [];
@@ -316,8 +327,9 @@ export default class Stage {
     #setSlidesGap() {
         const { gap, items } = this.#config;
 
-        if (gap === 0)
+        if (gap === 0) {
             return;
+        }
 
         const widthOffset = gap - (gap / items);
 
@@ -334,8 +346,9 @@ export default class Stage {
     getSlides = (): HTMLDivElement[] => Object.assign({}, this.#slides);
 
     #getSlidesHeights(): number[] {
-        if (this.#slides == null)
+        if (this.#slides == null) {
             return [];
+        }
 
         const slidesHeights = [];
 
@@ -424,8 +437,9 @@ export default class Stage {
             .map(i => this.#slidesHeights[i])
             .filter((height): height is number => height !== undefined);
 
-        if (heights.length === 0)
+        if (heights.length === 0) {
             return;
+        }
 
         this.#container.style.height = Math.max(...heights) + "px";
     }
@@ -433,30 +447,36 @@ export default class Stage {
     #getVisibleSlides(): number[] {
         const { items, centerSlide, loop } = this.#config;
 
-        if (!centerSlide)
+        if (!centerSlide) {
             return this.slidesActive;
+        }
 
         const center = this.slidesActive[0];
-        if (center === undefined)
+        if (center === undefined) {
             return [];
+        }
 
         const half = Math.floor(items / 2),
             start = Math.max(0, center - half),
             end = Math.min(this.#slidesHeights.length - 1, center + half);
 
         const slides = [];
-        for (let i = start; i <= end; i++)
+        for (let i = start; i <= end; i++) {
             slides.push(i);
+        }
 
         if (loop) {
             const totalSlides = this.#slides.length - 1,
                 currentPage = this.currentPage;
+
             if (currentPage < half) {
-                for (let i = totalSlides - (half - currentPage); i < totalSlides; i++)
+                for (let i = totalSlides - (half - currentPage); i < totalSlides; i++) {
                     slides.push(i);
+                }
             } else if (currentPage + half > totalSlides) {
-                for (let i = 0; i < half - (totalSlides - currentPage); i++)
+                for (let i = 0; i < half - (totalSlides - currentPage); i++) {
                     slides.push(i);
+                }
             }
         }
 
@@ -475,8 +495,9 @@ export default class Stage {
             return;
         }
 
-        if (index >= 0 && index <= this.totalPages)
+        if (index >= 0 && index <= this.totalPages) {
             this.#changePage(index, e.animate)
+        }
     };
 
     #processRequestPageIndex(index: number | string): number {
@@ -510,8 +531,9 @@ export default class Stage {
     }
 
     #changePage(index: number, enableAnim = true) {
-        if (this.#stage == null)
+        if (this.#stage == null) {
             return;
+        }
 
         let origPage = this.currentPage;
         const config = this.#config;
@@ -546,8 +568,9 @@ export default class Stage {
         this.#events.emit(EVENTS.PAGE_CHANGE_SCROLL_AFTER, scrollStatus);
 
         //change stage height if this options is enabled
-        if (config.autoHeight)
+        if (config.autoHeight) {
             this.#updateContainerHeight();
+        }
 
         //fire change trigger
         if (origPage != this.currentPage) {
@@ -560,8 +583,9 @@ export default class Stage {
     }
 
     #getFirstSlideStyle = () => {
-        if (this.#slides == null)
+        if (this.#slides == null) {
             return;
+        }
 
         const slide = this.#slides[0];
         if (slide === undefined) {
@@ -580,16 +604,18 @@ export default class Stage {
     #onSlideScroll = (e: CarouselEvents[typeof EVENTS.SLIDE_SCROLL]) => this.#scrollToSlide(e.slide, e.animate, e.specifiedPosition);
 
     #scrollToSlide(slide?: HTMLDivElement | null, animate: boolean = true, specifiedPosition: number | null = null) {
-        if (this.#stage === null)
+        if (this.#stage === null) {
             return;
+        }
 
         const currentSlide = this.#getSlideDom(),
             err = "Error scrolling: ",
             config = this.#config,
             targetSlide = slide ?? currentSlide;
 
-        if (targetSlide === null)
+        if (targetSlide === null) {
             throw error(err + "target slide not found!");
+        }
 
         let position: number;
 
@@ -598,8 +624,9 @@ export default class Stage {
         } else {
             if (config.centerSlide && config.items > 0) {
                 const slideStyle = this.#getFirstSlideStyle();
-                if (slideStyle === undefined)
+                if (slideStyle === undefined) {
                     throw error(err + "Slide style was not found!");
+                }
 
                 position =
                     -this.#getSlidePos(targetSlide) -
@@ -623,8 +650,9 @@ export default class Stage {
     }
 
     #getSlidePos(slide: HTMLDivElement) {
-        if (!this.#stage)
+        if (!this.#stage) {
             throw error("Stage not found!");
+        }
 
         const stageRect = this.#stage.getBoundingClientRect(),
             slideRect = slide.getBoundingClientRect();
@@ -635,8 +663,9 @@ export default class Stage {
     }
 
     #resizeEvent = () => {
-        if (this.#resizeThrottled)
+        if (this.#resizeThrottled) {
             return;
+        }
 
         this.#resizeThrottled = true;
 
@@ -648,8 +677,9 @@ export default class Stage {
         this.#setSlidesGap();
 
         const slide = this.#getSlideDom();
-        if (slide != null)
+        if (slide != null) {
             this.#scrollToSlide(slide);
+        }
 
         const containerWidth = this.#container.getBoundingClientRect().width;
         this.#configClass.refreshResponsive(containerWidth);
@@ -659,12 +689,14 @@ export default class Stage {
 
     #keyboardHandler = (e: KeyboardEvent) => {
         const activeDocument = document.activeElement;
-        if (activeDocument === null)
+        if (activeDocument === null) {
             return;
+        }
 
         // don't trigger while typing
-        if (activeDocument.tagName === 'INPUT' || activeDocument.tagName === 'TEXTAREA')
+        if (activeDocument.tagName === 'INPUT' || activeDocument.tagName === 'TEXTAREA') {
             return;
+        }
 
         let page;
         switch (e.key) {

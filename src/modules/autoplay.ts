@@ -18,8 +18,10 @@ export default class Autoplay extends BaseModule {
         super(params);
 
         const stage = document.querySelector<HTMLDivElement>(`${this.config.container} .${CSS_CLASSES.stage}`);
-        if (stage === null)
+        if (stage === null) {
             throw error("Autoplay module won't initialize! Stage DOM was not found!");
+        }
+
         this.#stage = stage;
 
         this.#currentPage = this.getStatus().currentPage;
@@ -34,8 +36,9 @@ export default class Autoplay extends BaseModule {
     }
 
     initialize() {
-        if (this.config.autoplayPauseOnTabHidden)
+        if (this.config.autoplayPauseOnTabHidden) {
             document.addEventListener("visibilitychange", this.#stopOnTabHidden);
+        }
 
         this.#attachEvents();
         this.start();
@@ -55,8 +58,9 @@ export default class Autoplay extends BaseModule {
     }
 
     #onChangePaged = (e: CarouselEvents[typeof EVENTS.PAGE_CHANGED]) => {
-        if (!this.shouldInitialize)
+        if (!this.shouldInitialize) {
             return;
+        }
 
         this.#currentPage = e.currentPage;
         if (this.#currentPage < this.getStatus().totalPages) {
@@ -71,14 +75,17 @@ export default class Autoplay extends BaseModule {
     #stopOnTabHidden = () => document.hidden ? this.stop() : this.start();
 
     start = () => {
-        if (!this.config.autoplay)
+        if (!this.config.autoplay) {
             return;
+        }
 
-        if (this.#currentPage == this.getStatus().totalPages)
+        if (this.#currentPage == this.getStatus().totalPages) {
             return;
+        }
 
-        if (this.#autoPlay !== undefined)
+        if (this.#autoPlay !== undefined) {
             return;
+        }
 
         this.#createProgressBar();
         this.#toggleProgressBar(true);
@@ -100,8 +107,9 @@ export default class Autoplay extends BaseModule {
     }
 
     stop = () => {
-        if (this.#autoPlay == null)
+        if (this.#autoPlay == null) {
             return;
+        }
 
         clearInterval(this.#autoPlay);
         this.#autoPlay = undefined;
@@ -115,8 +123,9 @@ export default class Autoplay extends BaseModule {
     };
 
     #restartProgressBar() {
-        if (!this.#progressBar)
+        if (!this.#progressBar) {
             return;
+        }
 
         this.#toggleProgressBar(true);
 
@@ -142,8 +151,9 @@ export default class Autoplay extends BaseModule {
     }
 
     #createProgressBar() {
-        if (!this.config.autoplayProgress || this.#progressBar)
+        if (!this.config.autoplayProgress || this.#progressBar) {
             return;
+        }
 
         const progress = document.createElement("div"),
             progressBar = document.createElement("div");

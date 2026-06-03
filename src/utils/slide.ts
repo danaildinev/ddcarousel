@@ -39,14 +39,16 @@ export function getClosestSlideIndexes(offsets: SlideOffsets[], viewportCenter: 
     const first = offsets.at(0)?.left,
         last = offsets.at(-1)?.right;
 
-    if (first == null || last == null)
+    if (first == null || last == null) {
         return {};
+    }
 
     const result: ClosestSlideIndexes = {};
 
     const findOffset = (current: number) => {
-        if (current < first || current > last)
+        if (current < first || current > last) {
             return -1;
+        }
 
         let closestIndex = -1,
             closestDistToCenter = Infinity;

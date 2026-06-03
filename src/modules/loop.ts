@@ -20,8 +20,9 @@ export default class Loop extends BaseModule {
         super(params);
 
         const stage = document.querySelector<HTMLDivElement>(`${this.config.container} .${CSS_CLASSES.stage}`);
-        if (stage === null)
+        if (stage === null) {
             throw error("Loop module won't initialize! Stage was not found!");
+        }
         this.#stage = stage;
 
         this.emitCreated();
@@ -70,8 +71,9 @@ export default class Loop extends BaseModule {
         let priority = PRIORITY.BEHAVIOR;
 
         const canOverride = this.tryOverridePriority(e, priority);
-        if (!canOverride)
+        if (!canOverride) {
             return;
+        }
 
         if (e.request === "prev" && e.currentPage === 0)
             e.page = e.totalPages;
@@ -86,8 +88,9 @@ export default class Loop extends BaseModule {
             firstCurrentIndex = activeSlides[0],
             lastCurrentIndex = activeSlides[activeSlides.length - 1];
 
-        if (firstCurrentIndex === undefined || lastCurrentIndex === undefined)
+        if (firstCurrentIndex === undefined || lastCurrentIndex === undefined) {
             return;
+        }
 
         const prev = firstCurrentIndex - 1 < 0 ? totalSlides : firstCurrentIndex - 1,
             next = lastCurrentIndex + 1 > totalSlides ? 0 : lastCurrentIndex + 1;
@@ -102,8 +105,9 @@ export default class Loop extends BaseModule {
     }
 
     #onChangePageScrollBefore = (e: CarouselEvents[typeof EVENTS.PAGE_CHANGE_SCROLL_BEFORE]) => {
-        if (!this.#stage)
+        if (!this.#stage) {
             return;
+        }
 
         this.#activeSlides = e.activeSlides;
 
@@ -111,8 +115,9 @@ export default class Loop extends BaseModule {
             prev = prevNextSlides?.prev,
             next = prevNextSlides?.next;
 
-        if (prev === undefined || next === undefined)
+        if (prev === undefined || next === undefined) {
             return;
+        }
 
         const
             currentTranslate = e.currentTranslate,
@@ -126,23 +131,27 @@ export default class Loop extends BaseModule {
             isAtStartBoundary = lastSlide.classList.contains("active"),
             hasReachedEndBound = firstSlide.classList.contains(CSS_CLASSES.slideNext);
 
-        // if the current slide/s is the last - always keep it at the end
-        if (isAtEnd && isSlidingForward)
+        if (isAtEnd && isSlidingForward) {
+            // if the current slide/s is the last - always keep it at the end
             this.#handleLastSlide(lastCurrentIndex, lastSlide);
-        // if scrolling right - shift slides backwards when all active slides reached the end
-        else if (hasReachedEndBound && isSlidingForward)
+        }
+        else if (hasReachedEndBound && isSlidingForward) {
+            // if scrolling right - shift slides backwards when all active slides reached the end
             this.#shiftAndReorderEnd(currentTranslate, lastSlide);
-        // if scrolling left - opposite to the above logic
-        else if (isAtStartBoundary && !isSlidingForward)
+        }
+        else if (isAtStartBoundary && !isSlidingForward) {
+            // if scrolling left - opposite to the above logic
             this.#handleStartBoundaryShift(currentTranslate, firstSlide, lastSlide);
+        }
 
         this.#markPrevAndNextSlides(prev, next);
     }
 
     #handleLastSlide(index: number, anchor: HTMLDivElement) {
         const currentSlide = this.#getSlideDom(index);
-        if (currentSlide)
+        if (currentSlide) {
             anchor.after(currentSlide);
+        }
     }
 
     #shiftAndReorderEnd(currentTranslate: number, anchor: HTMLElement) {
@@ -168,8 +177,9 @@ export default class Loop extends BaseModule {
         const nextSlide = this.#stage.children[this.config.items],
             isNextInvalid = !nextSlide?.classList.contains(CSS_CLASSES.slideNext);
 
-        if (isNextInvalid)
+        if (isNextInvalid) {
             return;
+        }
 
         this.#shiftStage(currentTranslate, lastDom, this.#activeSlides.length, false);
 
@@ -292,8 +302,9 @@ export default class Loop extends BaseModule {
             lastSlides = arrayChildren.slice(stageChilden.length - cloneSlidesCount, stageChilden.length) as HTMLDivElement[],
             lastSlide = lastSlides[lastSlides.length - 1] as HTMLDivElement;
 
-        if (firstSlide === undefined || lastSlide === undefined)
+        if (firstSlide === undefined || lastSlide === undefined) {
             return stageTranslate;
+        }
 
         const activeSet = new Set(this.#activeSlides);
         let isNearStart, isNearEnd;

@@ -34,8 +34,9 @@ export default class Drag extends BaseModule {
         super(params);
 
         const stage = document.querySelector<HTMLDivElement>(`${this.config.container} .${CSS_CLASSES.stage}`);
-        if (stage === null)
+        if (stage === null) {
             throw error("Drag module won't initialize! Stage DOM was not found!");
+        }
 
         this.#stageDom = stage;
 
@@ -103,17 +104,19 @@ export default class Drag extends BaseModule {
             throw error("Drag start failed! Stage was not found!");
 
         const target = e.target;
-        if (!(target instanceof Node))
-            return;
 
-        if (!this.#stageDom.contains(target))
+        const isInvalidTarget = !(target instanceof Node) || !this.#stageDom.contains(target);
+        if (isInvalidTarget) {
             return;
+        }
 
-        if (e.pointerType === "touch" && !this.config.touchDrag)
+        if (e.pointerType === "touch" && !this.config.touchDrag) {
             return;
+        }
 
-        if (e.pointerType === "mouse" && !this.config.mouseDrag)
+        if (e.pointerType === "mouse" && !this.config.mouseDrag) {
             return;
+        }
 
         const dragState = {
             currentTranslate: this.#currentTranslate
@@ -125,8 +128,9 @@ export default class Drag extends BaseModule {
         this.#currentTranslate = dragState.currentTranslate;
 
         const startPoint = this.#getInput(e);
-        if (startPoint == undefined)
+        if (startPoint == undefined) {
             return;
+        }
 
         this.#isDragging = true;
         this.#touchStartRawCords = startPoint;
@@ -148,11 +152,13 @@ export default class Drag extends BaseModule {
     }
 
     #dragMove = (e: PointerEvent) => {
-        if (!this.#isDragging)
+        if (!this.#isDragging) {
             return;
+        }
 
-        if (this.#stageDom === null)
+        if (this.#stageDom === null) {
             throw error("Dragging failed! Stage was not found!");
+        }
 
         const input = this.#getInput(e);
 
@@ -197,8 +203,9 @@ export default class Drag extends BaseModule {
     }
 
     #dragEnd = () => {
-        if (!this.#isDragging)
+        if (!this.#isDragging) {
             return;
+        }
 
         this.events.emit(EVENTS.DRAG_END);
 
@@ -251,8 +258,9 @@ export default class Drag extends BaseModule {
 
     #cacheSlideOffsets() {
         const container = this.#stageDom.parentElement;
-        if (!container)
+        if (!container) {
             return;
+        }
 
         const { vertical } = this.config;
 

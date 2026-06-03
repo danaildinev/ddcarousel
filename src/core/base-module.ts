@@ -23,8 +23,9 @@ export abstract class BaseModule implements Module {
         this.getStatus = params.getStatus;
 
         const containerDiv = document.querySelector<HTMLDivElement>(`${this.config.container}`);
-        if (containerDiv === null)
+        if (containerDiv === null) {
             throw error("Module won't initialize! Stage DOM was not found!");
+        }
         this.container = containerDiv;
     }
 

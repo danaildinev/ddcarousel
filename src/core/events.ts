@@ -13,8 +13,9 @@ export class Events {
     on(name: string, callback: (payload?: any) => void): void {
         // support legacy format
         const mapped = LEGACY_EVENT_MAP[name];
-        if (mapped)
+        if (mapped) {
             name = mapped;
+        }
 
         let handlers = this.#events.get(name);
 
@@ -30,8 +31,9 @@ export class Events {
     emit(name: string, payload?: any): void;
     emit(name: string, payload?: any) {
         const callbacks = this.#events.get(name);
-        if (!callbacks)
+        if (!callbacks) {
             return;
+        }
 
         callbacks.forEach(cb => cb(payload));
     }
@@ -40,8 +42,9 @@ export class Events {
     off(name: string, callback: (payload?: any) => void): void;
     off(name: string, callback: (payload?: any) => void) {
         const eventName = this.#events.get(name);
-        if (eventName === undefined)
+        if (eventName === undefined) {
             throw error(`Event name '${name}' is not found!`);
+        }
 
         eventName.delete(callback);
     }

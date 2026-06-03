@@ -24,8 +24,9 @@ export default class ModuleLoader {
     }
 
     async load(moduleName: ModuleName) {
-        if (this.#instances.has(moduleName))
+        if (this.#instances.has(moduleName)) {
             return;
+        }
 
         const mod = await import(`../modules/${moduleName}`);
         const ModuleClass = mod.default;
@@ -38,8 +39,9 @@ export default class ModuleLoader {
 
     async unload(moduleName: ModuleName) {
         const instance = this.#instances.get(moduleName);
-        if (!instance)
+        if (!instance) {
             return;
+        }
 
         instance.destroy();
 
@@ -54,12 +56,14 @@ export default class ModuleLoader {
                 const oldValue = e.old?.[key] ?? e.default[key];
                 const resolvedNewValue = e.new[key] ?? e.default[key];
 
-                if (oldValue === resolvedNewValue)
+                if (oldValue === resolvedNewValue) {
                     continue;
+                }
 
                 const module = this.modules.find(m => m.name === key);
-                if (module === undefined)
+                if (module === undefined) {
                     continue;
+                }
 
                 if (resolvedNewValue === false) {
                     module?.destroy();

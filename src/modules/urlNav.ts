@@ -35,8 +35,10 @@ export default class UrlNav extends BaseModule {
         this.#status = params.getStatus();
 
         const container = document.querySelector<HTMLDivElement>(`${this.#config.container}`);
-        if (container === null)
+        if (container === null) {
             throw error("Url nav module won't initialize! Stage DOM was not found!");
+        }
+
         this.#container = container;
 
         this.emitCreated();
@@ -67,14 +69,16 @@ export default class UrlNav extends BaseModule {
         list.classList.add(CSS_CLASSES.urls);
         for (const slide of Object.values(this.#status.slides)) {
             const child = slide.firstChild as HTMLElement;
-            if (!child)
+            if (!child) {
                 return;
+            }
 
             const slideId = child.dataset[DATA.dataset.id],
                 slideTitle = child.dataset[DATA.dataset.title];
 
-            if (slideId === undefined && slideTitle === undefined)
+            if (slideId === undefined && slideTitle === undefined) {
                 continue;
+            }
 
             const item = document.createElement('li'),
                 link = document.createElement('a'),
@@ -103,10 +107,11 @@ export default class UrlNav extends BaseModule {
         let appendContainer = this.#container;
         if (this.#config.urlNavContainer) {
             const container = document.querySelector<HTMLDivElement>(this.#config.urlNavContainer);
-            if (container)
+            if (container) {
                 appendContainer = container;
-            else
+            } else {
                 console.warn(`Error appending url navigation: ${this.#config.urlNavContainer} not found!`);
+            }
         }
 
         appendContainer.appendChild(list);
@@ -117,12 +122,14 @@ export default class UrlNav extends BaseModule {
 
     goToUrl(name: string, enableAnim = true) {
         const slide = this.container.querySelector<HTMLDivElement>(`.${CSS_CLASSES.item} [${DATA.attrs.id}="${name}"]`);
-        if (slide == null)
+        if (slide == null) {
             throw error(`Slide ${name} was not found!`);
+        }
 
         const parent = slide.parentElement;
-        if (parent == null)
+        if (parent == null) {
             return;
+        }
 
         const id = parent.dataset[DATA.dataset.slide];
         this.#events.emit(EVENTS.PAGE_CHANGE_REQUEST, { index: id, enableAnim })

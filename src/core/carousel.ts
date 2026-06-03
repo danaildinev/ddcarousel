@@ -25,8 +25,9 @@ export default class Carousel {
 
         this.#events = new Events();
 
-        if (config !== undefined)
+        if (config !== undefined) {
             this.init(config);
+        }
     }
 
     init(config: CarouselConfig) {
@@ -35,8 +36,9 @@ export default class Carousel {
             return;
         }
 
-        if (this.#events === null)
+        if (this.#events === null) {
             this.#events = new Events();
+        }
 
         //config events wong execute
         this.#events.emit(EVENTS.INITIALIZE);
@@ -113,12 +115,14 @@ export default class Carousel {
 
     getStatus = (): CarouselStatus => {
         const container = document.querySelector<HTMLDivElement>(this.#config.current.container);
-        if (!container)
+        if (!container) {
             throw error("Error: Container not found!");
+        }
 
         const stage = container.querySelector<HTMLDivElement>(`.${CSS_CLASSES.stage}`);
-        if (!stage)
+        if (!stage) {
             throw error("Error: Stage not found!");
+        }
 
         const vertical = this.#config.current.vertical;
         const viewportCenter = Stage.getViewportCenter(container, vertical);
