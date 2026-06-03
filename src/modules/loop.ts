@@ -222,23 +222,27 @@ export default class Loop extends BaseModule {
         const status = this.getStatus();
         const currentPage = status.currentPage;
         const totalPages = status.totalPages;
+        const currentTranslate = status.currentTranslate;
 
+        let direction: "left" | "right" | undefined;
         if (currentPage === 0) {
             if (this.config.items === 1) {
                 return;
             }
-            this.#appendSlides("left", status);
+            direction = "left";
         } else if (currentPage + itemsToAdd > totalPages) {
-            this.#appendSlides("right", status);
+            direction = "right";
+        }
+
+        if (direction) {
+            this.#appendSlides(direction, currentTranslate, currentPage, totalPages, itemsToAdd);
         }
     }
 
-    #appendSlides(direction: ClosestSlideDirection, status: CarouselStatus) {
-        const itemsToAdd = this.config.items;
-        const slides = Array.from(this.#stage.children)
-        const currentPage = status.currentPage;
-        const totalPages = status.totalPages;
-        let modifiedTranslate = status.currentTranslate;
+    #appendSlides(direction: ClosestSlideDirection, currentTranslate: number, currentPage: number, totalPages: number, itemsCount?: number) {
+        const itemsToAdd = itemsCount ?? Math.floor(this.config.items / 2);
+        const slides = Array.from(this.#stage.children);
+        let modifiedTranslate = currentTranslate;
 
         if (direction === "left") {
             const first = slides.at(0);
@@ -267,7 +271,7 @@ export default class Loop extends BaseModule {
             last.after(...first);
         }
 
-        if (status.currentTranslate != modifiedTranslate) {
+        if (currentTranslate != modifiedTranslate) {
             this.events.emit(EVENTS.SLIDE_SCROLL, {
                 specifiedPosition: modifiedTranslate,
                 animate: false,
