@@ -23,7 +23,6 @@ export default class UrlNav extends BaseModule {
     #config: CarouselConfig;
     #status: CarouselStatus;
 
-    #container: HTMLElement;
     #navItems!: UrlNavItem[];
     #urlNavContainer!: HTMLElement;
 
@@ -33,13 +32,6 @@ export default class UrlNav extends BaseModule {
         this.#config = params.config.current;
         this.#events = params.events;
         this.#status = params.getStatus();
-
-        const container = document.querySelector<HTMLDivElement>(`${this.#config.container}`);
-        if (container === null) {
-            throw error("Url nav module won't initialize! Stage DOM was not found!");
-        }
-
-        this.#container = container;
 
         this.emitCreated();
     }
@@ -104,7 +96,7 @@ export default class UrlNav extends BaseModule {
             });
         }
 
-        let appendContainer = this.#container;
+        let appendContainer = this.container;
         if (this.#config.urlNavContainer) {
             const container = document.querySelector<HTMLDivElement>(this.#config.urlNavContainer);
             if (container) {

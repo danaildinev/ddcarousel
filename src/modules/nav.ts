@@ -4,7 +4,6 @@ import { BaseModule } from "../core/base-module";
 import { ModuleName } from "../core/module-names";
 import type { CarouselEvents } from "../types/event.types";
 import type { ModuleLoaderParams } from "../types/module.params";
-import { error } from "../utils/error-handler";
 
 export default class Nav extends BaseModule {
     name: ModuleName = ModuleName.Nav;
@@ -29,13 +28,6 @@ export default class Nav extends BaseModule {
         const status = this.getStatus();
         this.#currentPage = status.currentPage;
         this.#totalPages = status.totalPages;
-
-        const carousel = document.querySelector<HTMLDivElement>(`${this.config.container}`);
-        if (carousel === null) {
-            throw error("Module won't initialize! Stage DOM was not found!");
-        }
-
-        this.#carousel = carousel;
 
         this.events.on(EVENTS.PAGE_CHANGED, this.#onChangePaged);
 
