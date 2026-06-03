@@ -631,7 +631,7 @@ export default class Stage {
 
         return this.#config.vertical
             ? slideRect.top - stageRect.top
-            : slideRect.left - stageRect.left;
+            : slideRect.left - stageRect.left - this.#config.gap;
     }
 
     #resizeEvent = () => {
