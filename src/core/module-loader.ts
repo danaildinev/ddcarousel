@@ -18,9 +18,9 @@ export default class ModuleLoader {
     }
 
     async loadAll() {
-        Object.values(ModuleName).forEach(async m => {
-            await this.load(m);
-        });
+        await Promise.all(
+            Object.values(ModuleName).map(m => this.load(m))
+        );
     }
 
     async load(moduleName: ModuleName) {
