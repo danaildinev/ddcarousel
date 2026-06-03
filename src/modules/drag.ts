@@ -165,7 +165,7 @@ export default class Drag extends BaseModule {
         this.#lastTouch = this.#currentTouch;
 
         //disable transition to get more responsive dragging
-        this.#stageDom.style.transitionDuration = this.config.swipeSmooth + "s";
+        this.#stageDom.style.transitionDuration = `${this.config.swipeSmooth}s`;
 
         //calcualte swipe distance between starging value cnd current value
         this.#swipeDistance = Math.abs(input - this.#touchStartRawCords);
@@ -241,7 +241,7 @@ export default class Drag extends BaseModule {
         this.#isDragging = false;
     }
 
-    #resetTransitionDuration = () => this.#stageDom.style.transitionDuration = this.config.slideChangeDuration + "s";
+    #resetTransitionDuration = () => this.#stageDom.style.transitionDuration = `${this.config.slideChangeDuration}s`;
 
     #onStageResized = () => {
         this.#cacheSlideOffsets();

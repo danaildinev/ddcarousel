@@ -378,13 +378,13 @@ export default class Stage {
         const items = this.#config.items;
         if (items != 0) {
             if (this.#config.vertical) {
-                slide.style.height = this.#containerHeight / items + "px";
+                slide.style.height = `${this.#containerHeight / items}px`;
             } else if (!this.#config.vertical) {
-                slide.style.width = this.#containerWidth / items + "px";
+                slide.style.width = `${this.#containerWidth / items}px`;
             }
         } else {
             var slideBounds = slide.getBoundingClientRect();
-            slide.style.width = slideBounds.width + "px";
+            slide.style.width = `${slideBounds.width}px`;
         }
     }
 
@@ -441,7 +441,8 @@ export default class Stage {
             return;
         }
 
-        this.#container.style.height = Math.max(...heights) + "px";
+        const maxHeight = Math.max(...heights);
+        this.#container.style.height = `${maxHeight}px`;
     }
 
     #getVisibleSlides(): number[] {
@@ -541,7 +542,7 @@ export default class Stage {
         if (!enableAnim) {
             this.#stage.style.transitionDuration = "0s";
         } else {
-            this.#stage.style.transitionDuration = config.slideChangeDuration + "s";
+            this.#stage.style.transitionDuration = `${config.slideChangeDuration}s`;
         }
 
         const isForward = index > this.currentPage ||
@@ -614,7 +615,7 @@ export default class Stage {
             targetSlide = slide ?? currentSlide;
 
         if (targetSlide === null) {
-            throw error(err + "target slide not found!");
+            throw error(`${err} target slide not found!`);
         }
 
         let position: number;
@@ -625,7 +626,7 @@ export default class Stage {
             if (config.centerSlide && config.items > 0) {
                 const slideStyle = this.#getFirstSlideStyle();
                 if (slideStyle === undefined) {
-                    throw error(err + "Slide style was not found!");
+                    throw error(`${err} Slide style was not found!`);
                 }
 
                 position =
@@ -642,7 +643,7 @@ export default class Stage {
             this.#stage.style.transitionDuration = "0s";
             scrollToPos(this.#stage, this.currentTranslate, config.vertical);
             this.#stage.offsetHeight;  // force reflow
-            this.#stage.style.transitionDuration = this.#config.slideChangeDuration + "s";
+            this.#stage.style.transitionDuration = `${this.#config.slideChangeDuration}s`;
             return;
         }
 
