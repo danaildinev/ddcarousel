@@ -1,13 +1,12 @@
 import { EVENTS } from './../constants/events-list';
 import { BaseModule } from "../core/base-module";
-import type { ModuleId } from "../core/module-registry";
 import { CSS_CLASSES } from "../constants/css-classes";
 import { error } from "../utils/error-handler";
 import type { ModuleContext } from "../types/module.params";
 import type { CarouselEvents } from "../types/event.types";
 
 export default class Autoplay extends BaseModule {
-    id: ModuleId = "autoplay";
+    id: string = "autoplay";
 
     #stage: HTMLDivElement;
     #progressBar?: HTMLDivElement | undefined;

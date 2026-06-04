@@ -3,7 +3,6 @@ import { DATA } from "../constants/data-attrs";
 import { EVENTS } from "../constants/events-list";
 import { BaseModule } from "../core/base-module";
 import type { Events } from "../core/events";
-import type { ModuleId } from "../core/module-registry";
 import type { CarouselConfig, CarouselStatus } from "../types/carousel.types";
 import type { CarouselEvents } from "../types/event.types";
 import type { ModuleContext } from "../types/module.params";
@@ -17,7 +16,7 @@ export type UrlNavItem = {
 }
 
 export default class UrlNav extends BaseModule {
-    id: ModuleId = "urlNav";
+    id: string = "urlNav";
 
     #events: Events;
     #config: CarouselConfig;
@@ -29,7 +28,7 @@ export default class UrlNav extends BaseModule {
     constructor(params: ModuleContext) {
         super(params);
 
-        this.#config = params.config.current;
+        this.#config = params.config;
         this.#events = params.events;
         this.#status = params.getStatus();
 

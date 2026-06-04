@@ -1,12 +1,11 @@
 import { CSS_CLASSES } from "../constants/css-classes";
 import { EVENTS } from "../constants/events-list";
 import { BaseModule } from "../core/base-module";
-import type { ModuleId } from "../core/module-registry";
 import type { CarouselEvents } from "../types/event.types";
 import type { ModuleContext } from "../types/module.params";
 
 export default class Nav extends BaseModule {
-    id: ModuleId = "nav";
+    id: string = "nav";
 
     static chevronSvg: string = `
         <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="currentColor" class="chevron" viewBox="0 0 16 16">

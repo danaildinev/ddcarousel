@@ -2,10 +2,9 @@ import { EVENTS } from "../constants/events-list";
 import type { CarouselEvents } from "../types/event.types";
 import type { ModuleContext } from "../types/module.params";
 import type { BaseModule } from "./base-module";
-import { MODULE_IDS, type ModuleId } from "./module-registry";
 
 export default class ModuleLoader {
-    #instances = new Map<ModuleId, BaseModule>();
+    #instances = new Map<string, BaseModule>();
     #params: ModuleContext;
 
     constructor(params: ModuleContext) {
@@ -18,13 +17,17 @@ export default class ModuleLoader {
         return [...this.#instances.values()];
     }
 
-    async loadAll() {
+    async loadAll(modules?: readonly string[]) {
+        if (!modules?.length) {
+            return;
+        }
+
+        const uniqueModules = [...new Set(modules)];
         await Promise.all(
-            MODULE_IDS.map(m => this.load(m))
-        );
+            uniqueModules.map(m => this.load(m)));
     }
 
-    async load(moduleId: ModuleId) {
+    async load(moduleId: string) {
         if (this.#instances.has(moduleId)) {
             return;
         }
@@ -42,12 +45,11 @@ export default class ModuleLoader {
         }
     }
 
-    #isModuleEnabled(moduleId: ModuleId): boolean {
-        const moduleStatus = this.#params.config.modules?.[moduleId];
-        return Boolean(moduleStatus) ?? false;
+    #isModuleEnabled(moduleId: string): boolean {
+        return this.#params.config.modules.indexOf(moduleId) > -1;
     }
 
-    async unload(moduleId: ModuleId) {
+    async unload(moduleId: string) {
         const instance = this.#instances.get(moduleId);
         if (!instance) {
             return;

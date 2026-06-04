@@ -4,10 +4,9 @@ import type { ModuleContext } from "../types/module.params";
 import type { PageChangePayload } from "../types/pageChangeIndexPayload";
 import type { Events } from "./events";
 import type { Module } from "./module";
-import type { ModuleId } from "./module-registry";
 
 export abstract class BaseModule implements Module {
-    abstract id: ModuleId;
+    abstract id: string;
 
     protected config: CarouselConfig;
     protected events: Events;

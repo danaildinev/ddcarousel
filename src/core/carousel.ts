@@ -8,7 +8,6 @@ import { getClosestSlideIndexes, getSlidesOffsets } from "../utils/slide";
 import { Config } from "./config";
 import { Events } from "./events";
 import ModuleLoader from "./module-loader";
-import type { ModuleId } from "./module-registry";
 import Stage from "./stage";
 
 export default class Carousel {
@@ -81,7 +80,7 @@ export default class Carousel {
         this.#initialized = false;
     }
 
-    module = (name: ModuleId) => this.#moduleLoader?.modules.find(m => m.id === name);
+    module = (name: string) => this.#moduleLoader?.modules.find(m => m.id === name);
 
     on = (name: string, callback: any) => this.#events.on(name, callback);
 
