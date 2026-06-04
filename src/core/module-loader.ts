@@ -1,15 +1,14 @@
-import type { EVENTS } from "../constants/events-list";
-import type { CarouselConfig } from "../types/carousel.types";
+import { EVENTS } from "../constants/events-list";
 import type { CarouselEvents } from "../types/event.types";
-import type { ModuleLoaderParams } from "../types/module.params";
+import type { ModuleContext } from "../types/module.params";
 import type { BaseModule } from "./base-module";
 import { MODULE_IDS, type ModuleId } from "./module-registry";
 
 export default class ModuleLoader {
     #instances = new Map<ModuleId, BaseModule>();
-    #params: ModuleLoaderParams;
+    #params: ModuleContext;
 
-    constructor(params: ModuleLoaderParams) {
+    constructor(params: ModuleContext) {
         this.#params = params;
     }
 

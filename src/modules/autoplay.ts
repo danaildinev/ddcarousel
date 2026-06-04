@@ -3,7 +3,7 @@ import { BaseModule } from "../core/base-module";
 import type { ModuleId } from "../core/module-registry";
 import { CSS_CLASSES } from "../constants/css-classes";
 import { error } from "../utils/error-handler";
-import type { ModuleLoaderParams } from "../types/module.params";
+import type { ModuleContext } from "../types/module.params";
 import type { CarouselEvents } from "../types/event.types";
 
 export default class Autoplay extends BaseModule {
@@ -14,7 +14,7 @@ export default class Autoplay extends BaseModule {
     #autoPlay!: number | undefined;
     #currentPage: number;
 
-    constructor(params: ModuleLoaderParams) {
+    constructor(params: ModuleContext) {
         super(params);
 
         const stage = document.querySelector<HTMLDivElement>(`${this.config.container} .${CSS_CLASSES.stage}`);

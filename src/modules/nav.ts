@@ -3,7 +3,7 @@ import { EVENTS } from "../constants/events-list";
 import { BaseModule } from "../core/base-module";
 import type { ModuleId } from "../core/module-registry";
 import type { CarouselEvents } from "../types/event.types";
-import type { ModuleLoaderParams } from "../types/module.params";
+import type { ModuleContext } from "../types/module.params";
 
 export default class Nav extends BaseModule {
     id: ModuleId = "nav";
@@ -13,7 +13,6 @@ export default class Nav extends BaseModule {
         <path fill-rule="evenodd" d="M11.354 1.646a.5.5 0 0 1 0 .708L5.707 8l5.647 5.646a.5.5 0 0 1-.708.708l-6-6a.5.5 0 0 1 0-.708l6-6a.5.5 0 0 1 .708 0"/>
         </svg>`;
 
-    #carousel!: HTMLDivElement;
     #currentPage: number;
     #totalPages: number;
 
@@ -22,7 +21,7 @@ export default class Nav extends BaseModule {
 
     #inactiveClass = "inactive";
 
-    constructor(params: ModuleLoaderParams) {
+    constructor(params: ModuleContext) {
         super(params);
 
         const status = this.getStatus();

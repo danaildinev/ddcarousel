@@ -1,9 +1,9 @@
-import type { Config } from "../core/config";
 import type { Events } from "../core/events";
-import type { CarouselStatus } from "./carousel.types";
+import type { CarouselConfig, CarouselStatus } from "./carousel.types";
 
-export type ModuleLoaderParams = {
-    config: Config,
+export type ModuleContext = {
+    config: CarouselConfig,
     events: Events,
-    getStatus: () => CarouselStatus
+    getStatus: () => CarouselStatus,
+    container: HTMLDivElement
 };

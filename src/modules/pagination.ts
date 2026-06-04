@@ -4,7 +4,7 @@ import { EVENTS } from "../constants/events-list";
 import { error } from "../utils/error-handler";
 import { BaseModule } from "../core/base-module";
 import type { ModuleId } from "../core/module-registry";
-import type { ModuleLoaderParams } from "../types/module.params";
+import type { ModuleContext } from "../types/module.params";
 import type { CarouselEvents } from "../types/event.types";
 
 export default class Dots extends BaseModule {
@@ -15,7 +15,7 @@ export default class Dots extends BaseModule {
 
     #activeClass = "active";
 
-    constructor(params: ModuleLoaderParams) {
+    constructor(params: ModuleContext) {
         super(params);
 
         this.#currentPage = this.getStatus().currentPage;

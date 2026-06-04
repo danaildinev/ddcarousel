@@ -46,10 +46,16 @@ export default class Carousel {
         this.#config = new Config(config, this.#events);
         this.#stage = new Stage(this.#config, this.#events);
 
+        const container = document.querySelector<HTMLDivElement>(this.#config.current.container);
+        if (!container) {
+            throw error("Error: Container not found!");
+        }
+
         this.#moduleLoader = new ModuleLoader({
-            config: this.#config,
+            config: this.#config.current,
             events: this.#events,
-            getStatus: this.getStatus
+            getStatus: this.getStatus,
+            container: container
         });
         this.#moduleLoader.loadAll();
         this.#events.on(EVENTS.CONFIG_CHANGED, this.#moduleLoader.toggleAll);

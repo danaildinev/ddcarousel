@@ -1,7 +1,7 @@
 import { CSS_CLASSES } from "../constants/css-classes";
 import { EVENTS } from "../constants/events-list";
 import { BaseModule } from "../core/base-module";
-import type { ModuleLoaderParams } from "../types/module.params";
+import type { ModuleContext } from "../types/module.params";
 import type { ModuleId } from "../core/module-registry";
 import type { CarouselEvents } from "../types/event.types";
 import { error } from "../utils/error-handler";
@@ -10,7 +10,7 @@ import { DragSnapMode } from "../types/carousel.types";
 import { getSlidesOffsets, getClosestSlideIndexes, type SlideOffsets } from "../utils/slide";
 
 export default class Drag extends BaseModule {
-    id: ModuleId = "autoplay";
+    id: ModuleId = "drag";
 
     #stageDom: HTMLDivElement;
 
@@ -30,7 +30,7 @@ export default class Drag extends BaseModule {
     #currentPage!: number;
     #totalPages!: number;
 
-    constructor(params: ModuleLoaderParams) {
+    constructor(params: ModuleContext) {
         super(params);
 
         const stage = document.querySelector<HTMLDivElement>(`${this.config.container} .${CSS_CLASSES.stage}`);

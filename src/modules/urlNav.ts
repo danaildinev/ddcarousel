@@ -6,7 +6,7 @@ import type { Events } from "../core/events";
 import type { ModuleId } from "../core/module-registry";
 import type { CarouselConfig, CarouselStatus } from "../types/carousel.types";
 import type { CarouselEvents } from "../types/event.types";
-import type { ModuleLoaderParams } from "../types/module.params";
+import type { ModuleContext } from "../types/module.params";
 import { error } from "../utils/error-handler";
 
 export type UrlNavItem = {
@@ -26,7 +26,7 @@ export default class UrlNav extends BaseModule {
     #navItems!: UrlNavItem[];
     #urlNavContainer!: HTMLElement;
 
-    constructor(params: ModuleLoaderParams) {
+    constructor(params: ModuleContext) {
         super(params);
 
         this.#config = params.config.current;

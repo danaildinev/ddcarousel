@@ -1,8 +1,7 @@
 import { EVENTS } from "../constants/events-list";
 import type { CarouselConfig, CarouselStatus } from "../types/carousel.types";
-import type { ModuleLoaderParams } from "../types/module.params";
+import type { ModuleContext } from "../types/module.params";
 import type { PageChangePayload } from "../types/pageChangeIndexPayload";
-import { error } from "../utils/error-handler";
 import type { Events } from "./events";
 import type { Module } from "./module";
 import type { ModuleId } from "./module-registry";
@@ -17,16 +16,11 @@ export abstract class BaseModule implements Module {
 
     isInitialized: boolean = false;
 
-    constructor(params: ModuleLoaderParams) {
-        this.config = params.config.current;
-        this.events = params.events;
-        this.getStatus = params.getStatus;
-
-        const containerDiv = document.querySelector<HTMLDivElement>(`${this.config.container}`);
-        if (containerDiv === null) {
-            throw error("Module won't initialize! Stage DOM was not found!");
-        }
-        this.container = containerDiv;
+    constructor(context: ModuleContext) {
+        this.config = context.config;
+        this.events = context.events;
+        this.getStatus = context.getStatus;
+        this.container = context.container;
     }
 
     abstract get shouldInitialize(): boolean;

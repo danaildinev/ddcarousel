@@ -4,9 +4,8 @@ import { EVENTS } from "../constants/events-list";
 import { PRIORITY } from "../constants/priorities";
 import { BaseModule } from "../core/base-module";
 import type { ModuleId } from "../core/module-registry";
-import type { CarouselStatus } from "../types/carousel.types";
 import type { CarouselEvents } from "../types/event.types";
-import type { ModuleLoaderParams } from "../types/module.params";
+import type { ModuleContext } from "../types/module.params";
 import { error } from "../utils/error-handler";
 import type { ClosestSlideDirection } from "../utils/slide";
 
@@ -16,7 +15,7 @@ export default class Loop extends BaseModule {
     #stage: HTMLDivElement;
     #activeSlides: number[] = [];
 
-    constructor(params: ModuleLoaderParams) {
+    constructor(params: ModuleContext) {
         super(params);
 
         const stage = document.querySelector<HTMLDivElement>(`${this.config.container} .${CSS_CLASSES.stage}`);
