@@ -66,32 +66,34 @@ export class Config {
             slideChangeDuration: 0.5,
             labelNavPrev: null, // modules 
             labelNavNext: null, // modules 
-            modules: {
-                nav: true,
-                navPrevContent: Nav.chevronSvg,
-                navNextContent: Nav.chevronSvg,
-                labelNavPrev: null,
-                labelNavNext: null,
-                pagination: false,
-                autoplay: false,
-                autoplaySpeed: 5000,
-                autoplayPauseHover: false,
-                autoplayProgress: true,
-                autoplayPauseOnTabHidden: true,
-                loop: false,
-                urlNav: false,
-                urlNavContainer: null,
-                lazyLoad: false,
-                lazyPreload: false,
-                lazyPreloadSlides: 1,
-                drag: true,
-                touchDrag: true,
-                dragSnapMode: DragSnapMode.Swipe,
-                mouseDrag: true,
-                touchSwipeThreshold: 60,
-                touchMaxSlideDist: 500,
-                swipeSmooth: 0,
-            }
+            //modules: ["nav", "pagination", "autoplay", "loop", "urlNav", "drag", "lazyLoad"]
+            modules: ["nav", "pagination"]
+            // modules: {
+            //     nav: true,
+            //     navPrevContent: Nav.chevronSvg,
+            //     navNextContent: Nav.chevronSvg,
+            //     labelNavPrev: null,
+            //     labelNavNext: null,
+            //     pagination: false,
+            //     autoplay: false,
+            //     autoplaySpeed: 5000,
+            //     autoplayPauseHover: false,
+            //     autoplayProgress: true,
+            //     autoplayPauseOnTabHidden: true,
+            //     loop: false,
+            //     urlNav: false,
+            //     urlNavContainer: null,
+            //     lazyLoad: false,
+            //     lazyPreload: false,
+            //     lazyPreloadSlides: 1,
+            //     drag: true,
+            //     touchDrag: true,
+            //     dragSnapMode: DragSnapMode.Swipe,
+            //     mouseDrag: true,
+            //     touchSwipeThreshold: 60,
+            //     touchMaxSlideDist: 500,
+            //     swipeSmooth: 0,
+            // }
         }
     }
 

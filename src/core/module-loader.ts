@@ -63,26 +63,37 @@ export default class ModuleLoader {
     syncModules = (e: CarouselEvents[typeof EVENTS.CONFIG_CHANGED]) => {
         const newConfig = e.new;
         //const oldConfig = e.old ?? {};
-        const defaultConfig = e.default;
+        const currentModules = e.old.modules;
+        const newModules = e.new.modules;
 
-        for (const moduleId of MODULE_IDS) {
-            //const oldValue = oldConfig.modules?.[moduleId] ?? defaultConfig.modules?.[moduleId] ?? false;
-            const newValue = newConfig.modules?.[moduleId] ?? defaultConfig.modules?.[moduleId] ?? false;
+        for (const key in currentModules) {
+            const moduleId = currentModules[key] as string;
+            if (newModules !== undefined && newModules.includes(moduleId)) {
+                continue;
+            }
 
-            // if (oldValue === newValue) {
-            //     continue;
-            // }
+            const instance = this.#instances.get(moduleId);
+            if (instance) {
+                void this.unload(moduleId);
+            }
+        }
+
+        for (const key in newModules) {
+            const moduleId = newModules[key] as string;
+            const exists = Object.values(newConfig.modules).includes(moduleId);
 
             const instance = this.#instances.get(moduleId);
 
             if (!instance) {
-                if (newValue) {
+                if (exists) {
                     void this.load(moduleId);
+                } else {
+                    void this.unload(moduleId);
                 }
                 continue;
             }
 
-            if (newValue) {
+            if (exists) {
                 instance.initialize();
                 instance.isInitialized = true;
             } else {
