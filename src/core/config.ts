@@ -29,50 +29,76 @@ export class Config {
     #setDefaultConfig(): CarouselConfig {
         return {
             container: `.ddcarousel`,
-            nav: false,
-            navPrevContent: Nav.chevronSvg,
-            navNextContent: Nav.chevronSvg,
-            dots: null,
-            pagination: true,
+            nav: false, // modules 
+            navPrevContent: Nav.chevronSvg, // modules 
+            navNextContent: Nav.chevronSvg, // modules 
+            dots: null, // modules 
+            pagination: true, // modules 
             autoHeight: true,
             fullWidth: true,
             startPage: 0,
             items: 1,
             itemPerPage: false,
             gap: 0,
-            loop: false,
+            loop: false, // modules 
             vertical: false,
             verticalMaxContentWidth: false,
-            urlNav: false,
-            urlNavContainer: null,
-            lazyLoad: false,
-            lazyPreload: false,
-            lazyPreloadSlides: 1,
+            urlNav: false, // modules 
+            urlNavContainer: null, // modules 
+            lazyLoad: false, // modules 
+            lazyPreload: false, // modules 
+            lazyPreloadSlides: 1, // modules 
             responsive: null,
-            autoplay: false,
-            autoplaySpeed: 5000,
-            autoplayPauseHover: false,
-            autoplayProgress: true,
-            autoplayPauseOnTabHidden: true,
-            touchDrag: true,
-            dragSnapMode: DragSnapMode.Swipe,
-            mouseDrag: true,
+            autoplay: false, // modules 
+            autoplaySpeed: 5000, // modules 
+            autoplayPauseHover: false, // modules 
+            autoplayProgress: true, // modules  
+            autoplayPauseOnTabHidden: true,// modules 
+            touchDrag: true, // modules  
+            dragSnapMode: DragSnapMode.Swipe, // modules 
+            mouseDrag: true, // modules 
             keyboardNavigation: false,
             centerSlide: false,
-            touchSwipeThreshold: 60,
-            touchMaxSlideDist: 500,
+            touchSwipeThreshold: 60, // modules 
+            touchMaxSlideDist: 500, // modules 
             resizeRefresh: 200,
-            swipeSmooth: 0,
+            swipeSmooth: 0, // modules 
             slideChangeDuration: 0.5,
-            labelNavPrev: null,
-            labelNavNext: null
+            labelNavPrev: null, // modules 
+            labelNavNext: null, // modules 
+            modules: {
+                nav: true,
+                navPrevContent: Nav.chevronSvg,
+                navNextContent: Nav.chevronSvg,
+                labelNavPrev: null,
+                labelNavNext: null,
+                pagination: false,
+                autoplay: false,
+                autoplaySpeed: 5000,
+                autoplayPauseHover: false,
+                autoplayProgress: true,
+                autoplayPauseOnTabHidden: true,
+                loop: false,
+                urlNav: false,
+                urlNavContainer: null,
+                lazyLoad: false,
+                lazyPreload: false,
+                lazyPreloadSlides: 1,
+                drag: true,
+                touchDrag: true,
+                dragSnapMode: DragSnapMode.Swipe,
+                mouseDrag: true,
+                touchSwipeThreshold: 60,
+                touchMaxSlideDist: 500,
+                swipeSmooth: 0,
+            }
         }
     }
 
     updateSettings(config?: Partial<CarouselConfig>) {
         const current = this.current,
             targetConfig = config === undefined ? current : config,
-            oldConfig = Object.assign({}, current);
+            oldConfig = structuredClone(current);
 
         Object.assign(current, targetConfig);
 
@@ -111,8 +137,8 @@ export class Config {
 
         this.#events.emit(EVENTS.CONFIG_CHANGED, {
             default: this.default,
-            old: oldConfig,
-            new: targetConfig
+            old: structuredClone(oldConfig),
+            new: structuredClone(targetConfig)
         });
     }
 

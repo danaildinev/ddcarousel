@@ -40,6 +40,7 @@ export type CarouselConfig = {
     slideChangeDuration: number;
     labelNavPrev: string | null;
     labelNavNext: string | null;
+    modules?: Record<string, string | number | boolean | [] | null>;
 }
 
 export type CarouselStatus = {
