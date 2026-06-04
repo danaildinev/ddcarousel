@@ -6,7 +6,6 @@ import type { CarouselEvents } from "../types/event.types";
 
 export default class LazyLoad extends BaseModule {
     id: string = "lazyLoad";
-    file: string = "lazy-load";
 
     constructor(params: ModuleContext) {
         super(params);
@@ -14,10 +13,6 @@ export default class LazyLoad extends BaseModule {
         this.events.on(EVENTS.PAGE_CHANGED, this.#onChangePaged);
 
         this.emitCreated();
-    }
-
-    get shouldInitialize() {
-        return this.config.lazyLoad;
     }
 
     initialize(slidesActive?: number[]) {

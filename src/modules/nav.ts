@@ -32,10 +32,6 @@ export default class Nav extends BaseModule {
         this.emitCreated();
     }
 
-    get shouldInitialize() {
-        return this.config.nav;
-    }
-
     initialize() {
         //this.#remove();
 

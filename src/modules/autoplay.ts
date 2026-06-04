@@ -30,10 +30,6 @@ export default class Autoplay extends BaseModule {
         this.emitCreated();
     }
 
-    get shouldInitialize() {
-        return this.config.autoplay;
-    }
-
     initialize() {
         if (this.config.autoplayPauseOnTabHidden) {
             document.addEventListener("visibilitychange", this.#stopOnTabHidden);

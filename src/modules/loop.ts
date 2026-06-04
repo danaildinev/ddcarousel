@@ -26,10 +26,6 @@ export default class Loop extends BaseModule {
         this.emitCreated();
     }
 
-    get shouldInitialize() {
-        return this.config.loop;
-    }
-
     initialize() {
         this.events.on(EVENTS.DRAG_DRAGGING, this.#onDragging)
         this.events.on(EVENTS.PAGE_CHANGED, this.#onPageChanged)

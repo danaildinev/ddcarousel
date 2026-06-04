@@ -22,6 +22,10 @@ export abstract class BaseModule implements Module {
         this.container = context.container;
     }
 
+    get shouldInitialize() {
+        return this.config.modules.includes(this.id);
+    }
+
     abstract initialize(): void;
     abstract destroy(): void;
 

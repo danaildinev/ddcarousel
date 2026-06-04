@@ -24,10 +24,6 @@ export default class Dots extends BaseModule {
         this.emitCreated();
     }
 
-    get shouldInitialize() {
-        return this.config.dots ?? this.config.pagination;
-    }
-
     initialize() {
         const status = this.getStatus();
         if (status.totalPages == 0) {

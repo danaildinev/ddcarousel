@@ -35,10 +35,6 @@ export default class UrlNav extends BaseModule {
         this.emitCreated();
     }
 
-    get shouldInitialize() {
-        return this.#config.urlNav;
-    }
-
     initialize() {
         this.#createNav();
 
