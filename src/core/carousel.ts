@@ -58,7 +58,6 @@ export default class Carousel {
             container: container
         });
         this.#moduleLoader.loadAll();
-        this.#events.on(EVENTS.CONFIG_CHANGED, this.#moduleLoader.toggleAll);
 
         this.#initialized = true;
         this.#events.emit(EVENTS.INITIALIZED, this.getStatus());
@@ -69,7 +68,6 @@ export default class Carousel {
 
         this.#stage.destroy(restoreSlides);
         this.#config.reset();
-        this.#events.off(EVENTS.CONFIG_CHANGED, this.#moduleLoader.toggleAll);
         this.#moduleLoader.reset();
 
         this.#config = null!;

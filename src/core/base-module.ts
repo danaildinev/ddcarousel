@@ -23,24 +23,8 @@ export abstract class BaseModule implements Module {
         this.container = context.container;
     }
 
-    abstract get shouldInitialize(): boolean;
     abstract initialize(): void;
     abstract destroy(): void;
-
-    toggle(): void {
-        if (this.shouldInitialize) {
-            if (!this.isInitialized) {
-                this.initialize();
-                this.isInitialized = true;
-            }
-        }
-        else {
-            if (this.isInitialized) {
-                this.destroy();
-                this.isInitialized = false;
-            }
-        }
-    }
 
     tryOverridePriority(payload: PageChangePayload, prio: number): boolean {
         const moduleName = this.id;

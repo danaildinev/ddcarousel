@@ -10,6 +10,8 @@ export default class ModuleLoader {
 
     constructor(params: ModuleContext) {
         this.#params = params;
+
+        this.#params.events.on(EVENTS.CONFIG_CHANGED, this.syncModules);
     }
 
     get modules(): BaseModule[] {
@@ -33,7 +35,16 @@ export default class ModuleLoader {
         const instance: BaseModule = new ModuleClass(this.#params);
         this.#instances.set(moduleId, instance);
 
-        instance.toggle();
+        const isEnabled = this.#isModuleEnabled(moduleId);
+
+        if (isEnabled) {
+            instance.initialize();
+        }
+    }
+
+    #isModuleEnabled(moduleId: ModuleId): boolean {
+        const moduleStatus = this.#params.config.modules?.[moduleId];
+        return Boolean(moduleStatus) ?? false;
     }
 
     async unload(moduleId: ModuleId) {
@@ -47,32 +58,36 @@ export default class ModuleLoader {
         this.#instances.delete(moduleId);
     }
 
-    toggleAll = (e: CarouselEvents[typeof EVENTS.CONFIG_CHANGED]) => {
-        const old = e.old;
-        if (old) {
-            for (const key of Object.keys(e.new) as (keyof CarouselConfig)[]) {
-                // react only if the value actually changed, else get the default value
-                const oldValue = e.old?.[key] ?? e.default[key];
-                const resolvedNewValue = e.new[key] ?? e.default[key];
+    syncModules = (e: CarouselEvents[typeof EVENTS.CONFIG_CHANGED]) => {
+        const newConfig = e.new;
+        //const oldConfig = e.old ?? {};
+        const defaultConfig = e.default;
 
-                if (oldValue === resolvedNewValue) {
-                    continue;
-                }
+        for (const moduleId of MODULE_IDS) {
+            //const oldValue = oldConfig.modules?.[moduleId] ?? defaultConfig.modules?.[moduleId] ?? false;
+            const newValue = newConfig.modules?.[moduleId] ?? defaultConfig.modules?.[moduleId] ?? false;
 
-                const module = this.modules.find(m => m.id === key);
-                if (module === undefined) {
-                    continue;
-                }
+            // if (oldValue === newValue) {
+            //     continue;
+            // }
 
-                if (resolvedNewValue === false) {
-                    module?.destroy();
-                } else {
-                    module?.toggle();
+            const instance = this.#instances.get(moduleId);
+
+            if (!instance) {
+                if (newValue) {
+                    void this.load(moduleId);
                 }
+                continue;
+            }
+
+            if (newValue) {
+                instance.initialize();
+                instance.isInitialized = true;
+            } else {
+                instance.destroy();
+                instance.isInitialized = false;
             }
         }
-
-        this.modules.forEach(m => m.toggle());
     };
 
     reset() {
