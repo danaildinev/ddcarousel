@@ -31,22 +31,18 @@ export default class UrlNav extends BaseModule {
         this.#config = params.config;
         this.#events = params.events;
         this.#status = params.getStatus();
-
-        this.emitCreated();
     }
 
     initialize() {
         this.#createNav();
 
         this.events.on(EVENTS.PAGE_CHANGED, this.#onPageChange);
-        this.emitInitialized();
     }
 
     destroy() {
         this.#urlNavContainer?.remove();
 
         this.events.off(EVENTS.PAGE_CHANGED, this.#onPageChange);
-        this.emitDestroyed();
     }
 
     #createNav() {

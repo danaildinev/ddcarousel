@@ -22,8 +22,6 @@ export default class Loop extends BaseModule {
             throw error("Loop module won't initialize! Stage was not found!");
         }
         this.#stage = stage;
-
-        this.emitCreated();
     }
 
     initialize() {
@@ -44,8 +42,6 @@ export default class Loop extends BaseModule {
 
         // this.#reorderForLoop();
         this.#initialReorder();
-
-        this.emitInitialized();
     }
 
     destroy() {
@@ -53,8 +49,6 @@ export default class Loop extends BaseModule {
 
         this.events.off(EVENTS.PAGE_CHANGE_INDEX, this.#onPageChangeIndex);
         //this.events.off(EVENTS.PAGE_CHANGE_SCROLL_BEFORE, this.#onChangePageScrollBefore);
-
-        this.emitDestroyed();
     }
 
     #onPageChanged = (e: CarouselEvents[typeof EVENTS.PAGE_CHANGED]) => {

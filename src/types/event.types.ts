@@ -26,7 +26,7 @@ export type CarouselEvents = {
 
     [EVENTS.PAGE_CHANGE_INDEX]: PageChangeIndexPayload
 
-    [EVENTS.MODULE_CREATED]: {
+    [EVENTS.MODULE_LOADED]: {
         name: string
     };
 
@@ -35,6 +35,10 @@ export type CarouselEvents = {
     };
 
     [EVENTS.MODULE_DESTROYED]: {
+        name: string
+    };
+
+    [EVENTS.MODULE_UNLOADED]: {
         name: string
     };
 

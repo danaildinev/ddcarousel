@@ -28,8 +28,6 @@ export default class Nav extends BaseModule {
         this.#totalPages = status.totalPages;
 
         this.events.on(EVENTS.PAGE_CHANGED, this.#onChangePaged);
-
-        this.emitCreated();
     }
 
     initialize() {
@@ -58,8 +56,6 @@ export default class Nav extends BaseModule {
         this.#nextBtn = nextBtn;
 
         this.#refreshNav();
-
-        this.emitInitialized();
     }
 
     destroy() {
@@ -67,7 +63,6 @@ export default class Nav extends BaseModule {
 
         this.#prevBtn?.remove();
         this.#nextBtn?.remove();
-        this.emitDestroyed();
     }
 
     #onChangePaged = (e: CarouselEvents[typeof EVENTS.PAGE_CHANGED]) => {

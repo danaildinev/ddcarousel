@@ -6,9 +6,10 @@ export const EVENTS = {
     DESTROYED: 'carousel:destroyed',
 
     //modules
-    MODULE_CREATED: 'module:created',
+    MODULE_LOADED: 'module:loaded',
     MODULE_INITIALIZED: 'module:initialized',
     MODULE_DESTROYED: 'module:destroyed',
+    MODULE_UNLOADED: 'module:unloaded',
     MODULE_AUTOPLAY_STARTED: 'module:autoplay:started',
     MODULE_AUTOPLAY_STOPPED: 'module:autoplay:stopped',
 

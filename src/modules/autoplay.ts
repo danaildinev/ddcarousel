@@ -26,8 +26,6 @@ export default class Autoplay extends BaseModule {
         this.#currentPage = this.getStatus().currentPage;
 
         this.events.on(EVENTS.PAGE_CHANGED, this.#onChangePaged);
-
-        this.emitCreated();
     }
 
     initialize() {
@@ -37,8 +35,6 @@ export default class Autoplay extends BaseModule {
 
         this.#attachEvents();
         this.start();
-
-        this.emitInitialized();
     }
 
     destroy() {
@@ -48,8 +44,6 @@ export default class Autoplay extends BaseModule {
         this.stop();
         this.#destroyProgressBar();
         this.#detachEvents();
-
-        this.emitDestroyed();
     }
 
     #onChangePaged = (e: CarouselEvents[typeof EVENTS.PAGE_CHANGED]) => {

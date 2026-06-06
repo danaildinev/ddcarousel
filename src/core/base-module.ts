@@ -29,6 +29,16 @@ export abstract class BaseModule implements Module {
     abstract initialize(): void;
     abstract destroy(): void;
 
+    initializeLifecycle() {
+        this.initialize();
+        this.emitInitialized();
+    }
+
+    destroyLifecycle() {
+        this.destroy();
+        this.emitDestroyed();
+    }
+
     tryOverridePriority(payload: PageChangePayload, prio: number): boolean {
         const moduleName = this.id;
 
@@ -48,11 +58,6 @@ export abstract class BaseModule implements Module {
         return false;
     }
 
-    protected emitCreated() {
-        this.events.emit(EVENTS.MODULE_CREATED, {
-            name: this.id
-        });
-    }
 
     protected emitInitialized() {
         this.events.emit(EVENTS.MODULE_INITIALIZED, {

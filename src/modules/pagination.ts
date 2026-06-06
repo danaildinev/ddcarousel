@@ -20,8 +20,6 @@ export default class Dots extends BaseModule {
         this.#currentPage = this.getStatus().currentPage;
 
         this.events.on(EVENTS.PAGE_CHANGED, this.#onChangePaged);
-
-        this.emitCreated();
     }
 
     initialize() {
@@ -59,15 +57,12 @@ export default class Dots extends BaseModule {
         this.#paginationContainer = paginationContainer;
 
         this.#setActiveDot();
-
-        this.emitInitialized();
     }
 
     destroy() {
         this.events.off(EVENTS.PAGE_CHANGED, this.#onChangePaged);
 
         this.#paginationContainer?.remove();
-        this.emitDestroyed();
     }
 
     #onChangePaged = (e: CarouselEvents[typeof EVENTS.PAGE_CHANGED]) => {

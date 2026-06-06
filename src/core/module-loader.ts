@@ -2,15 +2,18 @@ import { EVENTS } from "../constants/events-list";
 import type { CarouselEvents } from "../types/event.types";
 import type { ModuleContext } from "../types/module.params";
 import type { BaseModule } from "./base-module";
+import type { Events } from "./events";
 
 export default class ModuleLoader {
     #instances = new Map<string, BaseModule>();
     #params: ModuleContext;
+    #events: Events;
 
     constructor(params: ModuleContext) {
         this.#params = params;
+        this.#events = this.#params.events;
 
-        this.#params.events.on(EVENTS.CONFIG_CHANGED, this.syncModules);
+        this.#events.on(EVENTS.CONFIG_CHANGED, this.syncModules);
     }
 
     get modules(): BaseModule[] {
@@ -39,9 +42,11 @@ export default class ModuleLoader {
         this.#instances.set(moduleId, instance);
 
         const isEnabled = this.#isModuleEnabled(moduleId);
-
         if (isEnabled) {
-            instance.initialize();
+            this.#events.emit(EVENTS.MODULE_LOADED, {
+                name: moduleId
+            });
+            instance.initializeLifecycle();
         }
     }
 
@@ -55,9 +60,13 @@ export default class ModuleLoader {
             return;
         }
 
-        instance.destroy();
+        instance.destroyLifecycle();
 
         this.#instances.delete(moduleId);
+
+        this.#events.emit(EVENTS.MODULE_UNLOADED, {
+            name: moduleId
+        });
     }
 
     syncModules = (e: CarouselEvents[typeof EVENTS.CONFIG_CHANGED]) => {

@@ -11,8 +11,6 @@ export default class LazyLoad extends BaseModule {
         super(params);
 
         this.events.on(EVENTS.PAGE_CHANGED, this.#onChangePaged);
-
-        this.emitCreated();
     }
 
     initialize(slidesActive?: number[]) {
@@ -40,13 +38,10 @@ export default class LazyLoad extends BaseModule {
             const images = document.querySelectorAll(`${this.config.container} [${DATA.attrs.slide}="${i}"] img[${DATA.attrs.lazyImg}]`);
             images.forEach((i) => this.#enableImageSrc(i as HTMLImageElement));
         });
-
-        this.emitInitialized();
     }
 
     destroy() {
         this.events.off(EVENTS.PAGE_CHANGED, this.#onChangePaged);
-        this.emitDestroyed();
     }
 
     #onChangePaged = (e: CarouselEvents[typeof EVENTS.PAGE_CHANGED]) => {
