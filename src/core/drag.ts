@@ -1,15 +1,17 @@
 import { CSS_CLASSES } from "../constants/css-classes";
 import { EVENTS } from "../constants/events-list";
-import { BaseModule } from "../core/base-module";
-import type { ModuleContext } from "../types/module.params";
 import type { CarouselEvents } from "../types/event.types";
 import { error } from "../utils/error-handler";
 import { scrollToPos } from "../utils/scroll";
-import { DragSnapMode } from "../types/carousel.types";
+import { DragSnapMode, type CarouselConfig, type CarouselStatus } from "../types/carousel.types";
 import { getSlidesOffsets, getClosestSlideIndexes, type SlideOffsets } from "../utils/slide";
+import type { Events } from "./events";
+import type { Config } from "./config";
 
-export default class Drag extends BaseModule {
-    id: string = "drag";
+export default class Drag {
+    #config: CarouselConfig;
+    #status: CarouselStatus;
+    #events: Events;
 
     #stageDom: HTMLDivElement;
 
@@ -26,20 +28,17 @@ export default class Drag extends BaseModule {
     #slides: HTMLDivElement[] = [];
     #viewportCenter: number = 0;
 
-    #currentPage!: number;
-    #totalPages!: number;
+    constructor(config: Config, events: Events, status: CarouselStatus) {
+        this.#config = config.current;
+        this.#status = status;
+        this.#events = events;
 
-    constructor(params: ModuleContext) {
-        super(params);
-
-        const stage = document.querySelector<HTMLDivElement>(`${this.config.container} .${CSS_CLASSES.stage}`);
+        const stage = document.querySelector<HTMLDivElement>(`${this.#config.container} .${CSS_CLASSES.stage}`);
         if (stage === null) {
             throw error("Drag module won't initialize! Stage DOM was not found!");
         }
 
         this.#stageDom = stage;
-
-        this.emitCreated();
     }
 
     initialize() {
@@ -48,22 +47,17 @@ export default class Drag extends BaseModule {
 
         this.#slides = this.#getDomSlides();
         this.#cacheSlideOffsets();
-
-        this.emitInitialized();
     }
 
     destroy() {
         this.#detachEvents();
         this.#stageDom.classList.remove(CSS_CLASSES.disabled);
-
-        this.emitDestroyed();
     }
 
     #attachEvents() {
-        const carouselStatus = this.getStatus();
         const status: CarouselEvents[typeof EVENTS.PAGE_CHANGED] = {
-            currentTranslate: carouselStatus.currentTranslate,
-            currentPage: carouselStatus.currentPage,
+            currentTranslate: this.#status.currentTranslate,
+            currentPage: this.#status.currentPage,
             slidesActive: []
         }
 
@@ -73,10 +67,10 @@ export default class Drag extends BaseModule {
         window.addEventListener("pointermove", this.#dragMove);
         window.addEventListener("pointerup", this.#dragEnd);
 
-        this.events.on(EVENTS.PAGE_CHANGED, this.#updateProps);
-        this.events.on(EVENTS.STAGE_RESIZED, this.#onStageResized);
-        this.events.on(EVENTS.STAGE_CHANGED, this.#onStageChanged);
-        this.events.on(EVENTS.SLIDE_SCROLL, this.#onSlideScroll);
+        this.#events.on(EVENTS.PAGE_CHANGED, this.#updateProps);
+        this.#events.on(EVENTS.STAGE_RESIZED, this.#onStageResized);
+        this.#events.on(EVENTS.STAGE_CHANGED, this.#onStageChanged);
+        this.#events.on(EVENTS.SLIDE_SCROLL, this.#onSlideScroll);
     }
 
     #detachEvents() {
@@ -84,14 +78,13 @@ export default class Drag extends BaseModule {
         window.removeEventListener("pointermove", this.#dragMove);
         window.removeEventListener("pointerup", this.#dragEnd);
 
-        this.events.off(EVENTS.PAGE_CHANGED, this.#updateProps);
+        this.#events.off(EVENTS.PAGE_CHANGED, this.#updateProps);
     }
 
-    #getInput = (e: PointerEvent) => this.config.vertical ? e.clientY : e.clientX;
+    #getInput = (e: PointerEvent) => this.#config.vertical ? e.clientY : e.clientX;
 
     #updateProps = (e: CarouselEvents[typeof EVENTS.PAGE_CHANGED]) => {
         this.#currentTranslate = e.currentTranslate;
-        this.#currentPage = e.currentPage;
     }
 
     #dragStart = (e: PointerEvent) => {
@@ -105,11 +98,11 @@ export default class Drag extends BaseModule {
             return;
         }
 
-        if (e.pointerType === "touch" && !this.config.touchDrag) {
+        if (e.pointerType === "touch" && !this.#config.touchDrag) {
             return;
         }
 
-        if (e.pointerType === "mouse" && !this.config.mouseDrag) {
+        if (e.pointerType === "mouse" && !this.#config.mouseDrag) {
             return;
         }
 
@@ -117,7 +110,7 @@ export default class Drag extends BaseModule {
             currentTranslate: this.#currentTranslate
         };
 
-        this.events.emit(EVENTS.DRAG_PRE_START, dragState);
+        this.#events.emit(EVENTS.DRAG_PRE_START, dragState);
 
         // read back modified value
         this.#currentTranslate = dragState.currentTranslate;
@@ -133,7 +126,7 @@ export default class Drag extends BaseModule {
         this.#origPosition = this.#currentTranslate;
         this.#stayOnThisSlide = false;
         this.#lastTouch = 0;
-        this.events.emit(EVENTS.DRAG_START);
+        this.#events.emit(EVENTS.DRAG_START);
     }
 
     #rebaseDrag(newTranslate: number, currentPointer: number) {
@@ -160,7 +153,7 @@ export default class Drag extends BaseModule {
         this.#lastTouch = this.#currentTouch;
 
         //disable transition to get more responsive dragging
-        this.#stageDom.style.transitionDuration = `${this.config.swipeSmooth}s`;
+        this.#stageDom.style.transitionDuration = `${this.#config.swipeSmooth}s`;
 
         //calcualte swipe distance between starging value cnd current value
         this.#swipeDistance = Math.abs(input - this.#touchStartRawCords);
@@ -169,7 +162,7 @@ export default class Drag extends BaseModule {
         this.#currentTouch = input - this.#touchStartCords;
 
         //move slider until max swipe lenght is reached
-        if (this.config.touchMaxSlideDist < 1 || this.#swipeDistance <= this.config.touchMaxSlideDist) {
+        if (this.#config.touchMaxSlideDist < 1 || this.#swipeDistance <= this.#config.touchMaxSlideDist) {
             const state: CarouselEvents[typeof EVENTS.DRAG_DRAGGING] = {
                 currentTranslate: this.#currentTouch,
                 delta: this.#swipeDistance,
@@ -177,20 +170,20 @@ export default class Drag extends BaseModule {
                 rebase: false
             };
 
-            if (this.config.loop) {
+            if (this.#config.loop) {
                 const slideIndexes = getClosestSlideIndexes(this.#slideOffsets, this.#viewportCenter, this.#currentTouch, ["left", "right"]);
                 state.slideIndexLeft = slideIndexes.left;
                 state.slideIndexRight = slideIndexes.right;
             }
 
-            this.events.emit(EVENTS.DRAG_DRAGGING, state);
+            this.#events.emit(EVENTS.DRAG_DRAGGING, state);
 
             this.#currentTouch = state.currentTranslate
             if (state.rebase) {
                 this.#rebaseDrag(this.#currentTouch, input);
             }
 
-            scrollToPos(this.#stageDom, this.#currentTouch, this.config.vertical);
+            scrollToPos(this.#stageDom, this.#currentTouch, this.#config.vertical);
         } else {
             this.#stayOnThisSlide = true;
             this.#currentTouch = input - this.#touchStartCords;
@@ -202,17 +195,17 @@ export default class Drag extends BaseModule {
             return;
         }
 
-        this.events.emit(EVENTS.DRAG_END);
+        this.#events.emit(EVENTS.DRAG_END);
 
         // if swipe threshold is not enough, scroll to original position
-        if (this.config.dragSnapMode === DragSnapMode.Swipe && (this.#swipeDistance < this.config.touchSwipeThreshold || this.#stayOnThisSlide)) {
+        if (this.#config.dragSnapMode === DragSnapMode.Swipe && (this.#swipeDistance < this.#config.touchSwipeThreshold || this.#stayOnThisSlide)) {
             this.#revertDrag();
             return;
         }
 
-        if (this.config.dragSnapMode === DragSnapMode.Closest) {
+        if (this.#config.dragSnapMode === DragSnapMode.Closest) {
             const closestIndex = getClosestSlideIndexes(this.#slideOffsets, this.#viewportCenter, this.#currentTouch, ["center"]);
-            this.events.emit(EVENTS.PAGE_CHANGE_REQUEST, { index: closestIndex.center });
+            this.#events.emit(EVENTS.PAGE_CHANGE_REQUEST, { index: closestIndex.center });
         } else {
             const isLeftDirection = this.#currentTouch > this.#origPosition;
             const targetIndex = isLeftDirection ? "prev" : "next";
@@ -223,7 +216,7 @@ export default class Drag extends BaseModule {
                 return;
             }*/
 
-            this.events.emit(EVENTS.PAGE_CHANGE_REQUEST, { index: targetIndex });
+            this.#events.emit(EVENTS.PAGE_CHANGE_REQUEST, { index: targetIndex });
         }
 
         this.#resetTransitionDuration();
@@ -231,12 +224,12 @@ export default class Drag extends BaseModule {
     }
 
     #revertDrag() {
-        scrollToPos(this.#stageDom, this.#origPosition, this.config.vertical);
+        scrollToPos(this.#stageDom, this.#origPosition, this.#config.vertical);
         this.#resetTransitionDuration();
         this.#isDragging = false;
     }
 
-    #resetTransitionDuration = () => this.#stageDom.style.transitionDuration = `${this.config.slideChangeDuration}s`;
+    #resetTransitionDuration = () => this.#stageDom.style.transitionDuration = `${this.#config.slideChangeDuration}s`;
 
     #onStageResized = () => {
         this.#cacheSlideOffsets();
@@ -257,7 +250,7 @@ export default class Drag extends BaseModule {
             return;
         }
 
-        const { vertical } = this.config;
+        const { vertical } = this.#config;
 
         const viewportSize = vertical ? container.clientHeight : container.clientWidth;
         this.#viewportCenter = viewportSize / 2;

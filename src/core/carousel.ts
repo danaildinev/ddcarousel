@@ -6,6 +6,7 @@ import type { CarouselConfig, CarouselStatus } from "../types/carousel.types";
 import { error } from "../utils/error-handler";
 import { getClosestSlideIndexes, getSlidesOffsets } from "../utils/slide";
 import { Config } from "./config";
+import Drag from "./drag";
 import { Events } from "./events";
 import ModuleLoader from "./module-loader";
 import Stage from "./stage";
@@ -44,6 +45,9 @@ export default class Carousel {
 
         this.#config = new Config(config, this.#events);
         this.#stage = new Stage(this.#config, this.#events);
+
+        const drag = new Drag(this.#config, this.#events, this.getStatus());
+        drag.initialize();
 
         const container = document.querySelector<HTMLDivElement>(this.#config.current.container);
         if (!container) {
