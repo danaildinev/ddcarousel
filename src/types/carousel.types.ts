@@ -19,9 +19,6 @@ export type CarouselConfig = {
     verticalMaxContentWidth: boolean;
     urlNav: boolean;
     urlNavContainer: string | null;
-    lazyLoad: boolean;
-    lazyPreload: boolean;
-    lazyPreloadSlides: number;
     responsive?: CarouselConfig[] | null;
     touchDrag: boolean;
     dragSnapMode: DragSnapMode,

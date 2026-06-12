@@ -4,8 +4,17 @@ import { BaseModule } from "../core/base-module";
 import type { ModuleContext } from "../types/module.params";
 import type { CarouselEvents } from "../types/event.types";
 
-export default class LazyLoad extends BaseModule {
+export type LazyLoadConfig = {
+    preload: boolean,
+    preloadSlides: number,
+}
+
+export default class LazyLoad extends BaseModule<LazyLoadConfig> {
     id: string = "lazyLoad";
+    moduleConfig: LazyLoadConfig = {
+        preload: true,
+        preloadSlides: 1,
+    };
 
     constructor(params: ModuleContext) {
         super(params);
@@ -21,13 +30,18 @@ export default class LazyLoad extends BaseModule {
             return;
         }
 
-        if (this.config.lazyPreload) {
+        if (this.getResolvedConfig("preload")) {
             const lastActiveIndex = slidesActive[slidesActive.length - 1];
             if (lastActiveIndex === undefined) {
                 return;
             }
 
-            for (var i = lastActiveIndex + 1; i <= lastActiveIndex + this.config.lazyPreloadSlides; i++) {
+            const preloadSlidesCount = this.getResolvedConfig("preloadSlides");
+            if (preloadSlidesCount === null) {
+                return;
+            }
+
+            for (var i = lastActiveIndex + 1; i <= lastActiveIndex + preloadSlidesCount; i++) {
                 if (i < status.totalSlides && slidesActive.indexOf(i) == -1) {
                     slidesActive.push(i);
                 }

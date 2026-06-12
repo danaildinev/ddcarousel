@@ -45,9 +45,6 @@ export class Config {
             verticalMaxContentWidth: false,
             urlNav: false, // modules 
             urlNavContainer: null, // modules 
-            lazyLoad: false, // modules 
-            lazyPreload: false, // modules 
-            lazyPreloadSlides: 1, // modules 
             responsive: null,
             touchDrag: true, // modules  
             dragSnapMode: DragSnapMode.Swipe, // modules 
