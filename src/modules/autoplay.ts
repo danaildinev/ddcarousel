@@ -5,8 +5,21 @@ import { error } from "../utils/error-handler";
 import type { ModuleContext } from "../types/module.params";
 import type { CarouselEvents } from "../types/event.types";
 
-export default class Autoplay extends BaseModule {
+export type AutoplayConfig = {
+    speed: number,
+    pauseHover: boolean,
+    progress: boolean,
+    pauseOnTabHidden: boolean
+}
+
+export default class Autoplay extends BaseModule<AutoplayConfig> {
     id: string = "autoplay";
+    moduleConfig: AutoplayConfig = {
+        speed: 5000,
+        pauseHover: false,
+        progress: true,
+        pauseOnTabHidden: true,
+    };
 
     #stage: HTMLDivElement;
     #progressBar?: HTMLDivElement | undefined;
@@ -16,7 +29,7 @@ export default class Autoplay extends BaseModule {
     constructor(params: ModuleContext) {
         super(params);
 
-        const stage = document.querySelector<HTMLDivElement>(`${this.config.container} .${CSS_CLASSES.stage}`);
+        const stage = this.container.querySelector<HTMLDivElement>(`.${CSS_CLASSES.stage}`);
         if (stage === null) {
             throw error("Autoplay module won't initialize! Stage DOM was not found!");
         }
@@ -29,7 +42,7 @@ export default class Autoplay extends BaseModule {
     }
 
     initialize() {
-        if (this.config.autoplayPauseOnTabHidden) {
+        if (this.getResolvedConfig("pauseOnTabHidden")) {
             document.addEventListener("visibilitychange", this.#stopOnTabHidden);
         }
 
@@ -64,7 +77,7 @@ export default class Autoplay extends BaseModule {
     #stopOnTabHidden = () => document.hidden ? this.stop() : this.start();
 
     start = () => {
-        if (!this.config.autoplay) {
+        if (!this.shouldInitialize) {
             return;
         }
 
@@ -80,9 +93,13 @@ export default class Autoplay extends BaseModule {
         this.#toggleProgressBar(true);
         this.#restartProgressBar();
 
-        this.#autoPlay = setInterval(() => this.#handler(), this.config.autoplaySpeed);
+        const speed = this.getResolvedConfig("speed");
+        console.log(speed);
 
-        this.events.emit(EVENTS.MODULE_AUTOPLAY_STARTED);
+        if (speed) {
+            this.#autoPlay = setInterval(() => this.#handler(), speed);
+            this.events.emit(EVENTS.MODULE_AUTOPLAY_STARTED);
+        }
     }
 
     #handler() {
@@ -125,7 +142,7 @@ export default class Autoplay extends BaseModule {
     }
 
     #attachEvents() {
-        if (!this.config.autoplayPauseHover) {
+        if (!this.getResolvedConfig("pauseHover")) {
             this.#detachEvents();
             return;
         }
@@ -140,7 +157,7 @@ export default class Autoplay extends BaseModule {
     }
 
     #createProgressBar() {
-        if (!this.config.autoplayProgress || this.#progressBar) {
+        if (!this.getResolvedConfig("progress") || this.#progressBar) {
             return;
         }
 
@@ -155,7 +172,7 @@ export default class Autoplay extends BaseModule {
 
         this.#progressBar = progressBar;
 
-        this.container.style.setProperty("--ddcarousel-autoplay-speed", `${this.config.autoplaySpeed}ms`);
+        this.container.style.setProperty("--ddcarousel-autoplay-speed", `${this.getResolvedConfig("speed")}ms`);
     }
 
     #destroyProgressBar() {

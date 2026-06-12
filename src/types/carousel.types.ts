@@ -23,11 +23,6 @@ export type CarouselConfig = {
     lazyPreload: boolean;
     lazyPreloadSlides: number;
     responsive?: CarouselConfig[] | null;
-    autoplay: boolean;
-    autoplaySpeed: number;
-    autoplayPauseHover: boolean;
-    autoplayProgress: boolean;
-    autoplayPauseOnTabHidden: boolean;
     touchDrag: boolean;
     dragSnapMode: DragSnapMode,
     mouseDrag: boolean;

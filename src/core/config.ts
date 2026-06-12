@@ -49,11 +49,6 @@ export class Config {
             lazyPreload: false, // modules 
             lazyPreloadSlides: 1, // modules 
             responsive: null,
-            autoplay: false, // modules 
-            autoplaySpeed: 5000, // modules 
-            autoplayPauseHover: false, // modules 
-            autoplayProgress: true, // modules  
-            autoplayPauseOnTabHidden: true,// modules 
             touchDrag: true, // modules  
             dragSnapMode: DragSnapMode.Swipe, // modules 
             mouseDrag: true, // modules 
