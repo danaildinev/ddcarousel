@@ -1,7 +1,5 @@
-import type { ModuleId } from './module-registry';
-
 export interface Module {
-    readonly id: ModuleId;
+    readonly id: string;
 
     initialize(): void;
     destroy(): void;
