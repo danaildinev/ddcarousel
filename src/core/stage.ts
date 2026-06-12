@@ -235,9 +235,6 @@ export default class Stage {
 
         if (config.vertical) {
             container.classList.add(CSS_CLASSES.vertical);
-            this.#configClass.updateSettings({
-                autoHeight: false
-            });
         }
         else {
             container.classList.remove(CSS_CLASSES.vertical);

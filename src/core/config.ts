@@ -76,8 +76,8 @@ export class Config {
             current.centerSlide = true;
         }
 
-        if (current.loop) {
-            current.centerSlide = true;
+        if (this.current.vertical) {
+            this.current.autoHeight = false;
         }
 
         for (const [key, value] of Object.entries(targetConfig)) {
