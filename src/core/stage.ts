@@ -277,12 +277,15 @@ export default class Stage {
         if (this.#config.centerSlide) {
             pages = slidesLength - 1;
 
-            // use circular indexing around the current slide
-            for (let page = 0; page < this.#slides.length; page++) {
-                const prev = (page - 1 + this.#slides.length) % this.#slides.length;
-                const next = (page + 1) % this.#slides.length;
+            const half = Math.floor(slidesPerPage / 2);
 
-                pageSlides.push([prev, page, next]);
+            for (let page = 0; page < slidesLength; page++) {
+                const currentVisibleSlides: number[] = [];
+
+                for (let i = -half; i <= half; i++) {
+                    currentVisibleSlides.push(page + i);
+                }
+                pageSlides.push(currentVisibleSlides);
             }
         }
         else if (this.#config.itemPerPage) {
@@ -320,8 +323,19 @@ export default class Stage {
             }
         }
 
+        // let modules safely transform the raw map arrays
+        const context = {
+            pageSlides,
+            slidesLength
+        };
+        this.#events.emit(EVENTS.NORMALIZE_PAGE_MAP, context);
+
+        // strip out out-of-bounds numbers
+        this.pageSlides = context.pageSlides.map(slides =>
+            slides.filter(i => i >= 0 && i < slidesLength)
+        );
+
         this.totalPages = pages;
-        this.pageSlides = pageSlides;
     }
 
     #setSlidesGap() {
@@ -446,42 +460,7 @@ export default class Stage {
     }
 
     #getVisibleSlides(): number[] {
-        const { items, centerSlide, loop } = this.#config;
-
-        if (!centerSlide) {
-            return this.slidesActive;
-        }
-
-        const center = this.slidesActive[0];
-        if (center === undefined) {
-            return [];
-        }
-
-        const half = Math.floor(items / 2),
-            start = Math.max(0, center - half),
-            end = Math.min(this.#slidesHeights.length - 1, center + half);
-
-        const slides = [];
-        for (let i = start; i <= end; i++) {
-            slides.push(i);
-        }
-
-        if (loop) {
-            const totalSlides = this.#slides.length - 1,
-                currentPage = this.currentPage;
-
-            if (currentPage < half) {
-                for (let i = totalSlides - (half - currentPage); i < totalSlides; i++) {
-                    slides.push(i);
-                }
-            } else if (currentPage + half > totalSlides) {
-                for (let i = 0; i < half - (totalSlides - currentPage); i++) {
-                    slides.push(i);
-                }
-            }
-        }
-
-        return slides;
+        return this.pageSlides[this.currentPage] || [];
     }
 
     #onStageTransitionEnd = () => this.#events.emit(EVENTS.TRANSITION_END);
