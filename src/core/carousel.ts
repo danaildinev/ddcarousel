@@ -60,7 +60,7 @@ export default class Carousel {
             getStatus: this.getStatus,
             container: container
         });
-        this.#moduleLoader.loadAll(this.#config.current.modules);
+        this.#moduleLoader.loadAll();
 
         this.#initialized = true;
         this.#events.emit(EVENTS.INITIALIZED, this.getStatus());

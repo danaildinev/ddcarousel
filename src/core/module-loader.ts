@@ -1,8 +1,8 @@
 import { EVENTS } from "../constants/events-list";
-import type { CarouselEvents } from "../types/event.types";
 import type { ModuleContext } from "../types/module.params";
 import type { BaseModule } from "./base-module";
 import type { Events } from "./events";
+import { INTERNAL_MODULES } from "./internal-modules";
 
 export default class ModuleLoader {
     #instances = new Map<string, BaseModule>();
@@ -13,7 +13,7 @@ export default class ModuleLoader {
         this.#params = params;
         this.#events = this.#params.events;
 
-        this.#events.on(EVENTS.CONFIG_CHANGED, this.syncModules);
+        //this.#events.on(EVENTS.CONFIG_CHANGED, this.syncModules);
     }
 
     get modules(): BaseModule[] {
@@ -22,7 +22,12 @@ export default class ModuleLoader {
 
     async loadAll(modules?: readonly string[]) {
         if (!modules?.length) {
-            return;
+            const config = this.#params.config as Record<string, any>;
+            modules = INTERNAL_MODULES.filter(moduleId => {
+                if (config[moduleId] === true) {
+                    return true;
+                }
+            });
         }
 
         const uniqueModules = [...new Set(modules)];
@@ -51,7 +56,14 @@ export default class ModuleLoader {
     }
 
     #isModuleEnabled(moduleId: string): boolean {
-        return this.#params.config.modules.indexOf(moduleId) > -1;
+        const current = this.#params.config as Record<string, unknown>;
+        const status = current[moduleId];
+
+        if (status === undefined) {
+            return false;
+        }
+
+        return Boolean(status);
     }
 
     async unload(moduleId: string) {
@@ -69,48 +81,48 @@ export default class ModuleLoader {
         });
     }
 
-    syncModules = (e: CarouselEvents[typeof EVENTS.CONFIG_CHANGED]) => {
-        const newConfig = e.new;
-        //const oldConfig = e.old ?? {};
-        const currentModules = e.old.modules;
-        const newModules = e.new.modules;
+    // syncModules = (e: CarouselEvents[typeof EVENTS.CONFIG_CHANGED]) => {
+    //     const newConfig = e.new;
+    //     //const oldConfig = e.old ?? {};
+    //     const currentModules = e.old.modules;
+    //     const newModules = e.new.modules;
 
-        for (const key in currentModules) {
-            const moduleId = currentModules[key] as string;
-            if (newModules !== undefined && newModules.includes(moduleId)) {
-                continue;
-            }
+    //     for (const key in currentModules) {
+    //         const moduleId = currentModules[key] as string;
+    //         if (newModules !== undefined && newModules.includes(moduleId)) {
+    //             continue;
+    //         }
 
-            const instance = this.#instances.get(moduleId);
-            if (instance) {
-                void this.unload(moduleId);
-            }
-        }
+    //         const instance = this.#instances.get(moduleId);
+    //         if (instance) {
+    //             void this.unload(moduleId);
+    //         }
+    //     }
 
-        for (const key in newModules) {
-            const moduleId = newModules[key] as string;
-            const exists = Object.values(newConfig.modules).includes(moduleId);
+    //     for (const key in newModules) {
+    //         const moduleId = newModules[key] as string;
+    //         const exists = Object.values(newConfig.modules).includes(moduleId);
 
-            const instance = this.#instances.get(moduleId);
+    //         const instance = this.#instances.get(moduleId);
 
-            if (!instance) {
-                if (exists) {
-                    void this.load(moduleId);
-                } else {
-                    void this.unload(moduleId);
-                }
-                continue;
-            }
+    //         if (!instance) {
+    //             if (exists) {
+    //                 void this.load(moduleId);
+    //             } else {
+    //                 void this.unload(moduleId);
+    //             }
+    //             continue;
+    //         }
 
-            if (exists) {
-                instance.initialize();
-                instance.isInitialized = true;
-            } else {
-                instance.destroy();
-                instance.isInitialized = false;
-            }
-        }
-    };
+    //         if (exists) {
+    //             instance.initialize();
+    //             instance.isInitialized = true;
+    //         } else {
+    //             instance.destroy();
+    //             instance.isInitialized = false;
+    //         }
+    //     }
+    // };
 
     reset() {
         for (const module of this.#instances.values()) {
