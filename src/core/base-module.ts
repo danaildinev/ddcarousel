@@ -3,6 +3,7 @@ import type { CarouselConfig, CarouselStatus } from "../types/carousel.types";
 import type { CarouselEvents } from "../types/event.types";
 import type { ModuleContext } from "../types/module.params";
 import type { PageChangePayload } from "../types/pageChangeIndexPayload";
+import type { Config } from "./config";
 import type { Events } from "./events";
 import type { Module } from "./module";
 
@@ -10,10 +11,12 @@ export abstract class BaseModule<TConfig = Record<string, any>> implements Modul
     abstract id: string;
 
     protected config: CarouselConfig;
+    protected configClass: Config;
     protected events: Events;
     protected getStatus: () => CarouselStatus;
     protected container: HTMLDivElement;
     protected moduleConfig?: TConfig;
+    protected configOverride?: Partial<CarouselConfig>;
 
     private moduleConfigKeyMap?: Map<keyof TConfig, string>;
 
@@ -21,6 +24,7 @@ export abstract class BaseModule<TConfig = Record<string, any>> implements Modul
 
     constructor(context: ModuleContext) {
         this.config = context.config;
+        this.configClass = context.configClass;
         this.events = context.events;
         this.getStatus = context.getStatus;
         this.container = context.container;
@@ -42,14 +46,33 @@ export abstract class BaseModule<TConfig = Record<string, any>> implements Modul
     abstract destroy(): void;
 
     initializeLifecycle() {
+        if (this.isInitialized) {
+            return;
+        }
+
         this.moduleConfigKeyMap = this.getModuleConfigKeys();
 
+        if (this.configOverride) {
+            this.configClass.setModuleOverride(this.id, this.configOverride);
+        }
+
         this.initialize();
+        this.isInitialized = true;
         this.emitInitialized();
     }
 
     destroyLifecycle() {
+        if (!this.isInitialized) {
+            return;
+        }
+
         this.destroy();
+
+        if (this.configOverride) {
+            this.configClass.setModuleOverride(this.id, undefined);
+        }
+
+        this.isInitialized = false;
         this.emitDestroyed();
     }
 
@@ -105,6 +128,12 @@ export abstract class BaseModule<TConfig = Record<string, any>> implements Modul
     }
 
     #onConfigChanged = (e: CarouselEvents[typeof EVENTS.CONFIG_CHANGED]) => {
+        this.config = this.configClass.current; // sync local reference with latest global current config
+
+        if (e?.isInternalOverride) {
+            return;
+        }
+
         if (this.shouldInitialize) {
             this.initializeLifecycle();
         } else {

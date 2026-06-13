@@ -45,7 +45,8 @@ export type CarouselEvents = {
     [EVENTS.CONFIG_CHANGED]: {
         default: CarouselConfig,
         old: CarouselConfig,
-        new: CarouselConfig
+        new: CarouselConfig,
+        isInternalOverride: boolean
     };
 
     [EVENTS.SLIDE_SCROLL]: {

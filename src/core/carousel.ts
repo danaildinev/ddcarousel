@@ -56,6 +56,7 @@ export default class Carousel {
 
         this.#moduleLoader = new ModuleLoader({
             config: this.#config.current,
+            configClass: this.#config,
             events: this.#events,
             getStatus: this.getStatus,
             container: container
