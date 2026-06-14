@@ -83,7 +83,12 @@ export class Config {
         }
 
         // apply runtime module config overrides
-        for (const [_, override] of this.#moduleOverrides) {
+        for (const [moduleId, override] of this.#moduleOverrides) {
+            // skip overrides from disabled modules
+            if (nextCurrent[moduleId as keyof CarouselConfig] === false) {
+                continue;
+            }
+
             Object.assign(nextCurrent, override);
         }
 
@@ -103,8 +108,8 @@ export class Config {
             this.current.autoHeight = false;
         }
 
-        const targetConfig = config === undefined ? this.current : config;
-        for (const [key, value] of Object.entries(targetConfig)) {
+        //const targetConfig = config === undefined ? this.current : config;
+        for (const [key, value] of Object.entries(this.current)) {
             if (typeof value !== "function") {
                 continue;
             }
