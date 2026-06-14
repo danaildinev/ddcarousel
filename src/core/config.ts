@@ -63,9 +63,9 @@ export class Config {
         }
     }
 
-    updateSettings(config?: Partial<CarouselConfig>, emitEvent: boolean = true, isInternalOverride: boolean = false) {
+    #rebuildConfig(config?: Partial<CarouselConfig>): CarouselConfig {
         // if an explicit config update is sent via API at runtime, merge it into baseline user configurations
-        if (config !== undefined && !isInternalOverride) {
+        if (config !== undefined) {
             Object.assign(this.user, config);
         }
 
@@ -92,9 +92,6 @@ export class Config {
             Object.assign(nextCurrent, override);
         }
 
-        // assign the completely rebuilt layout state back to the class
-        this.current = nextCurrent;
-
         // validations time (Notice we use this.current here, NOT a cached variable)
         if (this.current.items === 0) {
             this.current.itemPerPage = false;
@@ -108,8 +105,42 @@ export class Config {
             this.current.autoHeight = false;
         }
 
+        this.#handleEvents(this.current);
+
+        return nextCurrent;
+    }
+
+    #applyConfig(next: CarouselConfig, isInternalOverride = false, emitEvent = true) {
+        const oldConfig = this.current;
+
+        this.current = next;
+
+        if (!emitEvent) {
+            return;
+        }
+
+        const payload: CarouselEvents[typeof EVENTS.CONFIG_APPLIED] = {
+            default: this.default,
+            old: structuredClone(oldConfig),
+            new: structuredClone(next),
+            isInternalOverride
+        };
+
+        this.#events.emit(EVENTS.CONFIG_APPLIED, payload);
+    }
+
+    updateSettings(config?: Partial<CarouselConfig>, emit = true) {
+        if (config) {
+            Object.assign(this.user, config);
+        }
+
+        const next = this.#rebuildConfig();
+        this.#applyConfig(next, false, emit);
+    }
+
+    #handleEvents(config: CarouselConfig) {
         //const targetConfig = config === undefined ? this.current : config;
-        for (const [key, value] of Object.entries(this.current)) {
+        for (const [key, value] of Object.entries(config)) {
             if (typeof value !== "function") {
                 continue;
             }
@@ -129,21 +160,10 @@ export class Config {
                 this.#events.on(mapped, callback);
             }
         }
-
-        const hasActiveOverrides = isInternalOverride || this.#moduleOverrides.size > 0;
-        if (emitEvent) {
-            const payload: CarouselEvents[typeof EVENTS.CONFIG_CHANGED] = {
-                default: this.default,
-                old: oldConfig, //structuredClone(oldConfig)
-                new: structuredClone(this.current),
-                isInternalOverride: hasActiveOverrides
-            }
-            this.#events.emit(EVENTS.CONFIG_CHANGED, payload);
-        }
     }
 
     /**
-     * Applies module-specific overrides silently without triggering CONFIG_CHANGED event
+     * Applies module-specific overrides silently without triggering CONFIG_APPLI event
      */
     setModuleOverride(moduleId: string, override?: Partial<CarouselConfig>) {
         if (!override) {
