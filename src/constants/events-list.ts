@@ -14,6 +14,7 @@ export const EVENTS = {
     MODULE_AUTOPLAY_STOPPED: 'module:autoplay:stopped',
 
     // stage
+    CONFIG_APPLIED: 'config:applied',
     CONFIG_CHANGED: 'config:changed',
     STAGE_CREATED: 'stage:created',
     STAGE_CHANGED: 'stage:changed',

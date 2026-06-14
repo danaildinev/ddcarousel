@@ -49,6 +49,13 @@ export type CarouselEvents = {
         isInternalOverride: boolean
     };
 
+    [EVENTS.CONFIG_APPLIED]: {
+        default: CarouselConfig,
+        old: CarouselConfig,
+        new: CarouselConfig,
+        isInternalOverride: boolean
+    };
+
     [EVENTS.SLIDE_SCROLL]: {
         slide?: HTMLDivElement,
         animate: boolean;
