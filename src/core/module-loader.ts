@@ -1,4 +1,6 @@
 import { EVENTS } from "../constants/events-list";
+import type { CarouselConfig } from "../types/carousel.types";
+import type { CarouselEvents } from "../types/event.types";
 import type { ModuleContext } from "../types/module.params";
 import type { BaseModule } from "./base-module";
 import type { Events } from "./events";
@@ -13,7 +15,7 @@ export default class ModuleLoader {
         this.#params = params;
         this.#events = this.#params.events;
 
-        //this.#events.on(EVENTS.CONFIG_CHANGED, this.syncModules);
+        this.#events.on(EVENTS.CONFIG_CHANGED, this.syncModules);
     }
 
     get modules(): BaseModule[] {
@@ -81,48 +83,37 @@ export default class ModuleLoader {
         });
     }
 
-    // syncModules = (e: CarouselEvents[typeof EVENTS.CONFIG_CHANGED]) => {
-    //     const newConfig = e.new;
-    //     //const oldConfig = e.old ?? {};
-    //     const currentModules = e.old.modules;
-    //     const newModules = e.new.modules;
+    syncModules = (e: CarouselEvents[typeof EVENTS.CONFIG_CHANGED]) => {
+        const newConfig = e.new;
+        const oldConfig = e.old;
+        const defaultConfig = e.default;
 
-    //     for (const key in currentModules) {
-    //         const moduleId = currentModules[key] as string;
-    //         if (newModules !== undefined && newModules.includes(moduleId)) {
-    //             continue;
-    //         }
+        for (const moduleId of INTERNAL_MODULES) {
+            const key = moduleId as keyof CarouselConfig;
 
-    //         const instance = this.#instances.get(moduleId);
-    //         if (instance) {
-    //             void this.unload(moduleId);
-    //         }
-    //     }
+            const oldValue = oldConfig?.[key] ?? defaultConfig?.[key] ?? false;
+            const newValue = newConfig?.[key] ?? defaultConfig?.[key] ?? false;
 
-    //     for (const key in newModules) {
-    //         const moduleId = newModules[key] as string;
-    //         const exists = Object.values(newConfig.modules).includes(moduleId);
+            if (oldValue === newValue) {
+                continue;
+            }
 
-    //         const instance = this.#instances.get(moduleId);
+            const instance = this.#instances.get(moduleId);
 
-    //         if (!instance) {
-    //             if (exists) {
-    //                 void this.load(moduleId);
-    //             } else {
-    //                 void this.unload(moduleId);
-    //             }
-    //             continue;
-    //         }
+            if (!instance) {
+                if (newValue) {
+                    void this.load(moduleId);
+                }
+                continue;
+            }
 
-    //         if (exists) {
-    //             instance.initialize();
-    //             instance.isInitialized = true;
-    //         } else {
-    //             instance.destroy();
-    //             instance.isInitialized = false;
-    //         }
-    //     }
-    // };
+            if (newValue) {
+                instance.initializeLifecycle();
+            } else {
+                instance.destroyLifecycle();
+            }
+        }
+    };
 
     reset() {
         for (const module of this.#instances.values()) {
