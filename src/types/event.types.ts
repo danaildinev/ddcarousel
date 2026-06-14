@@ -42,13 +42,6 @@ export type CarouselEvents = {
         name: string
     };
 
-    [EVENTS.CONFIG_CHANGED]: {
-        default: CarouselConfig,
-        old: CarouselConfig,
-        new: CarouselConfig,
-        isInternalOverride: boolean
-    };
-
     [EVENTS.CONFIG_APPLIED]: {
         default: CarouselConfig,
         old: CarouselConfig,
