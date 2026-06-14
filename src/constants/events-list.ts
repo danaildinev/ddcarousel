@@ -24,7 +24,6 @@ export const EVENTS = {
     PAGE_CHANGE_SCROLL_BEFORE: 'page:change:scroll:before',
     PAGE_CHANGE_SCROLL_AFTER: 'page:change:scroll:after',
     SLIDE_SCROLL: 'slide:scroll',
-    NORMALIZE_PAGE_MAP: 'page:normalize:map',
 
     // user interaction
     DRAG_PRE_START: 'drag:start:pre',

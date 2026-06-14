@@ -320,18 +320,7 @@ export default class Stage {
             }
         }
 
-        // let modules safely transform the raw map arrays
-        const context = {
-            pageSlides,
-            slidesLength
-        };
-        this.#events.emit(EVENTS.NORMALIZE_PAGE_MAP, context);
-
-        // strip out out-of-bounds numbers
-        this.pageSlides = context.pageSlides.map(slides =>
-            slides.filter(i => i >= 0 && i < slidesLength)
-        );
-
+        this.pageSlides = pageSlides;
         this.totalPages = pages;
     }
 

@@ -68,11 +68,6 @@ export type CarouselEvents = {
         slideIndexRight?: number | undefined;
         rebase?: boolean;
     };
-
-    [EVENTS.NORMALIZE_PAGE_MAP]: {
-        pageSlides: number[],
-        slidesLength: number
-    };
 }
 
 export type CarouselEventName = keyof CarouselEvents | string;

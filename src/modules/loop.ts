@@ -28,7 +28,6 @@ export default class Loop extends BaseModule {
         this.events.on(EVENTS.DRAG_DRAGGING, this.#onDragging)
         this.events.on(EVENTS.PAGE_CHANGED, this.#onPageChanged)
         this.events.on(EVENTS.PAGE_CHANGE_INDEX, this.#onPageChangeIndex)
-        this.events.on(EVENTS.NORMALIZE_PAGE_MAP, this.#wrapPageMap);
         //this.events.on(EVENTS.PAGE_CHANGE_SCROLL_BEFORE, this.#onChangePageScrollBefore);
 
         this.#activeSlides = this.getStatus().activeSlides;
@@ -49,7 +48,6 @@ export default class Loop extends BaseModule {
         this.#clearSlidesForLoop();
 
         this.events.off(EVENTS.PAGE_CHANGE_INDEX, this.#onPageChangeIndex);
-        this.events.off(EVENTS.NORMALIZE_PAGE_MAP, this.#wrapPageMap);
         //this.events.off(EVENTS.PAGE_CHANGE_SCROLL_BEFORE, this.#onChangePageScrollBefore);
     }
 
@@ -71,18 +69,6 @@ export default class Loop extends BaseModule {
             e.page = 0;
         else
             e.handled = false;
-    }
-
-    #wrapPageMap = (context: { pageSlides: number[][], slidesLength: number }) => {
-        if (!this.shouldInitialize) {
-            return;
-        }
-
-        const total = context.slidesLength;
-
-        context.pageSlides = context.pageSlides.map(slideGroup =>
-            slideGroup.map(index => ((index % total) + total) % total)
-        );
     }
 
     #calculatePrevAndNextSlides(activeSlides: number[]) {
