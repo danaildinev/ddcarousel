@@ -15,7 +15,7 @@ export default class ModuleLoader {
         this.#params = params;
         this.#events = this.#params.events;
 
-        this.#events.on(EVENTS.CONFIG_CHANGED, this.syncModules);
+        this.#events.on(EVENTS.CONFIG_APPLIED, this.syncModules);
     }
 
     get modules(): BaseModule[] {
@@ -83,7 +83,7 @@ export default class ModuleLoader {
         });
     }
 
-    syncModules = (e: CarouselEvents[typeof EVENTS.CONFIG_CHANGED]) => {
+    syncModules = (e: CarouselEvents[typeof EVENTS.CONFIG_APPLIED]) => {
         const newConfig = e.new;
         const oldConfig = e.old;
         const defaultConfig = e.default;

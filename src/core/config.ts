@@ -165,14 +165,17 @@ export class Config {
     /**
      * Applies module-specific overrides silently without triggering CONFIG_APPLI event
      */
-    setModuleOverride(moduleId: string, override?: Partial<CarouselConfig>) {
+    setModuleOverride(moduleId: string, override?: Partial<CarouselConfig>, emit = false) {
         if (!override) {
             this.#moduleOverrides.delete(moduleId);
         } else {
             this.#moduleOverrides.set(moduleId, override);
         }
 
-        this.updateSettings(undefined, true, true);
+        const next = this.#rebuildConfig();
+
+        // silent apply (no duplicated event
+        this.#applyConfig(next, true, emit);
     }
 
     refreshResponsive = (width: number) => {

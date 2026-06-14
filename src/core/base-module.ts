@@ -27,7 +27,7 @@ export abstract class BaseModule<TConfig = Record<string, any>> implements Modul
         this.getStatus = context.getStatus;
         this.container = context.container;
 
-        this.events.on(EVENTS.CONFIG_CHANGED, this.#onConfigChanged);
+        this.events.on(EVENTS.CONFIG_APPLIED, this.#onConfigApplied);
     }
 
     get shouldInitialize() {
@@ -55,6 +55,7 @@ export abstract class BaseModule<TConfig = Record<string, any>> implements Modul
         this.moduleConfigKeyMap = this.getModuleConfigKeys();
 
         if (this.configOverride) {
+            // update config state completely silently
             this.configClass.setModuleOverride(this.id, this.configOverride);
         }
 
@@ -69,10 +70,6 @@ export abstract class BaseModule<TConfig = Record<string, any>> implements Modul
         }
 
         this.destroy();
-
-        if (this.configOverride) {
-            this.configClass.setModuleOverride(this.id, undefined);
-        }
 
         this.isInitialized = false;
         this.emitDestroyed();
@@ -129,7 +126,7 @@ export abstract class BaseModule<TConfig = Record<string, any>> implements Modul
         return this.moduleConfig[property];
     }
 
-    #onConfigChanged = (e: CarouselEvents[typeof EVENTS.CONFIG_CHANGED]) => {
+    #onConfigApplied = (e: CarouselEvents[typeof EVENTS.CONFIG_APPLIED]) => {
         if (e?.isInternalOverride) {
             // only refresh config reference; skip module lifecycle checks
             return;
