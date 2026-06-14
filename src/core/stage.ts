@@ -9,7 +9,6 @@ import type { Config } from "./config";
 import type { Events } from "./events";
 
 export default class Stage {
-    #config!: CarouselConfig;
     #configClass!: Config;
     #events!: Events;
 
@@ -32,7 +31,6 @@ export default class Stage {
 
     constructor(config: Config, events: Events) {
         this.#configClass = config;
-        this.#config = config.current;
         this.#events = events;
 
         const targetContainer = document.querySelector<HTMLDivElement>(this.#config.container);
@@ -44,6 +42,10 @@ export default class Stage {
         }
 
         this.initialize();
+    }
+
+    get #config(): CarouselConfig {
+        return this.#configClass.current;
     }
 
     initialize() {
