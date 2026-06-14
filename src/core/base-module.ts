@@ -10,7 +10,6 @@ import type { Module } from "./module";
 export abstract class BaseModule<TConfig = Record<string, any>> implements Module {
     abstract id: string;
 
-    protected config: CarouselConfig;
     protected configClass: Config;
     protected events: Events;
     protected getStatus: () => CarouselStatus;
@@ -23,7 +22,6 @@ export abstract class BaseModule<TConfig = Record<string, any>> implements Modul
     isInitialized: boolean = false;
 
     constructor(context: ModuleContext) {
-        this.config = context.config;
         this.configClass = context.configClass;
         this.events = context.events;
         this.getStatus = context.getStatus;
@@ -40,6 +38,10 @@ export abstract class BaseModule<TConfig = Record<string, any>> implements Modul
         }
 
         return Boolean(current[this.id]);
+    }
+
+    get config(): CarouselConfig {
+        return this.configClass.current;
     }
 
     abstract initialize(): void;
@@ -128,9 +130,8 @@ export abstract class BaseModule<TConfig = Record<string, any>> implements Modul
     }
 
     #onConfigChanged = (e: CarouselEvents[typeof EVENTS.CONFIG_CHANGED]) => {
-        this.config = this.configClass.current; // sync local reference with latest global current config
-
         if (e?.isInternalOverride) {
+            // only refresh config reference; skip module lifecycle checks
             return;
         }
 
