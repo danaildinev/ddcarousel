@@ -3,6 +3,7 @@ import { DATA } from "../constants/data-attrs";
 import { EVENTS } from "../constants/events-list";
 import { PRIORITY } from "../constants/priorities";
 import { BaseModule } from "../core/base-module";
+import type { CarouselConfig } from "../types/carousel.types";
 import type { CarouselEvents } from "../types/event.types";
 import type { ModuleContext } from "../types/module.params";
 import { error } from "../utils/error-handler";
@@ -10,6 +11,9 @@ import type { ClosestSlideDirection } from "../utils/slide";
 
 export default class Loop extends BaseModule {
     id: string = "loop";
+    configOverride?: Partial<CarouselConfig> = {
+        centerSlide: true
+    }
 
     #stage: HTMLDivElement;
     #activeSlides: number[] = [];
@@ -323,4 +327,5 @@ export default class Loop extends BaseModule {
 
         return stageTranslate;
     }
+
 }
