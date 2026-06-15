@@ -7,7 +7,7 @@ import type { Events } from "./events";
 export class Config {
     #events: Events;
 
-    #lastResponsiveBp: number | null = 0;
+    #lastResponsiveBp: number | null = null;
     #responsiveLoaded: boolean = false;
     #moduleOverrides: Map<string, Partial<CarouselConfig>> = new Map();
 
@@ -68,8 +68,6 @@ export class Config {
         if (config !== undefined) {
             Object.assign(this.user, config);
         }
-
-        const oldConfig = structuredClone(this.current);
 
         // start fresh with defaults and apply user global overrides
         const nextCurrent = Object.assign(structuredClone(this.default), this.user);
@@ -198,7 +196,9 @@ export class Config {
             if (!this.#responsiveLoaded || this.#lastResponsiveBp !== matched) {
                 this.#responsiveLoaded = true;
                 this.#lastResponsiveBp = matched;
-                this.updateSettings();
+
+                // еxplicitly pass undefined for config, and true to force the emit
+                this.updateSettings(undefined, true);
             }
         }
         else if (this.#responsiveLoaded) {
@@ -207,9 +207,10 @@ export class Config {
     }
 
     revertToUserSettings = () => {
-        this.#lastResponsiveBp = 0;
+        this.#lastResponsiveBp = null;
         this.#responsiveLoaded = false;
-        Object.assign(this.current, this.user); //this.updateSettings(this.user);?
+
+        // let the config builder handle the fresh rebuild
         this.updateSettings(undefined, true);
     }
 
@@ -218,7 +219,7 @@ export class Config {
         this.user = structuredClone(this.default);
         this.current = structuredClone(this.default);
         this.#moduleOverrides.clear();
-        this.#lastResponsiveBp = 0;
+        this.#lastResponsiveBp = null;
         this.#responsiveLoaded = false;
     }
 }
