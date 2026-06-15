@@ -51,6 +51,8 @@ export default class Loop extends BaseModule {
     destroy() {
         this.#clearSlidesForLoop();
 
+        this.events.off(EVENTS.DRAG_DRAGGING, this.#onDragging)
+        this.events.off(EVENTS.PAGE_CHANGED, this.#onPageChanged)
         this.events.off(EVENTS.PAGE_CHANGE_INDEX, this.#onPageChangeIndex);
         //this.events.off(EVENTS.PAGE_CHANGE_SCROLL_BEFORE, this.#onChangePageScrollBefore);
     }

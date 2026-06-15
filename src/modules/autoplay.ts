@@ -94,7 +94,6 @@ export default class Autoplay extends BaseModule<AutoplayConfig> {
         this.#restartProgressBar();
 
         const speed = this.getResolvedConfig("speed");
-        console.log(speed);
 
         if (speed) {
             this.#autoPlay = setInterval(() => this.#handler(), speed);

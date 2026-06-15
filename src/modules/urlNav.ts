@@ -68,7 +68,6 @@ export default class UrlNav extends BaseModule {
                 id = Number(slide.dataset[DATA.dataset.slide]),
                 href = "#" + slideId,
                 title = slideTitle ?? "";
-            console.log(slideId, id);
 
             link.href = href;
             link.textContent = title;

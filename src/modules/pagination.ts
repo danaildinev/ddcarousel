@@ -64,6 +64,7 @@ export default class Dots extends BaseModule {
 
     destroy() {
         this.events.off(EVENTS.PAGE_CHANGED, this.#onChangePaged);
+        this.events.off(EVENTS.CONFIG_APPLIED, this.#onConfigApplied);
 
         this.#paginationContainer?.remove();
     }

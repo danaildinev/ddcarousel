@@ -170,8 +170,12 @@ export default class Stage {
         this.#resizeThrottled = false;
 
         window.removeEventListener("keydown", this.#keyboardHandler);
+
         this.#events.off(EVENTS.PAGE_CHANGE_REQUEST, this.#onPageChanged);
-        this.#events.off(EVENTS.PAGE_CHANGED, this.#onPageChanged);
+        this.#events.off(EVENTS.SLIDE_SCROLL, this.#onSlideScroll);
+        this.#events.off(EVENTS.STAGE_RESIZED, this.#onStageResized);
+        this.#events.off(EVENTS.CONFIG_APPLIED, this.#onConfigApplied);
+
         this.#mutationObserver?.disconnect();
         this.#resizeObserver?.disconnect();
     }
