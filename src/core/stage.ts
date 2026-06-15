@@ -83,6 +83,7 @@ export default class Stage {
         events.on(EVENTS.SLIDE_SCROLL, this.#onSlideScroll);
         events.on(EVENTS.STAGE_RESIZED, this.#onStageResized);
         events.on(EVENTS.PAGE_CHANGE_REQUEST, this.#onPageChangeRequest);
+        events.on(EVENTS.CONFIG_APPLIED, this.#onConfigApplied);
         events.emit(EVENTS.PAGE_CHANGE_REQUEST, {
             index: this.#config.startPage > 0 ? this.#config.startPage : 0,
             animate: false
@@ -653,6 +654,10 @@ export default class Stage {
         this.#configClass.refreshResponsive(containerWidth);
 
         this.#resizeThrottled = false;
+    }
+
+    #onConfigApplied = (e: CarouselEvents[typeof EVENTS.CONFIG_APPLIED]) => {
+        this.#calculateTotalPages();
     }
 
     #keyboardHandler = (e: KeyboardEvent) => {
