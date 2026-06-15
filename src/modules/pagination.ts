@@ -20,6 +20,16 @@ export default class Dots extends BaseModule {
         this.#currentPage = this.getStatus().currentPage;
 
         this.events.on(EVENTS.PAGE_CHANGED, this.#onChangePaged);
+        this.events.on(EVENTS.CONFIG_APPLIED, this.#onConfigApplied);
+    }
+
+    #onConfigApplied = (e: CarouselEvents[typeof EVENTS.CONFIG_APPLIED]) => {
+        if (e.old.items === e.new.items) {
+            return;
+        }
+
+        this.destroy();
+        this.initialize();
     }
 
     initialize() {
@@ -31,14 +41,7 @@ export default class Dots extends BaseModule {
         const pagination = document.createElement("div");
         pagination.classList.add(CSS_CLASSES.pagination, CSS_CLASSES.dots);
 
-        let dotsCount;
-        if (this.config.items > 1) {
-            dotsCount = this.config.centerSlide ? status.totalSlides : status.totalPages + 1;
-        } else {
-            dotsCount = status.totalSlides;
-        }
-
-        for (var i = 0; i < dotsCount; i++) {
+        for (var i = 0; i < status.pageSlides.length; i++) {
             let dot = document.createElement("span");
             dot.classList.add(CSS_CLASSES.dot);
             dot.dataset[DATA.dataset.slide] = i.toString();
