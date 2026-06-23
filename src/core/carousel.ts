@@ -16,6 +16,7 @@ export default class Carousel {
     #stage!: Stage;
     #events: Events;
     #moduleLoader!: ModuleLoader;
+    #drag?: Drag;
 
     #initialized: boolean = false;
 
@@ -46,8 +47,8 @@ export default class Carousel {
         this.#config = new Config(config, this.#events);
         this.#stage = new Stage(this.#config, this.#events);
 
-        const drag = new Drag(this.#config, this.#events, this.getStatus());
-        drag.initialize();
+        this.#drag = new Drag(this.#config, this.#events, this.getStatus());
+        this.#drag.initialize();
 
         const container = document.querySelector<HTMLDivElement>(this.#config.current.container);
         if (!container) {
@@ -70,6 +71,8 @@ export default class Carousel {
     destroy(restoreSlides: boolean) {
         this.#events.emit(EVENTS.DESTROY);
 
+        this.#drag?.destroy();
+
         this.#stage.destroy(restoreSlides);
         this.#config.reset();
         this.#moduleLoader.reset();
@@ -77,6 +80,7 @@ export default class Carousel {
         this.#config = null!;
         this.#stage = null!;
         this.#moduleLoader = null!;
+        this.#drag = null!;
 
         this.#events.emit(EVENTS.DESTROYED);
         this.#events.reset();
