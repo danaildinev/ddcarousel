@@ -13,10 +13,10 @@ export class Config {
 
     default: CarouselConfig;
     current: CarouselConfig;
-    user: CarouselConfig;
+    user: Partial<CarouselConfig>;
     //responsive: CarouselConfig | null;
 
-    constructor(userConfig: CarouselConfig, events: Events) {
+    constructor(userConfig: Partial<CarouselConfig>, events: Events) {
         this.#events = events;
 
         this.default = this.#setDefaultConfig();

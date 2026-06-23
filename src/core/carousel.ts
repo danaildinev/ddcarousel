@@ -19,18 +19,18 @@ export default class Carousel {
 
     #initialized: boolean = false;
 
-    constructor(config: CarouselConfig) {
+    constructor(config?: Partial<CarouselConfig>) {
         if (this.#initialized)
             throw error("Already initialized!");
 
         this.#events = new Events();
 
-        if (config !== undefined) {
+        if (config) {
             this.init(config);
         }
     }
 
-    init(config: CarouselConfig) {
+    init(config: Partial<CarouselConfig>) {
         if (this.#initialized) {
             console.warn("Already initialized!");
             return;
