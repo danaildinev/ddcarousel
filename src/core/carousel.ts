@@ -19,6 +19,8 @@ export default class Carousel {
     #drag?: Drag;
 
     #initialized: boolean = false;
+    #state: 'idle' | 'initializing' | 'ready' | 'destroying' | 'destroyed' = 'idle';
+    #initToken: symbol | null = null;
 
     constructor(config?: Partial<CarouselConfig>) {
         if (this.#initialized)
@@ -31,11 +33,17 @@ export default class Carousel {
         }
     }
 
-    init(config: Partial<CarouselConfig>) {
-        if (this.#initialized) {
+    async init(config: Partial<CarouselConfig>) {
+        if (this.#state === 'initializing' || this.#state === 'ready') {
             console.warn("Already initialized!");
             return;
         }
+
+        this.#state = 'initializing';
+
+        const initToken = Symbol();
+        this.#initToken = initToken;
+
 
         if (this.#events === null) {
             this.#events = new Events();
@@ -62,13 +70,28 @@ export default class Carousel {
             getStatus: this.getStatus,
             container: container
         });
-        this.#moduleLoader.loadAll();
+        await this.#moduleLoader.loadAll();
 
+        // prevent async completion after destroy/re-init
+        if (this.#initToken !== initToken || this.#state !== 'initializing') {
+            return;
+        }
+
+        this.#state = 'ready';
         this.#initialized = true;
         this.#events.emit(EVENTS.INITIALIZED, this.getStatus());
     }
 
     destroy(restoreSlides: boolean) {
+        if (this.#state === 'destroying' || this.#state === 'destroyed') {
+            return;
+        }
+
+        this.#state = 'destroying';
+
+        // invalidate any in-flight init
+        this.#initToken = null;
+
         this.#events.emit(EVENTS.DESTROY);
 
         this.#drag?.destroy();
@@ -87,6 +110,7 @@ export default class Carousel {
         this.#events = null!;
 
         this.#initialized = false;
+        this.#state = 'destroyed';
     }
 
     module = (name: string) => this.#moduleLoader?.modules.find(m => m.id === name);
