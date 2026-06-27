@@ -12,8 +12,8 @@ export default class Nav extends BaseModule {
         <path fill-rule="evenodd" d="M11.354 1.646a.5.5 0 0 1 0 .708L5.707 8l5.647 5.646a.5.5 0 0 1-.708.708l-6-6a.5.5 0 0 1 0-.708l6-6a.5.5 0 0 1 .708 0"/>
         </svg>`;
 
-    #currentPage: number;
-    #totalPages: number;
+    #currentPage: number = -1;
+    #totalPages: number = -1;;
 
     #prevBtn!: HTMLElement;
     #nextBtn!: HTMLElement;
@@ -23,19 +23,20 @@ export default class Nav extends BaseModule {
     constructor(params: ModuleContext) {
         super(params);
 
-        const status = this.getStatus();
-        this.#currentPage = status.currentPage;
-        this.#totalPages = status.totalPages;
-
         this.events.on(EVENTS.PAGE_CHANGED, this.#onChangePaged);
     }
 
     initialize() {
         //this.#remove();
 
-        if (this.getStatus().totalPages == 0) {
+        const status = this.getStatus();
+        if (status.totalPages == 0) {
             return;
         }
+
+        this.#totalPages = status.totalPages;
+        this.#currentPage = status.currentPage;
+
 
         const prevBtn = document.createElement("div"),
             nextBtn = document.createElement("div");

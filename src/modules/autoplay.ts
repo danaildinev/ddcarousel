@@ -24,7 +24,7 @@ export default class Autoplay extends BaseModule<AutoplayConfig> {
     #stage: HTMLDivElement;
     #progressBar?: HTMLDivElement | undefined;
     #autoPlay!: number | undefined;
-    #currentPage: number;
+    #currentPage: number = -1;
 
     constructor(params: ModuleContext) {
         super(params);
@@ -36,8 +36,6 @@ export default class Autoplay extends BaseModule<AutoplayConfig> {
 
         this.#stage = stage;
 
-        this.#currentPage = this.getStatus().currentPage;
-
         this.events.on(EVENTS.PAGE_CHANGED, this.#onChangePaged);
     }
 
@@ -45,6 +43,8 @@ export default class Autoplay extends BaseModule<AutoplayConfig> {
         if (this.getResolvedConfig("pauseOnTabHidden")) {
             document.addEventListener("visibilitychange", this.#stopOnTabHidden);
         }
+
+        this.#currentPage = this.getStatus().currentPage;
 
         this.#attachEvents();
         this.start();

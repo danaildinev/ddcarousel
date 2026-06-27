@@ -20,7 +20,6 @@ export default class UrlNav extends BaseModule {
 
     #events: Events;
     #config: CarouselConfig;
-    #status: CarouselStatus;
 
     #navItems!: UrlNavItem[];
     #urlNavContainer!: HTMLElement;
@@ -30,12 +29,10 @@ export default class UrlNav extends BaseModule {
 
         this.#config = params.config;
         this.#events = params.events;
-        this.#status = params.getStatus();
     }
 
     initialize() {
         this.#createNav();
-
         this.events.on(EVENTS.PAGE_CHANGED, this.#onPageChange);
     }
 
@@ -50,7 +47,8 @@ export default class UrlNav extends BaseModule {
 
         let list = document.createElement("ul");
         list.classList.add(CSS_CLASSES.urls);
-        for (const slide of Object.values(this.#status.slides)) {
+        const slides = this.getStatus().slides;
+        for (const slide of Object.values(slides)) {
             const child = slide.firstChild as HTMLElement;
             if (!child) {
                 return;

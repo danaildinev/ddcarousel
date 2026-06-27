@@ -10,14 +10,12 @@ export default class Dots extends BaseModule {
     id: string = "pagination";
 
     #paginationContainer!: HTMLDivElement;
-    #currentPage: number;
+    #currentPage: number = -1;
 
     #activeClass = "active";
 
     constructor(params: ModuleContext) {
         super(params);
-
-        this.#currentPage = this.getStatus().currentPage;
 
         this.events.on(EVENTS.PAGE_CHANGED, this.#onChangePaged);
         this.events.on(EVENTS.CONFIG_APPLIED, this.#onConfigApplied);
@@ -37,6 +35,8 @@ export default class Dots extends BaseModule {
         if (status.totalPages == 0) {
             return;
         }
+
+        this.#currentPage = status.currentPage;
 
         const pagination = document.createElement("div");
         pagination.classList.add(CSS_CLASSES.pagination, CSS_CLASSES.dots);
