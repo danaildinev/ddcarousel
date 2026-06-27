@@ -48,12 +48,16 @@ export default class ModuleLoader {
         const instance: BaseModule = new ModuleClass(this.#params);
         this.#instances.set(moduleId, instance);
 
-        const isEnabled = this.#isModuleEnabled(moduleId);
-        if (isEnabled) {
-            this.#events.emit(EVENTS.MODULE_LOADED, {
-                name: moduleId
-            });
-            instance.initializeLifecycle();
+    }
+
+    initAll() {
+        for (const [moduleId, instance] of this.#instances) {
+            const isEnabled = this.#isModuleEnabled(moduleId);
+            if (!isEnabled) {
+                continue;
+            }
+
+            this.#events.emit(EVENTS.MODULE_LOADED, { name: moduleId });
         }
     }
 

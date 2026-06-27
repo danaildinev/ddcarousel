@@ -73,12 +73,17 @@ export default class Carousel {
             getStatus: this.getStatus,
             container: container
         });
+
+        // wait for modules to load
         await this.#moduleLoader.loadAll();
 
-        // prevent async completion after destroy/re-init
+        // was the carousel destroyed while we were waiting?
         if (this.#initToken !== initToken || this.#state !== 'initializing') {
             return;
         }
+
+        // initialize modules synchronously
+        this.#moduleLoader.initAll();
 
         this.#state = 'ready';
         this.#initialized = true;
