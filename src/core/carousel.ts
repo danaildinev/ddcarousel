@@ -124,7 +124,19 @@ export default class Carousel {
         this.#state = 'destroyed';
     }
 
-    module = (name: string) => this.#moduleLoader?.modules.find(m => m.id === name);
+    module = <T = unknown>(name: string): T => {
+        if (!this.#moduleLoader) {
+            throw error("ModuleLoader not initialized");
+        }
+
+        const module = this.#moduleLoader.modules.find(m => m.id === name);
+
+        if (!module) {
+            throw error(`Module not found: ${name}`);
+        }
+
+        return module as T;
+    };
 
     on = (name: string, callback: any) => {
         if (!this.#events) {
