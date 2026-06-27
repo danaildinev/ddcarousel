@@ -47,7 +47,6 @@ export default class ModuleLoader {
 
         const instance: BaseModule = new ModuleClass(this.#params);
         this.#instances.set(moduleId, instance);
-
     }
 
     initAll() {
@@ -58,6 +57,7 @@ export default class ModuleLoader {
             }
 
             this.#events.emit(EVENTS.MODULE_LOADED, { name: moduleId });
+            instance.initializeLifecycle();
         }
     }
 
