@@ -60,7 +60,7 @@ export default class Carousel {
 
         const container = document.querySelector<HTMLDivElement>(this.#config.current.container);
         if (!container) {
-            throw error("Error: Container not found!");
+            throw error("Container not found!");
         }
 
         this.#moduleLoader = new ModuleLoader({

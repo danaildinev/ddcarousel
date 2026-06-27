@@ -1,3 +1,3 @@
 export function error(msg: string) {
-    return new Error(`ddcarousel: ${msg}`);
+    return new Error(`${msg}`);
 }
