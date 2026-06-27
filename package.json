@@ -7,6 +7,7 @@
 	"module": "dist/ddcarousel.esm.js",
 	"types": "dist/ddcarousel.d.ts",
 	"scripts": {
+		"test": "vitest run",
 		"build:all": "npm run build:prod && npm run build:types && npm run bundle:types && npm run clean:types",
 		"build:prod": "webpack",
 		"build:dev": "webpack serve --env dev",
@@ -34,7 +35,9 @@
 	"homepage": "https://github.com/danaildinev/ddcarousel#readme",
 	"devDependencies": {
 		"@microsoft/api-extractor": "^7.57.7",
+		"@types/jsdom": "^28.0.3",
 		"css-loader": "^7.1.4",
+		"jsdom": "^29.1.1",
 		"mini-css-extract-plugin": "^2.10.1",
 		"sass": "^1.97.3",
 		"sass-loader": "^16.0.7",
