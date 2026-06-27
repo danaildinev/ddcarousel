@@ -12,11 +12,11 @@ import ModuleLoader from "./module-loader";
 import Stage from "./stage";
 
 export default class Carousel {
-    #config!: Config;
-    #stage!: Stage;
-    #events: Events;
-    #moduleLoader!: ModuleLoader;
-    #drag?: Drag;
+    #config?: Config | undefined;
+    #stage?: Stage | undefined;
+    #events?: Events | undefined;
+    #moduleLoader?: ModuleLoader | undefined;
+    #drag?: Drag | undefined;
     #container!: HTMLDivElement;
 
     #initialized: boolean = false;
@@ -90,6 +90,10 @@ export default class Carousel {
             return;
         }
 
+        if (!this.#stage || !this.#config || !this.#events) {
+            throw error("Carousel not ready");
+        }
+
         this.#state = 'destroying';
 
         // invalidate any in-flight init
@@ -98,19 +102,18 @@ export default class Carousel {
         this.#events.emit(EVENTS.DESTROY);
 
         this.#drag?.destroy();
-
-        this.#stage.destroy(restoreSlides);
-        this.#config.reset();
-        this.#moduleLoader.reset();
-
-        this.#config = null!;
-        this.#stage = null!;
-        this.#moduleLoader = null!;
-        this.#drag = null!;
+        this.#moduleLoader?.reset();
+        this.#stage?.destroy(restoreSlides);
+        this.#config?.reset();
 
         this.#events.emit(EVENTS.DESTROYED);
         this.#events.reset();
-        this.#events = null!;
+
+        this.#drag = undefined;
+        this.#stage = undefined;
+        this.#config = undefined;
+        this.#moduleLoader = undefined;
+        this.#events = undefined;
 
         this.#initialized = false;
         this.#state = 'destroyed';
@@ -118,22 +121,63 @@ export default class Carousel {
 
     module = (name: string) => this.#moduleLoader?.modules.find(m => m.id === name);
 
-    on = (name: string, callback: any) => this.#events.on(name, callback);
+    on = (name: string, callback: any) => {
+        if (!this.#events) {
+            throw error("Carousel not initialized");
+        }
 
-    changePage = (page: number, animate: boolean) => this.#events.emit(EVENTS.PAGE_CHANGE_REQUEST, {
-        index: page,
-        animate: animate
-    });
+        return this.#events.on(name, callback);
+    };
 
-    getCurrentPage = () => this.#stage.currentPage;
+    changePage = (page: number, animate: boolean) => {
+        if (!this.#events) {
+            throw error("Carousel not initialized");
+        }
 
-    getTotalPages = () => this.#stage.totalPages;
+        this.#events.emit(EVENTS.PAGE_CHANGE_REQUEST, {
+            index: page,
+            animate: animate
+        })
+    }
 
-    getTotalSlides = () => this.#stage.getSlidesCount();
+    getCurrentPage = () => {
+        if (!this.#stage) {
+            throw error("Carousel not initialized");
+        }
 
-    nextPage = () => this.#events.emit(EVENTS.PAGE_CHANGE_REQUEST, { index: "next" });
+        return this.#stage.currentPage;
+    }
 
-    prevPage = () => this.#events.emit(EVENTS.PAGE_CHANGE_REQUEST, { index: "prev" });
+    getTotalPages = () => {
+        if (!this.#stage) {
+            throw error("Carousel not initialized");
+        }
+
+        return this.#stage.totalPages;
+    }
+    getTotalSlides = () => {
+        if (!this.#stage) {
+            throw error("Carousel not initialized");
+        }
+
+        return this.#stage.getSlidesCount();
+    }
+
+    nextPage = () => {
+        if (!this.#events) {
+            throw error("Carousel not initialized");
+        }
+
+        this.#events.emit(EVENTS.PAGE_CHANGE_REQUEST, { index: "next" });
+    }
+
+    prevPage = () => {
+        if (!this.#events) {
+            throw error("Carousel not initialized");
+        }
+
+        this.#events.emit(EVENTS.PAGE_CHANGE_REQUEST, { index: "prev" });
+    }
 
     refresh = () => console.warn("refresh() is deprecated!");
 
@@ -153,6 +197,10 @@ export default class Carousel {
     }
 
     getStatus = (): CarouselStatus => {
+        if (!this.#config || !this.#stage) {
+            throw error("Carousel not initialized");
+        }
+
         const stage = this.#container.querySelector<HTMLDivElement>(`.${CSS_CLASSES.stage}`);
         if (!stage) {
             throw error("Error: Stage not found!");
