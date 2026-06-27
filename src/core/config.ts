@@ -90,20 +90,23 @@ export class Config {
             Object.assign(nextCurrent, override);
         }
 
-        // validations time (Notice we use this.current here, NOT a cached variable)
-        if (this.current.items === 0) {
-            this.current.itemPerPage = false;
+        if (nextCurrent.items === 0) {
+            nextCurrent.itemPerPage = false;
         }
 
-        if (this.current.dragSnapMode === DragSnapMode.Closest) {
-            this.current.centerSlide = true;
+        if (nextCurrent.dragSnapMode === DragSnapMode.Closest) {
+            nextCurrent.centerSlide = true;
         }
 
-        if (this.current.vertical) {
-            this.current.autoHeight = false;
+        if (nextCurrent.vertical) {
+            nextCurrent.autoHeight = false;
         }
 
-        this.#handleEvents(this.current);
+        if (this.user.dots) {
+            nextCurrent.pagination = true;
+        }
+
+        this.#handleEvents(nextCurrent);
 
         return nextCurrent;
     }
