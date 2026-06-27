@@ -21,9 +21,9 @@
  */
 
 import { pathToFileURL } from "url";
-import { dom } from "./env/dom-bootstrap.ts";
-import { installDomMocks } from "./env/dom-mocks.ts";
-import { resizeObservers } from "./env/dom-mocks.ts";
+import { dom } from "./../tests/env/dom-bootstrap.ts";
+import { installDomMocks } from "./../tests/env/dom-mocks.ts";
+import { resizeObservers } from "./../tests/env/dom-mocks.ts";
 import { performance } from "node:perf_hooks";
 
 const comparePath = process.argv.find(arg => arg.startsWith("--v1="))?.slice("--v1=".length);
