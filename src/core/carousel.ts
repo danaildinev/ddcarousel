@@ -17,6 +17,7 @@ export default class Carousel {
     #events: Events;
     #moduleLoader!: ModuleLoader;
     #drag?: Drag;
+    #container!: HTMLDivElement;
 
     #initialized: boolean = false;
     #state: 'idle' | 'initializing' | 'ready' | 'destroying' | 'destroyed' = 'idle';
@@ -45,7 +46,7 @@ export default class Carousel {
         this.#initToken = initToken;
 
 
-        if (this.#events === null) {
+        if (!this.#events) {
             this.#events = new Events();
         }
 
@@ -53,15 +54,17 @@ export default class Carousel {
         this.#events.emit(EVENTS.INITIALIZE);
 
         this.#config = new Config(config, this.#events);
-        this.#stage = new Stage(this.#config, this.#events);
-
-        this.#drag = new Drag(this.#config, this.#events, this.getStatus());
-        this.#drag.initialize();
 
         const container = document.querySelector<HTMLDivElement>(this.#config.current.container);
         if (!container) {
             throw error("Container not found!");
         }
+        this.#container = container;
+
+        this.#stage = new Stage(this.#config, this.#events);
+
+        this.#drag = new Drag(this.#config, this.#events, this.getStatus());
+        this.#drag.initialize();
 
         this.#moduleLoader = new ModuleLoader({
             config: this.#config.current,
@@ -150,25 +153,20 @@ export default class Carousel {
     }
 
     getStatus = (): CarouselStatus => {
-        const container = document.querySelector<HTMLDivElement>(this.#config.current.container);
-        if (!container) {
-            throw error("Error: Container not found!");
-        }
-
-        const stage = container.querySelector<HTMLDivElement>(`.${CSS_CLASSES.stage}`);
+        const stage = this.#container.querySelector<HTMLDivElement>(`.${CSS_CLASSES.stage}`);
         if (!stage) {
             throw error("Error: Stage not found!");
         }
 
         const vertical = this.#config.current.vertical;
-        const viewportCenter = Stage.getViewportCenter(container, vertical);
+        const viewportCenter = Stage.getViewportCenter(this.#container, vertical);
         const slides = Array.from(stage?.children) as HTMLElement[];
         const offsets = getSlidesOffsets(slides, vertical);
         const currentTranslate = this.#stage.currentTranslate;
         const closestSlidesIndexes = getClosestSlideIndexes(offsets, viewportCenter, currentTranslate, ["left", "center", "right"]);
 
         return {
-            created: this.#initialized !== undefined,
+            created: this.#initialized,
             currentPage: this.#stage.currentPage,
             totalPages: this.#stage.totalPages,
             slides: this.#stage.getSlides(),
