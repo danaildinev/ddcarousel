@@ -6,7 +6,6 @@ export type CarouselConfig = {
     nav: boolean;
     navPrevContent: string;
     navNextContent: string;
-    dots: boolean | null;
     pagination: boolean;
     autoHeight: boolean;
     fullWidth: boolean;

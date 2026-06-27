@@ -3,7 +3,6 @@ export const CSS_CLASSES = {
     stage: "ddcarousel-stage",
     nav: "ddcarousel-nav",
     item: "ddcarousel-item",
-    dots: "ddcarousel-dots",
     pagination: "ddcarousel-pagination",
     dot: "ddcarousel-dot",
     prev: "ddcarousel-prev",

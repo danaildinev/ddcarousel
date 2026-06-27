@@ -77,7 +77,7 @@ document.addEventListener("DOMContentLoaded", () => {
 			container: ".items",
 			items: 3,
 			nav: true,
-			dots: false,
+			pagination: false,
 		},
 		centered: {
 			container: ".centered",
@@ -92,19 +92,19 @@ document.addEventListener("DOMContentLoaded", () => {
 		responsive: {
 			container: ".responsive",
 			nav: true,
-			dots: false,
+			pagination: false,
 			items: 3,
 			autoplay: false,
 			responsive: {
 				768: {
 					items: 2,
-					dots: true,
+					pagination: true,
 					nav: false,
 					autoplay: true
 				},
 				480: {
 					items: 1,
-					dots: true,
+					pagination: true,
 					nav: false,
 					autoplay: true
 				},
@@ -120,7 +120,7 @@ document.addEventListener("DOMContentLoaded", () => {
 		},
 		url: {
 			container: ".url",
-			dots: false,
+			pagination: false,
 			urlNav: true,
 		},
 		lazy: {
@@ -148,7 +148,7 @@ document.addEventListener("DOMContentLoaded", () => {
 		},
 		customLabels: {
 			container: ".customLabels",
-			dots: false,
+			pagination: false,
 			nav: true,
 			labelNavPrev: "< Prev",
 			labelNavNext: "Next >"

@@ -6,7 +6,7 @@ import { BaseModule } from "../core/base-module";
 import type { ModuleContext } from "../types/module.params";
 import type { CarouselEvents } from "../types/event.types";
 
-export default class Dots extends BaseModule {
+export default class Pagination extends BaseModule {
     id: string = "pagination";
 
     #paginationContainer!: HTMLDivElement;
@@ -39,7 +39,7 @@ export default class Dots extends BaseModule {
         this.#currentPage = status.currentPage;
 
         const pagination = document.createElement("div");
-        pagination.classList.add(CSS_CLASSES.pagination, CSS_CLASSES.dots);
+        pagination.classList.add(CSS_CLASSES.pagination);
 
         for (var i = 0; i < status.pageSlides.length; i++) {
             let dot = document.createElement("span");
@@ -52,7 +52,7 @@ export default class Dots extends BaseModule {
 
         this.container.appendChild(pagination);
 
-        const paginationContainer = this.container.querySelector<HTMLDivElement>(`.${CSS_CLASSES.dots}`);
+        const paginationContainer = this.container.querySelector<HTMLDivElement>(`.${CSS_CLASSES.pagination}`);
         if (paginationContainer == null) {
             throw error("Pagination container is not found!");
         }

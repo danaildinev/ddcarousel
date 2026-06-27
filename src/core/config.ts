@@ -34,7 +34,6 @@ export class Config {
             nav: false, // modules 
             navPrevContent: Nav.chevronSvg, // modules 
             navNextContent: Nav.chevronSvg, // modules 
-            dots: null, // modules 
             pagination: true, // modules 
             autoHeight: true,
             fullWidth: true,
@@ -100,10 +99,6 @@ export class Config {
 
         if (nextCurrent.vertical) {
             nextCurrent.autoHeight = false;
-        }
-
-        if (this.user.dots) {
-            nextCurrent.pagination = true;
         }
 
         this.#handleEvents(nextCurrent);
