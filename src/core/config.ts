@@ -16,7 +16,7 @@ export class Config {
     user: Partial<CarouselConfig>;
     //responsive: CarouselConfig | null;
 
-    constructor(userConfig: Partial<CarouselConfig>, events: Events) {
+    constructor(events: Events, userConfig?: Partial<CarouselConfig>) {
         this.#events = events;
 
         this.default = this.#setDefaultConfig();

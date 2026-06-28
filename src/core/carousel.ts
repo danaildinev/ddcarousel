@@ -23,21 +23,30 @@ export default class Carousel {
     #state: CarouselState = 'idle';
     #initToken: symbol | null = null;
 
+    public ready: Promise<void>;
+    #resolveReady!: () => void;
+    #rejectReady!: (error: any) => void;
+
     constructor(config?: Partial<CarouselConfig>) {
         if (this.#initialized)
             throw error("Already initialized!");
 
         this.#events = new Events();
 
+        this.ready = new Promise((resolve, reject) => {
+            this.#resolveReady = resolve;
+            this.#rejectReady = reject;
+        });
+
         if (config) {
-            this.init(config);
+            this.init(config).catch(e => error(`Initializing failed: ${e}`));
         }
     }
 
-    async init(config: Partial<CarouselConfig>) {
+    async init(config?: Partial<CarouselConfig>) {
         if (this.#state === 'initializing' || this.#state === 'ready') {
             console.warn("Already initialized!");
-            return;
+            return this.ready;
         }
 
         this.#state = 'initializing';
@@ -45,49 +54,57 @@ export default class Carousel {
         const initToken = Symbol();
         this.#initToken = initToken;
 
+        try {
+            if (!this.#events) {
+                this.#events = new Events();
+            }
 
-        if (!this.#events) {
-            this.#events = new Events();
+            //config events wong execute
+            this.#events.emit(EVENTS.INITIALIZE);
+
+            this.#config = new Config(this.#events, config);
+
+            const container = document.querySelector<HTMLDivElement>(this.#config.current.container);
+            if (!container) {
+                throw error("Container not found!");
+            }
+            this.#container = container;
+
+            this.#stage = new Stage(this.#config, this.#events);
+
+            this.#drag = new Drag(this.#config, this.#events, this.getStatus());
+            this.#drag.initialize();
+
+            this.#moduleLoader = new ModuleLoader({
+                config: this.#config.current,
+                configClass: this.#config,
+                events: this.#events,
+                getStatus: this.getStatus,
+                container: container
+            });
+
+            // wait for modules to load
+            await this.#moduleLoader.loadAll();
+
+            // was the carousel destroyed while we were waiting?
+            if (this.#initToken !== initToken || this.#state !== 'initializing') {
+                this.#resolveReady(); // resolve gracefully so awaiters don't hang forever
+                return;
+            }
+
+            // initialize modules synchronously
+            this.#moduleLoader.initAll();
+
+            this.#state = 'ready';
+            this.#initialized = true;
+            this.#events.emit(EVENTS.INITIALIZED, this.getStatus());
+            this.#resolveReady();
+        } catch (error) {
+            this.#state = 'idle';
+            this.#initialized = false;
+            this.#rejectReady(error);
+            throw error; // re-throw for those explicitly calling init()
         }
-
-        //config events wong execute
-        this.#events.emit(EVENTS.INITIALIZE);
-
-        this.#config = new Config(config, this.#events);
-
-        const container = document.querySelector<HTMLDivElement>(this.#config.current.container);
-        if (!container) {
-            throw error("Container not found!");
-        }
-        this.#container = container;
-
-        this.#stage = new Stage(this.#config, this.#events);
-
-        this.#drag = new Drag(this.#config, this.#events, this.getStatus());
-        this.#drag.initialize();
-
-        this.#moduleLoader = new ModuleLoader({
-            config: this.#config.current,
-            configClass: this.#config,
-            events: this.#events,
-            getStatus: this.getStatus,
-            container: container
-        });
-
-        // wait for modules to load
-        await this.#moduleLoader.loadAll();
-
-        // was the carousel destroyed while we were waiting?
-        if (this.#initToken !== initToken || this.#state !== 'initializing') {
-            return;
-        }
-
-        // initialize modules synchronously
-        this.#moduleLoader.initAll();
-
-        this.#state = 'ready';
-        this.#initialized = true;
-        this.#events.emit(EVENTS.INITIALIZED, this.getStatus());
     }
 
     destroy(restoreSlides: boolean) {
