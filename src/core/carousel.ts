@@ -38,6 +38,10 @@ export default class Carousel {
             this.#rejectReady = reject;
         });
 
+        // for vitest: don't crash if this promise rejects, the user will handle it 
+        // when they 'await carousel.ready'
+        this.ready.catch(() => { });
+
         if (config) {
             this.init(config).catch(e => error(`Initializing failed: ${e}`));
         }
