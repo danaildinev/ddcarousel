@@ -34,6 +34,7 @@ export type CarouselConfig = {
 }
 
 export type CarouselStatus = {
+    state: CarouselState;
     created: boolean;
     currentPage: number;
     totalPages: number;
@@ -50,6 +51,8 @@ export type CarouselStatus = {
 export type CarouselStatusConfig = {
     current?: CarouselConfig
 }
+
+export type CarouselState = 'idle' | 'initializing' | 'ready' | 'destroying' | 'destroyed';
 
 export enum DragSnapMode {
     Swipe = "swipe",

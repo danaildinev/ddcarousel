@@ -2,7 +2,7 @@ import { CSS_CLASSES } from "../constants/css-classes";
 import { EVENTS } from "../constants/events-list";
 import type Autoplay from "../modules/autoplay";
 import type UrlNav from "../modules/urlNav";
-import type { CarouselConfig, CarouselStatus } from "../types/carousel.types";
+import type { CarouselConfig, CarouselState, CarouselStatus } from "../types/carousel.types";
 import { error } from "../utils/error-handler";
 import { getClosestSlideIndexes, getSlidesOffsets } from "../utils/slide";
 import { Config } from "./config";
@@ -20,7 +20,7 @@ export default class Carousel {
     #container!: HTMLDivElement;
 
     #initialized: boolean = false;
-    #state: 'idle' | 'initializing' | 'ready' | 'destroying' | 'destroyed' = 'idle';
+    #state: CarouselState = 'idle';
     #initToken: symbol | null = null;
 
     constructor(config?: Partial<CarouselConfig>) {
@@ -231,7 +231,8 @@ export default class Carousel {
         const closestSlidesIndexes = getClosestSlideIndexes(offsets, viewportCenter, currentTranslate, ["left", "center", "right"]);
 
         return {
-            created: this.#initialized,
+            state: this.#state,
+            created: this.#state === "ready",
             currentPage: this.#stage.currentPage,
             totalPages: this.#stage.totalPages,
             slides: this.#stage.getSlides(),
