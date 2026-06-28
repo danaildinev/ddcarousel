@@ -42,7 +42,7 @@ export default class ModuleLoader {
             return;
         }
 
-        const mod = await import(`../modules/${moduleId}`);
+        const mod = await import(`../modules/${moduleId}.ts`);
         const ModuleClass = mod.default;
 
         const instance: BaseModule = new ModuleClass(this.#params);
