@@ -117,8 +117,8 @@ export class Config {
 
         const payload: CarouselEvents[typeof EVENTS.CONFIG_APPLIED] = {
             default: this.default,
-            old: structuredClone(oldConfig),
-            new: structuredClone(next),
+            old: this.#safeClone(oldConfig),
+            new: this.#safeClone(next),
             isInternalOverride
         };
 
@@ -219,5 +219,37 @@ export class Config {
         this.#moduleOverrides.clear();
         this.#lastResponsiveBp = null;
         this.#responsiveLoaded = false;
+    }
+
+    #safeClone<T>(obj: T): T {
+        if (obj === null || typeof obj !== 'object') {
+            return obj;
+        }
+
+        if (Array.isArray(obj)) {
+            return obj.map(this.#safeClone) as unknown as T;
+        }
+
+        const cloned = {} as Record<string, any>;
+        for (const key in obj) {
+            if (Object.prototype.hasOwnProperty.call(obj, key)) {
+                const value = obj[key as keyof T];
+
+                // drop any functions - they must be handled with #handleEvents()
+                if (typeof value === 'function') {
+                    continue;
+                }
+
+                // safely pass DOM node references without cloning (if your config uses them)
+                if (value instanceof Element) {
+                    cloned[key] = value;
+                    continue;
+                }
+
+                // clone everything else
+                cloned[key] = this.#safeClone(value);
+            }
+        }
+        return cloned as T;
     }
 }
