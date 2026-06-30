@@ -4,12 +4,19 @@ import { DragSnapMode, type CarouselConfig } from "../types/carousel.types";
 import type { CarouselEvents } from "../types/event.types";
 import type { Events } from "./events";
 
+type ResponsiveEventHandler = {
+    key: string;
+    event: string;
+    callback: (payload?: any) => void
+}
+
 export class Config {
     #events: Events;
 
     #lastResponsiveBp: number | null = null;
     #responsiveLoaded: boolean = false;
     #moduleOverrides: Map<string, Partial<CarouselConfig>> = new Map();
+    #responsiveEvents: Map<number, Array<ResponsiveEventHandler>> = new Map();
 
     default: CarouselConfig;
     current: CarouselConfig;
@@ -101,15 +108,18 @@ export class Config {
             nextCurrent.autoHeight = false;
         }
 
-        this.#handleEvents(nextCurrent);
-
         return nextCurrent;
     }
 
     #applyConfig(next: CarouselConfig, isInternalOverride = false, emitEvent = true) {
         const oldConfig = this.current;
 
+        const previousBreakpoint = this.#lastResponsiveBp;
+        this.#clearResponsiveEvents(previousBreakpoint);
+
         this.current = next;
+
+        this.#handleEvents(this.current, this.#lastResponsiveBp ?? undefined);
 
         if (!emitEvent) {
             return;
@@ -134,7 +144,9 @@ export class Config {
         this.#applyConfig(next, false, emit);
     }
 
-    #handleEvents(config: CarouselConfig) {
+    #handleEvents(config: CarouselConfig, breakpoint?: number) {
+        const handlers: Array<ResponsiveEventHandler> = [];
+
         //const targetConfig = config === undefined ? this.current : config;
         for (const [key, value] of Object.entries(config)) {
             if (typeof value !== "function") {
@@ -147,6 +159,11 @@ export class Config {
             if (key.startsWith("on:")) {
                 const name = key.slice(3);
                 this.#events.on(name, callback);
+
+                if (breakpoint !== undefined) {
+                    handlers.push({ key, event: name, callback });
+                }
+
                 continue;
             }
 
@@ -154,8 +171,33 @@ export class Config {
             const mapped = LEGACY_EVENT_MAP[key];
             if (mapped) {
                 this.#events.on(mapped, callback);
+
+                if (breakpoint !== undefined) {
+                    handlers.push({ key, event: mapped, callback });
+                }
             }
         }
+
+        if (breakpoint !== undefined) {
+            this.#responsiveEvents.set(breakpoint, handlers);
+        }
+    }
+
+    #clearResponsiveEvents(breakpoint: number | null) {
+        if (breakpoint === null) {
+            return;
+        }
+
+        const handlers = this.#responsiveEvents.get(breakpoint);
+        if (!handlers) {
+            return;
+        }
+
+        for (const handler of handlers) {
+            this.#events.off(handler.event, handler.callback);
+        }
+
+        this.#responsiveEvents.delete(breakpoint);
     }
 
     /**
@@ -205,6 +247,9 @@ export class Config {
     }
 
     revertToUserSettings = () => {
+        const previous = this.#lastResponsiveBp;
+        this.#clearResponsiveEvents(previous);
+
         this.#lastResponsiveBp = null;
         this.#responsiveLoaded = false;
 
