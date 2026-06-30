@@ -33,6 +33,12 @@ export const EVENTS = {
     TRANSITION_END: 'transition:end',
 } as const;
 
+export type CarouselEventName = typeof EVENTS[keyof typeof EVENTS];
+
+export type CarouselOnEvents = {
+    [K in `on:${CarouselEventName}`]?: (payload?: any) => void;
+};
+
 export const LEGACY_EVENT_MAP: Record<string, string> = {
     onInitialize: EVENTS.INITIALIZE,
     onInitialized: EVENTS.INITIALIZED,

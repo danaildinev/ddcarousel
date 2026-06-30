@@ -1,4 +1,5 @@
 import type { BaseModule } from "../core/base-module";
+import type { CarouselOnEvents } from "../constants/events-list";
 import type { ClosestSlideIndexes } from "../utils/slide";
 
 export type CarouselConfig = {
@@ -18,7 +19,7 @@ export type CarouselConfig = {
     verticalMaxContentWidth: boolean;
     urlNav: boolean;
     urlNavContainer: string | null;
-    responsive?: CarouselConfig[] | null;
+    responsive?: Record<number, Partial<CarouselConfig> & Partial<CarouselOnEvents>> | null;
     touchDrag: boolean;
     dragSnapMode: DragSnapMode,
     mouseDrag: boolean;
