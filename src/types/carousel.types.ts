@@ -32,6 +32,7 @@ export type CarouselConfig = {
     slideChangeDuration: number;
     labelNavPrev: string | null;
     labelNavNext: string | null;
+    [key: string]: unknown;
 }
 
 export type CarouselStatus = {
