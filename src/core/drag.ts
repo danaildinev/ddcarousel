@@ -124,6 +124,8 @@ export default class Drag {
         this.#touchStartRawCords = startPoint;
         this.#touchStartCords = this.#touchStartRawCords + -(this.#currentTranslate);
         this.#origPosition = this.#currentTranslate;
+        this.#currentTouch = this.#currentTranslate;
+        this.#lastTouch = this.#currentTranslate;
         this.#stayOnThisSlide = false;
         this.#lastTouch = 0;
         this.#events.emit(EVENTS.DRAG_START);
