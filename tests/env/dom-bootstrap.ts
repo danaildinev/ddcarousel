@@ -14,3 +14,4 @@ globalThis.MouseEvent = dom.window.MouseEvent;
 globalThis.MutationObserver = dom.window.MutationObserver;
 globalThis.getComputedStyle = dom.window.getComputedStyle;
 globalThis.requestAnimationFrame = dom.window.requestAnimationFrame.bind(dom.window);
+globalThis.Node = dom.window.Node;

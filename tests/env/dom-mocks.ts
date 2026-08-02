@@ -23,10 +23,16 @@ export function installDomMocks(window: DOMWindow) {
 
     class PointerEventMock extends MouseEventBase {
         pointerType: string;
+        pointerId: number;
+        isPrimary: boolean;
 
         constructor(type: string, init: PointerEventInit = {}) {
-            super(type, init);
-            this.pointerType = init.pointerType ?? "";
+            // Ensure standard mouse properties like button/buttons are defaulted safely
+            super(type, { button: 0, buttons: 1, ...init });
+
+            this.pointerType = init.pointerType ?? "mouse";
+            this.pointerId = init.pointerId ?? 1;          // <-- Crucial for pointer tracking
+            this.isPrimary = init.isPrimary ?? true;       // <-- Crucial for ignoring multi-touch
         }
     }
 
