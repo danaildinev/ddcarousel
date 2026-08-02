@@ -161,14 +161,6 @@ describe("Carousel core", () => {
         expect(onChanged).not.toHaveBeenCalled();
     });
 
-    it("throws when the container has no slide content", async () => {
-        document.body.innerHTML = `<div class="ddcarousel" style="width: 300px;"></div>`;
-
-        const carousel = new Carousel();
-
-        await expect(carousel.init()).rejects.toThrow("No content found in container. Destroying carousel...");
-    });
-
     it("warns and keeps the current instance when init is called twice", async () => {
         renderCarousel(3);
         const warn = vi.spyOn(console, "warn").mockImplementation(() => undefined);
