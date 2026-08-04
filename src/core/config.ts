@@ -61,7 +61,7 @@ export class Config {
             centerSlide: false,
             touchSwipeThreshold: 60, // modules 
             touchMaxSlideDist: 500, // modules 
-            resizeRefresh: 200,
+            resizeDebounce: 200,
             swipeSmooth: 0, // modules 
             slideChangeDuration: 0.5,
             labelNavPrev: null, // modules 

@@ -27,7 +27,7 @@ export type CarouselConfig = {
     centerSlide: boolean;
     touchSwipeThreshold: number;
     touchMaxSlideDist: number;
-    resizeRefresh: number;
+    resizeDebounce: number;
     swipeSmooth: number;
     slideChangeDuration: number;
     labelNavPrev: string | null;

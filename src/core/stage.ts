@@ -634,7 +634,7 @@ export default class Stage {
     #resizeEvent = () => {
         clearTimeout(this.#resizeTimeout);
 
-        this.#resizeTimeout = setTimeout(() => this.#events.emit(EVENTS.STAGE_RESIZED), this.#config.resizeRefresh);
+        this.#resizeTimeout = setTimeout(() => this.#events.emit(EVENTS.STAGE_RESIZED), this.#config.resizeDebounce);
     }
 
     #onStageResized = () => {
