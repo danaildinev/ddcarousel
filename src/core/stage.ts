@@ -18,9 +18,9 @@ export default class Stage {
     #stage: HTMLDivElement | null = null;
     #slides: HTMLDivElement[] = [];
     #slidesHeights: number[] = [];
-    #resizeThrottled: boolean = false;
     #resizeObserver: ResizeObserver | null = null;
     #mutationObserver: MutationObserver | null = null;
+    #resizeTimeout?: ReturnType<typeof setTimeout>;
 
     #originalClasses: string = "";
     slidesActive: number[] = [];
@@ -164,7 +164,6 @@ export default class Stage {
         this.#containerHeight = 0;
         this.#stage = null;
         this.#slidesHeights = [];
-        this.#resizeThrottled = false;
 
         window.removeEventListener("keydown", this.#keyboardHandler);
 
@@ -633,13 +632,9 @@ export default class Stage {
     }
 
     #resizeEvent = () => {
-        if (this.#resizeThrottled) {
-            return;
-        }
+        clearTimeout(this.#resizeTimeout);
 
-        this.#resizeThrottled = true;
-
-        setTimeout(() => this.#events.emit(EVENTS.STAGE_RESIZED), this.#config.resizeRefresh);
+        this.#resizeTimeout = setTimeout(() => this.#events.emit(EVENTS.STAGE_RESIZED), this.#config.resizeRefresh);
     }
 
     #onStageResized = () => {
@@ -653,8 +648,6 @@ export default class Stage {
 
         const containerWidth = this.#container.getBoundingClientRect().width;
         this.#configClass.refreshResponsive(containerWidth);
-
-        this.#resizeThrottled = false;
     }
 
     #onConfigApplied = (e: CarouselEvents[typeof EVENTS.CONFIG_APPLIED]) => {
