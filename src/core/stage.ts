@@ -65,12 +65,10 @@ export default class Stage {
         this.#update();
 
         const callback = (mutationList: MutationRecord[], observer: MutationObserver) => {
-            for (const mutation of mutationList) {
-                if (mutation.type === "childList") {
-                    this.#events.emit(EVENTS.STAGE_CHANGED, {
-                        log: mutation.type
-                    })
-                }
+            const hasChildChange = mutationList.some(m => m.type === "childList");
+
+            if (hasChildChange) {
+                this.#events.emit(EVENTS.STAGE_CHANGED);
             }
         };
 
