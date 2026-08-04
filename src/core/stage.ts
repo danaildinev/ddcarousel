@@ -163,7 +163,6 @@ export default class Stage {
         this.#containerWidth = 0;
         this.#containerHeight = 0;
         this.#stage = null;
-        this.#slides = [];
         this.#slidesHeights = [];
         this.#resizeThrottled = false;
 
@@ -348,7 +347,7 @@ export default class Stage {
 
     getSlidesCount = () => this.#slides?.length;
 
-    getSlides = (): HTMLDivElement[] => Object.assign({}, this.#slides);
+    getSlides = (): HTMLDivElement[] => [...this.#slides];
 
     #getSlidesHeights(): number[] {
         if (this.#slides == null) {
