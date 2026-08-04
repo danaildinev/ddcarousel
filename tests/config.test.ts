@@ -4,7 +4,8 @@ import { EVENTS } from "../src/constants/events-list";
 import { Config } from "../src/core/config";
 import { Events } from "../src/core/events";
 import { DragSnapMode, type CarouselConfig } from "../src/types/carousel.types";
-import { baseConfig, renderCarousel } from "./helpers";
+import { baseConfig, container, renderCarousel } from "./helpers";
+import { CSS_CLASSES } from "../src/constants/css-classes";
 
 afterEach(() => {
     vi.useRealTimers();
@@ -326,5 +327,76 @@ describe("Config", () => {
         // Should have been removed
         events.emit("carousel:initialize");
         expect(responsiveInit).toHaveBeenCalledTimes(1);
+    });
+
+    it("adds right margin to slides when gap is configured", async () => {
+        renderCarousel(5);
+
+        const carousel = new Carousel(baseConfig({
+            items: 3,
+            gap: 20,
+        }));
+
+        await carousel.ready;
+
+        const slides = container()!.querySelectorAll(`.${CSS_CLASSES.item}`);
+
+        slides.forEach(slide => {
+            expect((slide as HTMLElement).style.marginRight).toBe("20px");
+        });
+    });
+
+    it("does not add margin when gap is zero", async () => {
+        renderCarousel(5);
+
+        const carousel = new Carousel(baseConfig({
+            items: 3,
+            gap: 0,
+        }));
+
+        await carousel.ready;
+
+        const slides = container()!.querySelectorAll(`.${CSS_CLASSES.item}`);
+
+        slides.forEach(slide => {
+            expect((slide as HTMLElement).style.marginRight).toBe("");
+        });
+    });
+
+    it("reduces slide width to compensate for gap", async () => {
+        renderCarousel(5);
+
+        const carousel = new Carousel(baseConfig({
+            items: 3,
+            gap: 30,
+        }));
+
+        await carousel.ready;
+
+        const slides = container()!.querySelectorAll(`.${CSS_CLASSES.item}`);
+
+        slides.forEach(slide => {
+            const element = slide as HTMLElement;
+            expect(element.style.width).not.toBe("");
+        });
+    });
+
+    it("applies gap to every slide", async () => {
+        renderCarousel(8);
+
+        const carousel = new Carousel(baseConfig({
+            items: 2,
+            gap: 15,
+        }));
+
+        await carousel.ready;
+
+        const slides = container()!.querySelectorAll(`.${CSS_CLASSES.item}`);
+
+        expect(slides.length).toBe(8);
+
+        for (const slide of slides) {
+            expect((slide as HTMLElement).style.marginRight).toBe("15px");
+        }
     });
 });
