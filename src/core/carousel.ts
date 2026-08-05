@@ -3,6 +3,7 @@ import { EVENTS } from "../constants/events-list";
 import type Autoplay from "../modules/autoplay";
 import type UrlNav from "../modules/urlNav";
 import type { CarouselConfig, CarouselState, CarouselStatus } from "../types/carousel.types";
+import type { CarouselEvents } from "../types/event.types";
 import { error } from "../utils/error-handler";
 import { getClosestSlideIndexes, getSlidesOffsets } from "../utils/slide";
 import { Config } from "./config";
@@ -194,7 +195,7 @@ export default class Carousel {
         return module as T;
     };
 
-    on = (name: string, callback: any) => {
+    on = <K extends keyof CarouselEvents>(name: K, callback: (payload: CarouselEvents[K]) => void,) => {
         if (!this.#events) {
             throw error("Carousel not initialized");
         }
