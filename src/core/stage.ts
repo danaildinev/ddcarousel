@@ -68,7 +68,9 @@ export default class Stage {
             const hasChildChange = mutationList.some(m => m.type === "childList");
 
             if (hasChildChange) {
-                this.#events.emit(EVENTS.STAGE_CHANGED);
+                this.#events.emit(EVENTS.STAGE_CHANGED, {
+                    log: "childList",
+                });
             }
         };
 
