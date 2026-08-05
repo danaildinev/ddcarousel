@@ -81,7 +81,9 @@ export default class Carousel {
 
             this.#config = new Config(this.#events, config);
 
-            const container = document.querySelector<HTMLDivElement>(this.#config.current.container);
+            const containerOption = this.#config.current.container;
+            const container = typeof containerOption === "string" ? document.querySelector<HTMLDivElement>(containerOption) : containerOption;
+
             if (!container) {
                 throw error("Container not found!");
             }

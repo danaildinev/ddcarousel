@@ -3,7 +3,7 @@ import type { CarouselOnEvents } from "../constants/events-list";
 import type { ClosestSlideIndexes } from "../utils/slide";
 
 export type CarouselConfig = {
-    container: string;
+    container: string | HTMLDivElement;
     nav: boolean;
     navPrevContent: string;
     navNextContent: string;
