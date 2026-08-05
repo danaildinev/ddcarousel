@@ -43,7 +43,9 @@ export default class Carousel {
         this.ready.catch(() => { });
 
         if (config) {
-            this.init(config).catch(e => error(`Initializing failed: ${e}`));
+            this.init(config).catch(() => {
+                // failure is already exposed through carousel.ready
+            });
         }
     }
 
