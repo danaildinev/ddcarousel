@@ -29,7 +29,7 @@ export default class Carousel {
 
     constructor(config?: Partial<CarouselConfig>) {
         if (this.#initialized)
-            throw error("Already initialized!");
+            throw error("Already initialized!"); // this may not be needed
 
         this.#events = new Events();
 
@@ -49,10 +49,21 @@ export default class Carousel {
         }
     }
 
-    async init(config?: Partial<CarouselConfig>) {
-        if (this.#state === 'initializing' || this.#state === 'ready') {
-            console.warn("Already initialized!");
+    async init(config?: Partial<CarouselConfig>): Promise<void> {
+        if (this.#state === 'initializing') {
             return this.ready;
+        }
+
+        if (this.#state === 'ready') {
+            return;
+        }
+
+        if (this.#state === 'destroyed') {
+            throw error("A destroyed carousel cannot be initialized again");
+        }
+
+        if (this.#state === 'failed') {
+            throw error("A failed carousel cannot be initialized again");
         }
 
         this.#state = 'initializing';
@@ -105,26 +116,28 @@ export default class Carousel {
             this.#initialized = true;
             this.#events.emit(EVENTS.INITIALIZED, this.getStatus());
             this.#resolveReady();
-        } catch (error) {
+        } catch (cause) {
             if (this.#initToken === initToken) {
-                this.#config?.reset();
+                this.#moduleLoader?.reset();
                 this.#drag?.destroy();
                 this.#stage?.destroy(true);
-                this.#moduleLoader?.reset();
+                this.#config?.reset();
+                this.#events?.reset();
 
                 this.#drag = undefined;
                 this.#moduleLoader = undefined;
                 this.#stage = undefined;
                 this.#config = undefined;
-            
-                this.#state = 'idle';
+                this.#events = undefined;
+
+                this.#state = 'failed';
                 this.#initialized = false;
                 this.#initToken = null;
 
-                this.#rejectReady(error);
+                this.#rejectReady(cause);
             }
 
-            throw error; // re-throw for those explicitly calling init()
+            throw cause; // re-throw for those explicitly calling init()
         }
     }
 

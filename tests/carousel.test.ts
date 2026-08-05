@@ -226,5 +226,31 @@ describe("Carousel core", () => {
             "Carousel not initialized",
         );
     });
+
+    it("does not allow and retry initialization after a previous failure", async () => {
+        renderCarousel(4);
+
+        const loadAll = vi.spyOn(ModuleLoader.prototype, "loadAll")
+            .mockRejectedValueOnce(new Error("Module loading failed"));
+
+        const carousel = new Carousel();
+
+        await expect(carousel.init(baseConfig())).rejects.toThrow("Module loading failed");
+        await expect(carousel.init(baseConfig())).rejects.toThrow("A failed carousel cannot be initialized again",);
+
+        expect(loadAll).toHaveBeenCalledTimes(1);
+    });
+
+    it("does not allow initialization after the carousel is destroyed", async () => {
+        renderCarousel(4);
+
+        const carousel = new Carousel(baseConfig());
+        await carousel.ready;
+
+        carousel.destroy(true);
+
+        await expect(carousel.init(baseConfig())).rejects.toThrow("A destroyed carousel cannot be initialized again",);
+    });
+
 });
 
