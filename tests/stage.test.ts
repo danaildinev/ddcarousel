@@ -269,7 +269,7 @@ describe("Stage core", () => {
     it("updates dimensions and scroll position after a resize event", () => {
         vi.useFakeTimers();
         renderCarousel(4, { width: 400 });
-        const carousel = new Carousel(baseConfig({ pagination: false, items: 2, resizeRefresh: 10 }));
+        const carousel = new Carousel(baseConfig({ pagination: false, items: 2, resizeDebounce: 10 }));
 
         carousel.changePage(1, false);
         expect(stage()?.style.transform).toBe("translateX(-400px)");
@@ -285,7 +285,7 @@ describe("Stage core", () => {
     it("throttles multiple resize observer callbacks into one resize event", () => {
         vi.useFakeTimers();
         renderCarousel(3);
-        const carousel = new Carousel(baseConfig({ pagination: false, resizeRefresh: 20 }));
+        const carousel = new Carousel(baseConfig({ pagination: false, resizeDebounce: 20 }));
         const onResized = vi.fn();
         carousel.on(EVENTS.STAGE_RESIZED, onResized);
 
@@ -626,7 +626,7 @@ describe("Stage core", () => {
         renderCarousel(4, { width: 500 });
         const carousel = new Carousel(baseConfig({
             items: 3,
-            resizeRefresh: 50,
+            resizeDebounce: 50,
             responsive: {
                 400: { items: 1 },
                 800: { items: 2 },

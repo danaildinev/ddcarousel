@@ -173,7 +173,7 @@ describe("Carousel events", () => {
 
         renderCarousel(2);
 
-        const carousel = new Carousel(baseConfig({ resizeRefresh: 25 }));
+        const carousel = new Carousel(baseConfig({ resizeDebounce: 25 }));
         const listener = vi.fn();
 
         carousel.on(EVENTS.STAGE_RESIZED, listener);
