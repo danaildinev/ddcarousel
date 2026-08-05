@@ -203,7 +203,7 @@ export default class Carousel {
         return this.#events.on(name, callback);
     };
 
-    changePage = (page: number, animate: boolean) => {
+    changePage = (page: number, animate: boolean = true) => {
         if (!this.#events) {
             throw error("Carousel not initialized");
         }
@@ -257,17 +257,17 @@ export default class Carousel {
 
     autoplayStart = () => {
         console.warn("autoplayStart() is deprecated: use carousel.module('autoplay').start()!");
-        (this.module("autoplay") as Autoplay)?.start();
+        this.module<Autoplay>("autoplay").start();
     }
 
     autoplayStop = () => {
         console.warn("autoplayStop() is deprecated: use carousel.module('autoplay').stop()!");
-        (this.module("autoplay") as Autoplay)?.stop();
+        this.module<Autoplay>("autoplay").stop();
     }
 
     goToUrl = (name: string, enabmeAnimation: boolean) => {
         console.warn("goToUrl() is deprecated: use carousel.module('urlNav').goToUrl()!");
-        (this.module("urlNav") as UrlNav)?.goToUrl(name, enabmeAnimation);
+        this.module<UrlNav>("autoplay").goToUrl(name, enabmeAnimation);
     }
 
     getStatus = (): CarouselStatus => {
