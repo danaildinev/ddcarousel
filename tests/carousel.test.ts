@@ -277,5 +277,39 @@ describe("Carousel core", () => {
 
         expect(() => carousel.getCurrentPage()).toThrow("Carousel not initialized",);
     });
+
+    it("throws when document is unavailable", async () => {
+        const originalDocument = globalThis.document;
+
+        // @ts-expect-error Simulate SSR.
+        delete globalThis.document;
+
+        try {
+            const carousel = new Carousel();
+            await expect(carousel.init(baseConfig())).rejects.toThrow("Carousel cannot be initialized outside of a browser environment.",);
+        } finally {
+            Object.defineProperty(globalThis, "document", {
+                configurable: true,
+                value: originalDocument,
+            });
+        }
+    });
+
+    it("throws when window is unavailable", async () => {
+        const originalWindow = globalThis.window;
+
+        // @ts-expect-error Simulate SSR.
+        delete globalThis.window;
+
+        try {
+            const carousel = new Carousel();
+            await expect(carousel.init(baseConfig())).rejects.toThrow("Carousel cannot be initialized outside of a browser environment.",);
+        } finally {
+            Object.defineProperty(globalThis, "window", {
+                configurable: true,
+                value: originalWindow,
+            });
+        }
+    });
 });
 

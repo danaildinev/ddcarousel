@@ -50,6 +50,11 @@ export default class Carousel {
     }
 
     async init(config?: Partial<CarouselConfig>): Promise<void> {
+        // avoid init in SSR
+        if (typeof window === "undefined" || typeof document === "undefined") {
+            throw error("Carousel cannot be initialized outside of a browser environment.");
+        }
+
         if (this.#state === 'initializing') {
             return this.ready;
         }
