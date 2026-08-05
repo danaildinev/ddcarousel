@@ -297,7 +297,7 @@ export default class Carousel {
             pageSlides: this.#stage.pageSlides,
             activeSlides: this.#stage.slidesActive,
             config: {
-                current: this.#config.current
+                current: { ...this.#config.current }
             },
             currentTranslate: currentTranslate,
             modules: this.#moduleLoader?.modules,
