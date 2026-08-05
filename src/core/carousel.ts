@@ -111,7 +111,7 @@ export default class Carousel {
         }
     }
 
-    destroy(restoreSlides: boolean) {
+    destroy(restoreSlides: boolean = true) {
         if (this.#state === 'destroying' || this.#state === 'destroyed') {
             return;
         }
@@ -229,9 +229,9 @@ export default class Carousel {
         (this.module("autoplay") as Autoplay)?.stop();
     }
 
-    goToUrl = (name: string, enabmeAnim: boolean) => {
+    goToUrl = (name: string, enabmeAnimation: boolean) => {
         console.warn("goToUrl() is deprecated: use carousel.module('urlNav').goToUrl()!");
-        (this.module("urlNav") as UrlNav)?.goToUrl(name, enabmeAnim);
+        (this.module("urlNav") as UrlNav)?.goToUrl(name, enabmeAnimation);
     }
 
     getStatus = (): CarouselStatus => {
