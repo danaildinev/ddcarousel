@@ -2,6 +2,9 @@ import { afterEach, describe, expect, it, vi } from "vitest";
 import Carousel from "../src/core/carousel";
 import { CSS_CLASSES } from "../src/constants/css-classes";
 import { baseConfig, carouselCustomClass, container, items, renderCarousel, stage } from "./helpers";
+import Drag from "../src/core/drag";
+import Stage from "../src/core/stage";
+import ModuleLoader from "../src/core/module-loader";
 
 afterEach(() => {
     vi.useRealTimers();
@@ -199,6 +202,29 @@ describe("Carousel core", () => {
 
         expect(container()?.children).toHaveLength(0);
         expect(container()?.classList).toContain(carouselCustomClass);
+    });
+
+    it("cleans up partially initialized classes when module loading fails", async () => {
+        renderCarousel(4);
+
+        const dragDestroy = vi.spyOn(Drag.prototype, "destroy");
+        const stageDestroy = vi.spyOn(Stage.prototype, "destroy");
+        const moduleReset = vi.spyOn(ModuleLoader.prototype, "reset");
+
+        vi.spyOn(ModuleLoader.prototype, "loadAll")
+            .mockRejectedValueOnce(new Error("Module loading failed"));
+
+        const carousel = new Carousel();
+
+        await expect(carousel.init(baseConfig())).rejects.toThrow("Module loading failed");
+
+        expect(dragDestroy).toHaveBeenCalledTimes(1);
+        expect(moduleReset).toHaveBeenCalledTimes(1);
+        expect(stageDestroy).toHaveBeenCalledTimes(1);
+
+        expect(() => carousel.getStatus()).toThrow(
+            "Carousel not initialized",
+        );
     });
 });
 

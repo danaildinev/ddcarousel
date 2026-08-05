@@ -106,9 +106,24 @@ export default class Carousel {
             this.#events.emit(EVENTS.INITIALIZED, this.getStatus());
             this.#resolveReady();
         } catch (error) {
-            this.#state = 'idle';
-            this.#initialized = false;
-            this.#rejectReady(error);
+            if (this.#initToken === initToken) {
+                this.#config?.reset();
+                this.#drag?.destroy();
+                this.#stage?.destroy(true);
+                this.#moduleLoader?.reset();
+
+                this.#drag = undefined;
+                this.#moduleLoader = undefined;
+                this.#stage = undefined;
+                this.#config = undefined;
+            
+                this.#state = 'idle';
+                this.#initialized = false;
+                this.#initToken = null;
+
+                this.#rejectReady(error);
+            }
+
             throw error; // re-throw for those explicitly calling init()
         }
     }
