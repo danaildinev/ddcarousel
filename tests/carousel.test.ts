@@ -252,5 +252,30 @@ describe("Carousel core", () => {
         await expect(carousel.init(baseConfig())).rejects.toThrow("A destroyed carousel cannot be initialized again",);
     });
 
+    it("can be destroyed while initialization is still in progress", async () => {
+        renderCarousel(4);
+
+        let resolveLoad!: () => void;
+        vi.spyOn(ModuleLoader.prototype, "loadAll").mockImplementation(
+            () => new Promise<void>(resolve => resolveLoad = resolve),
+        );
+
+        const carousel = new Carousel();
+
+        const init = carousel.init(baseConfig());
+
+        // destroy before loadAll() finishes
+        expect(() => carousel.destroy(true)).not.toThrow();
+
+        // finish the pending initialization.
+        resolveLoad();
+
+        await expect(init).resolves.toBeUndefined();
+        await expect(carousel.ready).resolves.toBeUndefined();
+
+        await Promise.resolve();
+
+        expect(() => carousel.getCurrentPage()).toThrow("Carousel not initialized",);
+    });
 });
 

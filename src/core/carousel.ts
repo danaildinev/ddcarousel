@@ -128,7 +128,7 @@ export default class Carousel {
                 this.#moduleLoader = undefined;
                 this.#stage = undefined;
                 this.#config = undefined;
-                this.#events = undefined;
+                this.#config = undefined;
 
                 this.#state = 'failed';
                 this.#initialized = false;
@@ -146,24 +146,20 @@ export default class Carousel {
             return;
         }
 
-        if (!this.#stage || !this.#config || !this.#events) {
-            throw error("Carousel not ready");
-        }
-
         this.#state = 'destroying';
 
         // invalidate any in-flight init
         this.#initToken = null;
 
-        this.#events.emit(EVENTS.DESTROY);
+        this.#events?.emit(EVENTS.DESTROY);
 
         this.#drag?.destroy();
         this.#moduleLoader?.reset();
         this.#stage?.destroy(restoreSlides);
         this.#config?.reset();
 
-        this.#events.emit(EVENTS.DESTROYED);
-        this.#events.reset();
+        this.#events?.emit(EVENTS.DESTROYED);
+        this.#events?.reset();
 
         this.#drag = undefined;
         this.#stage = undefined;
@@ -173,6 +169,8 @@ export default class Carousel {
 
         this.#initialized = false;
         this.#state = 'destroyed';
+
+        this.#resolveReady();
     }
 
     module = <T = unknown>(name: string): T => {
