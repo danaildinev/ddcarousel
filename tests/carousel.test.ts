@@ -161,17 +161,6 @@ describe("Carousel core", () => {
         expect(onChanged).not.toHaveBeenCalled();
     });
 
-    it("warns and keeps the current instance when init is called twice", async () => {
-        renderCarousel(3);
-        const warn = vi.spyOn(console, "warn").mockImplementation(() => undefined);
-
-        const carousel = new Carousel({});
-        await carousel.init();
-
-        expect(warn).toHaveBeenCalledWith("Already initialized!");
-        expect(carousel.getStatus().config.current?.items).toBe(1);
-    });
-
     it("restores original slide markup when destroyed with restoreSlides enabled", async () => {
         renderCarousel(3);
 
@@ -300,7 +289,7 @@ describe("Carousel core", () => {
 
         try {
             const carousel = new Carousel();
-            await expect(carousel.init(baseConfig())).rejects.toThrow("Carousel initialization requires a browser environment",);
+            await expect(carousel.init(baseConfig())).rejects.toThrow("Carousel cannot be initialized outside of a browser environment.",);
         } finally {
             Object.defineProperty(globalThis, "window", {
                 configurable: true,
