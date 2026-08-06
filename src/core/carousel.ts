@@ -1,7 +1,7 @@
 import { CSS_CLASSES } from "../constants/css-classes";
 import { EVENTS } from "../constants/events-list";
-import type Autoplay from "../modules/autoplay";
-import type UrlNav from "../modules/urlNav";
+import Autoplay from "../modules/autoplay";
+import UrlNav from "../modules/urlNav";
 import type { CarouselConfig, CarouselState, CarouselStatus } from "../types/carousel.types";
 import type { CarouselEvents } from "../types/event.types";
 import { error } from "../utils/error-handler";
@@ -188,6 +188,7 @@ export default class Carousel {
         if (!this.#moduleLoader) {
             throw error("ModuleLoader not initialized");
         }
+        console.log(this.#moduleLoader.modules, name);
 
         const module = this.#moduleLoader.modules.find(m => m.id === name);
 
@@ -260,17 +261,17 @@ export default class Carousel {
 
     autoplayStart = () => {
         console.warn("autoplayStart() is deprecated: use carousel.module('autoplay').start()!");
-        this.module<Autoplay>("autoplay").start();
+        this.module<Autoplay>(Autoplay.id).start();
     }
 
     autoplayStop = () => {
         console.warn("autoplayStop() is deprecated: use carousel.module('autoplay').stop()!");
-        this.module<Autoplay>("autoplay").stop();
+        this.module<Autoplay>(Autoplay.id).stop();
     }
 
     goToUrl = (name: string, enabmeAnimation: boolean) => {
         console.warn("goToUrl() is deprecated: use carousel.module('urlNav').goToUrl()!");
-        this.module<UrlNav>("autoplay").goToUrl(name, enabmeAnimation);
+        this.module<UrlNav>(UrlNav.id).goToUrl(name, enabmeAnimation);
     }
 
     getStatus = (): CarouselStatus => {

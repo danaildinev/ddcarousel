@@ -16,6 +16,7 @@ export type UrlNavItem = {
 }
 
 export default class UrlNav extends BaseModule {
+    static readonly id = "urlNav";
     id: string = "urlNav";
 
     #events: Events;

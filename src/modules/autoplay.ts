@@ -13,7 +13,9 @@ export type AutoplayConfig = {
 }
 
 export default class Autoplay extends BaseModule<AutoplayConfig> {
+    static readonly id = "autoplay";
     id: string = "autoplay";
+
     moduleConfig: AutoplayConfig = {
         speed: 5000,
         pauseHover: false,
