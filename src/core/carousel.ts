@@ -57,10 +57,13 @@ export default class Carousel {
         }
 
         if (this.#state === 'initializing') {
-            return this.ready;
+            console.warn("Already initializing!");
+            await this.ready;
+            return;
         }
 
-        if (this.#state === 'ready') {
+        if (this.#state === "ready") {
+            console.warn("Already initialized!");
             return;
         }
 

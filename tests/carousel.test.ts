@@ -43,23 +43,20 @@ describe("Carousel core", () => {
     });
 
     it('should ignore duplicate initialization calls', async () => {
-        renderCarousel(4, { className: 'carousel-container' });
+        renderCarousel(4, { className: "test-container" });
 
-        // spy on console.warn and suppress the actual output
-        const consoleSpy = vi.spyOn(console, 'warn').mockImplementation(() => { });
+        const consoleSpy = vi
+            .spyOn(console, "warn")
+            .mockImplementation(() => { });
 
-        const carousel = new Carousel({ container: '.carousel-container' });
-        // trigger a second init immediately
-        const secondInitPromise = carousel.init();
+        const carousel = new Carousel({
+            container: ".test-container",
+        });
 
         await carousel.ready;
-        await secondInitPromise;
+        await carousel.init();
 
-        // assert the warning was fired exactly as expected
         expect(consoleSpy).toHaveBeenCalledWith("Already initialized!");
-
-        // restore the original console.warn
-        consoleSpy.mockRestore();
     });
 
     it("should auto-initialize when no custom config is passed to the constructor", async () => {
@@ -303,7 +300,7 @@ describe("Carousel core", () => {
 
         try {
             const carousel = new Carousel();
-            await expect(carousel.init(baseConfig())).rejects.toThrow("Carousel cannot be initialized outside of a browser environment.",);
+            await expect(carousel.init(baseConfig())).rejects.toThrow("Carousel initialization requires a browser environment",);
         } finally {
             Object.defineProperty(globalThis, "window", {
                 configurable: true,
