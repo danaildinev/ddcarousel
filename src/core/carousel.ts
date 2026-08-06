@@ -20,7 +20,6 @@ export default class Carousel {
     #drag?: Drag | undefined;
     #container!: HTMLDivElement;
 
-    #initialized: boolean = false;
     #state: CarouselState = 'idle';
     #initToken: symbol | null = null;
 
@@ -29,8 +28,6 @@ export default class Carousel {
     #rejectReady!: (error: any) => void;
 
     constructor(config?: Partial<CarouselConfig>) {
-        if (this.#initialized)
-            throw error("Already initialized!"); // this may not be needed
 
         this.#events = new Events();
 
@@ -124,7 +121,6 @@ export default class Carousel {
             this.#moduleLoader.initAll();
 
             this.#state = 'ready';
-            this.#initialized = true;
             this.#events.emit(EVENTS.INITIALIZED, this.getStatus());
             this.#resolveReady();
         } catch (cause) {
@@ -142,7 +138,6 @@ export default class Carousel {
                 this.#config = undefined;
 
                 this.#state = 'failed';
-                this.#initialized = false;
                 this.#initToken = null;
 
                 this.#rejectReady(cause);
@@ -178,7 +173,6 @@ export default class Carousel {
         this.#moduleLoader = undefined;
         this.#events = undefined;
 
-        this.#initialized = false;
         this.#state = 'destroyed';
 
         this.#resolveReady();
