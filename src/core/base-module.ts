@@ -26,18 +26,6 @@ export abstract class BaseModule<TConfig = Record<string, unknown>> implements M
         this.events = context.events;
         this.getStatus = context.getStatus;
         this.container = context.container;
-
-        this.events.on(EVENTS.CONFIG_APPLIED, this.#onConfigApplied);
-    }
-
-    get shouldInitialize() {
-        const current = this.config as Record<string, unknown>;
-
-        if (current[this.id] === undefined) {
-            return true;
-        }
-
-        return Boolean(current[this.id]);
     }
 
     get config(): CarouselConfig {
@@ -59,8 +47,8 @@ export abstract class BaseModule<TConfig = Record<string, unknown>> implements M
             this.configClass.setModuleOverride(this.id, this.configOverride);
         }
 
-        this.initialize();
         this.isInitialized = true;
+        this.initialize();
         this.emitInitialized();
     }
 
@@ -126,19 +114,6 @@ export abstract class BaseModule<TConfig = Record<string, unknown>> implements M
         return this.moduleConfig[property];
     }
 
-    #onConfigApplied = (e: CarouselEvents[typeof EVENTS.CONFIG_APPLIED]) => {
-        if (e?.isInternalOverride) {
-            // only refresh config reference; skip module lifecycle checks
-            return;
-        }
-
-        if (this.shouldInitialize) {
-            this.initializeLifecycle();
-        } else {
-            this.destroyLifecycle();
-        }
-    }
-
     tryOverridePriority(payload: PageChangePayload, prio: number): boolean {
         const moduleName = this.id;
 
@@ -157,7 +132,6 @@ export abstract class BaseModule<TConfig = Record<string, unknown>> implements M
 
         return false;
     }
-
 
     protected emitInitialized() {
         this.events.emit(EVENTS.MODULE_INITIALIZED, {

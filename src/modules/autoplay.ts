@@ -62,7 +62,7 @@ export default class Autoplay extends BaseModule<AutoplayConfig> {
     }
 
     #onChangePaged = (e: CarouselEvents[typeof EVENTS.PAGE_CHANGED]) => {
-        if (!this.shouldInitialize) {
+        if (!this.isInitialized) {
             return;
         }
 
@@ -79,7 +79,7 @@ export default class Autoplay extends BaseModule<AutoplayConfig> {
     #stopOnTabHidden = () => document.hidden ? this.stop() : this.start();
 
     start = () => {
-        if (!this.shouldInitialize) {
+        if (!this.isInitialized) {
             return;
         }
 

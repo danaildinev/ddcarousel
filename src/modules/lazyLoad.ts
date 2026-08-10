@@ -59,7 +59,7 @@ export default class LazyLoad extends BaseModule<LazyLoadConfig> {
     }
 
     #onChangePaged = (e: CarouselEvents[typeof EVENTS.PAGE_CHANGED]) => {
-        if (!this.shouldInitialize) {
+        if (!this.isInitialized) {
             return;
         }
 

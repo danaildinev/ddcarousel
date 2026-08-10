@@ -67,7 +67,7 @@ export default class Nav extends BaseModule {
     }
 
     #onChangePaged = (e: CarouselEvents[typeof EVENTS.PAGE_CHANGED]) => {
-        if (!this.shouldInitialize) {
+        if (!this.isInitialized) {
             return;
         }
 
