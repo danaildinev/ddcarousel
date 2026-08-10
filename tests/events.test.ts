@@ -132,7 +132,7 @@ describe("Carousel events", () => {
         });
         carousel.changePage(1, false);
 
-        expect(beforeValues[0].currentTranslate).toBe(-0);
+        expect(beforeValues[0].currentTranslate).toBe(0);
         expect(afterValues[0].currentTranslate).toBe(-920);
     });
 

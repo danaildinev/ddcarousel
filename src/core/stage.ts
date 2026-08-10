@@ -607,6 +607,11 @@ export default class Stage {
             }
         }
 
+        // normalize initial -0 value when using default starting page
+        if (Object.is(position, -0)) {
+            position = 0;
+        }
+
         this.currentTranslate = position;
 
         if (!animate) {
