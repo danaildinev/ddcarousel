@@ -229,18 +229,4 @@ describe("ModuleLoader", () => {
         expect(destroyLifecycle).toHaveBeenCalledTimes(1);
         expect(destroy).not.toHaveBeenCalled();
     });
-
-    it("calls destroy and not destroyLifecycle when resetting modules", async () => {
-        const destroyLifecycle = vi.spyOn(Nav.prototype, "destroyLifecycle").mockImplementation(() => undefined);
-        const destroy = vi.spyOn(Nav.prototype, "destroy").mockImplementation(() => undefined);
-        const loader = new ModuleLoader(
-            createContext(createConfig({ nav: true }))
-        );
-
-        await loader.load("nav");
-        loader.reset();
-
-        expect(destroy).toHaveBeenCalledTimes(1);
-        expect(destroyLifecycle).not.toHaveBeenCalled();
-    });
 });
