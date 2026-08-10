@@ -24,12 +24,8 @@ export default class ModuleLoader {
 
     async loadAll(modules?: readonly string[]) {
         if (!modules?.length) {
-            const config = this.#params.config as Record<string, any>;
-            modules = INTERNAL_MODULES.filter(moduleId => {
-                if (config[moduleId] === true) {
-                    return true;
-                }
-            });
+            const config = this.#params.config as Record<string, unknown>;
+            modules = INTERNAL_MODULES.filter(moduleId => config[moduleId] === true);
         }
 
         const uniqueModules = [...new Set(modules)];
@@ -121,7 +117,7 @@ export default class ModuleLoader {
 
     reset() {
         for (const module of this.#instances.values()) {
-            module.destroyLifecycle();
+            module.destroy();
         }
 
         this.#instances.clear();

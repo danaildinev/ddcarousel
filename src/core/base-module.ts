@@ -7,7 +7,7 @@ import type { Config } from "./config";
 import type { Events } from "./events";
 import type { Module } from "./module";
 
-export abstract class BaseModule<TConfig = Record<string, any>> implements Module {
+export abstract class BaseModule<TConfig = Record<string, unknown>> implements Module {
     abstract id: string;
 
     protected configClass: Config;
@@ -89,7 +89,7 @@ export abstract class BaseModule<TConfig = Record<string, any>> implements Modul
         this.moduleConfigKeyMap = new Map(
             Object.keys(config).map((key) => {
                 const typedKey = key as keyof TConfig;
-                const prefixed = `${this.id}${key.charAt(0).toUpperCase()}${key.slice(1)}`;
+                const prefixed = this.buildConfigKey(String(key));
                 return [typedKey, prefixed];
             })
         );
