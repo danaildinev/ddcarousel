@@ -22,6 +22,7 @@ export default class Stage {
     #mutationObserver: MutationObserver | null = null;
     #resizeTimeout?: ReturnType<typeof setTimeout>;
 
+    #originalSlides: string = "";
     #originalClasses: string = "";
     slidesActive: number[] = [];
     currentTranslate: number = 0;
@@ -33,13 +34,14 @@ export default class Stage {
         this.#configClass = config;
         this.#events = events;
 
-        const targetContainer = document.querySelector<HTMLDivElement>(this.#config.container);
-        if (targetContainer != null) {
-            this.#container = targetContainer;
-            this.#originalClasses = this.#container.className;
-        } else {
+        const targetContainer = typeof this.#config.container === "string" ? document.querySelector<HTMLDivElement>(this.#config.container) : this.#config.container;
+        if (!targetContainer) {
             throw error("Invalid container!");
         }
+        this.#container = targetContainer;
+        this.#originalClasses = this.#container.className;
+
+        this.#originalSlides = this.#container.innerHTML;
 
         this.initialize();
     }
@@ -161,6 +163,7 @@ export default class Stage {
         this.slidesActive = [];
         this.currentTranslate = 0;
         this.#originalClasses = "";
+        this.#originalSlides = "";
 
         this.#containerWidth = 0;
         this.#containerHeight = 0;
@@ -179,20 +182,15 @@ export default class Stage {
     }
 
     restoreOriginalSlides(restoreSlides: boolean) {
-        const origContainer = document.querySelector(this.#config.container);
-        if (origContainer == null) {
+        if (!this.#container) {
             return;
         }
 
         this.#container.querySelector(`.${CSS_CLASSES.container}`)?.remove();
-        origContainer.className = this.#originalClasses;
+        this.#container.className = this.#originalClasses;
 
         if (restoreSlides) {
-            this.#slides.forEach(el => {
-                const slideContent = el.firstChild;
-                if (slideContent != null)
-                    origContainer.appendChild(slideContent);
-            });
+            this.#container.innerHTML = this.#originalSlides;
         }
     }
 
