@@ -256,8 +256,6 @@ export default class Stage {
 
         this.#slidesHeights = this.#getSlidesHeights();
 
-        this.#setSlidesGap();
-
         if (config.autoHeight) {
             //this.#setActiveSlides();
             this.#updateContainerHeight();
@@ -327,23 +325,6 @@ export default class Stage {
         this.totalPages = pages;
     }
 
-    #setSlidesGap() {
-        const { gap, items } = this.#config;
-
-        if (gap === 0) {
-            return;
-        }
-
-        const widthOffset = gap - (gap / items);
-
-        this.#slides.forEach(slide => {
-            slide.style.marginRight = `${gap}px`;
-
-            const currentWidth = slide.getBoundingClientRect().width;
-            slide.style.width = `${currentWidth - widthOffset}px`;
-        });
-    }
-
     getSlidesCount = () => this.#slides?.length;
 
     getSlides = (): HTMLDivElement[] => [...this.#slides];
@@ -378,12 +359,14 @@ export default class Stage {
     }
 
     #updateSlideDimensions(slide: HTMLDivElement) {
-        const items = this.#config.items;
+        const { items, gap, vertical } = this.#config;
         if (items != 0) {
-            if (this.#config.vertical) {
+            if (vertical) {
                 slide.style.height = `${this.#containerHeight / items}px`;
-            } else if (!this.#config.vertical) {
-                slide.style.width = `${this.#containerWidth / items}px`;
+            } else {
+                const widthOffset = gap - gap / items;
+                slide.style.width = `${this.#containerWidth / items - widthOffset}px`;
+                slide.style.marginRight = gap > 0 ? `${gap}px` : "";
             }
         } else {
             var slideBounds = slide.getBoundingClientRect();
@@ -647,7 +630,7 @@ export default class Stage {
 
         const slide = this.#getSlideDom();
         if (slide != null) {
-            this.#scrollToSlide(slide);
+            this.#scrollToSlide(slide, false);
         }
 
         const containerWidth = this.#container.getBoundingClientRect().width;

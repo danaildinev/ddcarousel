@@ -535,7 +535,7 @@ describe("Stage core", () => {
         new Carousel(baseConfig({ items: 2, gap: 20 }));
 
         expect(items().map(item => item.style.marginRight)).toEqual(["20px", "20px"]);
-        expect(items().map(item => item.style.width)).toEqual(["100px", "100px"]);
+        expect(items().map(item => item.style.width)).toEqual(["90px", "90px"]);
     });
 
     it("sets auto height to the tallest visible slide", async () => {
