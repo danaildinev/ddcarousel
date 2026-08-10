@@ -290,7 +290,7 @@ export default class Carousel {
 
         return {
             state: this.#state,
-            created: this.#state === "ready",
+            initialized: this.#state === "ready",
             currentPage: this.#stage.currentPage,
             totalPages: this.#stage.totalPages,
             slides: this.#stage.getSlides(),

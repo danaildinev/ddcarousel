@@ -313,5 +313,76 @@ describe("Carousel core", () => {
         expect(modules).toEqual(expect.arrayContaining(["nav", "pagination", "autoplay"]));
         expect(modules.every(id => typeof id === "string")).toBe(true);
     });
+
+    it("returns the complete initial status with default config", async () => {
+        renderCarousel(13);
+
+        const carousel = new Carousel(baseConfig());
+        await carousel.ready;
+        const status = carousel.getStatus();
+
+        expect(status.config.current).toEqual(
+            expect.objectContaining({
+                container: ".ddcarousel",
+                nav: false,
+                pagination: true,
+                autoHeight: true,
+                fullWidth: true,
+                startPage: 0,
+                items: 1,
+                itemPerPage: false,
+                gap: 0,
+                loop: false,
+                vertical: false,
+                verticalMaxContentWidth: false,
+                urlNav: false,
+                urlNavContainer: null,
+                responsive: null,
+                touchDrag: true,
+                dragSnapMode: "swipe",
+                mouseDrag: true,
+                keyboardNavigation: false,
+                centerSlide: false,
+                touchSwipeThreshold: 60,
+                touchMaxSlideDist: 500,
+                resizeDebounce: 200,
+                swipeSmooth: 0,
+                slideChangeDuration: 0.5,
+                labelNavPrev: null,
+                labelNavNext: null,
+            }),
+        );
+        expect(status.state).toBe("ready");
+        expect(status.initialized).toBe(true);
+        expect(status.currentPage).toBe(0);
+        expect(status.totalPages).toBe(12);
+        expect(status.slides).toHaveLength(13);
+        expect(status.totalSlides).toBe(13);
+        expect(status.pageSlides).toEqual([
+            [0],
+            [1],
+            [2],
+            [3],
+            [4],
+            [5],
+            [6],
+            [7],
+            [8],
+            [9],
+            [10],
+            [11],
+            [12],
+        ]);
+        expect(status.activeSlides).toEqual([0]);
+        expect(status.currentTranslate).toBe(0);
+        expect(status.modules).toEqual([
+            "pagination",
+        ]);
+        expect(status.closestSlidesIndexes).toEqual({
+            left: 0,
+            center: 0,
+            right: 0,
+        });
+    });
 });
 

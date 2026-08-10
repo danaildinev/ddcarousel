@@ -37,7 +37,7 @@ export type CarouselConfig = {
 
 export type CarouselStatus = {
     state: CarouselState;
-    created: boolean;
+    initialized: boolean;
     currentPage: number;
     totalPages: number;
     slides: HTMLDivElement[];
