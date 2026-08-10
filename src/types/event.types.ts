@@ -76,6 +76,32 @@ export type CarouselEvents = {
         slideIndexRight?: number | undefined;
         rebase?: boolean;
     };
+
+    [EVENTS.INITIALIZE]: void;
+    [EVENTS.INITIALIZED]: void;
+    [EVENTS.DESTROY]: void;
+    [EVENTS.DESTROYED]: void;
+    [EVENTS.MODULE_AUTOPLAY_STOPPED]: void;
+    [EVENTS.MODULE_AUTOPLAY_STARTED]: void;
+    [EVENTS.STAGE_CREATED]: void;
+    [EVENTS.STAGE_RESIZED]: void;
+    [EVENTS.STAGE_CHANGED]: void;
+    [EVENTS.TRANSITION_END]: void;
+    [EVENTS.DRAG_START]: void;
+    [EVENTS.DRAG_END]: void;
 }
+
+export type LegacyCarouselEvents = {
+    onInitialize: CarouselEvents[typeof EVENTS.INITIALIZE];
+    onInitialized: CarouselEvents[typeof EVENTS.INITIALIZED];
+    onDrag: CarouselEvents[typeof EVENTS.DRAG_START];
+    onDragging: CarouselEvents[typeof EVENTS.DRAG_DRAGGING];
+    onDragged: CarouselEvents[typeof EVENTS.DRAG_END];
+    onTransitionend: CarouselEvents[typeof EVENTS.TRANSITION_END];
+    onChanged: CarouselEvents[typeof EVENTS.PAGE_CHANGED];
+    onResized: CarouselEvents[typeof EVENTS.STAGE_RESIZED];
+    onDestroy: CarouselEvents[typeof EVENTS.DESTROY];
+    onDestroyed: CarouselEvents[typeof EVENTS.DESTROYED];
+};
 
 export type CarouselEventName = keyof CarouselEvents | string;

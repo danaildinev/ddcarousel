@@ -1,9 +1,9 @@
 import { CSS_CLASSES } from "../constants/css-classes";
-import { EVENTS } from "../constants/events-list";
+import { EVENTS, LEGACY_EVENT_MAP } from "../constants/events-list";
 import Autoplay from "../modules/autoplay";
 import UrlNav from "../modules/urlNav";
 import type { CarouselConfig, CarouselState, CarouselStatus } from "../types/carousel.types";
-import type { CarouselEvents } from "../types/event.types";
+import type { CarouselEvents, LegacyCarouselEvents } from "../types/event.types";
 import { error } from "../utils/error-handler";
 import { getClosestSlideIndexes, getSlidesOffsets } from "../utils/slide";
 import { Config } from "./config";
@@ -193,12 +193,15 @@ export default class Carousel {
         return module as T;
     };
 
-    on = <K extends keyof CarouselEvents>(name: K, callback: (payload: CarouselEvents[K]) => void,) => {
+    on<K extends keyof CarouselEvents>(name: K, callback: (payload: CarouselEvents[K]) => void,): void;
+    on<K extends keyof LegacyCarouselEvents>(name: K, callback: (payload: LegacyCarouselEvents[K]) => void,): void;
+    on(name: keyof CarouselEvents | keyof LegacyCarouselEvents, callback: (payload: any) => void): void {
         if (!this.#events) {
             throw error("Carousel not initialized");
         }
 
-        return this.#events.on(name, callback);
+        const eventName = LEGACY_EVENT_MAP[name as keyof LegacyCarouselEvents] ?? name;
+        return this.#events.on(eventName as keyof CarouselEvents, callback);
     };
 
     changePage = (page: number, animate: boolean = true) => {
