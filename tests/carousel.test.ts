@@ -297,5 +297,21 @@ describe("Carousel core", () => {
             });
         }
     });
+
+    it("returns loaded module ids in status", async () => {
+        renderCarousel(4);
+
+        const carousel = new Carousel(baseConfig({
+            nav: true,
+            pagination: true,
+            autoplay: true,
+        }));
+
+        await carousel.ready;
+        const { modules } = carousel.getStatus();
+
+        expect(modules).toEqual(expect.arrayContaining(["nav", "pagination", "autoplay"]));
+        expect(modules.every(id => typeof id === "string")).toBe(true);
+    });
 });
 

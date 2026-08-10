@@ -301,7 +301,7 @@ export default class Carousel {
                 current: { ...this.#config.current }
             },
             currentTranslate: currentTranslate,
-            modules: this.#moduleLoader?.modules,
+            modules: this.#moduleLoader?.modules.map(module => module.id) ?? [],
             closestSlidesIndexes: closestSlidesIndexes
         };
     }

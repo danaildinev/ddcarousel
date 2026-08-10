@@ -46,7 +46,7 @@ export type CarouselStatus = {
     activeSlides: number[];
     config: CarouselStatusConfig;
     currentTranslate: number;
-    modules: BaseModule[] | undefined,
+    modules: string[],
     closestSlidesIndexes: ClosestSlideIndexes
 }
 
