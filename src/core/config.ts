@@ -4,8 +4,7 @@ import { DragSnapMode, type CarouselConfig } from "../types/carousel.types";
 import type { CarouselEvents } from "../types/event.types";
 import type { Events } from "./events";
 
-type ResponsiveEventHandler = {
-    key: string;
+type ConfigEventHandler = {
     event: string;
     callback: (payload?: any) => void
 }
@@ -15,7 +14,7 @@ export class Config {
 
     #lastResponsiveBp: number | null = null;
     #moduleOverrides: Map<string, Partial<CarouselConfig>> = new Map();
-    #responsiveEvents: Map<number, Array<ResponsiveEventHandler>> = new Map();
+    #configEvents: ConfigEventHandler[] = [];
 
     default: CarouselConfig;
     current: CarouselConfig;
@@ -108,9 +107,6 @@ export class Config {
     #applyConfig(next: CarouselConfig, isInternalOverride = false, emitEvent = true) {
         const oldConfig = this.current;
 
-        const previousBreakpoint = this.#lastResponsiveBp;
-        this.#clearResponsiveEvents(previousBreakpoint);
-
         this.current = next;
 
         this.#handleEvents(this.current, this.#lastResponsiveBp ?? undefined);
@@ -138,8 +134,16 @@ export class Config {
         this.#applyConfig(next, false, emit);
     }
 
+    #clearConfigEvents() {
+        for (const handler of this.#configEvents) {
+            this.#events.off(handler.event, handler.callback);
+        }
+
+        this.#configEvents = [];
+    }
+
     #handleEvents(config: CarouselConfig, breakpoint?: number) {
-        const handlers: Array<ResponsiveEventHandler> = [];
+        this.#clearConfigEvents();
 
         //const targetConfig = config === undefined ? this.current : config;
         for (const [key, value] of Object.entries(config)) {
@@ -149,49 +153,21 @@ export class Config {
 
             const callback = value as (payload?: any) => void; //tricky but it worked ;d
 
-            // new format: on:carousel:initialize
+            let event: string | undefined;
+
             if (key.startsWith("on:")) {
-                const name = key.slice(3);
-                this.#events.on(name, callback);
+                event = key.slice(3);
+            } else {
+                event = LEGACY_EVENT_MAP[key];
+            }
 
-                if (breakpoint !== undefined) {
-                    handlers.push({ key, event: name, callback });
-                }
-
+            if (!event) {
                 continue;
             }
 
-            // legacy format: onInitialize
-            const mapped = LEGACY_EVENT_MAP[key];
-            if (mapped) {
-                this.#events.on(mapped, callback);
-
-                if (breakpoint !== undefined) {
-                    handlers.push({ key, event: mapped, callback });
-                }
-            }
+            this.#events.on(event, callback);
+            this.#configEvents.push({ event, callback });
         }
-
-        if (breakpoint !== undefined) {
-            this.#responsiveEvents.set(breakpoint, handlers);
-        }
-    }
-
-    #clearResponsiveEvents(breakpoint: number | null) {
-        if (breakpoint === null) {
-            return;
-        }
-
-        const handlers = this.#responsiveEvents.get(breakpoint);
-        if (!handlers) {
-            return;
-        }
-
-        for (const handler of handlers) {
-            this.#events.off(handler.event, handler.callback);
-        }
-
-        this.#responsiveEvents.delete(breakpoint);
     }
 
     /**
