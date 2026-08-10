@@ -272,18 +272,6 @@ describe("Config", () => {
         }));
     });
 
-    it("can explicitly revert to user settings after responsive changes", () => {
-        const responsive = {
-            800: { items: 1 },
-        } as unknown as CarouselConfig["responsive"];
-        const config = new Config(new Events(), baseConfig({ items: 4, responsive }));
-
-        config.refreshResponsive(500);
-        config.revertToUserSettings();
-
-        expect(config.current.items).toBe(4);
-    });
-
     it("resets defaults, user settings, responsive state, and module overrides", () => {
         const responsive = {
             800: { items: 1 },

@@ -14,7 +14,6 @@ export class Config {
     #events: Events;
 
     #lastResponsiveBp: number | null = null;
-    #responsiveLoaded: boolean = false;
     #moduleOverrides: Map<string, Partial<CarouselConfig>> = new Map();
     #responsiveEvents: Map<number, Array<ResponsiveEventHandler>> = new Map();
 
@@ -69,46 +68,41 @@ export class Config {
         }
     }
 
-    #rebuildConfig(config?: Partial<CarouselConfig>): CarouselConfig {
-        // if an explicit config update is sent via API at runtime, merge it into baseline user configurations
-        if (config !== undefined) {
-            Object.assign(this.user, config);
-        }
-
+    #rebuildConfig(): CarouselConfig {
         // start fresh with defaults and apply user global overrides
-        const nextCurrent = Object.assign(structuredClone(this.default), this.user);
+        const next = Object.assign(structuredClone(this.default), this.user);
 
         // responsive: apply active breakpoint if applicable
-        if (this.#responsiveLoaded && this.#lastResponsiveBp !== null && this.user.responsive) {
+        if (this.#lastResponsiveBp !== null && this.user.responsive) {
             const activeBreakpointConfig = this.user.responsive[this.#lastResponsiveBp];
             if (activeBreakpointConfig) {
-                Object.assign(nextCurrent, activeBreakpointConfig);
+                Object.assign(next, activeBreakpointConfig);
             }
         }
 
         // apply runtime module config overrides
         for (const [moduleId, override] of this.#moduleOverrides) {
             // skip overrides from disabled modules
-            if (nextCurrent[moduleId as keyof CarouselConfig] === false) {
+            if (next[moduleId as keyof CarouselConfig] === false) {
                 continue;
             }
 
-            Object.assign(nextCurrent, override);
+            Object.assign(next, override);
         }
 
-        if (nextCurrent.items === 0) {
-            nextCurrent.itemPerPage = false;
+        if (next.items === 0) {
+            next.itemPerPage = false;
         }
 
-        if (nextCurrent.dragSnapMode === DragSnapMode.Closest) {
-            nextCurrent.centerSlide = true;
+        if (next.dragSnapMode === DragSnapMode.Closest) {
+            next.centerSlide = true;
         }
 
-        if (nextCurrent.vertical) {
-            nextCurrent.autoHeight = false;
+        if (next.vertical) {
+            next.autoHeight = false;
         }
 
-        return nextCurrent;
+        return next;
     }
 
     #applyConfig(next: CarouselConfig, isInternalOverride = false, emitEvent = true) {
@@ -217,45 +211,25 @@ export class Config {
     }
 
     refreshResponsive = (width: number) => {
-        if (this.user.responsive == null)
+        const responsive = this.user.responsive;
+
+        if (!responsive) {
             return;
-
-        const breakpoints = Object.keys(this.user.responsive).map(k => parseInt(k)).sort((a, b) => a - b); // smallest → largest
-
-        let matched: number | null = null;
-
-        // loop and find first matching breakpoint
-        for (const breakpoint of breakpoints) {
-            if (width < breakpoint) {
-                matched = breakpoint;
-                break;
-            }
         }
 
-        if (matched !== null) {
-            if (!this.#responsiveLoaded || this.#lastResponsiveBp !== matched) {
-                this.#responsiveLoaded = true;
-                this.#lastResponsiveBp = matched;
+        const matched = Object.keys(responsive)
+            .map(Number)
+            .sort((a, b) => a - b)
+            .find(breakpoint => width < breakpoint) ?? null;
 
-                // еxplicitly pass undefined for config, and true to force the emit
-                this.updateSettings(undefined, true);
-            }
+        if (matched === this.#lastResponsiveBp) {
+            return;
         }
-        else if (this.#responsiveLoaded) {
-            this.revertToUserSettings();
-        }
-    }
 
-    revertToUserSettings = () => {
-        const previous = this.#lastResponsiveBp;
-        this.#clearResponsiveEvents(previous);
+        this.#lastResponsiveBp = matched;
 
-        this.#lastResponsiveBp = null;
-        this.#responsiveLoaded = false;
-
-        // let the config builder handle the fresh rebuild
         this.updateSettings(undefined, true);
-    }
+    };
 
     reset() {
         this.default = this.#setDefaultConfig();
@@ -263,7 +237,6 @@ export class Config {
         this.current = structuredClone(this.default);
         this.#moduleOverrides.clear();
         this.#lastResponsiveBp = null;
-        this.#responsiveLoaded = false;
     }
 
     #safeClone<T>(obj: T): T {
