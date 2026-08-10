@@ -231,8 +231,6 @@ export default class Stage {
             slides = this.#slides,
             config = this.#config;
 
-        this.#setSlidesGap();
-
         // full width?
         container.classList.toggle(CSS_CLASSES.fullWidth, config.fullWidth && !config.verticalMaxContentWidth);
 
@@ -257,6 +255,8 @@ export default class Stage {
         }
 
         this.#slidesHeights = this.#getSlidesHeights();
+
+        this.#setSlidesGap();
 
         if (config.autoHeight) {
             //this.#setActiveSlides();
@@ -633,7 +633,7 @@ export default class Stage {
 
         return this.#config.vertical
             ? slideRect.top - stageRect.top
-            : slideRect.left - stageRect.left - this.#config.gap;
+            : slideRect.left - stageRect.left;
     }
 
     #resizeEvent = () => {
@@ -644,7 +644,6 @@ export default class Stage {
 
     #onStageResized = () => {
         this.#update();
-        this.#setSlidesGap();
 
         const slide = this.#getSlideDom();
         if (slide != null) {
