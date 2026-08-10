@@ -121,7 +121,7 @@ export default class ModuleLoader {
 
     reset() {
         for (const module of this.#instances.values()) {
-            module.destroy();
+            module.destroyLifecycle();
         }
 
         this.#instances.clear();
