@@ -1,7 +1,6 @@
 import { CSS_CLASSES } from "../constants/css-classes";
 import { DATA } from "../constants/data-attrs";
 import { EVENTS } from "../constants/events-list";
-import { error } from "../utils/error-handler";
 import { BaseModule } from "../core/base-module";
 import type { ModuleContext } from "../types/module.params";
 import type { CarouselEvents } from "../types/event.types";
@@ -9,16 +8,13 @@ import type { CarouselEvents } from "../types/event.types";
 export default class Pagination extends BaseModule {
     id: string = "pagination";
 
-    #paginationContainer!: HTMLDivElement;
+    #paginationContainer: HTMLDivElement | null = null;
     #currentPage: number = -1;
 
     #activeClass = "active";
 
     constructor(params: ModuleContext) {
         super(params);
-
-        this.events.on(EVENTS.PAGE_CHANGED, this.#onChangePaged);
-        this.events.on(EVENTS.CONFIG_APPLIED, this.#onConfigApplied);
     }
 
     #onConfigApplied = (e: CarouselEvents[typeof EVENTS.CONFIG_APPLIED]) => {
@@ -26,11 +22,19 @@ export default class Pagination extends BaseModule {
             return;
         }
 
-        this.destroy();
-        this.initialize();
+        this.#renderPagination();
     }
 
     initialize() {
+        this.events.on(EVENTS.PAGE_CHANGED, this.#onChangePaged);
+        this.events.on(EVENTS.CONFIG_APPLIED, this.#onConfigApplied);
+
+        this.#renderPagination();
+    }
+
+    #renderPagination() {
+        this.#removePagination();
+
         const status = this.getStatus();
         if (status.totalPages == 0) {
             return;
@@ -41,32 +45,31 @@ export default class Pagination extends BaseModule {
         const pagination = document.createElement("div");
         pagination.classList.add(CSS_CLASSES.pagination);
 
-        for (var i = 0; i < status.pageSlides.length; i++) {
+        for (let i = 0; i < status.pageSlides.length; i++) {
             let dot = document.createElement("span");
             dot.classList.add(CSS_CLASSES.dot);
             dot.dataset[DATA.dataset.slide] = i.toString();
             dot.role = "button";
-            dot.addEventListener("click", () => this.events.emit(EVENTS.PAGE_CHANGE_REQUEST, { index: dot.dataset[DATA.dataset.slide] }));
+            dot.addEventListener("click", () => this.events.emit(EVENTS.PAGE_CHANGE_REQUEST, { index: i }));
             pagination.appendChild(dot);
         }
 
         this.container.appendChild(pagination);
-
-        const paginationContainer = this.container.querySelector<HTMLDivElement>(`.${CSS_CLASSES.pagination}`);
-        if (paginationContainer == null) {
-            throw error("Pagination container is not found!");
-        }
-
-        this.#paginationContainer = paginationContainer;
+        this.#paginationContainer = pagination;
 
         this.#setActiveDot();
+    }
+
+    #removePagination() {
+        this.#paginationContainer?.remove();
     }
 
     destroy() {
         this.events.off(EVENTS.PAGE_CHANGED, this.#onChangePaged);
         this.events.off(EVENTS.CONFIG_APPLIED, this.#onConfigApplied);
 
-        this.#paginationContainer?.remove();
+        this.#removePagination();
+        this.#paginationContainer = undefined!;
     }
 
     #onChangePaged = (e: CarouselEvents[typeof EVENTS.PAGE_CHANGED]) => {
@@ -83,12 +86,12 @@ export default class Pagination extends BaseModule {
     }
 
     #setActiveDot() {
-        let active = this.container.querySelector(`.${CSS_CLASSES.dot}[${DATA.attrs.slide}].` + this.#activeClass);
+        let active = this.#paginationContainer?.querySelector(`.${CSS_CLASSES.dot}[${DATA.attrs.slide}].` + this.#activeClass);
         if (active != null) {
             active.classList.remove(this.#activeClass);
         }
 
-        active = this.container.querySelector(`.${CSS_CLASSES.dot}[${DATA.attrs.slide}="${this.#currentPage}"]`);
+        active = this.#paginationContainer?.querySelector(`.${CSS_CLASSES.dot}[${DATA.attrs.slide}="${this.#currentPage}"]`);
         if (active == null) {
             return;
         }
