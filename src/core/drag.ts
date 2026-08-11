@@ -14,20 +14,24 @@ export default class Drag {
     #events: Events;
 
     #stageDom: HTMLDivElement;
-
-    #stayOnThisSlide: boolean = false;
-    #origPosition: number = 0;
-    #isDragging: boolean = false;
-    #touchStartRawCords!: number;
-    #touchStartCords!: number;
-    #swipeDistance!: number;
-    #currentTouch!: number;
-    #currentTranslate!: number;
-    #lastTouch: number = 0;
     #slideOffsets: SlideOffsets[] = [];
     #slides: HTMLDivElement[] = [];
     #viewportCenter: number = 0;
+
+    #isDragging: boolean = false;
     #pointerId: number | null = null;
+
+    #pointerStart: number = 0;
+    #dragStartTranslate: number = 0;
+    #pointerOffset: number = 0;
+
+    #lastTouch: number = 0;
+    #currentTouch: number = 0;
+    #currentTranslate: number = 0;
+
+    #swipeDistance: number = 0;
+    #stayOnThisSlide: boolean = false;
+
 
     constructor(config: Config, events: Events, status: CarouselStatus) {
         this.#config = config.current;
@@ -120,12 +124,12 @@ export default class Drag {
         }
 
         this.#isDragging = true;
-        this.#touchStartRawCords = startPoint;
-        this.#touchStartCords = this.#touchStartRawCords + -(this.#currentTranslate);
-        this.#origPosition = this.#currentTranslate;
+        this.#pointerStart = startPoint;
+        this.#pointerOffset = this.#pointerStart + -(this.#currentTranslate);
+        this.#dragStartTranslate = this.#currentTranslate;
         this.#currentTouch = this.#currentTranslate;
         this.#stayOnThisSlide = false;
-        this.#lastTouch = 0;
+        this.#lastTouch = this.#currentTranslate;
         this.#pointerId = e.pointerId;
         this.#stageDom.setPointerCapture(e.pointerId);
 
@@ -135,11 +139,11 @@ export default class Drag {
     #rebaseDrag(newTranslate: number, currentPointer: number) {
         this.#currentTranslate = newTranslate;
         this.#currentTouch = newTranslate;
-        this.#origPosition = newTranslate;
+        this.#dragStartTranslate = newTranslate;
 
         // recreate drag origin from current pointer
-        this.#touchStartRawCords = currentPointer;
-        this.#touchStartCords = currentPointer - newTranslate;
+        this.#pointerStart = currentPointer;
+        this.#pointerOffset = currentPointer - newTranslate;
     }
 
     #dragMove = (e: PointerEvent) => {
@@ -159,10 +163,10 @@ export default class Drag {
         this.#stageDom.style.transitionDuration = `${this.#config.swipeSmooth}s`;
 
         //calcualte swipe distance between starging value cnd current value
-        this.#swipeDistance = Math.abs(input - this.#touchStartRawCords);
+        this.#swipeDistance = Math.abs(input - this.#pointerStart);
 
         //get the current touch
-        this.#currentTouch = input - this.#touchStartCords;
+        this.#currentTouch = input - this.#pointerOffset;
 
         //move slider until max swipe lenght is reached
         if (this.#config.touchMaxSlideDist < 1 || this.#swipeDistance <= this.#config.touchMaxSlideDist) {
@@ -189,12 +193,13 @@ export default class Drag {
             scrollToPos(this.#stageDom, this.#currentTouch, this.#config.vertical);
         } else {
             this.#stayOnThisSlide = true;
-            this.#currentTouch = input - this.#touchStartCords;
+            this.#currentTouch = input - this.#pointerOffset;
         }
     }
 
-    #dragEnd = () => {
-        if (!this.#isDragging) {
+    #dragEnd = (e: PointerEvent) => {
+        // make sure multi-touch won't interrupt the current drag
+        if (!this.#isDragging || e.pointerId !== this.#pointerId) {
             return;
         }
 
@@ -214,8 +219,8 @@ export default class Drag {
             }
 
             case DragSnapMode.Swipe: {
-                const isLeftDirection = this.#currentTouch > this.#origPosition;
-                const targetIndex = isLeftDirection ? "prev" : "next";
+                const isDraggingRight = this.#currentTouch > this.#dragStartTranslate;
+                const targetIndex = isDraggingRight ? "prev" : "next";
 
                 // if out of bounds, scroll to original position
                 /*if (targetIndex < 0 || targetIndex >= this.#totalPages) {
@@ -241,7 +246,7 @@ export default class Drag {
     }
 
     #revertDrag() {
-        scrollToPos(this.#stageDom, this.#origPosition, this.#config.vertical);
+        scrollToPos(this.#stageDom, this.#dragStartTranslate, this.#config.vertical);
         this.#finishDrag();
     }
 
