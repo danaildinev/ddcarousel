@@ -1,8 +1,8 @@
-import type { EVENTS, LEGACY_EVENT_MAP } from "../constants/events-list";
+import { EVENTS } from "../constants/events-list";
 import type { CarouselConfig } from "./carousel.types";
-import type { PageChangePayload as PageChangeIndexPayload } from "./page-change.types";
+import type { PriorityPayload } from "./event-payload.types";
 
-type PageChangeScrollPayload = {
+type PageChangeScrollPayload = PriorityPayload & {
     currentPage: number;
     slidesCount: number;
     currentTranslate: number;
@@ -14,8 +14,15 @@ type ModuleEventPayload = {
     name: string;
 };
 
+export type PageChangePayload = PriorityPayload & {
+    request: number | string;
+    page: number;
+    currentPage: number;
+    totalPages: number;
+};
+
 export type CarouselEvents = {
-    [EVENTS.PAGE_CHANGE_REQUEST]: {
+    [EVENTS.PAGE_CHANGE_REQUEST]: PriorityPayload & {
         index: number | string;
         animate?: boolean;
         emit?: boolean;
@@ -26,25 +33,25 @@ export type CarouselEvents = {
         currentPage: number;
         currentTranslate: number;
         slidesActive: number[];
-    }
-
-    [EVENTS.PAGE_CHANGE_SCROLL_BEFORE]: PageChangeScrollPayload
-    [EVENTS.PAGE_CHANGE_SCROLL_AFTER]: PageChangeScrollPayload
-    [EVENTS.PAGE_CHANGE_INDEX]: PageChangeIndexPayload
-    [EVENTS.MODULE_LOADED]: ModuleEventPayload
-    [EVENTS.MODULE_INITIALIZED]: ModuleEventPayload
-    [EVENTS.MODULE_DESTROYED]: ModuleEventPayload
-    [EVENTS.MODULE_UNLOADED]: ModuleEventPayload
-
-    [EVENTS.CONFIG_APPLIED]: {
-        default: CarouselConfig,
-        old: CarouselConfig,
-        new: CarouselConfig,
-        isInternalOverride: boolean
     };
 
-    [EVENTS.SLIDE_SCROLL]: {
-        slide?: HTMLDivElement,
+    [EVENTS.PAGE_CHANGE_SCROLL_BEFORE]: PageChangeScrollPayload;
+    [EVENTS.PAGE_CHANGE_SCROLL_AFTER]: PageChangeScrollPayload;
+    [EVENTS.PAGE_CHANGE_INDEX]: PageChangePayload;
+    [EVENTS.MODULE_LOADED]: ModuleEventPayload;
+    [EVENTS.MODULE_INITIALIZED]: ModuleEventPayload;
+    [EVENTS.MODULE_DESTROYED]: ModuleEventPayload;
+    [EVENTS.MODULE_UNLOADED]: ModuleEventPayload;
+
+    [EVENTS.CONFIG_APPLIED]: {
+        default: CarouselConfig;
+        old: CarouselConfig;
+        new: CarouselConfig;
+        isInternalOverride: boolean;
+    };
+
+    [EVENTS.SLIDE_SCROLL]: PriorityPayload & {
+        slide?: HTMLDivElement;
         animate: boolean;
         specifiedPosition: number;
     };

@@ -1,11 +1,10 @@
 import { EVENTS } from "../constants/events-list";
 import type { CarouselConfig, CarouselStatus } from "../types/carousel.types";
-import type { CarouselEvents } from "../types/event.types";
 import type { ModuleContext } from "../types/module.params";
-import type { PageChangePayload } from "../types/page-change.types";
 import type { Config } from "./config";
 import type { Events } from "./events";
 import type { Module } from "./module";
+import type { PriorityPayload } from "../types/event-payload.types";
 
 export abstract class BaseModule<TConfig = Record<string, unknown>> implements Module {
     abstract id: string;
@@ -114,7 +113,7 @@ export abstract class BaseModule<TConfig = Record<string, unknown>> implements M
         return this.moduleConfig[property];
     }
 
-    tryOverridePriority(payload: PageChangePayload, prio: number): boolean {
+    tryOverridePriority(payload: PriorityPayload, prio: number): boolean {
         const moduleName = this.id;
 
         if (payload.priority === prio) {
