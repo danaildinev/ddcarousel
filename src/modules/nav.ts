@@ -13,20 +13,24 @@ export default class Nav extends BaseModule {
         </svg>`;
 
     #currentPage: number = -1;
-    #totalPages: number = -1;;
+    #totalPages: number = -1;
 
-    #prevBtn!: HTMLElement;
-    #nextBtn!: HTMLElement;
+    #prevBtn?: HTMLElement;
+    #nextBtn?: HTMLElement;
 
     #inactiveClass = "inactive";
 
     constructor(params: ModuleContext) {
         super(params);
-
-        this.events.on(EVENTS.PAGE_CHANGED, this.#onChangePaged);
     }
 
     initialize() {
+        this.events.on(EVENTS.PAGE_CHANGED, this.#onChangePaged);
+
+        this.#renderNav();
+    }
+
+    #renderNav() {
         //this.#remove();
 
         const status = this.getStatus();
@@ -71,7 +75,11 @@ export default class Nav extends BaseModule {
             return;
         }
 
+        const status = this.getStatus();
+
         this.#currentPage = e.currentPage;
+        this.#totalPages = status.totalPages;
+
         this.#refreshNav();
     }
 
