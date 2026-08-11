@@ -18,7 +18,7 @@ export default class UrlNav extends BaseModule {
     id: string = "urlNav";
 
     #navItems!: UrlNavItem[];
-    #urlNavContainer!: HTMLElement;
+    #urlNavList!: HTMLElement;
 
     constructor(params: ModuleContext) {
         super(params);
@@ -30,7 +30,7 @@ export default class UrlNav extends BaseModule {
     }
 
     destroy() {
-        this.#urlNavContainer?.remove();
+        this.#urlNavList?.remove();
 
         this.events.off(EVENTS.PAGE_CHANGED, this.#onPageChange);
     }
@@ -88,7 +88,7 @@ export default class UrlNav extends BaseModule {
         }
 
         appendContainer.appendChild(list);
-        this.#urlNavContainer = appendContainer;
+        this.#urlNavList = list;
 
         this.#updateActiveLink(this.getStatus().currentPage);
     }

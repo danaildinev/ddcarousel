@@ -137,4 +137,25 @@ describe("UrlNav module", () => {
         expect(items[1]?.classList.contains("active")).toBe(true);
         expect(items[2]?.classList.contains("active")).toBe(false);
     });
+
+    it("does not remove the custom urlNavContainer on destroy", async () => {
+        renderCarousel(5);
+
+        const customContainer = document.createElement("div");
+        customContainer.classList.add("url-nav-container");
+        document.body.appendChild(customContainer);
+
+        const carousel = new Carousel(baseConfig({
+            urlNav: true,
+            urlNavContainer: ".url-nav-container",
+        }));
+
+        await carousel.ready;
+
+        expect(customContainer.querySelector(`.${CSS_CLASSES.urls}`)).not.toBeNull();
+        carousel.destroy();
+
+        expect(customContainer.querySelector(`.${CSS_CLASSES.urls}`)).toBeNull();
+        expect(document.querySelector(".url-nav-container")).toBe(customContainer);
+    });
 });
