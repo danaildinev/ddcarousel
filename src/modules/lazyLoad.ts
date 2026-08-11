@@ -24,14 +24,14 @@ export default class LazyLoad extends BaseModule<LazyLoadConfig> {
 
     initialize(slidesActive?: number[]) {
         const status = this.getStatus();
-        slidesActive ??= status.activeSlides;
 
-        if (!slidesActive) {
+        const slides = [...(slidesActive ?? status.activeSlides ?? [])];
+        if (slides.length === 0) {
             return;
         }
 
         if (this.getResolvedConfig("preload")) {
-            const lastActiveIndex = slidesActive[slidesActive.length - 1];
+            const lastActiveIndex = slides[slides.length - 1];
             if (lastActiveIndex === undefined) {
                 return;
             }
@@ -41,14 +41,14 @@ export default class LazyLoad extends BaseModule<LazyLoadConfig> {
                 return;
             }
 
-            for (var i = lastActiveIndex + 1; i <= lastActiveIndex + preloadSlidesCount; i++) {
-                if (i < status.totalSlides && slidesActive.indexOf(i) == -1) {
-                    slidesActive.push(i);
+            for (let i = lastActiveIndex + 1; i <= lastActiveIndex + preloadSlidesCount; i++) {
+                if (i < status.totalSlides && !slides.includes(i)) {
+                    slides.push(i);
                 }
             }
         }
 
-        slidesActive.forEach(i => {
+        slides.forEach(i => {
             const images = document.querySelectorAll(`${this.config.container} [${DATA.attrs.slide}="${i}"] img[${DATA.attrs.lazyImg}]`);
             images.forEach((i) => this.#enableImageSrc(i as HTMLImageElement));
         });
@@ -66,11 +66,7 @@ export default class LazyLoad extends BaseModule<LazyLoadConfig> {
         this.initialize(e.slidesActive);
     }
 
-    #enableImageSrc(slideImg?: HTMLImageElement) {
-        if (!slideImg) {
-            return;
-        }
-
+    #enableImageSrc(slideImg: HTMLImageElement) {
         const lazySrc = slideImg.dataset[DATA.dataset.lazyImg];
         if (!lazySrc) {
             return;
