@@ -2,8 +2,6 @@ import { CSS_CLASSES } from "../constants/css-classes";
 import { DATA } from "../constants/data-attrs";
 import { EVENTS } from "../constants/events-list";
 import { BaseModule } from "../core/base-module";
-import type { Events } from "../core/events";
-import type { CarouselConfig, CarouselStatus } from "../types/carousel.types";
 import type { CarouselEvents } from "../types/event.types";
 import type { ModuleContext } from "../types/module.params";
 import { error } from "../utils/error-handler";
@@ -19,17 +17,11 @@ export default class UrlNav extends BaseModule {
     static readonly id = "urlNav";
     id: string = "urlNav";
 
-    #events: Events;
-    #config: CarouselConfig;
-
     #navItems!: UrlNavItem[];
     #urlNavContainer!: HTMLElement;
 
     constructor(params: ModuleContext) {
         super(params);
-
-        this.#config = params.config;
-        this.#events = params.events;
     }
 
     initialize() {
@@ -46,13 +38,13 @@ export default class UrlNav extends BaseModule {
     #createNav() {
         this.#navItems = [];
 
-        let list = document.createElement("ul");
+        const list = document.createElement("ul");
         list.classList.add(CSS_CLASSES.urls);
         const slides = this.getStatus().slides;
         for (const slide of Object.values(slides)) {
-            const child = slide.firstChild as HTMLElement;
+            const child = slide.firstElementChild as HTMLElement;
             if (!child) {
-                return;
+                continue;
             }
 
             const slideId = child.dataset[DATA.dataset.id],
@@ -72,26 +64,26 @@ export default class UrlNav extends BaseModule {
             link.textContent = title;
 
             // todo fix: This will not work properly when config items > 1. Then pages != slides and slide id's w match (this feature is based on latest v1.4.0)
-            link.addEventListener("click", () => this.#events.emit(EVENTS.PAGE_CHANGE_REQUEST, { index: slide.dataset.slide, enableAnim: true }));
+            link.addEventListener("click", () => this.events.emit(EVENTS.PAGE_CHANGE_REQUEST, { index: slide.dataset.slide, enableAnim: true }));
 
             item.appendChild(link);
             list.appendChild(item);
 
             this.#navItems.push({
                 slideId: id,
-                href: href,
-                title: title,
+                href,
+                title,
                 domElement: item
             });
         }
 
         let appendContainer = this.container;
-        if (this.#config.urlNavContainer) {
-            const container = document.querySelector<HTMLDivElement>(this.#config.urlNavContainer);
+        if (this.config.urlNavContainer) {
+            const container = document.querySelector<HTMLDivElement>(this.config.urlNavContainer);
             if (container) {
                 appendContainer = container;
             } else {
-                console.warn(`Error appending url navigation: ${this.#config.urlNavContainer} not found!`);
+                console.warn(`Error appending url navigation: ${this.config.urlNavContainer} not found!`);
             }
         }
 
@@ -113,7 +105,7 @@ export default class UrlNav extends BaseModule {
         }
 
         const id = parent.dataset[DATA.dataset.slide];
-        this.#events.emit(EVENTS.PAGE_CHANGE_REQUEST, { index: id, enableAnim })
+        this.events.emit(EVENTS.PAGE_CHANGE_REQUEST, { index: id, enableAnim })
     }
 
     #onPageChange = (e: CarouselEvents[typeof EVENTS.PAGE_CHANGED]) => this.#updateActiveLink(e.currentPage);
