@@ -1,6 +1,18 @@
-import type { EVENTS } from "../constants/events-list";
+import type { EVENTS, LEGACY_EVENT_MAP } from "../constants/events-list";
 import type { CarouselConfig } from "./carousel.types";
-import type { PageChangePayload as PageChangeIndexPayload } from "./pageChangeIndexPayload";
+import type { PageChangePayload as PageChangeIndexPayload } from "./page-change.types";
+
+type PageChangeScrollPayload = {
+    currentPage: number;
+    slidesCount: number;
+    currentTranslate: number;
+    activeSlides: number[];
+    isForward: boolean;
+};
+
+type ModuleEventPayload = {
+    name: string;
+};
 
 export type CarouselEvents = {
     [EVENTS.PAGE_CHANGE_REQUEST]: {
@@ -16,39 +28,13 @@ export type CarouselEvents = {
         slidesActive: number[];
     }
 
-    [EVENTS.PAGE_CHANGE_SCROLL_BEFORE]: {
-        currentPage: number;
-        slidesCount: number;
-        currentTranslate: number
-        activeSlides: number[],
-        isForward: boolean,
-    }
-
-    [EVENTS.PAGE_CHANGE_SCROLL_AFTER]: {
-        currentPage: number;
-        slidesCount: number;
-        currentTranslate: number
-        activeSlides: number[],
-        isForward: boolean,
-    }
-
+    [EVENTS.PAGE_CHANGE_SCROLL_BEFORE]: PageChangeScrollPayload
+    [EVENTS.PAGE_CHANGE_SCROLL_AFTER]: PageChangeScrollPayload
     [EVENTS.PAGE_CHANGE_INDEX]: PageChangeIndexPayload
-
-    [EVENTS.MODULE_LOADED]: {
-        name: string
-    };
-
-    [EVENTS.MODULE_INITIALIZED]: {
-        name: string
-    };
-
-    [EVENTS.MODULE_DESTROYED]: {
-        name: string
-    };
-
-    [EVENTS.MODULE_UNLOADED]: {
-        name: string
-    };
+    [EVENTS.MODULE_LOADED]: ModuleEventPayload
+    [EVENTS.MODULE_INITIALIZED]: ModuleEventPayload
+    [EVENTS.MODULE_DESTROYED]: ModuleEventPayload
+    [EVENTS.MODULE_UNLOADED]: ModuleEventPayload
 
     [EVENTS.CONFIG_APPLIED]: {
         default: CarouselConfig,
@@ -71,9 +57,9 @@ export type CarouselEvents = {
         currentTranslate: number;
         delta: number;
         direction: "left" | "right";
-        slideIndexLeft?: number | undefined;
-        slideIndexCenter?: number | undefined;
-        slideIndexRight?: number | undefined;
+        slideIndexLeft?: number;
+        slideIndexCenter?: number;
+        slideIndexRight?: number;
         rebase?: boolean;
     };
 
@@ -90,18 +76,3 @@ export type CarouselEvents = {
     [EVENTS.DRAG_START]: void;
     [EVENTS.DRAG_END]: void;
 }
-
-export type LegacyCarouselEvents = {
-    onInitialize: CarouselEvents[typeof EVENTS.INITIALIZE];
-    onInitialized: CarouselEvents[typeof EVENTS.INITIALIZED];
-    onDrag: CarouselEvents[typeof EVENTS.DRAG_START];
-    onDragging: CarouselEvents[typeof EVENTS.DRAG_DRAGGING];
-    onDragged: CarouselEvents[typeof EVENTS.DRAG_END];
-    onTransitionend: CarouselEvents[typeof EVENTS.TRANSITION_END];
-    onChanged: CarouselEvents[typeof EVENTS.PAGE_CHANGED];
-    onResized: CarouselEvents[typeof EVENTS.STAGE_RESIZED];
-    onDestroy: CarouselEvents[typeof EVENTS.DESTROY];
-    onDestroyed: CarouselEvents[typeof EVENTS.DESTROYED];
-};
-
-export type CarouselEventName = keyof CarouselEvents | string;

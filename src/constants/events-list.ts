@@ -1,3 +1,5 @@
+import type { CarouselEvents } from "../types/event.types";
+
 export const EVENTS = {
     // lifecycle
     INITIALIZE: 'carousel:initalize',
@@ -33,10 +35,8 @@ export const EVENTS = {
     TRANSITION_END: 'transition:end',
 } as const;
 
-export type CarouselEventName = typeof EVENTS[keyof typeof EVENTS];
-
 export type CarouselOnEvents = {
-    [K in `on:${CarouselEventName}`]?: (payload?: any) => void;
+    [K in keyof CarouselEvents as `on:${K & string}`]?: (payload: CarouselEvents[K]) => void;
 };
 
 export const LEGACY_EVENT_MAP: Record<string, string> = {

@@ -2,7 +2,7 @@ import { EVENTS } from "../constants/events-list";
 import type { CarouselConfig, CarouselStatus } from "../types/carousel.types";
 import type { CarouselEvents } from "../types/event.types";
 import type { ModuleContext } from "../types/module.params";
-import type { PageChangePayload } from "../types/pageChangeIndexPayload";
+import type { PageChangePayload } from "../types/page-change.types";
 import type { Config } from "./config";
 import type { Events } from "./events";
 import type { Module } from "./module";
