@@ -4,6 +4,8 @@ import { EVENTS } from "../src/constants/events-list";
 import { baseConfig, renderCarousel, stage, triggerResizeObservers } from "./helpers";
 import { CarouselEvents } from "../src/types/event.types";
 import { fireEvent } from "@testing-library/dom";
+import { PriorityPayload } from "../src/types/event-payload.types";
+import Autoplay from "../src/modules/autoplay";
 
 afterEach(() => {
     vi.useRealTimers();
@@ -226,5 +228,82 @@ describe("Carousel events", () => {
             rebase: false
         } as CarouselEvents[typeof EVENTS.DRAG_DRAGGING]));
         expect(dragEnd).toHaveBeenCalledTimes(1);
+    });
+
+    const createPayload = (overrides: Partial<PriorityPayload> = {}): PriorityPayload => ({
+        handled: false,
+        priority: 0,
+        ...overrides,
+    });
+
+    it("claims the payload and overrides priority when priority is higher", async () => {
+        renderCarousel(1);
+        const carousel = new Carousel(baseConfig({ autoplay: true }));
+        await carousel.ready;
+
+        const payload = createPayload({
+            priority: 5,
+        });
+
+        const moduleName = Autoplay.id;
+        const module = carousel.module<Autoplay>(moduleName);
+        const result = module.tryOverridePriority(payload, 10);
+
+        expect(result).toBe(true);
+        expect(payload.priority).toBe(10);
+        expect(payload.source).toBe(moduleName);
+        expect(payload.handled).toBe(true);
+    });
+
+    it("does not override a higher priority", async () => {
+        renderCarousel(1);
+        const carousel = new Carousel(baseConfig({ autoplay: true }));
+        await carousel.ready;
+
+        const moduleName = Autoplay.id;
+        const payload = createPayload({
+            handled: true,
+            priority: 20,
+            source: "Pagination",
+        });
+
+        const module = carousel.module<Autoplay>(moduleName);
+        const result = module.tryOverridePriority(payload, 10);
+
+        expect(result).toBe(false);
+        expect(payload.priority).toBe(20);
+        expect(payload.source).toBe("Pagination");
+        expect(payload.handled).toBe(true);
+    });
+
+    it("does not override an equal priority", async () => {
+        renderCarousel(1);
+        const carousel = new Carousel(baseConfig({ autoplay: true }));
+        await carousel.ready;
+
+        const moduleName = Autoplay.id;
+        const payload = createPayload({
+            handled: true,
+            priority: 10,
+            source: "Pagination",
+        });
+
+        const consoleSpy = vi
+            .spyOn(console, "warn")
+            .mockImplementation(() => { });
+
+        const module = carousel.module<Autoplay>(moduleName);
+        const result = module.tryOverridePriority(payload, 10);
+
+        expect(result).toBe(false);
+        expect(payload.priority).toBe(10);
+        expect(payload.source).toBe("Pagination");
+        expect(payload.handled).toBe(true);
+
+        expect(consoleSpy).toHaveBeenCalledWith(
+            `Module "${moduleName}" tried to use priority 10, but it is already claimed by "Pagination". Override ignored!`
+        );
+
+        consoleSpy.mockRestore();
     });
 });
