@@ -24,8 +24,8 @@ export default class Autoplay extends BaseModule<AutoplayConfig> {
     };
 
     #stage: HTMLDivElement;
-    #progressBar?: HTMLDivElement | undefined;
-    #autoPlay!: number | undefined;
+    #progressBar: HTMLDivElement | undefined;
+    #autoPlay: number | undefined;
     #currentPage: number = -1;
 
     constructor(params: ModuleContext) {
@@ -38,10 +38,11 @@ export default class Autoplay extends BaseModule<AutoplayConfig> {
 
         this.#stage = stage;
 
-        this.events.on(EVENTS.PAGE_CHANGED, this.#onChangePaged);
     }
 
     initialize() {
+        this.events.on(EVENTS.PAGE_CHANGED, this.#onPageChanged);
+
         if (this.getResolvedConfig("pauseOnTabHidden")) {
             document.addEventListener("visibilitychange", this.#stopOnTabHidden);
         }
@@ -54,14 +55,14 @@ export default class Autoplay extends BaseModule<AutoplayConfig> {
 
     destroy() {
         document.removeEventListener("visibilitychange", this.#stopOnTabHidden);
-        this.events.off(EVENTS.PAGE_CHANGED, this.#onChangePaged);
+        this.events.off(EVENTS.PAGE_CHANGED, this.#onPageChanged);
 
         this.stop();
         this.#destroyProgressBar();
         this.#detachEvents();
     }
 
-    #onChangePaged = (e: CarouselEvents[typeof EVENTS.PAGE_CHANGED]) => {
+    #onPageChanged = (e: CarouselEvents[typeof EVENTS.PAGE_CHANGED]) => {
         if (!this.isInitialized) {
             return;
         }
@@ -79,15 +80,12 @@ export default class Autoplay extends BaseModule<AutoplayConfig> {
     #stopOnTabHidden = () => document.hidden ? this.stop() : this.start();
 
     start = () => {
-        if (!this.isInitialized) {
+        if (!this.isInitialized || this.#currentPage === this.getStatus().totalPages || this.#autoPlay !== undefined) {
             return;
         }
 
-        if (this.#currentPage == this.getStatus().totalPages) {
-            return;
-        }
-
-        if (this.#autoPlay !== undefined) {
+        const speed = this.getResolvedConfig("speed");
+        if (speed === null || speed <= 0) {
             return;
         }
 
@@ -95,12 +93,8 @@ export default class Autoplay extends BaseModule<AutoplayConfig> {
         this.#toggleProgressBar(true);
         this.#restartProgressBar();
 
-        const speed = this.getResolvedConfig("speed");
-
-        if (speed) {
-            this.#autoPlay = setInterval(() => this.#handler(), speed);
-            this.events.emit(EVENTS.MODULE_AUTOPLAY_STARTED);
-        }
+        this.#autoPlay = setInterval(() => this.#handler(), speed);
+        this.events.emit(EVENTS.MODULE_AUTOPLAY_STARTED);
     }
 
     #handler() {
@@ -114,7 +108,7 @@ export default class Autoplay extends BaseModule<AutoplayConfig> {
     }
 
     stop = () => {
-        if (this.#autoPlay == null) {
+        if (this.#autoPlay === undefined) {
             return;
         }
 
