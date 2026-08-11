@@ -18,7 +18,6 @@ export class Events {
         }
 
         let handlers = this.#events.get(name);
-
         if (!handlers) {
             handlers = new Set();
             this.#events.set(name, handlers);
@@ -43,7 +42,7 @@ export class Events {
     off(name: string, callback: (payload?: any) => void) {
         const eventName = this.#events.get(name);
         if (eventName === undefined) {
-            throw error(`Event name '${name}' is not found!`);
+            return;
         }
 
         eventName.delete(callback);
