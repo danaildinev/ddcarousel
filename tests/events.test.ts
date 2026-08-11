@@ -215,9 +215,10 @@ describe("Carousel events", () => {
         carousel.on(EVENTS.DRAG_DRAGGING, dragging);
         carousel.on(EVENTS.DRAG_END, dragEnd);
 
-        fireEvent.pointerDown(stage()!, { clientX: 10, clientY: 5, pointerType: "mouse" });
-        fireEvent.pointerMove(window, { clientX: 50, clientY: 5, pointerType: "mouse" });
-        fireEvent.pointerUp(window, { clientX: 60, clientY: 5, pointerType: "mouse" });
+        const pointerId = 1;
+        fireEvent.pointerDown(stage()!, { pointerId, clientX: 10, clientY: 5, pointerType: "mouse" });
+        fireEvent.pointerMove(window, { pointerId, clientX: 50, clientY: 5, pointerType: "mouse" });
+        fireEvent.pointerUp(window, { pointerId, clientX: 60, clientY: 5, pointerType: "mouse" });
 
         expect(pre).toHaveBeenCalledTimes(1);
         expect(dragStart).toHaveBeenCalledTimes(1);
@@ -228,6 +229,36 @@ describe("Carousel events", () => {
             rebase: false
         } as CarouselEvents[typeof EVENTS.DRAG_DRAGGING]));
         expect(dragEnd).toHaveBeenCalledTimes(1);
+    });
+
+    it("cancels an active drag", async () => {
+        renderCarousel(5);
+
+        const dragging = vi.fn();
+        const dragEnd = vi.fn();
+
+        const carousel = new Carousel(baseConfig());
+        await carousel.init();
+
+        carousel.on(EVENTS.DRAG_DRAGGING, dragging);
+        carousel.on(EVENTS.DRAG_END, dragEnd);
+
+        const pointerId = 1;
+
+        fireEvent.pointerDown(stage()!, { pointerId, clientX: 10, clientY: 5, pointerType: "mouse" });
+        fireEvent.pointerMove(window, { pointerId, clientX: 50, clientY: 5, pointerType: "mouse" });
+        expect(dragging).toHaveBeenCalledWith(
+            expect.objectContaining({
+                currentTranslate: 40,
+                delta: 40,
+                direction: "right",
+                rebase: false
+            })
+        );
+
+        fireEvent.pointerCancel(window, { pointerId, clientX: 50, clientY: 5, pointerType: "mouse" });
+        expect(stage()?.style.transform).toContain("0");
+        expect(dragEnd).not.toHaveBeenCalled();
     });
 
     const createPayload = (overrides: Partial<PriorityPayload> = {}): PriorityPayload => ({
