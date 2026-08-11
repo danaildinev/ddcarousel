@@ -1,4 +1,4 @@
-import { EVENTS } from "../constants/events-list";
+import { EVENTS, LEGACY_EVENT_MAP } from "../constants/events-list";
 import type { CarouselConfig } from "./carousel.types";
 import type { PriorityPayload } from "./event-payload.types";
 
@@ -83,3 +83,8 @@ export type CarouselEvents = {
     [EVENTS.DRAG_START]: void;
     [EVENTS.DRAG_END]: void;
 }
+
+export type LegacyCarouselEvents = {
+    [K in keyof typeof LEGACY_EVENT_MAP]:
+    CarouselEvents[(typeof LEGACY_EVENT_MAP)[K]];
+};
