@@ -25,6 +25,7 @@
 		.ddcarousel-stage {
 			height: auto;
 			flex-direction: column;
+			touch-action: pan-x;
 		}
 		.ddcarousel-stage,
 		.ddcarousel-item {
@@ -46,6 +47,7 @@
 		height: 100%;
 		backface-visibility: hidden;
 		transition-timing-function: ease-out;
+		touch-action: pan-y;
 	}
 	&-item {
 		height: 100%;
