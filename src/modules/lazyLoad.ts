@@ -18,11 +18,15 @@ export default class LazyLoad extends BaseModule<LazyLoadConfig> {
 
     constructor(params: ModuleContext) {
         super(params);
-
-        this.events.on(EVENTS.PAGE_CHANGED, this.#onChangePaged);
     }
 
-    initialize(slidesActive?: number[]) {
+    initialize() {
+        this.events.on(EVENTS.PAGE_CHANGED, this.#onChangePaged);
+
+        this.load();
+    }
+
+    load(slidesActive?: number[]) {
         const status = this.getStatus();
 
         const slides = [...(slidesActive ?? status.activeSlides ?? [])];
@@ -63,7 +67,7 @@ export default class LazyLoad extends BaseModule<LazyLoadConfig> {
             return;
         }
 
-        this.initialize(e.slidesActive);
+        this.load(e.slidesActive);
     }
 
     #enableImageSrc(slideImg: HTMLImageElement) {
