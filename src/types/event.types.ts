@@ -64,9 +64,9 @@ export type CarouselEvents = {
         currentTranslate: number;
         delta: number;
         direction: "left" | "right";
-        slideIndexLeft?: number;
-        slideIndexCenter?: number;
-        slideIndexRight?: number;
+        slideIndexLeft?: number | undefined;
+        slideIndexCenter?: number | undefined;
+        slideIndexRight?: number | undefined;
         rebase?: boolean;
     };
 

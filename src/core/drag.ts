@@ -27,6 +27,7 @@ export default class Drag {
     #slideOffsets: SlideOffsets[] = [];
     #slides: HTMLDivElement[] = [];
     #viewportCenter: number = 0;
+    #pointerId: number | null = null;
 
     constructor(config: Config, events: Events, status: CarouselStatus) {
         this.#config = config.current;
@@ -66,6 +67,7 @@ export default class Drag {
         window.addEventListener("pointerdown", this.#dragStart);
         window.addEventListener("pointermove", this.#dragMove);
         window.addEventListener("pointerup", this.#dragEnd);
+        window.addEventListener("pointercancel", this.#dragCancel);
 
         this.#events.on(EVENTS.PAGE_CHANGED, this.#updateProps);
         this.#events.on(EVENTS.STAGE_RESIZED, this.#onStageResized);
@@ -77,8 +79,12 @@ export default class Drag {
         window.removeEventListener("pointerdown", this.#dragStart);
         window.removeEventListener("pointermove", this.#dragMove);
         window.removeEventListener("pointerup", this.#dragEnd);
+        window.removeEventListener("pointercancel", this.#dragCancel);
 
         this.#events.off(EVENTS.PAGE_CHANGED, this.#updateProps);
+        this.#events.off(EVENTS.STAGE_RESIZED, this.#onStageResized);
+        this.#events.off(EVENTS.STAGE_CHANGED, this.#onStageChanged);
+        this.#events.off(EVENTS.SLIDE_SCROLL, this.#onSlideScroll);
     }
 
     #getInput = (e: PointerEvent) => this.#config.vertical ? e.clientY : e.clientX;
@@ -125,9 +131,10 @@ export default class Drag {
         this.#touchStartCords = this.#touchStartRawCords + -(this.#currentTranslate);
         this.#origPosition = this.#currentTranslate;
         this.#currentTouch = this.#currentTranslate;
-        this.#lastTouch = this.#currentTranslate;
         this.#stayOnThisSlide = false;
         this.#lastTouch = 0;
+        this.#pointerId = e.pointerId;
+
         this.#events.emit(EVENTS.DRAG_START);
     }
 
@@ -142,7 +149,7 @@ export default class Drag {
     }
 
     #dragMove = (e: PointerEvent) => {
-        if (!this.#isDragging) {
+        if (!this.#isDragging || e.pointerId !== this.#pointerId) {
             return;
         }
 
@@ -221,14 +228,27 @@ export default class Drag {
             this.#events.emit(EVENTS.PAGE_CHANGE_REQUEST, { index: targetIndex });
         }
 
-        this.#resetTransitionDuration();
-        this.#isDragging = false;
+        this.#finishDrag();
+    }
+
+    #dragCancel = (e: PointerEvent) => {
+        // make sure multi-touch won't interrupt the current drag
+        if (!this.#isDragging || e.pointerId !== this.#pointerId) {
+            return;
+        }
+
+        this.#revertDrag();
     }
 
     #revertDrag() {
         scrollToPos(this.#stageDom, this.#origPosition, this.#config.vertical);
+        this.#finishDrag();
+    }
+
+    #finishDrag() {
         this.#resetTransitionDuration();
         this.#isDragging = false;
+        this.#pointerId = null;
     }
 
     #resetTransitionDuration = () => this.#stageDom.style.transitionDuration = `${this.#config.slideChangeDuration}s`;
