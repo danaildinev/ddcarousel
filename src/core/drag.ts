@@ -64,7 +64,7 @@ export default class Drag {
 
         this.#updateProps(status);
 
-        window.addEventListener("pointerdown", this.#dragStart);
+        this.#stageDom.addEventListener("pointerdown", this.#dragStart);
         window.addEventListener("pointermove", this.#dragMove);
         window.addEventListener("pointerup", this.#dragEnd);
         window.addEventListener("pointercancel", this.#dragCancel);
@@ -76,7 +76,7 @@ export default class Drag {
     }
 
     #detachEvents() {
-        window.removeEventListener("pointerdown", this.#dragStart);
+        this.#stageDom.removeEventListener("pointerdown", this.#dragStart);
         window.removeEventListener("pointermove", this.#dragMove);
         window.removeEventListener("pointerup", this.#dragEnd);
         window.removeEventListener("pointercancel", this.#dragCancel);
@@ -96,13 +96,6 @@ export default class Drag {
     #dragStart = (e: PointerEvent) => {
         if (this.#stageDom === null)
             throw error("Drag start failed! Stage was not found!");
-
-        const target = e.target;
-
-        const isInvalidTarget = !(target instanceof Node) || !this.#stageDom.contains(target);
-        if (isInvalidTarget) {
-            return;
-        }
 
         if (e.pointerType === "touch" && !this.#config.touchDrag) {
             return;
@@ -134,6 +127,7 @@ export default class Drag {
         this.#stayOnThisSlide = false;
         this.#lastTouch = 0;
         this.#pointerId = e.pointerId;
+        this.#stageDom.setPointerCapture(e.pointerId);
 
         this.#events.emit(EVENTS.DRAG_START);
     }
@@ -212,20 +206,26 @@ export default class Drag {
             return;
         }
 
-        if (this.#config.dragSnapMode === DragSnapMode.Closest) {
-            const closestIndex = getClosestSlideIndexes(this.#slideOffsets, this.#viewportCenter, this.#currentTouch, ["center"]);
-            this.#events.emit(EVENTS.PAGE_CHANGE_REQUEST, { index: closestIndex.center });
-        } else {
-            const isLeftDirection = this.#currentTouch > this.#origPosition;
-            const targetIndex = isLeftDirection ? "prev" : "next";
+        switch (this.#config.dragSnapMode) {
+            case DragSnapMode.Closest: {
+                const closestIndex = getClosestSlideIndexes(this.#slideOffsets, this.#viewportCenter, this.#currentTouch, ["center"]);
+                this.#events.emit(EVENTS.PAGE_CHANGE_REQUEST, { index: closestIndex.center });
+                break;
+            }
 
-            // if out of bounds, scroll to original position
-            /*if (targetIndex < 0 || targetIndex >= this.#totalPages) {
-                this.#revertDrag();
-                return;
-            }*/
+            case DragSnapMode.Swipe: {
+                const isLeftDirection = this.#currentTouch > this.#origPosition;
+                const targetIndex = isLeftDirection ? "prev" : "next";
 
-            this.#events.emit(EVENTS.PAGE_CHANGE_REQUEST, { index: targetIndex });
+                // if out of bounds, scroll to original position
+                /*if (targetIndex < 0 || targetIndex >= this.#totalPages) {
+                    this.#revertDrag();
+                    return;
+                }*/
+
+                this.#events.emit(EVENTS.PAGE_CHANGE_REQUEST, { index: targetIndex });
+                break;
+            }
         }
 
         this.#finishDrag();
