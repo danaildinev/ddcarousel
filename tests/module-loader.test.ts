@@ -159,8 +159,8 @@ describe("ModuleLoader", () => {
     });
 
     it("destroys all module instances and clears the registry on reset", async () => {
-        const destroyNav = vi.spyOn(Nav.prototype, "destroy").mockImplementation(() => undefined);
-        const destroyPagination = vi.spyOn(Pagination.prototype, "destroy").mockImplementation(() => undefined);
+        const destroyNav = vi.spyOn(Nav.prototype, "destroyLifecycle").mockImplementation(() => undefined);
+        const destroyPagination = vi.spyOn(Pagination.prototype, "destroyLifecycle").mockImplementation(() => undefined);
         const loader = new ModuleLoader(createContext(createConfig({ nav: true, pagination: true })));
 
         await loader.loadAll();

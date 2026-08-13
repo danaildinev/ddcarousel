@@ -116,8 +116,8 @@ export default class ModuleLoader {
     };
 
     reset() {
-        for (const module of this.#instances.values()) {
-            module.destroy();
+        for (const module of this.#instances.keys()) {
+            this.unload(module)
         }
 
         this.#instances.clear();
