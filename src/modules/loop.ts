@@ -52,8 +52,23 @@ export default class Loop extends BaseModule {
         this.events.off(EVENTS.PAGE_CHANGE_INDEX, this.#onPageChangeIndex);
         this.events.off(EVENTS.PAGE_CHANGE_SCROLL_BEFORE, this.#onChangePageScrollBefore);
 
+        this.#restoreSlideOrder();
+
         this.#pendingDirection = null;
         this.#activeSlides = [];
+    }
+
+    #restoreSlideOrder() {
+        const slideKey = DATA.dataset.slide;
+
+        const slides = Array.from(this.#stage.children) as HTMLDivElement[];
+        slides.sort((a, b) => {
+            const aIndex = Number(a.dataset[slideKey]);
+            const bIndex = Number(b.dataset[slideKey]);
+            return aIndex - bIndex;
+        });
+
+        this.#stage.append(...slides);
     }
 
     #onPageChanged = (e: CarouselEvents[typeof EVENTS.PAGE_CHANGED]) => {
