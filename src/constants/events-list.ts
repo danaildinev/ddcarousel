@@ -39,7 +39,7 @@ export type CarouselOnEvents = {
     [K in keyof CarouselEvents as `on:${K & string}`]?: (payload: CarouselEvents[K]) => void;
 };
 
-export const LEGACY_EVENT_MAP = {
+export const LEGACY_EVENT_MAP: Record<string, string> = {
     onInitialize: EVENTS.INITIALIZE,
     onInitialized: EVENTS.INITIALIZED,
     onDrag: EVENTS.DRAG_START,
