@@ -45,7 +45,7 @@ export default class Pagination extends BaseModule {
         const pagination = document.createElement("div");
         pagination.classList.add(CSS_CLASSES.pagination);
 
-        for (let i = 0; i < status.pageSlides.length; i++) {
+        for (let i = 0; i < status.slidesByPage.length; i++) {
             let dot = document.createElement("span");
             dot.classList.add(CSS_CLASSES.dot);
             dot.dataset[DATA.dataset.slide] = i.toString();

@@ -63,7 +63,7 @@ export default class Drag {
         const status: CarouselEvents[typeof EVENTS.PAGE_CHANGED] = {
             currentTranslate: this.#status.currentTranslate,
             currentPage: this.#status.currentPage,
-            slidesActive: []
+            visibleSlides: []
         }
 
         this.#updateProps(status);

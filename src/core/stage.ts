@@ -24,11 +24,11 @@ export default class Stage {
 
     #originalSlides: string = "";
     #originalClasses: string = "";
-    slidesActive: number[] = [];
+    visibleSlides: number[] = [];
     currentTranslate: number = 0;
     currentPage: number = -1;
     totalPages: number = 0;
-    pageSlides: number[][] = [];
+    slidesByPage: number[][] = [];
 
     constructor(config: Config, events: Events) {
         this.#configClass = config;
@@ -160,7 +160,7 @@ export default class Stage {
         this.currentPage = 0;
         this.totalPages = 0;
         this.#slides = [];
-        this.slidesActive = [];
+        this.visibleSlides = [];
         this.currentTranslate = 0;
         this.#originalClasses = "";
         this.#originalSlides = "";
@@ -268,7 +268,7 @@ export default class Stage {
         }
 
         let pages;
-        const pageSlides = [];
+        const slidesByPage = [];
         const slidesLength = this.#slides.length;
         const slidesPerPage = this.#config.items;
 
@@ -283,7 +283,7 @@ export default class Stage {
                 for (let i = -half; i <= half; i++) {
                     currentVisibleSlides.push(page + i);
                 }
-                pageSlides.push(currentVisibleSlides);
+                slidesByPage.push(currentVisibleSlides);
             }
         }
         else if (this.#config.itemPerPage) {
@@ -296,7 +296,7 @@ export default class Stage {
                     slides.push(i + j);
                 }
 
-                pageSlides.push(slides);
+                slidesByPage.push(slides);
             }
         }
         else {
@@ -315,13 +315,13 @@ export default class Stage {
 
                 const end = Math.min(start + slidesPerPage, slideCount);
 
-                pageSlides.push(
+                slidesByPage.push(
                     Array.from({ length: end - start }, (_, i) => start + i)
                 );
             }
         }
 
-        this.pageSlides = pageSlides;
+        this.slidesByPage = slidesByPage;
         this.totalPages = pages;
     }
 
@@ -382,44 +382,46 @@ export default class Stage {
         return height;
     }
 
-    #setActiveSlides() {
-        if (this.slidesActive != null)
-            this.slidesActive.forEach(i => this.#container.querySelector(`[${DATA.attrs.slide}="${i}"]`)?.classList.remove("active"));
+    #setVisibleSlides() {
+        const previousVisibleSlides = this.visibleSlides;
 
-        this.slidesActive = [];
+        previousVisibleSlides.forEach(i => this.#container.querySelector(`[${DATA.attrs.slide}="${i}"]`)?.classList.remove("active"));
+
+        const visibleSlides: number[] = [];
         const config = this.#config,
             slideIndex = this.currentPage * (config.items > 0 ? config.items : 1),
             slidesLength = this.#slides.length;
 
         if (config.centerSlide) {
-            this.slidesActive.push(this.currentPage);
+            visibleSlides.push(this.currentPage);
         } else if (config.itemPerPage) {
             for (let i = this.currentPage; i < this.currentPage + config.items; i++) {
-                this.slidesActive.push(i);
+                visibleSlides.push(i);
             }
         } else {
             if (slideIndex + config.items > slidesLength) {
                 for (let i = slidesLength - config.items; i < slidesLength; i++) {
-                    this.slidesActive.push(i);
+                    visibleSlides.push(i);
                 }
             } else {
                 if (config.items == 0) {
-                    this.slidesActive.push(slideIndex);
+                    visibleSlides.push(slideIndex);
                 } else {
                     for (let i = slideIndex; i < slideIndex + config.items; i++) {
                         if (i < slidesLength) {
-                            this.slidesActive.push(i);
+                            visibleSlides.push(i);
                         }
                     }
                 }
             }
         }
 
-        this.slidesActive.forEach(i => this.#container.querySelector(`[${DATA.attrs.slide}="${i}"]`)?.classList.add("active"));
+        visibleSlides.forEach(i => this.#container.querySelector(`[${DATA.attrs.slide}="${i}"]`)?.classList.add("active"));
+        this.visibleSlides = visibleSlides;
     }
 
     #updateContainerHeight() {
-        const heights = this.#getVisibleSlides()
+        const heights = this.#getSlidesByPage()
             .map(i => this.#slidesHeights[i])
             .filter((height): height is number => height !== undefined);
 
@@ -431,8 +433,8 @@ export default class Stage {
         this.#container.style.height = `${maxHeight}px`;
     }
 
-    #getVisibleSlides(): number[] {
-        return this.pageSlides[this.currentPage] || [];
+    #getSlidesByPage(page: number | null = null): number[] {
+        return this.slidesByPage[page ?? this.currentPage] || [];
     }
 
     #onStageTransitionEnd = () => this.#events.emit(EVENTS.TRANSITION_END);
@@ -502,13 +504,13 @@ export default class Stage {
         this.currentPage = index;
 
         //update frontend
-        this.#setActiveSlides();
+        this.#setVisibleSlides();
 
         const scrollStatus = {
             currentPage: this.currentPage,
             slidesCount: this.getSlidesCount(),
             currentTranslate: this.currentTranslate,
-            activeSlides: this.slidesActive,
+            visibleSlides: this.visibleSlides,
             isForward: isForward
         };
 
@@ -529,7 +531,7 @@ export default class Stage {
             this.#events.emit(EVENTS.PAGE_CHANGED, {
                 currentPage: this.currentPage,
                 currentTranslate: this.currentTranslate,
-                slidesActive: this.slidesActive
+                visibleSlides: this.visibleSlides
             });
         }
     }

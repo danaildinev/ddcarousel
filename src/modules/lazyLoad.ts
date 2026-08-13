@@ -26,10 +26,10 @@ export default class LazyLoad extends BaseModule<LazyLoadConfig> {
         this.load();
     }
 
-    load(slidesActive?: number[]) {
+    load(visibleSlides?: number[]) {
         const status = this.getStatus();
 
-        const slides = [...(slidesActive ?? status.activeSlides ?? [])];
+        const slides = [...(visibleSlides ?? status.visibleSlides ?? [])];
         if (slides.length === 0) {
             return;
         }
@@ -67,7 +67,7 @@ export default class LazyLoad extends BaseModule<LazyLoadConfig> {
             return;
         }
 
-        this.load(e.slidesActive);
+        this.load(e.visibleSlides);
     }
 
     #enableImageSrc(slideImg: HTMLImageElement) {

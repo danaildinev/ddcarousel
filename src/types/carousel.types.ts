@@ -42,8 +42,8 @@ export type CarouselStatus = {
     totalPages: number;
     slides: HTMLDivElement[];
     totalSlides: number;
-    pageSlides: number[][];
-    activeSlides: number[];
+    slidesByPage: number[][];
+    visibleSlides: number[];
     config: CarouselStatusConfig;
     currentTranslate: number;
     modules: string[],

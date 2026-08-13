@@ -358,7 +358,7 @@ describe("Loop module", () => {
 
                 expect(order).toHaveLength(6);
                 expect(new Set(order).size).toBe(6);
-                expectSlidesContiguous(carousel.getStatus().activeSlides);
+                expectSlidesContiguous(carousel.getStatus().visibleSlides);
             }
         });
 
@@ -380,7 +380,7 @@ describe("Loop module", () => {
 
                 expect(order).toHaveLength(6);
                 expect(new Set(order).size).toBe(6);
-                expectSlidesContiguous(carousel.getStatus().activeSlides);
+                expectSlidesContiguous(carousel.getStatus().visibleSlides);
             }
         });
 

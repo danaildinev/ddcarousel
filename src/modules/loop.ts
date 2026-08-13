@@ -13,7 +13,7 @@ export default class Loop extends BaseModule {
     id: string = "loop";
 
     #stage: HTMLDivElement;
-    #activeSlides: number[] = [];
+    #visibleSlides: number[] = [];
 
     // Direction of the current prev/next request.
     // Needed by non-centered mode because after dom reordering, the target page may exist on the wrong side.
@@ -36,7 +36,7 @@ export default class Loop extends BaseModule {
         this.events.on(EVENTS.PAGE_CHANGE_SCROLL_BEFORE, this.#onChangePageScrollBefore);
 
         const status = this.getStatus();
-        this.#activeSlides = [...status.activeSlides];
+        this.#visibleSlides = [...status.visibleSlides];
 
         // Centered mode needs slides on both sides of the
         // centered slide immediately. Example (10 slides and items: 3):
@@ -55,7 +55,7 @@ export default class Loop extends BaseModule {
         this.#restoreSlideOrder();
 
         this.#pendingDirection = null;
-        this.#activeSlides = [];
+        this.#visibleSlides = [];
     }
 
     #restoreSlideOrder() {
@@ -74,7 +74,7 @@ export default class Loop extends BaseModule {
     #onPageChanged = (e: CarouselEvents[typeof EVENTS.PAGE_CHANGED]) => {
         // This array still represents the current page before scroll,
         // and PAGE_CHANGE_SCROLL_BEFORE later gives us the destination slides right before scroll.
-        this.#activeSlides = [...e.slidesActive];
+        this.#visibleSlides = [...e.visibleSlides];
     }
 
     // Loop only changes the requested page when prev/next is outside pages boundary.
@@ -109,8 +109,8 @@ export default class Loop extends BaseModule {
         if (this.config.centerSlide) {
             this.#pendingDirection = null;
 
-            const targetIndex = e.activeSlides[0];
-            const currentIndex = this.#activeSlides[0];
+            const targetIndex = e.visibleSlides[0];
+            const currentIndex = this.#visibleSlides[0];
             if (targetIndex === undefined || currentIndex === undefined) {
                 return;
             }
@@ -226,8 +226,8 @@ export default class Loop extends BaseModule {
     // before the current active page. We need to move them after the current page
     // before Stage starts its animated scroll.
     #reorderNonCenteredPage(e: CarouselEvents[typeof EVENTS.PAGE_CHANGE_SCROLL_BEFORE], direction: LoopDirection) {
-        const currentSlides = this.#getSlides(this.#activeSlides);
-        const targetSlides = this.#getSlides(e.activeSlides);
+        const currentSlides = this.#getSlides(this.#visibleSlides);
+        const targetSlides = this.#getSlides(e.visibleSlides);
         if (currentSlides.length === 0 || targetSlides.length === 0) {
             return;
         }

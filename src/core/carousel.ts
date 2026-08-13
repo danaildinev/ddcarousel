@@ -295,8 +295,8 @@ export default class Carousel {
             totalPages: this.#stage.totalPages,
             slides: this.#stage.getSlides(),
             totalSlides: this.#stage.getSlidesCount(),
-            pageSlides: this.#stage.pageSlides,
-            activeSlides: this.#stage.slidesActive,
+            slidesByPage: this.#stage.slidesByPage,
+            visibleSlides: this.#stage.visibleSlides,
             config: {
                 current: { ...this.#config.current }
             },

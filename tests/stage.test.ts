@@ -66,7 +66,7 @@ describe("Stage core", () => {
         const carousel = new Carousel(baseConfig({ pagination: false, startPage: 0 }));
 
         expect(carousel.getCurrentPage()).toBe(0);
-        expect(carousel.getStatus().activeSlides).toEqual([0]);
+        expect(carousel.getStatus().visibleSlides).toEqual([0]);
         expect(activeSlideIndexes()).toEqual([0]);
     });
 
@@ -76,7 +76,7 @@ describe("Stage core", () => {
         const carousel = new Carousel(baseConfig({ pagination: false, startPage: 99 }));
 
         expect(carousel.getCurrentPage()).toBe(0);
-        expect(carousel.getStatus().activeSlides).toEqual([0]);
+        expect(carousel.getStatus().visibleSlides).toEqual([0]);
     });
 
     it("builds grouped page slides with the final page shifted back to stay full", () => {
@@ -85,7 +85,7 @@ describe("Stage core", () => {
         const carousel = new Carousel(baseConfig({ pagination: false, items: 3 }));
 
         expect(carousel.getTotalPages()).toBe(2);
-        expect(carousel.getStatus().pageSlides).toEqual([
+        expect(carousel.getStatus().slidesByPage).toEqual([
             [0, 1, 2],
             [3, 4, 5],
             [4, 5, 6],
@@ -98,8 +98,8 @@ describe("Stage core", () => {
         const carousel = new Carousel(baseConfig({ pagination: false, items: 3 }));
 
         expect(carousel.getTotalPages()).toBe(0);
-        expect(carousel.getStatus().pageSlides).toEqual([[0, 1, 2]]);
-        expect(carousel.getStatus().activeSlides).toEqual([0, 1, 2]);
+        expect(carousel.getStatus().slidesByPage).toEqual([[0, 1, 2]]);
+        expect(carousel.getStatus().visibleSlides).toEqual([0, 1, 2]);
     });
 
     it("marks only visible slides as active after direct page changes", () => {
@@ -109,7 +109,7 @@ describe("Stage core", () => {
         carousel.changePage(2, false);
 
         expect(carousel.getCurrentPage()).toBe(2);
-        expect(carousel.getStatus().activeSlides).toEqual([3, 4]);
+        expect(carousel.getStatus().visibleSlides).toEqual([3, 4]);
         expect(activeSlideIndexes()).toEqual([3, 4]);
     });
 
@@ -133,13 +133,13 @@ describe("Stage core", () => {
         carousel.nextPage();
 
         expect(carousel.getCurrentPage()).toBe(1);
-        expect(carousel.getStatus().pageSlides).toEqual([
+        expect(carousel.getStatus().slidesByPage).toEqual([
             [0, 1],
             [1, 2],
             [2, 3],
             [3, 4],
         ]);
-        expect(carousel.getStatus().activeSlides).toEqual([1, 2]);
+        expect(carousel.getStatus().visibleSlides).toEqual([1, 2]);
     });
 
     it("uses a single active slide when centerSlide is enabled", () => {
@@ -148,7 +148,7 @@ describe("Stage core", () => {
         const carousel = new Carousel(baseConfig({ pagination: false, items: 3, centerSlide: true }));
         carousel.changePage(3, false);
 
-        expect(carousel.getStatus().activeSlides).toEqual([3]);
+        expect(carousel.getStatus().visibleSlides).toEqual([3]);
         expect(activeSlideIndexes()).toEqual([3]);
     });
 
@@ -158,7 +158,7 @@ describe("Stage core", () => {
         const carousel = new Carousel(baseConfig({ items: 3 }));
         carousel.changePage(1, false);
 
-        expect(carousel.getStatus().activeSlides).toEqual([2, 3, 4]);
+        expect(carousel.getStatus().visibleSlides).toEqual([2, 3, 4]);
     });
 
     it("sets horizontal item widths and stage width from the container width", () => {
@@ -246,7 +246,7 @@ describe("Stage core", () => {
         expect(onChanged).toHaveBeenCalledTimes(1);
         expect(onChanged).toHaveBeenCalledWith(expect.objectContaining({
             currentPage: 1,
-            slidesActive: [1],
+            visibleSlides: [1],
         }));
     });
 
@@ -385,7 +385,7 @@ describe("Stage core", () => {
         const carousel = new Carousel(baseConfig({ startPage: 2 }));
 
         expect(carousel.getCurrentPage()).toBe(2);
-        expect(carousel.getStatus().activeSlides).toEqual([2]);
+        expect(carousel.getStatus().visibleSlides).toEqual([2]);
     });
 
     it("calculates grouped pages by default", () => {
@@ -394,7 +394,7 @@ describe("Stage core", () => {
         const carousel = new Carousel(baseConfig({ items: 2 }));
 
         expect(carousel.getTotalPages()).toBe(2);
-        expect(carousel.getStatus().pageSlides).toEqual([[0, 1], [2, 3], [3, 4]]);
+        expect(carousel.getStatus().slidesByPage).toEqual([[0, 1], [2, 3], [3, 4]]);
     });
 
     it("calculates overlapping pages when itemPerPage is enabled", () => {
@@ -403,14 +403,14 @@ describe("Stage core", () => {
         const carousel = new Carousel(baseConfig({ items: 3, itemPerPage: true }));
 
         expect(carousel.getTotalPages()).toBe(2);
-        expect(carousel.getStatus().pageSlides).toEqual([
+        expect(carousel.getStatus().slidesByPage).toEqual([
             [0, 1, 2],
             [1, 2, 3],
             [2, 3, 4],
         ]);
 
         carousel.changePage(1, false);
-        expect(carousel.getStatus().activeSlides).toEqual([1, 2, 3]);
+        expect(carousel.getStatus().visibleSlides).toEqual([1, 2, 3]);
     });
 
     it("calculates centered page groups when centerSlide is enabled", () => {
@@ -419,14 +419,14 @@ describe("Stage core", () => {
         const carousel = new Carousel(baseConfig({ items: 3, centerSlide: true }));
 
         expect(carousel.getTotalPages()).toBe(4);
-        expect(carousel.getStatus().pageSlides).toEqual([
+        expect(carousel.getStatus().slidesByPage).toEqual([
             [-1, 0, 1],
             [0, 1, 2],
             [1, 2, 3],
             [2, 3, 4],
             [3, 4, 5],
         ]);
-        expect(carousel.getStatus().activeSlides).toEqual([0]);
+        expect(carousel.getStatus().visibleSlides).toEqual([0]);
     });
 
     it("activates one slide at a time when items is one", () => {
@@ -434,9 +434,9 @@ describe("Stage core", () => {
 
         const carousel = new Carousel(baseConfig({ items: 1 }));
 
-        expect(carousel.getStatus().activeSlides).toEqual([0]);
+        expect(carousel.getStatus().visibleSlides).toEqual([0]);
         carousel.changePage(2, false);
-        expect(carousel.getStatus().activeSlides).toEqual([2]);
+        expect(carousel.getStatus().visibleSlides).toEqual([2]);
     });
 
     it("activates the remaining slide on final page", () => {
@@ -445,7 +445,7 @@ describe("Stage core", () => {
         const carousel = new Carousel(baseConfig({ items: 4 }));
         carousel.changePage(1, false);
 
-        expect(carousel.getStatus().activeSlides).toEqual([1, 2, 3, 4]);
+        expect(carousel.getStatus().visibleSlides).toEqual([1, 2, 3, 4]);
     });
 
     it("activates final overlapping page in itemPerPage mode", () => {
@@ -457,7 +457,7 @@ describe("Stage core", () => {
         }));
         carousel.changePage(2, false);
 
-        expect(carousel.getStatus().activeSlides).toEqual([2, 3, 4]);
+        expect(carousel.getStatus().visibleSlides).toEqual([2, 3, 4]);
     });
 
     it("activates first slide only in center mode", () => {
@@ -468,7 +468,7 @@ describe("Stage core", () => {
             centerSlide: true
         }));
 
-        expect(carousel.getStatus().activeSlides).toEqual([0]);
+        expect(carousel.getStatus().visibleSlides).toEqual([0]);
     });
 
     it("activates last real slide in center mode", () => {
@@ -480,7 +480,7 @@ describe("Stage core", () => {
         }));
         carousel.changePage(4, false);
 
-        expect(carousel.getStatus().activeSlides).toEqual([4]);
+        expect(carousel.getStatus().visibleSlides).toEqual([4]);
     });
 
     it("clamps items to the slide count", () => {
@@ -490,7 +490,7 @@ describe("Stage core", () => {
 
         expect(carousel.getStatus().config.current?.items).toBe(2);
         expect(carousel.getTotalPages()).toBe(0);
-        expect(carousel.getStatus().pageSlides).toEqual([[0, 1]]);
+        expect(carousel.getStatus().slidesByPage).toEqual([[0, 1]]);
     });
 
     it("applies fullWidth and vertical classes from config", () => {
@@ -640,7 +640,7 @@ describe("Stage core", () => {
         vi.advanceTimersByTime(50);
 
         expect(carousel.getStatus().config.current?.items).toBe(1);
-        expect(carousel.getStatus().pageSlides).toEqual([[0], [1], [2], [3]]);
+        expect(carousel.getStatus().slidesByPage).toEqual([[0], [1], [2], [3]]);
 
         container()!.style.width = "900px";
         triggerResizeObservers();

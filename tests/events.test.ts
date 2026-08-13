@@ -102,7 +102,7 @@ describe("Carousel events", () => {
 
         expect(listener).toHaveBeenCalledWith(expect.objectContaining({
             currentPage: 1,
-            slidesActive: [1],
+            visibleSlides: [1],
         }));
     });
 

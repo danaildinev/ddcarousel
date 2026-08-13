@@ -6,7 +6,7 @@ type PageChangeScrollPayload = PriorityPayload & {
     currentPage: number;
     slidesCount: number;
     currentTranslate: number;
-    activeSlides: number[];
+    visibleSlides: number[];
     isForward: boolean;
 };
 
@@ -32,7 +32,7 @@ export type CarouselEvents = {
     [EVENTS.PAGE_CHANGED]: {
         currentPage: number;
         currentTranslate: number;
-        slidesActive: number[];
+        visibleSlides: number[];
     };
 
     [EVENTS.PAGE_CHANGE_SCROLL_BEFORE]: PageChangeScrollPayload;

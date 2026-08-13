@@ -73,8 +73,8 @@ describe("Carousel core", () => {
         expect(status.currentPage).toBe(0);
         expect(status.totalPages).toBe(2);
         expect(status.totalSlides).toBe(3);
-        expect(status.pageSlides).toEqual([[0], [1], [2]]);
-        expect(status.activeSlides).toEqual([0]);
+        expect(status.slidesByPage).toEqual([[0], [1], [2]]);
+        expect(status.visibleSlides).toEqual([0]);
     });
 
     it('should initialize manually using default config', async () => {
@@ -91,8 +91,8 @@ describe("Carousel core", () => {
         expect(status.currentPage).toBe(0);
         expect(status.totalPages).toBe(2);
         expect(status.totalSlides).toBe(3);
-        expect(status.pageSlides).toEqual([[0], [1], [2]]);
-        expect(status.activeSlides).toEqual([0]);
+        expect(status.slidesByPage).toEqual([[0], [1], [2]]);
+        expect(status.visibleSlides).toEqual([0]);
     });
 
     it('should reject the ready promise if container is missing', async () => {
@@ -116,8 +116,8 @@ describe("Carousel core", () => {
         expect(status.currentPage).toBe(0);
         expect(status.totalPages).toBe(1);
         expect(status.totalSlides).toBe(4);
-        expect(status.pageSlides).toEqual([[0, 1], [2, 3]]);
-        expect(status.activeSlides).toEqual([0, 1]);
+        expect(status.slidesByPage).toEqual([[0, 1], [2, 3]]);
+        expect(status.visibleSlides).toEqual([0, 1]);
     });
 
     it("moves next, previous, and direct page requests within bounds", () => {
@@ -129,11 +129,11 @@ describe("Carousel core", () => {
 
         carousel.nextPage();
         expect(carousel.getCurrentPage()).toBe(1);
-        expect(carousel.getStatus().activeSlides).toEqual([2, 3]);
+        expect(carousel.getStatus().visibleSlides).toEqual([2, 3]);
 
         carousel.changePage(2, false);
         expect(carousel.getCurrentPage()).toBe(2);
-        expect(carousel.getStatus().activeSlides).toEqual([3, 4]);
+        expect(carousel.getStatus().visibleSlides).toEqual([3, 4]);
         expect(stage()?.style.transitionDuration).toBe("0.5s");
 
         carousel.nextPage();
@@ -358,7 +358,7 @@ describe("Carousel core", () => {
         expect(status.totalPages).toBe(12);
         expect(status.slides).toHaveLength(13);
         expect(status.totalSlides).toBe(13);
-        expect(status.pageSlides).toEqual([
+        expect(status.slidesByPage).toEqual([
             [0],
             [1],
             [2],
@@ -373,7 +373,7 @@ describe("Carousel core", () => {
             [11],
             [12],
         ]);
-        expect(status.activeSlides).toEqual([0]);
+        expect(status.visibleSlides).toEqual([0]);
         expect(status.currentTranslate).toBe(0);
         expect(status.modules).toEqual([
             "pagination",
