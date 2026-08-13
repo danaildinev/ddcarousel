@@ -3,25 +3,26 @@ import { DATA } from "../constants/data-attrs";
 import { EVENTS } from "../constants/events-list";
 import { PRIORITY } from "../constants/priorities";
 import { BaseModule } from "../core/base-module";
-import type { CarouselConfig } from "../types/carousel.types";
 import type { CarouselEvents } from "../types/event.types";
 import type { ModuleContext } from "../types/module.params";
 import { error } from "../utils/error-handler";
-import type { ClosestSlideDirection } from "../utils/slide";
+
+type LoopDirection = "prev" | "next";
 
 export default class Loop extends BaseModule {
     id: string = "loop";
-    configOverride?: Partial<CarouselConfig> = {
-        centerSlide: true
-    }
 
     #stage: HTMLDivElement;
     #activeSlides: number[] = [];
 
+    // Direction of the current prev/next request.
+    // Needed by non-centered mode because after dom reordering, the target page may exist on the wrong side.
+    #pendingDirection: LoopDirection | null = null;
+
     constructor(params: ModuleContext) {
         super(params);
 
-        const stage = document.querySelector<HTMLDivElement>(`${this.config.container} .${CSS_CLASSES.stage}`);
+        const stage = this.container.querySelector<HTMLDivElement>(`.${CSS_CLASSES.stage}`);
         if (stage === null) {
             throw error("Loop module won't initialize! Stage was not found!");
         }
@@ -32,302 +33,293 @@ export default class Loop extends BaseModule {
         this.events.on(EVENTS.DRAG_DRAGGING, this.#onDragging)
         this.events.on(EVENTS.PAGE_CHANGED, this.#onPageChanged)
         this.events.on(EVENTS.PAGE_CHANGE_INDEX, this.#onPageChangeIndex)
-        //this.events.on(EVENTS.PAGE_CHANGE_SCROLL_BEFORE, this.#onChangePageScrollBefore);
+        this.events.on(EVENTS.PAGE_CHANGE_SCROLL_BEFORE, this.#onChangePageScrollBefore);
 
-        this.#activeSlides = this.getStatus().activeSlides;
+        const status = this.getStatus();
+        this.#activeSlides = [...status.activeSlides];
 
-        // disable this - may not be needed
-        /*const prevNextSlides = this.#calculatePrevAndNextSlides(this.#activeSlides),
-            prev = prevNextSlides?.prev,
-            next = prevNextSlides?.next;
-
-        if (prev !== undefined && next !== undefined)
-            this.#markPrevAndNextSlides(prev, next);*/
-
-        // this.#reorderForLoop();
-        this.#initialReorder();
+        // Centered mode needs slides on both sides of the
+        // centered slide immediately. Example (10 slides and items: 3):
+        // "9 | 0 | 1" instead of "[empty slide] | 0 | 1"
+        if (this.config.centerSlide) {
+            this.#prepareCenteredSlides(status.currentPage, status.currentPage, status.currentTranslate);
+        }
     }
 
     destroy() {
-        this.#clearSlidesForLoop();
-
         this.events.off(EVENTS.DRAG_DRAGGING, this.#onDragging)
         this.events.off(EVENTS.PAGE_CHANGED, this.#onPageChanged)
         this.events.off(EVENTS.PAGE_CHANGE_INDEX, this.#onPageChangeIndex);
-        //this.events.off(EVENTS.PAGE_CHANGE_SCROLL_BEFORE, this.#onChangePageScrollBefore);
+        this.events.off(EVENTS.PAGE_CHANGE_SCROLL_BEFORE, this.#onChangePageScrollBefore);
+
+        this.#pendingDirection = null;
+        this.#activeSlides = [];
     }
 
     #onPageChanged = (e: CarouselEvents[typeof EVENTS.PAGE_CHANGED]) => {
-        this.#activeSlides = e.slidesActive;
+        // This array still represents the current page before scroll,
+        // and PAGE_CHANGE_SCROLL_BEFORE later gives us the destination slides right before scroll.
+        this.#activeSlides = [...e.slidesActive];
     }
 
+    // Loop only changes the requested page when prev/next is outside pages boundary.
+    // Normal prev/next requests are left untouched, but their direction is saved in variable
+    // because DOM reordering may still be necessary.
     #onPageChangeIndex = (e: CarouselEvents[typeof EVENTS.PAGE_CHANGE_INDEX]) => {
-        let priority = PRIORITY.BEHAVIOR;
+        if (e.request === "prev" || e.request === "next") {
+            this.#pendingDirection = e.request;
+        }
+        else {
+            this.#pendingDirection = null;
+        }
 
-        const canOverride = this.tryOverridePriority(e, priority);
-        if (!canOverride) {
+        const isPrevWrap = e.request === "prev" && e.currentPage === 0;
+        const isNextWrap = e.request === "next" && e.currentPage === e.totalPages;
+        if (!isPrevWrap && !isNextWrap) {
             return;
         }
 
-        if (e.request === "prev" && e.currentPage === 0)
-            e.page = e.totalPages;
-        else if (e.request === "next" && e.currentPage === e.totalPages)
-            e.page = 0;
-        else
-            e.handled = false;
-    }
-
-    #calculatePrevAndNextSlides(activeSlides: number[]) {
-        const totalSlides = this.getStatus().totalSlides - 1,
-            firstCurrentIndex = activeSlides[0],
-            lastCurrentIndex = activeSlides[activeSlides.length - 1];
-
-        if (firstCurrentIndex === undefined || lastCurrentIndex === undefined) {
+        if (!this.tryOverridePriority(e, PRIORITY.BEHAVIOR)) {
+            this.#pendingDirection = null;
             return;
         }
 
-        const prev = firstCurrentIndex - 1 < 0 ? totalSlides : firstCurrentIndex - 1,
-            next = lastCurrentIndex + 1 > totalSlides ? 0 : lastCurrentIndex + 1;
-
-        return { prev, next };
-    }
-
-    #markPrevAndNextSlides(prev: number, next: number) {
-        this.#clearSlidesForLoop();
-        this.#getSlideDom(prev)?.classList.add(CSS_CLASSES.slidePrev);
-        this.#getSlideDom(next)?.classList.add(CSS_CLASSES.slideNext);
+        e.page = isPrevWrap ? e.totalPages : 0;
     }
 
     #onChangePageScrollBefore = (e: CarouselEvents[typeof EVENTS.PAGE_CHANGE_SCROLL_BEFORE]) => {
-        if (!this.#stage) {
+        // We need different reordering logic for centered mode.
+        // Because in this mode the active slide is the centered one, the loop must construct the surrounding slides.
+        // Examples: (items: 3 and last slide) -> 8 | 9 | 0; (items: 5) -> 7 | 8 | 9 | 0 | 1
+        if (this.config.centerSlide) {
+            this.#pendingDirection = null;
+
+            const targetIndex = e.activeSlides[0];
+            const currentIndex = this.#activeSlides[0];
+            if (targetIndex === undefined || currentIndex === undefined) {
+                return;
+            }
+
+            this.#prepareCenteredSlides(targetIndex, currentIndex, e.currentTranslate);
             return;
         }
 
-        this.#activeSlides = e.activeSlides;
-
-        const prevNextSlides = this.#calculatePrevAndNextSlides(this.#activeSlides),
-            prev = prevNextSlides?.prev,
-            next = prevNextSlides?.next;
-
-        if (prev === undefined || next === undefined) {
+        // Non-centered mode logic
+        const direction = this.#pendingDirection;
+        this.#pendingDirection = null;
+        if (direction === null) {
             return;
         }
 
-        const
-            currentTranslate = e.currentTranslate,
-            allSlides = this.#stage.children,
-            lastCurrentIndex = this.#activeSlides[this.#activeSlides.length - 1],
-            firstSlide = allSlides[0] as HTMLDivElement,
-            lastSlide = allSlides[allSlides.length - 1] as HTMLDivElement,
-            lastSlideId = Number(lastSlide.dataset[DATA.dataset.slide]),
-            isSlidingForward = e.isForward,
-            isAtEnd = lastCurrentIndex === lastSlideId,
-            isAtStartBoundary = lastSlide.classList.contains("active"),
-            hasReachedEndBound = firstSlide.classList.contains(CSS_CLASSES.slideNext);
-
-        if (isAtEnd && isSlidingForward) {
-            // if the current slide/s is the last - always keep it at the end
-            this.#handleLastSlide(lastCurrentIndex, lastSlide);
-        }
-        else if (hasReachedEndBound && isSlidingForward) {
-            // if scrolling right - shift slides backwards when all active slides reached the end
-            this.#shiftAndReorderEnd(currentTranslate, lastSlide);
-        }
-        else if (isAtStartBoundary && !isSlidingForward) {
-            // if scrolling left - opposite to the above logic
-            this.#handleStartBoundaryShift(currentTranslate, firstSlide, lastSlide);
-        }
-
-        this.#markPrevAndNextSlides(prev, next);
+        this.#reorderNonCenteredPage(e, direction);
     }
 
-    #handleLastSlide(index: number, anchor: HTMLDivElement) {
-        const currentSlide = this.#getSlideDom(index);
-        if (currentSlide) {
-            anchor.after(currentSlide);
+    // Drag looping is based entirely on physical DOM boundaries.
+    // When empty space starts appearing before the first DOM slide: last -> first
+    // ... or after the last DOM slide: first -> last
+    // Translation is rebased by exactly the amount the DOM moved, making the reorder smooth and invisible.
+    #onDragging = (e: CarouselEvents[typeof EVENTS.DRAG_DRAGGING]) => {
+        const first = this.#stage.firstElementChild as HTMLDivElement | null;
+        const last = this.#stage.lastElementChild as HTMLDivElement | null;
+        const viewport = this.#stage.parentElement;
+
+        if (!first || !last || !viewport) {
+            return;
+        }
+
+        const viewportRect = viewport.getBoundingClientRect();
+        const firstRect = first.getBoundingClientRect();
+        const lastRect = last.getBoundingClientRect();
+        const vertical = this.config.vertical;
+        const viewportStart = vertical ? viewportRect.top : viewportRect.left;
+        const viewportEnd = vertical ? viewportRect.bottom : viewportRect.right;
+        const firstStart = vertical ? firstRect.top : firstRect.left;
+        const lastEnd = vertical ? lastRect.bottom : lastRect.right;
+
+        // еmpty space before the first physical slide - move the last slide to the beginning
+        if (firstStart > viewportStart) {
+            this.#rebaseDrag(e, first, () => first.before(last));
+        } else if (lastEnd < viewportEnd) {
+            // еmpty space after the last physical slide - move the first slide to the end
+            this.#rebaseDrag(e, last, () => last.after(first));
         }
     }
 
-    #shiftAndReorderEnd(currentTranslate: number, anchor: HTMLElement) {
-        this.#shiftStage(currentTranslate, anchor, this.#activeSlides.length);
+    // Same compensation principle as page reordering, except Drag
+    // owns currentTranslate directly through its mutable event payload.
+    #rebaseDrag(e: CarouselEvents[typeof EVENTS.DRAG_DRAGGING], anchor: HTMLElement, reorder: () => void) {
+        const shift = this.#measureReorder(anchor, reorder);
+        if (shift === 0) {
+            return;
+        }
 
-        // reorder DOM - keep current slides in the end (after the last DOM item)
-        const slidesToMove = this.container.querySelectorAll<HTMLDivElement>(`.${CSS_CLASSES.item}.active`);
-        Array.from(slidesToMove)
-            .sort((a, b) => Number(b.dataset[DATA.dataset.slide]) - Number(a.dataset[DATA.dataset.slide]))
-            .forEach(el => anchor.after(el));
+        e.currentTranslate -= shift;
+        e.rebase = true;
     }
 
-    #shiftStage(currentTranslate: number, baseSlideWidth: HTMLElement, length: number, forward: boolean = true) {
-        let scrollAmount = (baseSlideWidth.getBoundingClientRect().width * length);
+    // Makes sure a centered target has slides arount it.
+    // Example (10 slides and items: 3):
+    // page 0 -> 9 0 1
+    // page 1 -> 0 1 2
+    // page 9 -> 8 9 0
+    #prepareCenteredSlides(targetIndex: number, currentIndex: number, currentTranslate: number) {
+        const totalSlides = this.getStatus().totalSlides;
+        if (totalSlides <= 1) {
+            return;
+        }
+
+        const beforeCount = Math.floor(this.config.items / 2);
+        const afterCount = this.config.items - beforeCount - 1;
+        const indexes: number[] = [];
+
+        for (let offset = -beforeCount; offset <= afterCount; offset++) {
+            indexes.push(this.#normalizeIndex(targetIndex + offset, totalSlides));
+        }
+
+        const slides = this.#getSlides(indexes);
+        if (slides.length !== indexes.length) {
+            return;
+        }
+
+        // Avoid unnecessary DOM reordering when the desired centered
+        // window already exists in the correct physical order.
+        if (this.#checkSlidesCorrectOrder(slides)) {
+            return;
+        }
+
+        const target = this.#getSlideDom(targetIndex);
+        const current = this.#getSlideDom(currentIndex);
+        if (!target || !current) {
+            return;
+        }
+
+        const beforeSlides = slides.slice(0, beforeCount);
+        const afterSlides = slides.slice(beforeCount + 1);
+
+        // Keep the current centered slide visually stationary while
+        // rebuilding the target's surrounding slides.
+        const reorder = () => {
+            target.before(...beforeSlides);
+            target.after(...afterSlides);
+        };
+        this.#reorderSlides(current, currentTranslate, reorder);
+    }
+
+    // Reorder a non-centered destination page.
+    // Example DOM: 3 4 5 | 0 1 2 (current page is 0 -> 0 1 2)
+    // Calling next() from page 0 wants 3 4 5 but they are currently
+    // before the current active page. We need to move them after the current page
+    // before Stage starts its animated scroll.
+    #reorderNonCenteredPage(e: CarouselEvents[typeof EVENTS.PAGE_CHANGE_SCROLL_BEFORE], direction: LoopDirection) {
+        const currentSlides = this.#getSlides(this.#activeSlides);
+        const targetSlides = this.#getSlides(e.activeSlides);
+        if (currentSlides.length === 0 || targetSlides.length === 0) {
+            return;
+        }
+
+        const targetSet = new Set(targetSlides);
+
+        // When changing the page, slides may overlap. Example with itemPerPage:
+        // Current page: 3 4 5 -> Next page: 4 5 6 (slides 4 and 5 are on both pages)
+        // We need an anchor that belongs ONLY to the current page, 
+        // otherwise the anchor itself would be moved during reordering.
+        const currentOnly = currentSlides.filter(slide => !targetSet.has(slide));
+        if (currentOnly.length === 0) {
+            return;
+        }
+
+        const anchor = direction === "next" ? currentOnly.at(-1) : currentOnly[0];
+        if (!anchor) {
+            return;
+        }
+
+        // avoid unnecessary DOM reordering and stage updates
+        if (this.#isPagePositioned(anchor, targetSlides, direction)) {
+            return;
+        }
+
+        // Move the whole destination page as one ordered block.
+        // Do not move individual missing slides only. Doing that can
+        // split an active page across the DOM (bad -> 6 ... 4 5, good -> 4 5 6)
+        const reorder = () => {
+            if (direction === "next") {
+                anchor.after(...targetSlides);
+            } else {
+                anchor.before(...targetSlides);
+            }
+        };
+        this.#reorderSlides(anchor, e.currentTranslate, reorder);
+    }
+
+    // Reorder the DOM and modify stage translate by exactly the amount the anchor has moved
+    #reorderSlides(anchor: HTMLElement, currentTranslate: number, reorder: () => void) {
+        const shift = this.#measureReorder(anchor, reorder);
+        if (shift === 0) {
+            return;
+        }
 
         this.events.emit(EVENTS.SLIDE_SCROLL, {
-            specifiedPosition: currentTranslate - (forward ? -scrollAmount : scrollAmount),
+            specifiedPosition: currentTranslate - shift,
             animate: false,
-        })
+        });
     }
 
-    #handleStartBoundaryShift(currentTranslate: number, firstDom: HTMLDivElement, lastDom: HTMLDivElement) {
-        const nextSlide = this.#stage.children[this.config.items],
-            isNextInvalid = !nextSlide?.classList.contains(CSS_CLASSES.slideNext);
+    // how much an anchor moved after a DOM mutation
+    #measureReorder(anchor: HTMLElement, reorder: () => void): number {
+        const before = this.#getSlidePosition(anchor);
+        reorder();
+        return this.#getSlidePosition(anchor) - before;
+    }
 
-        if (isNextInvalid) {
-            return;
+    // Check if slides already appear next to each other in exactly the requested order.
+    #checkSlidesCorrectOrder(slides: HTMLDivElement[]): boolean {
+        const first = slides[0];
+        if (!first) {
+            return false;
         }
 
-        this.#shiftStage(currentTranslate, lastDom, this.#activeSlides.length, false);
+        let current: Element | null = first;
+        for (const slide of slides) {
+            if (current !== slide) {
+                return false;
+            }
+            current = current.nextElementSibling;
+        }
 
-        // active slides must be at beginning
-        const slidesToMove = this.container.querySelectorAll<HTMLDivElement>(`.${CSS_CLASSES.item}.active`)
-        slidesToMove.forEach(el => firstDom.before(el));
+        return true;
+    }
+
+    #isPagePositioned(anchor: HTMLDivElement, slides: HTMLDivElement[], direction: LoopDirection): boolean {
+        const stageSlides = Array.from(this.#stage.children);
+        const anchorIndex = stageSlides.indexOf(anchor);
+        if (anchorIndex === -1) {
+            return false;
+        }
+
+        const startIndex = direction === "next" ? anchorIndex + 1 : anchorIndex - slides.length;
+        return slides.every((slide, index) => stageSlides[startIndex + index] === slide);
+    }
+
+    // Normalize slide indexes based on the total slides.
+    // Examples for 10 slides:
+    // -1 -> 9
+    // 10 -> 0
+    // 11 -> 1
+    #normalizeIndex(index: number, totalSlides: number): number {
+        return ((index % totalSlides) + totalSlides) % totalSlides;
+    }
+
+    #getSlidePosition(slide: HTMLElement): number {
+        const rect = slide.getBoundingClientRect();
+        return this.config.vertical ? rect.top : rect.left;
+    }
+
+    // Resolves several logical slide indexes to their DOM elements.
+    #getSlides(indexes: number[]): HTMLDivElement[] {
+        return indexes.map(index => this.#getSlideDom(index))
+            .filter((slide): slide is HTMLDivElement => slide !== null);
     }
 
     #getSlideDom = (index: number): HTMLDivElement | null =>
         this.container.querySelector<HTMLDivElement>(`[${DATA.attrs.slide}='${index}']`);
-
-    #clearSlidesForLoop() {
-        this.container.querySelectorAll<HTMLDivElement>(`.${CSS_CLASSES.slidePrev}, .${CSS_CLASSES.slideNext}`)
-            .forEach(e => e.classList.remove(CSS_CLASSES.slidePrev, CSS_CLASSES.slideNext));
-    }
-
-    #onDragging = (e: CarouselEvents[typeof EVENTS.DRAG_DRAGGING]) => {
-        const left = e.slideIndexLeft;
-        const right = e.slideIndexRight;
-
-        if (left == null || right == null) {
-            return;
-        }
-
-        const slides = Array.from(this.#stage.children);
-        const first = slides.at(0);
-        const last = slides.at(-1);
-
-        if (!first || !last) {
-            return;
-        }
-
-        if (left === -1) {
-            first.before(last);
-            e.currentTranslate -= last.getBoundingClientRect().width;
-            e.rebase = true;
-        } else if (right === -1) {
-            last.after(first);
-            e.currentTranslate += first.getBoundingClientRect().width;
-            e.rebase = true;
-        }
-    }
-
-    #initialReorder() {
-        if (!this.config.centerSlide) {
-            return;
-        }
-
-        const itemsToAdd = Math.floor(this.config.items / 2);
-        const status = this.getStatus();
-        const currentPage = status.currentPage;
-        const totalPages = status.totalPages;
-        const currentTranslate = status.currentTranslate;
-
-        let direction: "left" | "right" | undefined;
-        if (currentPage === 0) {
-            if (this.config.items === 1) {
-                return;
-            }
-            direction = "left";
-        } else if (currentPage + itemsToAdd > totalPages) {
-            direction = "right";
-        }
-
-        if (direction) {
-            this.#appendSlides(direction, currentTranslate, currentPage, totalPages, itemsToAdd);
-        }
-    }
-
-    #appendSlides(direction: ClosestSlideDirection, currentTranslate: number, currentPage: number, totalPages: number, itemsCount?: number) {
-        const itemsToAdd = itemsCount ?? Math.floor(this.config.items / 2);
-        const slides = Array.from(this.#stage.children);
-        let modifiedTranslate = currentTranslate;
-
-        if (direction === "left") {
-            const first = slides.at(0);
-            const last = slides.slice(-itemsToAdd);
-
-            if (!first || !last) {
-                return;
-            }
-
-            first.before(...last);
-            modifiedTranslate = 0;
-        }
-        else if (direction === "right") {
-            let slidesToAppend = (currentPage + itemsToAdd) - totalPages;
-            if (slidesToAppend === 0)
-                slidesToAppend = this.config.items;
-
-            const first = slides.slice(0, slidesToAppend);
-            const last = slides.at(-1);
-
-            if (!first || !last) {
-                return;
-            }
-
-            first.forEach(el => modifiedTranslate += el.getBoundingClientRect().width);
-            last.after(...first);
-        }
-
-        if (currentTranslate != modifiedTranslate) {
-            this.events.emit(EVENTS.SLIDE_SCROLL, {
-                specifiedPosition: modifiedTranslate,
-                animate: false,
-            });
-        }
-    }
-
-    #reorderForLoop(emit: boolean = true): number {
-        const status = this.getStatus();
-        let stageTranslate = status.currentTranslate;
-
-        const
-            stageChilden = this.#stage.children,
-            arrayChildren = Array.from(stageChilden),
-            cloneSlidesCount = this.config.items,
-            firstSlides = arrayChildren.slice(0, cloneSlidesCount) as HTMLDivElement[],
-            firstSlide = firstSlides[0] as HTMLDivElement,
-            lastSlides = arrayChildren.slice(stageChilden.length - cloneSlidesCount, stageChilden.length) as HTMLDivElement[],
-            lastSlide = lastSlides[lastSlides.length - 1] as HTMLDivElement;
-
-        if (firstSlide === undefined || lastSlide === undefined) {
-            return stageTranslate;
-        }
-
-        const activeSet = new Set(this.#activeSlides);
-        let isNearStart, isNearEnd;
-
-        const getSlideId = (el: HTMLDivElement) => Number(el.dataset[DATA.dataset.slide]);
-        if (this.config.centerSlide) {
-            isNearStart = firstSlides.some(s => activeSet.has(getSlideId(s)));
-            isNearEnd = lastSlides.some(s => activeSet.has(getSlideId(s)));
-        } else {
-            isNearStart = firstSlides.every(s => activeSet.has(getSlideId(s)));
-            isNearEnd = lastSlides.every(s => activeSet.has(getSlideId(s)));
-        }
-
-        if (isNearStart) {
-            lastSlides.forEach(slide => stageTranslate -= slide.getBoundingClientRect().width);
-            firstSlide.before(...lastSlides);
-        } else if (isNearEnd) {
-            firstSlides.forEach(slide => stageTranslate += slide.getBoundingClientRect().width);
-            lastSlide.after(...firstSlides);
-        }
-
-        if (emit) {
-            this.events.emit(EVENTS.SLIDE_SCROLL, {
-                specifiedPosition: stageTranslate,
-                animate: false,
-            });
-        }
-
-        return stageTranslate;
-    }
-
 }

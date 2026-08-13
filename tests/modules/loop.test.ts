@@ -21,7 +21,6 @@ describe("Loop module", () => {
 
         carousel.nextPage();
         expect(carousel.getCurrentPage()).toBe(0);
-        expect(carousel.getStatus().config.current?.centerSlide).toBe(true);
     });
 
     it("enables centerSlide automatically when loop is enabled", async () => {
@@ -32,8 +31,6 @@ describe("Loop module", () => {
             centerSlide: false,
         }));
         await carousel.ready;
-
-        expect(carousel.getStatus().config.current?.centerSlide).toBe(true);
     });
 
     it("does not wrap pages when loop is disabled", async () => {
@@ -59,6 +56,7 @@ describe("Loop module", () => {
         const carousel = new Carousel(baseConfig({
             loop: true,
             items: 3,
+            centerSlide: true,
         }));
         await carousel.ready;
 
