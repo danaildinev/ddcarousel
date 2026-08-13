@@ -387,4 +387,18 @@ describe("Config", () => {
             expect((slide as HTMLElement).style.marginRight).toBe("15px");
         }
     });
+
+    it("falls back to the default items value when items is 0", async () => {
+        renderCarousel(5);
+
+        const carousel = new Carousel(baseConfig({
+            items: 0,
+            itemPerPage: true,
+        }));
+        await carousel.ready;
+
+        const status = carousel.getStatus();
+        expect(status.config.current!.items).toBe(1);
+        expect(status.config.current!.itemPerPage).toBe(false);
+    });
 });

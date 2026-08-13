@@ -89,8 +89,9 @@ export class Config {
             Object.assign(next, override);
         }
 
-        if (next.items === 0) {
+        if (next.items < 1) {
             next.itemPerPage = false;
+            next.items = this.default.items;
         }
 
         if (next.dragSnapMode === DragSnapMode.Closest) {
