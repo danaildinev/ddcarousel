@@ -15,4 +15,5 @@ export const CSS_CLASSES = {
     disabled: "disabled",
     slidePrev: "slide-prev",
     slideNext: "slide-next",
+    slideVisible: "slide-visible"
 } as const;

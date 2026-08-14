@@ -8,8 +8,8 @@ import { CarouselConfig, DragSnapMode } from "../src/types/carousel.types";
 
 const innerContainer = () => document.querySelector<HTMLElement>(`.${CSS_CLASSES.container}`);
 const sourceSlideClasses = () => items().map(item => item.firstElementChild?.className);
-const activeSlideIndexes = () => items()
-    .filter(item => item.classList.contains("active"))
+const visibleSlideIndexes = () => items()
+    .filter(item => item.classList.contains(CSS_CLASSES.slideVisible))
     .map(item => Number(item.dataset.slide));
 
 afterEach(() => {
@@ -67,7 +67,7 @@ describe("Stage core", () => {
 
         expect(carousel.getCurrentPage()).toBe(0);
         expect(carousel.getStatus().visibleSlides).toEqual([0]);
-        expect(activeSlideIndexes()).toEqual([0]);
+        expect(visibleSlideIndexes()).toEqual([0]);
     });
 
     it("ignores a startPage beyond the last available page", () => {
@@ -110,20 +110,20 @@ describe("Stage core", () => {
 
         expect(carousel.getCurrentPage()).toBe(2);
         expect(carousel.getStatus().visibleSlides).toEqual([3, 4]);
-        expect(activeSlideIndexes()).toEqual([3, 4]);
+        expect(visibleSlideIndexes()).toEqual([3, 4]);
     });
 
-    it("replaces active slide classes when moving between pages", () => {
+    it("replaces visible slide classes when moving between pages", () => {
         renderCarousel(4);
 
         const carousel = new Carousel(baseConfig({ pagination: false, items: 2 }));
-        expect(activeSlideIndexes()).toEqual([0, 1]);
+        expect(visibleSlideIndexes()).toEqual([0, 1]);
 
         carousel.changePage(1, false);
-        expect(activeSlideIndexes()).toEqual([2, 3]);
+        expect(visibleSlideIndexes()).toEqual([2, 3]);
 
         carousel.changePage(0, false);
-        expect(activeSlideIndexes()).toEqual([0, 1]);
+        expect(visibleSlideIndexes()).toEqual([0, 1]);
     });
 
     it("moves by one slide per page when itemPerPage is enabled", () => {
@@ -149,7 +149,7 @@ describe("Stage core", () => {
         carousel.changePage(3, false);
 
         expect(carousel.getStatus().visibleSlides).toEqual([3]);
-        expect(activeSlideIndexes()).toEqual([3]);
+        expect(visibleSlideIndexes()).toEqual([3]);
     });
 
     it("activates last full group when final page is incomplete", () => {

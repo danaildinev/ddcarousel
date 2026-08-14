@@ -385,7 +385,7 @@ export default class Stage {
     #setVisibleSlides() {
         const previousVisibleSlides = this.visibleSlides;
 
-        previousVisibleSlides.forEach(i => this.#container.querySelector(`[${DATA.attrs.slide}="${i}"]`)?.classList.remove("active"));
+        previousVisibleSlides.forEach(i => this.#container.querySelector(`[${DATA.attrs.slide}="${i}"]`)?.classList.remove(CSS_CLASSES.slideVisible));
 
         const visibleSlides: number[] = [];
         const config = this.#config,
@@ -416,7 +416,7 @@ export default class Stage {
             }
         }
 
-        visibleSlides.forEach(i => this.#container.querySelector(`[${DATA.attrs.slide}="${i}"]`)?.classList.add("active"));
+        visibleSlides.forEach(i => this.#container.querySelector(`[${DATA.attrs.slide}="${i}"]`)?.classList.add(CSS_CLASSES.slideVisible));
         this.visibleSlides = visibleSlides;
     }
 
@@ -551,7 +551,7 @@ export default class Stage {
 
     #getSlideDom = (index = -1): HTMLDivElement | null => {
         const attr = DATA.attrs.slide;
-        let selector = index > -1 ? `[${attr}='${index}']` : `[${attr}].active`;
+        let selector = index > -1 ? `[${attr}='${index}']` : `[${attr}].${CSS_CLASSES.slideVisible}`;
         return this.#container.querySelector<HTMLDivElement>(selector);
     }
 
