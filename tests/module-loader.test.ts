@@ -10,6 +10,8 @@ import type { ModuleContext } from "../src/types/module.params";
 import type { Config } from "../src/core/config";
 import { Events } from "../src/core/events";
 import ModuleLoader from "../src/core/module-loader";
+import { baseConfig, renderCarousel } from "./helpers";
+import Carousel from "../src/core/carousel";
 
 const createConfig = (overrides: Partial<CarouselConfig> = {}): CarouselConfig => ({
     container: ".ddcarousel",
@@ -228,5 +230,114 @@ describe("ModuleLoader", () => {
 
         expect(destroyLifecycle).toHaveBeenCalledTimes(1);
         expect(destroy).not.toHaveBeenCalled();
+    });
+
+    describe("manual module loading", () => {
+        it("loads and initializes a module manually", async () => {
+            renderCarousel(3);
+
+            const carousel = new Carousel(baseConfig({ nav: false }));
+            await carousel.ready;
+
+            const module = await carousel.loadModule("nav");
+            const navModule = carousel.getStatus().modules.find(module => module === "nav");
+
+            expect(navModule).toBeDefined();
+            expect(module?.isInitialized).toBe(true);
+        });
+
+        it("emits MODULE_LOADED when a module is manually loaded", async () => {
+            renderCarousel(3);
+
+            const carousel = new Carousel(baseConfig({ nav: false }));
+            await carousel.ready;
+
+            const loaded = vi.fn();
+
+            carousel.on(EVENTS.MODULE_LOADED, loaded);
+
+            await carousel.loadModule("nav");
+            expect(loaded).toHaveBeenCalledWith({ name: "nav" });
+        });
+
+        it("does not initialize the same module twice", async () => {
+            renderCarousel(3);
+
+            const carousel = new Carousel(baseConfig({ nav: false }));
+            await carousel.ready;
+
+            const initialized = vi.fn();
+
+            carousel.on(EVENTS.MODULE_INITIALIZED, initialized);
+
+            await carousel.loadModule("nav");
+            await carousel.loadModule("nav");
+            expect(initialized).toHaveBeenCalledTimes(1);
+            expect(initialized).toHaveBeenCalledWith({ name: "nav" });
+        });
+
+        it("unloads a manually loaded module", async () => {
+            renderCarousel(3);
+
+            const carousel = new Carousel(baseConfig({ nav: false }));
+            await carousel.ready;
+
+            await carousel.loadModule("nav");
+            expect(carousel.getStatus().modules.some(module => module === "nav")).toBe(true);
+
+            await carousel.unloadModule("nav");
+            expect(carousel.getStatus().modules.some(module => module === "nav")).toBe(false);
+        });
+
+        it("emits MODULE_DESTROYED and MODULE_UNLOADED when manually unloading a module", async () => {
+            renderCarousel(3);
+
+            const carousel = new Carousel(baseConfig({ nav: false }));
+            await carousel.ready;
+
+            await carousel.loadModule("nav");
+
+            const destroyed = vi.fn();
+            const unloaded = vi.fn();
+
+            carousel.on(EVENTS.MODULE_DESTROYED, destroyed);
+            carousel.on(EVENTS.MODULE_UNLOADED, unloaded);
+
+            await carousel.unloadModule("nav");
+            expect(destroyed).toHaveBeenCalledWith({ name: "nav" });
+            expect(unloaded).toHaveBeenCalledWith({ name: "nav" });
+        });
+
+        it("does nothing when unloading a module that is not loaded", async () => {
+            renderCarousel(3);
+
+            const carousel = new Carousel(baseConfig({ nav: false }));
+            await carousel.ready;
+
+            const unloaded = vi.fn();
+
+            carousel.on(EVENTS.MODULE_UNLOADED, unloaded);
+
+            await expect(carousel.unloadModule("nav")).resolves.not.toThrow();
+            expect(unloaded).not.toHaveBeenCalled();
+        });
+
+        it("can reload a module after it has been unloaded", async () => {
+            renderCarousel(3);
+
+            const carousel = new Carousel(baseConfig({ nav: false }));
+            await carousel.ready;
+
+            await carousel.loadModule("nav");
+            await carousel.unloadModule("nav");
+
+            const module = await carousel.loadModule("nav");
+
+            expect(module).toBeDefined();
+            expect(module?.id).toBe("nav");
+            expect(module?.isInitialized).toBe(true);
+
+            expect(carousel.getStatus().modules).toContain("nav");
+        });
     });
 });

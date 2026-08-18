@@ -4,7 +4,7 @@ import type { CarouselEvents } from "../types/event.types";
 import type { ModuleContext } from "../types/module.params";
 import type { BaseModule } from "./base-module";
 import type { Events } from "./events";
-import { INTERNAL_MODULES } from "./internal-modules";
+import { INTERNAL_MODULES, type InternalModule } from "./internal-modules";
 
 export default class ModuleLoader {
     #instances = new Map<string, BaseModule>();
@@ -33,9 +33,15 @@ export default class ModuleLoader {
             uniqueModules.map(m => this.load(m)));
     }
 
-    async load(moduleId: string) {
-        if (this.#instances.has(moduleId)) {
-            return;
+    async load(moduleId: string): Promise<BaseModule | null> {
+        const module = this.#instances.get(moduleId);
+        if (module) {
+            return module;
+        }
+
+        if (!INTERNAL_MODULES.includes(moduleId as InternalModule)) {
+            console.warn(`Unknown module "${moduleId}"!`);
+            return null;
         }
 
         const mod = await import(`../modules/${moduleId}.ts`);
@@ -43,16 +49,18 @@ export default class ModuleLoader {
 
         const instance: BaseModule = new ModuleClass(this.#params);
         this.#instances.set(moduleId, instance);
+
+        this.#events.emit(EVENTS.MODULE_LOADED, { name: moduleId });
+
+        return instance;
     }
 
     initAll() {
         for (const [moduleId, instance] of this.#instances) {
-            const isEnabled = this.#isModuleEnabled(moduleId);
-            if (!isEnabled) {
+            if (!this.#isModuleEnabled(moduleId)) {
                 continue;
             }
 
-            this.#events.emit(EVENTS.MODULE_LOADED, { name: moduleId });
             instance.initializeLifecycle();
         }
     }

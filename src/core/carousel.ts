@@ -6,6 +6,7 @@ import type { CarouselConfig, CarouselState, CarouselStatus } from "../types/car
 import type { CarouselEvents, LegacyCarouselEvents } from "../types/event.types";
 import { error } from "../utils/error-handler";
 import { getClosestSlideIndexes, getSlidesOffsets } from "../utils/slide";
+import type { BaseModule } from "./base-module";
 import { Config } from "./config";
 import Drag from "./drag";
 import { Events } from "./events";
@@ -269,6 +270,29 @@ export default class Carousel {
     goToUrl = (name: string, enabmeAnimation: boolean) => {
         console.warn("goToUrl() is deprecated: use carousel.module('urlNav').goToUrl()!");
         this.module<UrlNav>(UrlNav.id).goToUrl(name, enabmeAnimation);
+    }
+
+    async loadModule(moduleId: string): Promise<BaseModule | null> {
+        if (!this.#moduleLoader) {
+            return null;
+        }
+
+        const module = await this.#moduleLoader.load(moduleId);
+        if (!module) {
+            return null;
+        }
+
+        module.initializeLifecycle();
+
+        return module;
+    }
+
+    async unloadModule(moduleId: string): Promise<void> {
+        if (!this.#moduleLoader) {
+            return;
+        }
+
+        await this.#moduleLoader.unload(moduleId);
     }
 
     getStatus = (): CarouselStatus => {
