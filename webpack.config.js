@@ -140,6 +140,7 @@ function umdConfig() {
     return {
         ...createBaseConfig(),
         mode: "production",
+        devtool: "source-map",
         output: {
             path: path.resolve(__dirname, "dist"),
             filename: "ddcarousel.umd.min.js",
@@ -158,6 +159,9 @@ function umdConfig() {
                 banner: licenseMsg,
                 raw: true,
                 entryOnly: true
+            }),
+            new webpack.optimize.LimitChunkCountPlugin({
+                maxChunks: 1
             })
         ],
         optimization: {

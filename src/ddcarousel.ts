@@ -5,3 +5,5 @@ import type { CarouselConfig } from "./types/carousel.types";
 export default function ddcarousel(config?: Partial<CarouselConfig>) {
     return new Carousel(config);
 }
+
+export { Carousel };

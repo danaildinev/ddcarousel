@@ -3,9 +3,16 @@
 	"version": "1.4.2",
 	"description": "Simple and fast carousel slider written in vannila JS",
 	"type": "module",
-	"main": "dist/ddcarousel.umd.min.js",
-	"module": "dist/ddcarousel.esm.js",
-	"types": "dist/ddcarousel.d.ts",
+	"main": "./dist/ddcarousel.esm.js",
+	"module": "./dist/ddcarousel.esm.js",
+	"types": "./dist/ddcarousel.d.ts",
+	"exports": {
+		".": {
+			"types": "./dist/ddcarousel.d.ts",
+			"import": "./dist/ddcarousel.esm.js",
+			"default": "./dist/ddcarousel.esm.js"
+		}
+	},
 	"scripts": {
 		"test": "vitest run",
 		"build:all": "npm run build:prod && npm run build:types && npm run bundle:types && npm run clean:types",
