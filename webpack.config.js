@@ -135,25 +135,27 @@ function esmProdConfig() {
     }
 };
 
-// UMD build (for browsers <script>, minified)
-function umdConfig() {
+// UMD build (for browsers <script>)
+function umdConfig(minified = false) {
+    const suffix = minified ? ".min" : "";
     return {
         ...createBaseConfig(),
         mode: "production",
         devtool: "source-map",
+
         output: {
             path: path.resolve(__dirname, "dist"),
-            filename: "ddcarousel.umd.min.js",
+            filename: `ddcarousel.umd${suffix}.js`,
             library: {
                 name: "ddcarousel",
                 type: "umd",
-                export: 'default'
+                export: "default"
             },
             globalObject: "this"
         },
         plugins: [
             new MiniCssExtractPlugin({
-                filename: "ddcarousel.min.css"
+                filename: `ddcarousel${suffix}.css`
             }),
             new webpack.BannerPlugin({
                 banner: licenseMsg,
@@ -165,19 +167,21 @@ function umdConfig() {
             })
         ],
         optimization: {
-            minimize: true,
-            minimizer: [
-                new TerserPlugin({
-                    extractComments: false,
-                    terserOptions: {
-                        format: {
-                            comments: /@license|^!/ // preserve only license banner
+            minimize: minified,
+            ...(minified && {
+                minimizer: [
+                    new TerserPlugin({
+                        extractComments: false,
+                        terserOptions: {
+                            format: {
+                                comments: /@license|^!/ // preserve only license banner
+                            }
                         }
-                    }
-                })
-            ]
-        },
-    }
+                    })
+                ]
+            })
+        }
+    };
 }
 
 export default (env = {}) => {
@@ -187,5 +191,6 @@ export default (env = {}) => {
     return [
         esmProdConfig(),
         umdConfig(),
+        umdConfig(true)
     ];
 };
