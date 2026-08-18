@@ -6,12 +6,16 @@
 	"main": "./dist/ddcarousel.esm.js",
 	"module": "./dist/ddcarousel.esm.js",
 	"types": "./dist/ddcarousel.d.ts",
+	"unpkg": "./dist/ddcarousel.umd.min.js",
+	"jsdelivr": "./dist/ddcarousel.umd.min.js",
 	"exports": {
 		".": {
 			"types": "./dist/ddcarousel.d.ts",
 			"import": "./dist/ddcarousel.esm.js",
 			"default": "./dist/ddcarousel.esm.js"
-		}
+		},
+		"./ddcarousel.css": "./dist/ddcarousel.css",
+		"./ddcarousel.min.css": "./dist/ddcarousel.min.css"
 	},
 	"scripts": {
 		"test": "vitest run",
