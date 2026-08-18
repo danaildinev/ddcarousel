@@ -17,6 +17,10 @@
 		"./ddcarousel.css": "./dist/ddcarousel.css",
 		"./ddcarousel.min.css": "./dist/ddcarousel.min.css"
 	},
+	"files": [
+		"dist",
+		"CHANGELOG.md"
+	],
 	"scripts": {
 		"test": "vitest run",
 		"build:all": "npm run build:prod && npm run build:types && npm run bundle:types && npm run clean:types",
