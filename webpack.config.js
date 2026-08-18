@@ -100,6 +100,8 @@ function esmProdConfig() {
         output: {
             path: path.resolve(__dirname, "dist"),
             filename: "ddcarousel.esm.js",
+            chunkFilename: "[name].esm.js",
+            publicPath: "auto",
             library: {
                 type: "module"
             }

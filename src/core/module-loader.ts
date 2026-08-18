@@ -44,7 +44,9 @@ export default class ModuleLoader {
             return null;
         }
 
-        const mod = await import(`../modules/${moduleId}.ts`);
+        const mod = await import(
+            /* webpackChunkName: "ddcarousel-[request]" */
+            `../modules/${moduleId}`);
         const ModuleClass = mod.default;
 
         const instance: BaseModule = new ModuleClass(this.#params);
