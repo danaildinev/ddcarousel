@@ -17,6 +17,8 @@ export default class UrlNav extends BaseModule {
     static readonly id = "urlNav";
     id: string = "urlNav";
 
+    #urlNavContainerKey = "urlNavContainer"
+
     #navItems!: UrlNavItem[];
     #urlNavList!: HTMLElement;
 
@@ -77,9 +79,11 @@ export default class UrlNav extends BaseModule {
             });
         }
 
-        let appendContainer = this.container;
-        if (this.config.urlNavContainer) {
-            const container = document.querySelector<HTMLDivElement>(this.config.urlNavContainer);
+        let appendContainer = this.container,
+            customContainerKey = this.config[this.#urlNavContainerKey];
+
+        if (customContainerKey) {
+            const container = document.querySelector<HTMLDivElement>(customContainerKey as string);
             if (container) {
                 appendContainer = container;
             } else {
