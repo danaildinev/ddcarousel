@@ -11,6 +11,8 @@ export default class ModuleLoader {
     #params: ModuleContext;
     #events: Events;
 
+    #initialized = false;
+
     constructor(params: ModuleContext) {
         this.#params = params;
         this.#events = this.#params.events;
@@ -29,8 +31,7 @@ export default class ModuleLoader {
         }
 
         const uniqueModules = [...new Set(modules)];
-        await Promise.all(
-            uniqueModules.map(moduleId => this.load(moduleId)));
+        await Promise.all(uniqueModules.map(moduleId => this.load(moduleId)));
     }
 
     async load<K extends ModuleId>(moduleId: K): Promise<CarouselModuleMap[K] | null> {
@@ -57,6 +58,15 @@ export default class ModuleLoader {
         return instance as CarouselModuleMap[K];
     }
 
+    async loadAndInitialize<K extends ModuleId>(moduleId: K): Promise<CarouselModuleMap[K] | null> {
+        const module = await this.load(moduleId);
+        if (module) {
+            module.initializeLifecycle();
+        }
+
+        return module;
+    }
+
     initAll() {
         for (const [moduleId, instance] of this.#instances) {
             if (!this.#isModuleEnabled(moduleId)) {
@@ -65,6 +75,8 @@ export default class ModuleLoader {
 
             instance.initializeLifecycle();
         }
+
+        this.#initialized = true;
     }
 
     #isModuleEnabled(moduleId: string): boolean {
@@ -112,7 +124,11 @@ export default class ModuleLoader {
 
             if (!instance) {
                 if (newValue) {
-                    void this.load(moduleId);
+                    if (this.#initialized) {
+                        void this.loadAndInitialize(moduleId);
+                    } else {
+                        void this.load(moduleId);
+                    }
                 }
                 continue;
             }
@@ -131,5 +147,6 @@ export default class ModuleLoader {
         }
 
         this.#instances.clear();
+        this.#initialized = false;
     };
 }

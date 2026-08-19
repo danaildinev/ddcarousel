@@ -259,14 +259,7 @@ export default class Carousel {
             return null;
         }
 
-        const module = await this.#moduleLoader.load(moduleId);
-        if (!module) {
-            return null;
-        }
-
-        module.initializeLifecycle();
-
-        return module;
+        return this.#moduleLoader.loadAndInitialize(moduleId);
     }
 
     async unloadModule(moduleId: string): Promise<void> {
