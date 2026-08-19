@@ -9,7 +9,7 @@ import type { Events } from "./events";
 import type { Config } from "./config";
 
 export default class Drag {
-    #config: CarouselConfig;
+    #configClass: Config;
     #status: CarouselStatus;
     #events: Events;
 
@@ -32,9 +32,8 @@ export default class Drag {
     #swipeDistance: number = 0;
     #stayOnThisSlide: boolean = false;
 
-
     constructor(config: Config, events: Events, status: CarouselStatus) {
-        this.#config = config.current;
+        this.#configClass = config;
         this.#status = status;
         this.#events = events;
 
@@ -44,6 +43,10 @@ export default class Drag {
         }
 
         this.#stageDom = stage;
+    }
+
+    get #config(): CarouselConfig {
+        return this.#configClass.current;
     }
 
     initialize() {
