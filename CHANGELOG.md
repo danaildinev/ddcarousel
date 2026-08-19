@@ -57,7 +57,7 @@
 - Replaced separate mouse and touch handling with the [Pointer Events](https://developer.mozilla.org/en-US/docs/Web/API/PointerEvent) input model, providing a unified implementation for mouse, touch, and pen input.
 
 ### Modules
-- Implemented a new module system for a more modular and extensible arcitecture, with support planned for loading an external modules in the future. Several carousel features are now implemented as separate internal module:
+- Implemented a new module system for a more modular and extensible architecture, with support planned for loading an external modules in the future. Several carousel features are now implemented as separate internal module:
     - Autoplay
     - Pagination
     - Lazy loading
@@ -125,7 +125,7 @@
 - Added a separate color for inactive pagination dots instead of relying on opacity
 - Added a new design for navigation previous and next buttons
 - Fixed incorrect carousel height when using `centeredSlides` together with `autoHeight`
-- Improved autoplay prograssbar animation by using GPU accelarated `transform` CSS property
+- Improved autoplay prograss bar animation by using GPU accelerated `transform` CSS property
 - Improved pagination styling
 - Replaced navigation previous and next button content with SVG chevron icons
 - URL navigation now automatically marks the currently active item and updates it when the active slide changes.
@@ -155,7 +155,8 @@
 - Added dedicated production source maps for minified UMD and CSS builds
 - Added a new non-minified CSS build: `ddcarousel.css`
 - Added bundled TypeScript declarations in `dist/ddcarousel.d.ts`. 
-- Added `dist` to `.gitignore`. Production build files must now be explicitly added when needed. This may prevent accedental commits of generated files.
+- Added `dist` to `.gitignore`. Production build files must now be explicitly added when needed. This may prevent accidental commits of generated files.
+- Added `unpkg` and `jsdelivr` package entry fields to expose the browser-ready build through CDN services.
 - Added development ESM build for testing
 - Refactored all npm scripts around the new build system:
     - `build:all` – runs the production build, generates and bundles TypeScript declarations, then cleans up removes temporary type files.
