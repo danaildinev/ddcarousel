@@ -536,7 +536,7 @@ describe("Loop module", () => {
 
             expect(getSlideOrder()).toEqual([4, 0, 1, 2, 3]);
 
-            const loop = carousel.module<Loop>("loop");
+            const loop = carousel.module("loop");
             loop.destroy();
             expect(getSlideOrder()).toEqual([0, 1, 2, 3, 4]);
         });

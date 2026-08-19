@@ -1,10 +1,9 @@
 import { CSS_CLASSES } from "../constants/css-classes";
 import { EVENTS, LEGACY_EVENT_MAP } from "../constants/events-list";
-import type { CarouselConfig, CarouselState, CarouselStatus } from "../types/carousel.types";
+import type { CarouselConfig, CarouselModuleMap, CarouselState, CarouselStatus, ModuleId } from "../types/carousel.types";
 import type { CarouselEvents, LegacyCarouselEvents } from "../types/event.types";
 import { error } from "../utils/error-handler";
 import { getClosestSlideIndexes, getSlidesOffsets } from "../utils/slide";
-import type { BaseModule } from "./base-module";
 import { Config } from "./config";
 import Drag from "./drag";
 import { Events } from "./events";
@@ -177,19 +176,19 @@ export default class Carousel {
         this.#resolveReady();
     }
 
-    module = <T = unknown>(name: string): T => {
+    module = <T extends ModuleId>(moduleId: T): CarouselModuleMap[T] => {
         if (!this.#moduleLoader) {
             throw error("ModuleLoader not initialized");
         }
-        console.log(this.#moduleLoader.modules, name);
+        console.log(this.#moduleLoader.modules, moduleId);
 
-        const module = this.#moduleLoader.modules.find(m => m.id === name);
+        const module = this.#moduleLoader.modules.find(m => m.id === moduleId);
 
         if (!module) {
-            throw error(`Module not found: ${name}`);
+            throw error(`Module not found: ${moduleId}`);
         }
 
-        return module as T;
+        return module as CarouselModuleMap[T];
     };
 
     on<K extends keyof CarouselEvents>(name: K, callback: (payload: CarouselEvents[K]) => void,): void;
@@ -255,7 +254,7 @@ export default class Carousel {
 
     refresh = () => console.warn("refresh() is deprecated!");
 
-    async loadModule(moduleId: string): Promise<BaseModule | null> {
+    async loadModule<K extends ModuleId>(moduleId: K): Promise<CarouselModuleMap[K] | null> {
         if (!this.#moduleLoader) {
             return null;
         }

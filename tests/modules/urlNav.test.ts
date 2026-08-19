@@ -46,7 +46,7 @@ describe("UrlNav module", () => {
         const carousel = new Carousel(baseConfig({ urlNav: true }));
         await carousel.ready;
 
-        const module = carousel.module<UrlNav>(UrlNav.id);
+        const module = carousel.module(UrlNav.id);
         module.goToUrl("slide-2", false);
 
         expect(carousel.getCurrentPage()).toBe(1);
@@ -114,7 +114,7 @@ describe("UrlNav module", () => {
         }));
         await carousel.ready;
 
-        expect(() => carousel.module<UrlNav>("urlNav").goToUrl("missing")).toThrow("Slide missing was not found!");
+        expect(() => carousel.module("urlNav").goToUrl("missing")).toThrow("Slide missing was not found!");
     });
 
     it("moves active class when navigating between pages", async () => {

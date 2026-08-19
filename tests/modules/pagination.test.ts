@@ -16,7 +16,7 @@ describe("Pagination module", () => {
         const carousel = new Carousel();
         await carousel.init(baseConfig({ items: 2, pagination: true }))
 
-        const module = carousel.module<Pagination>("pagination");
+        const module = carousel.module("pagination");
         expect(module).toBeDefined();
         expect(module?.isInitialized).toBe(true);
     });

@@ -1,4 +1,10 @@
 import type { CarouselOnEvents } from "../constants/events-list";
+import type Autoplay from "../modules/autoplay";
+import type LazyLoad from "../modules/lazyLoad";
+import type Loop from "../modules/loop";
+import type Nav from "../modules/nav";
+import type Pagination from "../modules/pagination";
+import type UrlNav from "../modules/urlNav";
 import type { ClosestSlideIndexes } from "../utils/slide";
 
 export type CarouselConfig = {
@@ -50,3 +56,14 @@ export enum DragSnapMode {
     Swipe = "swipe",
     Closest = "closest"
 }
+
+export type CarouselModuleMap = {
+    autoplay: Autoplay;
+    nav: Nav;
+    pagination: Pagination;
+    lazyLoad: LazyLoad;
+    loop: Loop;
+    urlNav: UrlNav;
+};
+
+export type ModuleId = keyof CarouselModuleMap;

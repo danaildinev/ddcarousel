@@ -1,5 +1,5 @@
 import { EVENTS } from "../constants/events-list";
-import type { CarouselConfig } from "../types/carousel.types";
+import type { CarouselConfig, CarouselModuleMap, ModuleId } from "../types/carousel.types";
 import type { CarouselEvents } from "../types/event.types";
 import type { ModuleContext } from "../types/module.params";
 import type { BaseModule } from "./base-module";
@@ -22,7 +22,7 @@ export default class ModuleLoader {
         return [...this.#instances.values()];
     }
 
-    async loadAll(modules?: readonly string[]) {
+    async loadAll(modules?: readonly ModuleId[]) {
         if (!modules?.length) {
             const config = this.#params.config as Record<string, unknown>;
             modules = INTERNAL_MODULES.filter(moduleId => config[moduleId] === true);
@@ -30,13 +30,13 @@ export default class ModuleLoader {
 
         const uniqueModules = [...new Set(modules)];
         await Promise.all(
-            uniqueModules.map(m => this.load(m)));
+            uniqueModules.map(moduleId => this.load(moduleId)));
     }
 
-    async load(moduleId: string): Promise<BaseModule | null> {
+    async load<K extends ModuleId>(moduleId: K): Promise<CarouselModuleMap[K] | null> {
         const module = this.#instances.get(moduleId);
         if (module) {
-            return module;
+            return module as CarouselModuleMap[K];
         }
 
         if (!INTERNAL_MODULES.includes(moduleId as InternalModule)) {
@@ -54,7 +54,7 @@ export default class ModuleLoader {
 
         this.#events.emit(EVENTS.MODULE_LOADED, { name: moduleId });
 
-        return instance;
+        return instance as CarouselModuleMap[K];
     }
 
     initAll() {

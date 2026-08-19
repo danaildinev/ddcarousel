@@ -31,7 +31,7 @@ describe("Autoplay module", () => {
         expect(document.querySelector(`.${CSS_CLASSES.progressBar}`)).not.toBeNull();
         expect(container()?.style.getPropertyValue("--ddcarousel-autoplay-speed")).toBe("100ms");
 
-        const autoplay = carousel.module<Autoplay>(Autoplay.id);
+        const autoplay = carousel.module(Autoplay.id);
         autoplay.stop();
         expect(stopped).toHaveBeenCalledTimes(1);
 
@@ -172,7 +172,7 @@ describe("Autoplay module", () => {
         }));
         await carousel.ready;
 
-        const autoplay = carousel.module<Autoplay>(Autoplay.id);
+        const autoplay = carousel.module(Autoplay.id);
         autoplay.stop();
 
         vi.advanceTimersByTime(500);
@@ -193,7 +193,7 @@ describe("Autoplay module", () => {
 
         await carousel.ready;
 
-        const autoplay = carousel.module<Autoplay>(Autoplay.id);
+        const autoplay = carousel.module(Autoplay.id);
 
         vi.advanceTimersByTime(100);
         expect(carousel.getCurrentPage()).toBe(1);
