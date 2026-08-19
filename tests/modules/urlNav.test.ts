@@ -88,7 +88,6 @@ describe("UrlNav module", () => {
         renderCarousel(3, { urlData: true });
 
         const slide = document.querySelector(".item-1") as HTMLElement;
-        console.log(slide);
 
         delete slide.dataset.id;
         delete slide.dataset.title;

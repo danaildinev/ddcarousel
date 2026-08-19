@@ -180,7 +180,6 @@ export default class Carousel {
         if (!this.#moduleLoader) {
             throw error("ModuleLoader not initialized");
         }
-        console.log(this.#moduleLoader.modules, moduleId);
 
         const module = this.#moduleLoader.modules.find(m => m.id === moduleId);
 
