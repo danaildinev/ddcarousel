@@ -12,6 +12,11 @@ export type AutoplayConfig = {
     pauseOnTabHidden: boolean
 }
 
+export const EVENTS_AUTOPLAY = {
+    STARTED: 'module:autoplay:started',
+    STOPPED: 'module:autoplay:stopped',
+} as const;
+
 export default class Autoplay extends BaseModule<AutoplayConfig> {
     static readonly id = "autoplay";
     id: string = "autoplay";
@@ -37,7 +42,6 @@ export default class Autoplay extends BaseModule<AutoplayConfig> {
         }
 
         this.#stage = stage;
-
     }
 
     initialize() {
@@ -94,7 +98,7 @@ export default class Autoplay extends BaseModule<AutoplayConfig> {
         this.#restartProgressBar();
 
         this.#autoPlay = setInterval(() => this.#handler(), speed);
-        this.events.emit(EVENTS.MODULE_AUTOPLAY_STARTED);
+        this.events.emit(EVENTS_AUTOPLAY.STARTED);
     }
 
     #handler() {
@@ -115,7 +119,7 @@ export default class Autoplay extends BaseModule<AutoplayConfig> {
         clearInterval(this.#autoPlay);
         this.#autoPlay = undefined;
         this.#toggleProgressBar(false);
-        this.events.emit(EVENTS.MODULE_AUTOPLAY_STOPPED);
+        this.events.emit(EVENTS_AUTOPLAY.STOPPED);
     }
 
     #toggleProgressBar = (visible: boolean) => {

@@ -192,7 +192,8 @@ export default class Carousel {
 
     on<K extends keyof CarouselEvents>(name: K, callback: (payload: CarouselEvents[K]) => void,): void;
     on<K extends keyof LegacyCarouselEvents>(name: K, callback: (payload: LegacyCarouselEvents[K]) => void,): void;
-    on(name: keyof CarouselEvents | keyof LegacyCarouselEvents, callback: (payload: any) => void): void {
+    on(name: string, callback: (payload?: any) => void): void;
+    on(name: string, callback: (payload?: any) => void): void {
         if (!this.#events) {
             throw error("Carousel not initialized");
         }

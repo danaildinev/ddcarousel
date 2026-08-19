@@ -74,8 +74,6 @@ export type CarouselEvents = {
     [EVENTS.INITIALIZED]: void;
     [EVENTS.DESTROY]: void;
     [EVENTS.DESTROYED]: void;
-    [EVENTS.MODULE_AUTOPLAY_STOPPED]: void;
-    [EVENTS.MODULE_AUTOPLAY_STARTED]: void;
     [EVENTS.STAGE_CREATED]: void;
     [EVENTS.STAGE_RESIZED]: void;
     [EVENTS.STAGE_CHANGED]: void;

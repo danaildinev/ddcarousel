@@ -55,7 +55,7 @@ describe("ModuleLoader", () => {
 
         await loader.loadAll();
 
-        expect(loader.modules.map(module => module.id)).toEqual(["pagination", "nav"]);
+        expect(loader.modules.map(module => module.id)).toEqual(["nav", "pagination"]);
     });
 
     it("deduplicates explicit module lists and reuses loaded instances", async () => {

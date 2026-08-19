@@ -12,8 +12,6 @@ export const EVENTS = {
     MODULE_INITIALIZED: 'module:initialized',
     MODULE_DESTROYED: 'module:destroyed',
     MODULE_UNLOADED: 'module:unloaded',
-    MODULE_AUTOPLAY_STARTED: 'module:autoplay:started',
-    MODULE_AUTOPLAY_STOPPED: 'module:autoplay:stopped',
 
     // stage
     CONFIG_APPLIED: 'config:applied',

@@ -1,6 +1,7 @@
 import "./ddcarousel.scss";
 import Carousel from "./core/carousel";
 import { EVENTS } from "./constants/events-list";
+import { EVENTS_AUTOPLAY } from "./modules/autoplay";
 import { DragSnapMode } from "./types/carousel.types";
 import type { CarouselConfig, CarouselModuleMap, CarouselState, CarouselStatusConfig, ModuleId } from "./types/carousel.types";
 import type { CarouselEvents, LegacyCarouselEvents, ModuleEventPayload, PageChangePayload, PageChangeScrollPayload } from "./types/event.types";
@@ -20,6 +21,7 @@ export default function ddcarousel(config?: Partial<CarouselConfig>) {
 export {
     Carousel,
     EVENTS,
+    EVENTS_AUTOPLAY as AUTOPLAY_EVENTS,
     DragSnapMode,
 };
 export type {

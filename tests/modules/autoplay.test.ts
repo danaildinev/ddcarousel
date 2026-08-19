@@ -3,7 +3,7 @@ import Carousel from "../../src/core/carousel";
 import { CSS_CLASSES } from "../../src/constants/css-classes";
 import { EVENTS } from "../../src/constants/events-list";
 import { baseConfig, container, renderCarousel, stage } from "../helpers";
-import Autoplay from "../../src/modules/autoplay";
+import Autoplay, { EVENTS_AUTOPLAY } from "../../src/modules/autoplay";
 
 afterEach(() => {
     vi.useRealTimers();
@@ -25,8 +25,8 @@ describe("Autoplay module", () => {
 
         const started = vi.fn();
         const stopped = vi.fn();
-        carousel.on(EVENTS.MODULE_AUTOPLAY_STARTED, started);
-        carousel.on(EVENTS.MODULE_AUTOPLAY_STOPPED, stopped);
+        carousel.on(EVENTS_AUTOPLAY.STARTED, started);
+        carousel.on(EVENTS_AUTOPLAY.STOPPED, stopped);
 
         expect(document.querySelector(`.${CSS_CLASSES.progressBar}`)).not.toBeNull();
         expect(container()?.style.getPropertyValue("--ddcarousel-autoplay-speed")).toBe("100ms");
@@ -63,8 +63,8 @@ describe("Autoplay module", () => {
 
         const stopped = vi.fn();
         const started = vi.fn();
-        carousel.on(EVENTS.MODULE_AUTOPLAY_STOPPED, stopped);
-        carousel.on(EVENTS.MODULE_AUTOPLAY_STARTED, started);
+        carousel.on(EVENTS_AUTOPLAY.STOPPED, stopped);
+        carousel.on(EVENTS_AUTOPLAY.STARTED, started);
 
         stage()?.dispatchEvent(new PointerEvent("pointerenter", { bubbles: true, pointerType: "mouse" } as PointerEventInit));
         stage()?.dispatchEvent(new PointerEvent("pointerleave", { bubbles: true, pointerType: "mouse" } as PointerEventInit));
@@ -83,8 +83,8 @@ describe("Autoplay module", () => {
 
         const stopped = vi.fn();
         const started = vi.fn();
-        carousel.on(EVENTS.MODULE_AUTOPLAY_STOPPED, stopped);
-        carousel.on(EVENTS.MODULE_AUTOPLAY_STARTED, started);
+        carousel.on(EVENTS_AUTOPLAY.STOPPED, stopped);
+        carousel.on(EVENTS_AUTOPLAY.STARTED, started);
 
         vi.spyOn(document, "hidden", "get").mockReturnValue(true);
         document.dispatchEvent(new Event("visibilitychange"));
@@ -108,7 +108,7 @@ describe("Autoplay module", () => {
         await carousel.ready;
 
         const stopped = vi.fn();
-        carousel.on(EVENTS.MODULE_AUTOPLAY_STOPPED, stopped);
+        carousel.on(EVENTS_AUTOPLAY.STOPPED, stopped);
 
         expect(carousel.getCurrentPage()).toBe(0);
 
