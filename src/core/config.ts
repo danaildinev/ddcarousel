@@ -35,29 +35,29 @@ export class Config {
     #setDefaultConfig(): CarouselConfig {
         return {
             container: `.ddcarousel`,
-            nav: false, // modules
-            pagination: true, // modules 
+            nav: false,
+            pagination: true,
             autoHeight: true,
             fullWidth: true,
             startPage: 0,
             items: 1,
             itemPerPage: false,
             gap: 0,
-            loop: false, // modules 
+            loop: false,
             vertical: false,
             verticalMaxContentWidth: false,
-            urlNav: false, // modules 
-            urlNavContainer: null, // modules 
+            urlNav: false,
+            urlNavContainer: null,
             responsive: null,
-            touchDrag: true, // modules  
-            dragSnapMode: DragSnapMode.Swipe, // modules 
-            mouseDrag: true, // modules 
+            touchDrag: true,
+            dragSnapMode: DragSnapMode.Swipe,
+            mouseDrag: true,
             keyboardNavigation: false,
             centerSlide: false,
-            touchSwipeThreshold: 60, // modules 
-            touchMaxSlideDist: 500, // modules 
+            swipeThreshold: 60,
+            dragMaxDistance: 0,
             resizeDebounce: 200,
-            swipeSmooth: 0, // modules 
+            swipeSmooth: 0,
             slideChangeDuration: 0.5,
         }
     }

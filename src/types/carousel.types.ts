@@ -23,8 +23,8 @@ export type CarouselConfig = {
     mouseDrag: boolean;
     keyboardNavigation: boolean;
     centerSlide: boolean;
-    touchSwipeThreshold: number;
-    touchMaxSlideDist: number;
+    swipeThreshold: number;
+    dragMaxDistance: number;
     resizeDebounce: number;
     swipeSmooth: number;
     slideChangeDuration: number;

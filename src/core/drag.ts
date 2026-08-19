@@ -169,7 +169,7 @@ export default class Drag {
         this.#currentTouch = input - this.#pointerOffset;
 
         //move slider until max swipe lenght is reached
-        if (this.#config.touchMaxSlideDist < 1 || this.#swipeDistance <= this.#config.touchMaxSlideDist) {
+        if (this.#config.dragMaxDistance < 1 || this.#swipeDistance <= this.#config.dragMaxDistance) {
             const state: CarouselEvents[typeof EVENTS.DRAG_DRAGGING] = {
                 currentTranslate: this.#currentTouch,
                 delta: this.#swipeDistance,
@@ -206,7 +206,7 @@ export default class Drag {
         this.#events.emit(EVENTS.DRAG_END);
 
         // if swipe threshold is not enough, scroll to original position
-        if (this.#config.dragSnapMode === DragSnapMode.Swipe && (this.#swipeDistance < this.#config.touchSwipeThreshold || this.#stayOnThisSlide)) {
+        if (this.#config.dragSnapMode === DragSnapMode.Swipe && (this.#swipeDistance < this.#config.swipeThreshold || this.#stayOnThisSlide)) {
             this.#revertDrag();
             return;
         }

@@ -575,12 +575,12 @@ describe("Stage core", () => {
         expect(stage()?.style.transitionDuration).toBe("0.2s");
     });
 
-    it("honors touchMaxSlideDist by snapping back when drag distance exceeds the limit", () => {
+    it("honors dragMaxDistance by snapping back when drag distance exceeds the limit", () => {
         renderCarousel(3);
         const carousel = new Carousel(baseConfig({
             mouseDrag: true,
-            touchSwipeThreshold: 10,
-            touchMaxSlideDist: 5,
+            swipeThreshold: 10,
+            dragMaxDistance: 5,
         }));
 
         items()[0]?.dispatchEvent(new PointerEvent("pointerdown", { bubbles: true, clientX: 100, pointerType: "mouse" } as PointerEventInit));
