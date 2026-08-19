@@ -41,15 +41,14 @@ describe("UrlNav module", () => {
         expect(document.querySelectorAll(".url-target li")[2]?.classList.contains("active")).toBe(true);
     });
 
-    it("supports deprecated goToUrl through the urlNav module", async () => {
+    it("change page with goToUrl", async () => {
         renderCarousel(3, { urlData: true });
-        const warn = vi.spyOn(console, "warn").mockImplementation(() => undefined);
         const carousel = new Carousel(baseConfig({ urlNav: true }));
         await carousel.ready;
 
-        carousel.goToUrl("slide-2", false);
+        const module = carousel.module<UrlNav>(UrlNav.id);
+        module.goToUrl("slide-2", false);
 
-        expect(warn).toHaveBeenCalledWith("goToUrl() is deprecated: use carousel.module('urlNav').goToUrl()!");
         expect(carousel.getCurrentPage()).toBe(1);
     });
 

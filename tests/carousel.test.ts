@@ -348,8 +348,6 @@ describe("Carousel core", () => {
                 resizeDebounce: 200,
                 swipeSmooth: 0,
                 slideChangeDuration: 0.5,
-                labelNavPrev: null,
-                labelNavNext: null,
             }),
         );
         expect(status.state).toBe("ready");

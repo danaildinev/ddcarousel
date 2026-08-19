@@ -5,8 +5,6 @@ import type { ClosestSlideIndexes } from "../utils/slide";
 export type CarouselConfig = {
     container: string | HTMLDivElement;
     nav: boolean;
-    navPrevContent: string;
-    navNextContent: string;
     pagination: boolean;
     autoHeight: boolean;
     fullWidth: boolean;
@@ -30,8 +28,6 @@ export type CarouselConfig = {
     resizeDebounce: number;
     swipeSmooth: number;
     slideChangeDuration: number;
-    labelNavPrev: string | null;
-    labelNavNext: string | null;
     [key: string]: unknown;
 }
 

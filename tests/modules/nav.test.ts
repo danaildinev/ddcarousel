@@ -2,6 +2,7 @@ import { afterEach, describe, expect, it, vi } from "vitest";
 import Carousel from "../../src/core/carousel";
 import { CSS_CLASSES } from "../../src/constants/css-classes";
 import { baseConfig, renderCarousel } from "../helpers";
+import Nav from "../../src/modules/nav";
 
 const prev = () => document.querySelector<HTMLElement>(`.${CSS_CLASSES.prev}`);
 const next = () => document.querySelector<HTMLElement>(`.${CSS_CLASSES.next}`);
@@ -17,12 +18,10 @@ describe("Nav module", () => {
         renderCarousel(3);
         const carousel = new Carousel(baseConfig({
             nav: true,
-            labelNavPrev: "Prev",
-            labelNavNext: "Next",
+            navPrevContent: "Prev",
+            navNextContent: "Next",
         }));
         await carousel.ready;
-
-        console.log(prev());
 
         expect(prev()?.textContent).toBe("Prev");
         expect(next()?.textContent).toBe("Next");
@@ -34,14 +33,23 @@ describe("Nav module", () => {
         expect(prev()?.classList.contains("inactive")).toBe(false);
     });
 
+    it("uses default labels are not set", async () => {
+        renderCarousel(3);
+        const carousel = new Carousel(baseConfig({
+            nav: true,
+        }));
+        await carousel.ready;
+
+        expect(prev()?.innerHTML).toBe(Nav.chevronSvg);
+        expect(next()?.innerHTML).toBe(Nav.chevronSvg);
+    });
+
     it("uses custom nav HTML content when labels are not set", async () => {
         renderCarousel(3);
         const carousel = new Carousel(baseConfig({
             nav: true,
             navPrevContent: "<span>Left</span>",
             navNextContent: "<span>Right</span>",
-            labelNavPrev: null,
-            labelNavNext: null,
         }));
         await carousel.ready;
 

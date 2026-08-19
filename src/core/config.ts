@@ -1,5 +1,4 @@
 import { EVENTS, LEGACY_EVENT_MAP } from "../constants/events-list";
-import Nav from "../modules/nav";
 import { DragSnapMode, type CarouselConfig } from "../types/carousel.types";
 import type { CarouselEvents } from "../types/event.types";
 import type { Events } from "./events";
@@ -36,9 +35,7 @@ export class Config {
     #setDefaultConfig(): CarouselConfig {
         return {
             container: `.ddcarousel`,
-            nav: false, // modules 
-            navPrevContent: Nav.chevronSvg, // modules 
-            navNextContent: Nav.chevronSvg, // modules 
+            nav: false, // modules
             pagination: true, // modules 
             autoHeight: true,
             fullWidth: true,
@@ -62,8 +59,6 @@ export class Config {
             resizeDebounce: 200,
             swipeSmooth: 0, // modules 
             slideChangeDuration: 0.5,
-            labelNavPrev: null, // modules 
-            labelNavNext: null, // modules 
         }
     }
 

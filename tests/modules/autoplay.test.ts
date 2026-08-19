@@ -3,6 +3,7 @@ import Carousel from "../../src/core/carousel";
 import { CSS_CLASSES } from "../../src/constants/css-classes";
 import { EVENTS } from "../../src/constants/events-list";
 import { baseConfig, container, renderCarousel, stage } from "../helpers";
+import Autoplay from "../../src/modules/autoplay";
 
 afterEach(() => {
     vi.useRealTimers();
@@ -30,10 +31,11 @@ describe("Autoplay module", () => {
         expect(document.querySelector(`.${CSS_CLASSES.progressBar}`)).not.toBeNull();
         expect(container()?.style.getPropertyValue("--ddcarousel-autoplay-speed")).toBe("100ms");
 
-        carousel.autoplayStop();
+        const autoplay = carousel.module<Autoplay>(Autoplay.id);
+        autoplay.stop();
         expect(stopped).toHaveBeenCalledTimes(1);
 
-        carousel.autoplayStart();
+        autoplay.start();
         expect(started).toHaveBeenCalledTimes(1);
 
         vi.advanceTimersByTime(100);
@@ -170,7 +172,8 @@ describe("Autoplay module", () => {
         }));
         await carousel.ready;
 
-        carousel.autoplayStop();
+        const autoplay = carousel.module<Autoplay>(Autoplay.id);
+        autoplay.stop();
 
         vi.advanceTimersByTime(500);
         expect(carousel.getCurrentPage()).toBe(0);
@@ -190,13 +193,15 @@ describe("Autoplay module", () => {
 
         await carousel.ready;
 
+        const autoplay = carousel.module<Autoplay>(Autoplay.id);
+
         vi.advanceTimersByTime(100);
         expect(carousel.getCurrentPage()).toBe(1);
-        carousel.autoplayStop();
+        autoplay.stop();
 
         vi.advanceTimersByTime(500);
         expect(carousel.getCurrentPage()).toBe(1);
-        carousel.autoplayStart();
+        autoplay.start();
 
         vi.advanceTimersByTime(100);
         expect(carousel.getCurrentPage()).toBe(2);

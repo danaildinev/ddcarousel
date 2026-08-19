@@ -1,7 +1,5 @@
 import { CSS_CLASSES } from "../constants/css-classes";
 import { EVENTS, LEGACY_EVENT_MAP } from "../constants/events-list";
-import Autoplay from "../modules/autoplay";
-import UrlNav from "../modules/urlNav";
 import type { CarouselConfig, CarouselState, CarouselStatus } from "../types/carousel.types";
 import type { CarouselEvents, LegacyCarouselEvents } from "../types/event.types";
 import { error } from "../utils/error-handler";
@@ -256,21 +254,6 @@ export default class Carousel {
     }
 
     refresh = () => console.warn("refresh() is deprecated!");
-
-    autoplayStart = () => {
-        console.warn("autoplayStart() is deprecated: use carousel.module('autoplay').start()!");
-        this.module<Autoplay>(Autoplay.id).start();
-    }
-
-    autoplayStop = () => {
-        console.warn("autoplayStop() is deprecated: use carousel.module('autoplay').stop()!");
-        this.module<Autoplay>(Autoplay.id).stop();
-    }
-
-    goToUrl = (name: string, enabmeAnimation: boolean) => {
-        console.warn("goToUrl() is deprecated: use carousel.module('urlNav').goToUrl()!");
-        this.module<UrlNav>(UrlNav.id).goToUrl(name, enabmeAnimation);
-    }
 
     async loadModule(moduleId: string): Promise<BaseModule | null> {
         if (!this.#moduleLoader) {

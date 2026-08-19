@@ -45,8 +45,6 @@ describe("Config", () => {
             resizeRefresh: 25,
             swipeSmooth: 0.1,
             slideChangeDuration: 0.25,
-            labelNavPrev: "Back",
-            labelNavNext: "Forward",
         }
 
         const carousel = new Carousel(baseConfig(fullConfig));
