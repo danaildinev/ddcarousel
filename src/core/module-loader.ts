@@ -90,7 +90,7 @@ export default class ModuleLoader {
         return Boolean(status);
     }
 
-    async unload(moduleId: string) {
+    unload(moduleId: string) {
         const instance = this.#instances.get(moduleId);
         if (!instance) {
             return;

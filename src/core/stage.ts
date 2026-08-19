@@ -175,6 +175,7 @@ export default class Stage {
         this.#slidesHeights = [];
 
         window.removeEventListener("keydown", this.#keyboardHandler);
+        clearTimeout(this.#resizeTimeout);
 
         this.#events.off(EVENTS.PAGE_CHANGE_REQUEST, this.#onPageChangeRequest);
         this.#events.off(EVENTS.SLIDE_SCROLL, this.#onSlideScroll);
@@ -508,7 +509,7 @@ export default class Stage {
         }
 
         const isForward = index > this.currentPage ||
-            (index > this.currentPage && (index === 0 && this.currentPage === this.totalPages));
+            (index === 0 && this.currentPage === this.totalPages);
 
         this.currentPage = index;
 
