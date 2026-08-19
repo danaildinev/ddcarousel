@@ -2,7 +2,7 @@ import { EVENTS, LEGACY_EVENT_MAP } from "../constants/events-list";
 import type { CarouselConfig } from "./carousel.types";
 import type { PriorityPayload } from "./event-payload.types";
 
-type PageChangeScrollPayload = PriorityPayload & {
+export type PageChangeScrollPayload = PriorityPayload & {
     currentPage: number;
     slidesCount: number;
     currentTranslate: number;
@@ -10,7 +10,7 @@ type PageChangeScrollPayload = PriorityPayload & {
     isForward: boolean;
 };
 
-type ModuleEventPayload = {
+export type ModuleEventPayload = {
     name: string;
 };
 
