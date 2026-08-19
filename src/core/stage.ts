@@ -576,17 +576,17 @@ export default class Stage {
         if (specifiedPosition !== null) {
             position = specifiedPosition
         } else {
+            position = -this.#getSlidePos(targetSlide);
             if (config.centerSlide && config.items > 0) {
-                const slideStyle = this.#getFirstSlideStyle();
-                if (slideStyle === undefined) {
-                    throw error(`${err} Slide style was not found!`);
+                const firstSlide = this.#slides[0]; // this.#getFirstSlideStyle();
+                if (!firstSlide) {
+                    throw error(`${err} Slide was not found!`);
                 }
 
-                position =
-                    -this.#getSlidePos(targetSlide) -
-                    -(parseInt(slideStyle.width) * Math.floor(config.items / 2));
-            } else {
-                position = -this.#getSlidePos(targetSlide);
+                const rect = firstSlide.getBoundingClientRect();
+                const slideSize = config.vertical ? rect.height : rect.width;
+
+                position += slideSize * Math.floor(config.items / 2);
             }
         }
 
