@@ -35,7 +35,6 @@ export class Config {
     #setDefaultConfig(): CarouselConfig {
         return {
             container: `.ddcarousel`,
-            nav: false,
             pagination: true,
             autoHeight: true,
             fullWidth: true,
@@ -43,11 +42,8 @@ export class Config {
             items: 1,
             itemPerPage: false,
             gap: 0,
-            loop: false,
             vertical: false,
             verticalMaxContentWidth: false,
-            urlNav: false,
-            urlNavContainer: null,
             responsive: null,
             touchDrag: true,
             dragSnapMode: DragSnapMode.Swipe,

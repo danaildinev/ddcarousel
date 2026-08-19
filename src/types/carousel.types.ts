@@ -1,22 +1,16 @@
-import type { BaseModule } from "../core/base-module";
 import type { CarouselOnEvents } from "../constants/events-list";
 import type { ClosestSlideIndexes } from "../utils/slide";
 
 export type CarouselConfig = {
     container: string | HTMLDivElement;
-    nav: boolean;
-    pagination: boolean;
     autoHeight: boolean;
     fullWidth: boolean;
     startPage: number;
     items: number;
     gap: number;
     itemPerPage: boolean;
-    loop: boolean;
     vertical: boolean;
     verticalMaxContentWidth: boolean;
-    urlNav: boolean;
-    urlNavContainer: string | null;
     responsive?: Record<number, Partial<CarouselConfig> & Partial<CarouselOnEvents>> | null;
     touchDrag: boolean;
     dragSnapMode: DragSnapMode,
