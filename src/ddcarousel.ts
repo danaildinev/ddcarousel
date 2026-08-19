@@ -13,6 +13,7 @@ import type LazyLoad from "./modules/lazyLoad";
 import type Loop from "./modules/loop";
 import type UrlNav from "./modules/urlNav";
 import type { LazyLoadConfig } from "./modules/lazyLoad";
+import { PRIORITY } from "./constants/priorities";
 
 export default function ddcarousel(config?: Partial<CarouselConfig>) {
     return new Carousel(config);
@@ -22,6 +23,7 @@ export {
     Carousel,
     EVENTS,
     EVENTS_AUTOPLAY as AUTOPLAY_EVENTS,
+    PRIORITY,
     DragSnapMode,
 };
 export type {

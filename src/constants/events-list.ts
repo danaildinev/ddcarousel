@@ -2,8 +2,8 @@ import type { CarouselEvents } from "../types/event.types";
 
 export const EVENTS = {
     // lifecycle
-    INITIALIZE: 'carousel:initalize',
-    INITIALIZED: 'carousel:initalized',
+    INITIALIZE: 'carousel:initialize',
+    INITIALIZED: 'carousel:initialized',
     DESTROY: 'carousel:destroy',
     DESTROYED: 'carousel:destroyed',
 

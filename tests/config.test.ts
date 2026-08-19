@@ -142,7 +142,7 @@ describe("Config", () => {
 
         new Config(events, {
             ...baseConfig(),
-            "on:carousel:initalized": onInitialized,
+            "on:carousel:initialized": onInitialized,
             onChanged: legacyChanged,
             onNotMapped: ignoredCallback,
             customValue: "not a callback",
@@ -293,7 +293,7 @@ describe("Config", () => {
             responsive: {
                 1000: {
                     container: ".asdasd",
-                    "on:carousel:initalize": responsiveInit,
+                    "on:carousel:initialize": responsiveInit,
                 }
             }
         }
@@ -304,14 +304,14 @@ describe("Config", () => {
         config.refreshResponsive(900);
 
         // Handler should be registered
-        events.emit("carousel:initalize");
+        events.emit(EVENTS.INITIALIZE);
         expect(responsiveInit).toHaveBeenCalledTimes(1);
 
         // Leave responsive breakpoint
         config.refreshResponsive(1200);
 
         // Should have been removed
-        events.emit("carousel:initialize");
+        events.emit(EVENTS.INITIALIZE);
         expect(responsiveInit).toHaveBeenCalledTimes(1);
     });
 
