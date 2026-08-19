@@ -2,17 +2,34 @@
 	"name": "ddcarousel",
 	"version": "1.4.2",
 	"description": "Simple and fast carousel slider written in vannila JS",
-	"main": "index.js",
+	"type": "module",
+	"main": "./dist/ddcarousel.esm.js",
+	"module": "./dist/ddcarousel.esm.js",
+	"types": "./dist/ddcarousel.d.ts",
+	"unpkg": "./dist/ddcarousel.umd.min.js",
+	"jsdelivr": "./dist/ddcarousel.umd.min.js",
+	"exports": {
+		".": {
+			"types": "./dist/ddcarousel.d.ts",
+			"import": "./dist/ddcarousel.esm.js",
+			"default": "./dist/ddcarousel.esm.js"
+		},
+		"./ddcarousel.css": "./dist/ddcarousel.css",
+		"./ddcarousel.min.css": "./dist/ddcarousel.min.css"
+	},
+	"files": [
+		"dist",
+		"CHANGELOG.md"
+	],
 	"scripts": {
-		"dist": "npm-run-all babeljs minifyjs buildcss minifycss license",
-		"babeljs": "babel src/ddcarousel.js --out-file dist/ddcarousel.js --source-maps --presets=@babel/preset-env",
-		"minifyjs": "uglifyjs --compress --comments /^!/ --output dist/ddcarousel.min.js -- dist/ddcarousel.js",
-		"testjs": "uglifyjs --output src/testing/ddcarousel.js -- src/ddcarousel.js",
-		"watchsass": "sass --watch --style=compressed --load-path=scss src/ddcarousel.scss src/testing/ddcarousel.css",
-		"buildcss": "sass --style=compressed --load-path=scss src/ddcarousel.scss src/ddcarousel.css",
-		"minifycss": "uglifycss src/ddcarousel.css > dist/ddcarousel.min.css",
-		"license": "node utils/post-dist.js",
-		"test": "npm run dist"
+		"test": "vitest run",
+		"build:all": "npm run build:prod && npm run build:types && npm run bundle:types && npm run clean:types",
+		"build:prod": "webpack",
+		"build:dev": "webpack serve --env dev",
+		"build:types": "tsc --emitDeclarationOnly",
+		"type-check": "tsc --noEmit",
+		"bundle:types": "api-extractor run --local",
+		"clean:types": "node utils/clean-types.js"
 	},
 	"repository": {
 		"type": "git",
@@ -31,28 +48,22 @@
 		"url": "https://github.com/danaildinev/ddcarousel/issues"
 	},
 	"homepage": "https://github.com/danaildinev/ddcarousel#readme",
-	"browserslist": [
-		"ie >= 10",
-		"edge >= 15",
-		"chrome >= 37",
-		"firefox >= 32",
-		"opera >= 23",
-		"safari >= 6.2",
-		"ios >= 9"
-	],
 	"devDependencies": {
-		"@babel/cli": "^7.13.14",
-		"@babel/core": "^7.14.3",
-		"@babel/preset-env": "^7.14.4",
-		"babel-plugin-minify-mangle-names": "^0.5.0",
-		"babel-plugin-minify-simplify": "^0.5.1",
-		"babel-plugin-remove-import-export": "^1.1.1",
-		"babel-plugin-transform-minify-booleans": "^6.9.4",
-		"babel-plugin-transform-remove-console": "^6.9.4",
-		"copyfiles": "^2.4.1",
-		"npm-run-all": "^4.1.5",
+		"@microsoft/api-extractor": "^7.58.12",
+		"@testing-library/dom": "^10.4.1",
+		"@types/jsdom": "^28.0.3",
+		"css-loader": "^7.1.4",
+		"jsdom": "^29.1.1",
+		"mini-css-extract-plugin": "^2.10.1",
 		"sass": "^1.97.3",
-		"uglify-js": "^3.13.3",
-		"uglifycss": "0.0.29"
+		"sass-loader": "^16.0.7",
+		"terser-webpack-plugin": "^5.4.0",
+		"ts-loader": "^9.5.4",
+		"ts-node": "^10.9.2",
+		"typescript": "^5.9.3",
+		"vitest": "^4.1.9",
+		"webpack": "^5.105.4",
+		"webpack-cli": "^6.0.1",
+		"webpack-dev-server": "^5.2.3"
 	}
 }

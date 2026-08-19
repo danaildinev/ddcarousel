@@ -1,0 +1,17 @@
+{
+  "mainEntryPointFilePath": "./dist/types/ddcarousel.d.ts",
+  "dtsRollup": {
+    "enabled": true,
+    "publicTrimmedFilePath": "./dist/ddcarousel.d.ts"
+  },
+  "compiler": {
+    "tsconfigFilePath": "./tsconfig.json"
+  },
+  "apiReport": {
+    "enabled": false,
+    "reportFolder": "./etc"
+  },
+  "docModel": {
+    "enabled": false
+  }
+}
