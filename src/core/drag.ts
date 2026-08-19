@@ -32,12 +32,12 @@ export default class Drag {
     #swipeDistance: number = 0;
     #stayOnThisSlide: boolean = false;
 
-    constructor(config: Config, events: Events, status: CarouselStatus) {
+    constructor(config: Config, events: Events, status: CarouselStatus, container: HTMLDivElement) {
         this.#configClass = config;
         this.#status = status;
         this.#events = events;
 
-        const stage = document.querySelector<HTMLDivElement>(`${this.#config.container} .${CSS_CLASSES.stage}`);
+        const stage = container.querySelector<HTMLDivElement>(`.${CSS_CLASSES.stage}`);
         if (stage === null) {
             throw error("Drag module won't initialize! Stage DOM was not found!");
         }

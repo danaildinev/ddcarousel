@@ -87,7 +87,6 @@ export default class Carousel {
 
             const containerOption = this.#config.current.container;
             const container = typeof containerOption === "string" ? document.querySelector<HTMLDivElement>(containerOption) : containerOption;
-
             if (!container) {
                 throw error("Container not found!");
             }
@@ -95,7 +94,7 @@ export default class Carousel {
 
             this.#stage = new Stage(this.#config, this.#events);
 
-            this.#drag = new Drag(this.#config, this.#events, this.getStatus());
+            this.#drag = new Drag(this.#config, this.#events, this.getStatus(), this.#container);
             this.#drag.initialize();
 
             this.#moduleLoader = new ModuleLoader({
