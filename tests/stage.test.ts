@@ -483,12 +483,12 @@ describe("Stage core", () => {
         expect(carousel.getStatus().visibleSlides).toEqual([4]);
     });
 
-    it("clamps items to the slide count", () => {
+    it("uses slide count as effective items when configured items exceeds slides", () => {
         renderCarousel(2);
 
         const carousel = new Carousel(baseConfig({ items: 5 }));
 
-        expect(carousel.getStatus().config.current?.items).toBe(2);
+        expect(carousel.getStatus().config.current?.items).toBe(5);
         expect(carousel.getTotalPages()).toBe(0);
         expect(carousel.getStatus().slidesByPage).toEqual([[0, 1]]);
     });
@@ -647,5 +647,28 @@ describe("Stage core", () => {
         vi.advanceTimersByTime(50);
 
         expect(carousel.getStatus().config.current?.items).toBe(3);
+    });
+
+    it("does not mutate config items when there are fewer slides", async () => {
+        renderCarousel(3);
+
+        const carousel = new Carousel();
+
+        await carousel.init(baseConfig({
+            items: 5,
+            pagination: false,
+        }));
+
+        const status = carousel.getStatus();
+
+        // Preserve the user's configured value
+        expect(status.config.current?.items).toBe(5);
+
+        // Stage internally clamps it to the available 3 slides
+        expect(status.totalPages).toBe(0);
+        expect(status.slidesByPage).toEqual([
+            [0, 1, 2]
+        ]);
+        expect(status.visibleSlides).toEqual([0, 1, 2]);
     });
 });

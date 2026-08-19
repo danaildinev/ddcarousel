@@ -50,6 +50,10 @@ export default class Stage {
         return this.#configClass.current;
     }
 
+    get #effectiveItems(): number {
+        return Math.min(this.#config.items, this.#slides.length);
+    }
+
     initialize() {
         const events = this.#events;
 
@@ -244,10 +248,6 @@ export default class Stage {
         this.#containerWidth = parseInt(containerStyle.width);
         this.#containerHeight = parseInt(containerStyle.height);
 
-        if (slides.length <= config.items) {
-            config.items = slides.length;
-        }
-
         this.#calculateTotalPages(); // this may not be needed here
 
         if (!config.vertical) {
@@ -270,7 +270,13 @@ export default class Stage {
         let pages;
         const slidesByPage = [];
         const slidesLength = this.#slides.length;
-        const slidesPerPage = this.#config.items;
+        const slidesPerPage = this.#effectiveItems;
+
+        if (slidesPerPage < 1) {
+            this.slidesByPage = [];
+            this.totalPages = 0;
+            return;
+        }
 
         if (this.#config.centerSlide) {
             pages = slidesLength - 1;
@@ -359,8 +365,10 @@ export default class Stage {
     }
 
     #updateSlideDimensions(slide: HTMLDivElement) {
-        const { items, gap, vertical } = this.#config;
-        if (items != 0) {
+        const { gap, vertical } = this.#config;
+        const items = this.#effectiveItems;
+
+        if (items > 0) {
             if (vertical) {
                 slide.style.height = `${this.#containerHeight / items}px`;
             } else {
@@ -388,26 +396,27 @@ export default class Stage {
         previousVisibleSlides.forEach(i => this.#container.querySelector(`[${DATA.attrs.slide}="${i}"]`)?.classList.remove(CSS_CLASSES.slideVisible));
 
         const visibleSlides: number[] = [];
-        const config = this.#config,
-            slideIndex = this.currentPage * (config.items > 0 ? config.items : 1),
-            slidesLength = this.#slides.length;
+        const config = this.#config;
+        const items = this.#effectiveItems;
+        const slideIndex = this.currentPage * items;
+        const slidesLength = this.#slides.length;
 
         if (config.centerSlide) {
             visibleSlides.push(this.currentPage);
         } else if (config.itemPerPage) {
-            for (let i = this.currentPage; i < this.currentPage + config.items; i++) {
+            for (let i = this.currentPage; i < this.currentPage + items; i++) {
                 visibleSlides.push(i);
             }
         } else {
-            if (slideIndex + config.items > slidesLength) {
-                for (let i = slidesLength - config.items; i < slidesLength; i++) {
+            if (slideIndex + items > slidesLength) {
+                for (let i = slidesLength - items; i < slidesLength; i++) {
                     visibleSlides.push(i);
                 }
             } else {
                 if (config.items == 0) {
                     visibleSlides.push(slideIndex);
                 } else {
-                    for (let i = slideIndex; i < slideIndex + config.items; i++) {
+                    for (let i = slideIndex; i < slideIndex + items; i++) {
                         if (i < slidesLength) {
                             visibleSlides.push(i);
                         }
@@ -577,7 +586,8 @@ export default class Stage {
             position = specifiedPosition
         } else {
             position = -this.#getSlidePos(targetSlide);
-            if (config.centerSlide && config.items > 0) {
+            const items = this.#effectiveItems;
+            if (config.centerSlide && items > 0) {
                 const firstSlide = this.#slides[0]; // this.#getFirstSlideStyle();
                 if (!firstSlide) {
                     throw error(`${err} Slide was not found!`);
@@ -586,7 +596,7 @@ export default class Stage {
                 const rect = firstSlide.getBoundingClientRect();
                 const slideSize = config.vertical ? rect.height : rect.width;
 
-                position += slideSize * Math.floor(config.items / 2);
+                position += slideSize * Math.floor(items / 2);
             }
         }
 

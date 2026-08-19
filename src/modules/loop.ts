@@ -183,8 +183,9 @@ export default class Loop extends BaseModule {
             return;
         }
 
-        const beforeCount = Math.floor(this.config.items / 2);
-        const afterCount = this.config.items - beforeCount - 1;
+        const items = Math.min(this.config.items, this.getStatus().totalSlides)
+        const beforeCount = Math.floor(items / 2);
+        const afterCount = items - beforeCount - 1;
         const indexes: number[] = [];
 
         for (let offset = -beforeCount; offset <= afterCount; offset++) {
