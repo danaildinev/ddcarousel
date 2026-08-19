@@ -132,7 +132,6 @@ export default class Carousel {
                 this.#moduleLoader = undefined;
                 this.#stage = undefined;
                 this.#config = undefined;
-                this.#config = undefined;
 
                 this.#state = 'failed';
                 this.#initToken = null;

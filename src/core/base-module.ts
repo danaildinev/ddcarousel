@@ -58,6 +58,10 @@ export abstract class BaseModule<TConfig = Record<string, unknown>> implements M
 
         this.destroy();
 
+        if (this.configOverride) {
+            this.configClass.setModuleOverride(this.id);
+        }
+
         this.isInitialized = false;
         this.emitDestroyed();
     }
