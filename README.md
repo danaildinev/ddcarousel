@@ -786,6 +786,14 @@ Legacy event names remain temporarily supported, but use the new v2 event payloa
 
 See [CHANGELOG.md](./CHANGELOG.md) for all breaking changes.
 
+## Contributing
+
+Contributions are welcome! If you would like to report a bug, suggest a feature, improve the documentation, or contribute code, please read the [Contributing Guide](./CONTRIBUTING.md).
+
+Following the contribution guidelines helps keep the project consistent and makes changes easier to review, test, and maintain.
+
+Thank you in advance for taking the time to follow these guidelines and, most importantly, for choosing to contribute to the project. Any help is greatly appreciated! :)
+
 ## License
 
 The code is released under the [MIT License](https://github.com/danaildinev/ddcarousel/blob/master/LICENSE).
