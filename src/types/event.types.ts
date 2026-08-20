@@ -1,5 +1,5 @@
 import { EVENTS, LEGACY_EVENT_MAP } from "../constants/events-list";
-import type { CarouselConfig } from "./carousel.types";
+import type { CarouselConfig, CarouselStatus } from "./carousel.types";
 import type { PriorityPayload } from "./event-payload.types";
 
 export type PageChangeScrollPayload = PriorityPayload & {
@@ -71,7 +71,7 @@ export type CarouselEvents = {
     };
 
     [EVENTS.INITIALIZE]: void;
-    [EVENTS.INITIALIZED]: void;
+    [EVENTS.INITIALIZED]: CarouselStatus;
     [EVENTS.DESTROY]: void;
     [EVENTS.DESTROYED]: void;
     [EVENTS.STAGE_CREATED]: void;
