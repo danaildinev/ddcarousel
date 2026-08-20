@@ -49,7 +49,7 @@ You can also use ddcarousel directly from a CDN:
 
 ddcarousel provides separate builds for modern applications and direct browser usage.
 
-See [Production output](#Production-output) category for detailed builds information.
+See [Production output](#production-output) category for detailed builds information.
 
 ### ESM
 
@@ -188,7 +188,7 @@ This is useful when you want to self-host ddcarousel, quickly test it in the bro
     await carousel.ready;
 </script>
 ```
-When using the ESM build directly, keep ddcarousel.esm.js and all generated ddcarousel-*.esm.js module chunks in the same directory. Optional modules are loaded dynamically when needed. The page should also must served through a web server rather than opened directly with file://.
+When using the ESM build directly, keep `ddcarousel.esm.js` and all generated `ddcarousel-*.esm.js` module chunks in the same directory. Optional modules are loaded dynamically when needed. The page must also be served through a web server rather than opened directly with `file://`.
 
 ### Initialize later
 
@@ -272,22 +272,21 @@ This provides type-safe configuration, event callbacks, carousel state, and modu
 
 - `container` - Carousel container selector. By default it searches for DOM element with `ddcarousel` class name (string)
 
-- `items` - Number of visible items per page. If `items` exceeds the available slide count, cariousel uses an effective clamped value for layout while preserving the configured value. (number, default: `1`)
+- `items` - Number of visible items per page. If `items` exceeds the available slide count, carousel uses an effective clamped value for layout while preserving the configured value. (number, default: `1`)
 
 - `itemPerPage` - Move one item at a time when changing pages (boolean, default: `false`)
 
-- `autoHeight` - Automatically adjust carousel height based on visible slides. `autoHeight` can be used with vertical carousels - it no longer needs to be disabled manually (boolean, default: `true`)
+- `autoHeight` - Automatically adjust carousel height based on visible slides. Works with vertical carousels. (boolean, default: `true`)
 
 - `fullWidth` - Expand the carousel to the full available width (boolean, default: `true`)
 
-- `centerSlide` - Centered the active slide 
-(boolean, default: `false`)
+- `centerSlide` - Center the active slide (boolean, default: `false`)
 
-- `startPage` - Set starting page (int, default: `0`)
+- `startPage` - Set starting page (number, default: `0`)
 
 - `responsive` - Breakpoint-specific configuration options. When leaving a responsive breakpoint, options defined only for that breakpoint are restored to their original or default values. (object, default: empty object)
 
-- `gap` - Space between slides (boolean, default: `0`)
+- `gap` - Space between slides (number, default: `0`)
 
 - `touchDrag` - Enable dragging with touch input (boolean, default: `true`)
 
@@ -299,17 +298,19 @@ This provides type-safe configuration, event callbacks, carousel state, and modu
 
 - `vertical` - Enable vertical carousel orientation (boolean, default: `false`)
 
-- `verticalMaxContentWidth` - Size the carousel width based on its widest slide. Disables fullWidth when enabled (boolean, default: `false`)
+- `verticalMaxContentWidth` - Size the carousel width based on its widest slide. Disables `fullWidth` when enabled (boolean, default: `false`)
 
 - `swipeThreshold` - Minimum drag distance required to trigger a page change (number, default: `60`)
 
-- `dragMaxDistance` - MMaximum allowed drag distance. 0 allows unrestricted dragging (number, default: `0`)
+- `dragMaxDistance` - Maximum allowed drag distance. 0 allows unrestricted dragging (number, default: `0`)
 
-- `slideChangeDuration` - Slide transition animation duration in seconds (int, default: `0.5`)
+- `slideChangeDuration` - Slide transition animation duration in seconds (number, default: `0.5`)
 
-- `swipeSmooth` - Controls drag movement smoothing (int, default: `0`)
+- `swipeSmooth` - Controls drag movement smoothing (number, default: `0`)
 
-- `resizeDebounce` - Delay in milliseconds before recalculating the carousel after resizing. Stage size changes are detected automatically. Layout, slide positions and responsive configuration are recalculated after resizing. (int, default: `200`)
+- `resizeDebounce` - Delay in milliseconds before recalculating the carousel after resizing. Stage size changes are detected automatically. Layout, slide positions and responsive configuration are recalculated after resizing. (number, default: `200`)
+
+- `refresh()` - **Deprecated.** Carousel resizing and layout recalculation are now handled automatically.
 
 ## Styling
 
@@ -348,8 +349,7 @@ Available customization options:
 ## Modules
 
 ddcarousel includes optional modules that are loaded only when needed.
-Each module has unique ID that can be used to get module instance or load or unload.
-Loaded modules can be accessed through the `module()` method using the module ID.
+Each module has a unique ID that can be used to get module instance, load or unload it.
 
 ```ts
 import { Autoplay } from "ddcarousel";
@@ -444,27 +444,27 @@ Slides used with URL Navigation must include `data-id` and `data-title`.
 
 #### Methods
 
-- `goToUrl(name, enableAnim)` - Change current page mathing the name.
+- `goToUrl(name, enableAnim)` - Change the current page to the slide matching the specified name.
 
 ### Loop
 
 Enables loop/infinite scrolling
-Module id: `loop`
+Module ID: `loop`
 
 * `loop` - Enable loop mode (boolean, default: `false`)
 
 
 ## Methods
 
-- `init(config)` - Initialize the carousel with the default config or user configuration provided as paramer. It returns a promise, so it can be awaited with `await carousel.init(config)` when you need to wait for initialization and module loading to complete.
+- `init(config)` - Initialize the carousel with the default config or user configuration provided as a parameter. It returns a promise, so it can be awaited with `await carousel.init(config)` when you need to wait for initialization and module loading to complete.
 
-- `destroy(true)` - Destroy the carousel. By default, it restores the container to its state before initialization. Use `false` parameter to skip restoring the original slides. After `destroy()` is called, the same `Carousel` instance can't be initialized again. Create a new instance instead.
+- `destroy(restoreSlides)` - Destroy the carousel. Slides are restored by default. Use `false` to skip restoring the original slides. A destroyed instance cannot be initialized again. Create a new instance instead.
 
 - `prevPage()` - Go to the previous page
 
 - `nextPage()` - Go to the next page
 
-- `changePage(id, animate);` - Go to a specified page indexand option to toggle animation on/off when changing page.
+- `changePage(id, animate);` - Go to a specified page index. The optional second parameter controls whether the page change is animated.
 
 - `on(event, callback)` - Register an event listener. Supports built-in, legacy and custom event names.
 
@@ -474,7 +474,7 @@ Module id: `loop`
 
 - `unloadModule(moduleId)` - Manually unload a module.
 
-- `getStatus()` - Get detailed information about the current carousel state. See [Events](#Events) section for a full `CarouselStatus` breakdown
+- `getStatus()` - Get detailed information about the current carousel state. See [Events](#events) section for a full `CarouselStatus` breakdown
 
 - `getCurrentPage()` - Get the current page index
 
@@ -539,7 +539,7 @@ const carousel = ddcarousel({
 });
 ```
 
-In order `carousel:initialize` to work, it must be registered with `on()`, before calling `init()`, because it is emitted before the configuration is initialized.
+For `carousel:initialize` to work, it must be registered with `on()`, before calling `init()`, because it is emitted before the configuration is initialized.
 
 ```ts
 const carousel = new Carousel();
@@ -570,7 +570,7 @@ await carousel.init({
     - `totalSlides` - Total number of slides
     - `slidesByPage` - Slide indexes associated with each page
     - `visibleSlides` - Currently visible slide indexes
-    - `config` - Current active carousel configuration
+    - `config.current` - Current active carousel configuration
     - `currentTranslate` - Current stage translate position
     - `modules` - IDs of currently loaded modules
     - `closestSlidesIndexes` - Closest slide indexes relative to the current stage position
@@ -641,7 +641,7 @@ await carousel.init({
 - `page:change:scroll:after`
   Emitted after the stage scroll position has been applied.
 
-  Both events `page:change:scroll:before` and `page:change:scroll:after` provides:
+  Both events `page:change:scroll:before` and `page:change:scroll:after` provide:
 
   - `currentPage` - Current page index
   - `slidesCount` - Total number of slides
@@ -709,11 +709,11 @@ Each module lifecycle callback provides:
 
 - `name` - Module name / ID
 
-## Priority-based internal events
+### Priority-based internal events
 
 Some internal events support priority-based overrides used by modules. Higher-priority handlers can override lower-priority ones, while equal-priority override attempts are ignored. This is mainly intended for module interoperability.
 
-Then list the supported events:
+Supported events:
 
 - `page:change:request`
 - `page:changed:index`
@@ -721,9 +721,9 @@ Then list the supported events:
 - `page:change:scroll:after`
 - `slide:scroll`
 
-## Legacy events
+### Legacy events
 
-Legacy v1.x event names are still supported for backwards compatibility, but are deprecated and will be removed in the next major version. Legacy events can still be used with `carousel.on()` or configuration keys.
+Legacy v1.x event names are still supported for backwards compatibility, but are deprecated and will be removed in the next major version. Legacy events can still be used with `carousel.on()` or configuration keys, except `onInitialize`, which must be registered with `carousel.on()` before calling `init()`.
 For new projects, use the v2 namespaced events instead. When upgrading, make sure to check events API for callback changes.
 
 - `onInitialize`    -> `carousel:initialize`  
@@ -759,9 +759,9 @@ Production builds are generated in the dist directory.
 
 `npm run build:dev` uses the `src/testing` directory as a local testing playground and builds the development ESM module and CSS there.
 
-You can manually create an `index.html` file inside add your own carousel HTML structure and use it to test the ESM build directly in the browser while developing.
+You can manually create an `index.html` file inside `src/testing`, add your own carousel HTML structure and use it to test the ESM build directly in the browser while developing.
 
-The development server watches for source changes and rebuilds and reload the page automatically.
+The development server watches for source changes and rebuilds and reloads the page automatically.
 
 ### Production output
 
