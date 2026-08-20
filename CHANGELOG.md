@@ -2,6 +2,8 @@
 
 ## v2.0.0 (2026 August)
 
+Major TypeScript rewrite with a new modular architecture, modern ESM distribution, module lifecycle, and optimized production builds.
+
 ### ⚠️ Breaking Changes
 - Replaced the previous v1.x browser files with explicit UMD builds:
     - `ddcarousel.js` -> `ddcarousel.umd.js`
@@ -64,7 +66,7 @@
     - Navigation
     - URL navigation
 - Added dynamic loading of optional modules, reducing the core bundle size when those features are not enabled.
-- Added `carousel.module<Foo>(Foo.id)` for retrieving loaded module instance
+- Added `carousel.module(Foo.id)` for retrieving loaded module instance
 - Added `carousel.loadModule()` and `carousel.unloadModule()` methods for manually loading and unloading internal modules.
 - Modules are now automatically loaded and unloaded when their related configuration changes, including responsive breakpoint changes.
 - Add priority-based event overrides for modules. Modules can now use `tryOverridePriority()` to claim supported event payloads based on priority. 
@@ -107,7 +109,6 @@
 
 ### Styling & UI
 - Added new CSS variables:
-    - `--ddcarousel-primary-color`
     - `--ddcarousel-nav-color`
     - `--ddcarousel-nav-font-size` - navigation text size when using custom text instead of the default SVG icon
     - `--ddcarousel-url-nav-color`
