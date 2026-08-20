@@ -23,8 +23,10 @@ Major TypeScript rewrite with a new modular architecture, modern ESM distributio
     - `autoplayStart()` -> `module<Autoplay>(Autoplay.id).start()`
     - `autoplayStop()` -> `module<Autoplay>(Autoplay.id).stop()`
     - `goToUrl()` -> `module<UrlNav>(UrlNav.id).goToUrl()`;
-- Removed the `callback` config option. The new event system should be used instead.
+- Replaced the v1.x event system with a new namespaced and strongly typed event API. 
+- Removed the `callbacks` config option. Events no longer use a shared optional callback payload. The generic v1.x callback properties `container`, `event`, `currentSlides`, `currentPage`, `totalSlides`, and `totalPages` are no longer automatically included with every event. Each v2 event now provides its own event-specific payload. Legacy v1.x event names remain supported temporarily, but use the new v2 callback payloads and will be removed in the next major version.
 - Destroyed `Carousel` instances can no longer be initialized again with `init()`. You must create a new carousel instance after calling `destroy()`.
+- `init()` is now asynchronous and returns a `Promise<void>`, allowing initialization and module loading to be awaited.
 - Changed `destroy(true)` behavior. Passing `true` now restores the container to its state before carousel initialization instead of fully clearing it.
 - Changed the default value of `dragMaxDistance` to `0`, allowing unrestricted carousel dragging by default.
 - Dropped support for old browsers and Internet Explorer. The JavaScript target is now ES2022, supported by modern browsers.
@@ -36,14 +38,13 @@ Major TypeScript rewrite with a new modular architecture, modern ESM distributio
 - Added new properties to `getStatus()`:
     - `state` - current carousel state
     - `slides` - array with carousel slides
-    - `slideByPage` - slide indexes for every page
+    - `slidesByPage` - slide indexes for every page
     - `modules` - IDs of currently loaded modules
+    - `closestSlidesIndexes` - closest slide indexes relative to the current stage position
 - Added `carousel.ready` - a promise that resolves after carousel initialization and module loading have completed.
 - Fixed a broken stage when `items` was set to `0` or a negative value. Invalid values now fall back to the default `items` value.
-- Fixed responsive configuration values not reverting when leaving a breakpoint. Properties defined only within responsive breakpoints now restore their original or default values when the breakpoint is no longer active.
 - Fixed `items` being mutated when the configured value exceeded the available slide count. The configured value is now preserved while the stage uses a clamped effective item count internally for layout, pagination, visible slides, and centering.
-- Improved resize handling by debouncing resize events.
-- Stage recalculations are now performed only after resizing has stopped, reducing unnecessary layout updates and improving performance during continuous resize operations.
+- Improved resize handling: stage size changes are detected automatically, with layout, slide positions, and responsive configuration recalculated after resizing has stopped to reduce unnecessary updates during continuous resizing.
 - Removed the requirement to manually disable `autoHeight` when using `vertical`. Only the carousel height needs to be defined; child slide heights are now handled internally by the carousel styles.
 
 ### Drag & Interaction
@@ -55,6 +56,7 @@ Major TypeScript rewrite with a new modular architecture, modern ESM distributio
 - Fixed touch dragging not working on touch devices
 - Fixed dragging when using `vertical` and `centerSlide`
 - Fixed multi-touch interactions interrupting an active drag by tracking and responding only to the active pointer.
+- Fixed responsive configuration values not reverting when leaving a breakpoint. Properties defined only within responsive breakpoints now restore their original or default values when the breakpoint is no longer active.
 - Improved drag cancellation handling, ensuring interrupted gestures revert cleanly.
 - Replaced separate mouse and touch handling with the [Pointer Events](https://developer.mozilla.org/en-US/docs/Web/API/PointerEvent) input model, providing a unified implementation for mouse, touch, and pen input.
 
@@ -62,6 +64,7 @@ Major TypeScript rewrite with a new modular architecture, modern ESM distributio
 - Implemented a new module system for a more modular and extensible architecture, with support planned for loading an external modules in the future. Several carousel features are now implemented as separate internal module:
     - Autoplay
     - Pagination
+    - Loop
     - Lazy loading
     - Navigation
     - URL navigation
@@ -94,7 +97,7 @@ Major TypeScript rewrite with a new modular architecture, modern ESM distributio
     - `page:changed:index` - emitted immediately before the active page index is changed, allowing modules to intercept and override the requested page.
     - `page:change:scroll:before` - emitted immediately before the stage begins scrolling to the requested page.
     - `page:change:scroll:after`- emitted after the stage has finished applying the requested scroll position.
-    - `config:changed` - emitted when the active configuration changes after initialization, for example when entering or leaving a responsive breakpoint.
+    - `config:applied` - emitted when the active configuration changes after initialization, for example when entering or leaving a responsive breakpoint.
     - `stage:created` - emitted when stage has been created 
     - `stage:changed` - emitted when changes in DOM structure
     - `slide:scroll` - emitted when starts slide scrolling
@@ -102,7 +105,7 @@ Major TypeScript rewrite with a new modular architecture, modern ESM distributio
 - Renamed events for a more consistent namespaced event system.
 - Event names passed to `carousel.on()` must not include the `on:` prefix. For example: `carousel.on(EVENTS.PAGE_CHANGED, callback)`
 - `stage:resized` is now attached to carousel stage resizing instead of the global `window` resize event. When triggered, it recalculates slide dimensions and positions, updates the stage transform, and reapplies responsive configuration when necessary
-- `drag:dragging` now exposes the current pointer position, drag distance and direction.
+- `drag:dragging` now exposes the current translate position, drag distance, direction, and nearby slide indexes.
 - `carousel:initialized` now provides the current carousel state returned by `getStatus()`.
 - `carousel:initialize` is now emitted before configuration initialization and container validation. Previously, it was emitted after both had already occurred.
 - `carousel:initialize` can no longer be registered through the initial configuration because the event fires before that configuration is initialized. Register it with `carousel.on()` before calling `carousel.init(config)` instead.
@@ -125,7 +128,7 @@ Major TypeScript rewrite with a new modular architecture, modern ESM distributio
 - Added a default navigation text color and a corresponding CSS variable
 - Added a separate color for inactive pagination dots instead of relying on opacity
 - Added a new design for navigation previous and next buttons
-- Fixed incorrect carousel height when using `centeredSlides` together with `autoHeight`
+- Fixed incorrect carousel height when using `centerSlides` together with `autoHeight`
 - Improved autoplay prograss bar animation by using GPU accelerated `transform` CSS property
 - Improved pagination styling
 - Replaced navigation previous and next button content with SVG chevron icons
@@ -174,16 +177,16 @@ Major TypeScript rewrite with a new modular architecture, modern ESM distributio
 ### Deprecated
 - Deprecating `refresh()`. Carousel refresh is now handled automatically on stage resize. Calling this method now outputs a console warning and performs no action;
 - Legacy event names still remains supported for compatibility but will be removed in a future major version:
-    - `onInitialize` -> `on:carousel:initialize`
-    - `onInitialized` -> `on:carousel:initialized`,
-    - `onDrag` -> `on:drag:start`
-    - `onDragging` -> `on:drag:dragging`
-    - `onDragged` -> `on:drag:end`
-    - `onTransitionend` -> `on:transition:end`
-    - `onChanged` -> `on:page:changed`
-    - `onResized` -> `on:stage:resized`
-    - `onDestroy` -> `on:carousel:destroy`
-    - `onDestroyed` -> `on:carousel:destroyed`
+    - `onInitialize` -> `carousel:initialize`
+    - `onInitialized` -> `carousel:initialized`,
+    - `onDrag` -> `drag:start`
+    - `onDragging` -> `drag:dragging`
+    - `onDragged` -> `drag:end`
+    - `onTransitionend` -> `transition:end`
+    - `onChanged` -> `page:changed`
+    - `onResized` -> `stage:resized`
+    - `onDestroy` -> `carousel:destroy`
+    - `onDestroyed` -> `carousel:destroyed`
 
 ## v1.4.2 (2026 March 12)
 - Updated dependencies: bumped immutable and minimatch to the latest versions to address security vulnerabilities (CVE-2026-29063, CVE-2026-27903)
