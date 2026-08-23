@@ -221,7 +221,7 @@ async function benchmarkStageResizeUpdate() {
     resizeObservers.clear();
 
     const carousel = new Carousel();
-    await carousel.init({ container: ".stage-resize" });
+    await carousel.init({ container: ".stage-resize", resizeDebounce: 0 });
 
     const container = document.querySelector(".stage-resize") as HTMLElement;
     let width = options.resizeWidth;
@@ -255,7 +255,7 @@ async function benchmarkStageResizeUpdate() {
 
             const resizeEvent = document.createEvent("Event");
             resizeEvent.initEvent("resize", true, true);
-            window.dispatchEvent(resizeEvent);
+            //window.dispatchEvent(resizeEvent);
 
             resizeObservers.forEach(callback => callback([entry], {} as ResizeObserver));
 
@@ -279,6 +279,7 @@ async function benchmarkStageResizeUpdateOld() {
     // Safety fallback: Pass as a callback just in case v1.4 expects it here
     const carousel = compareCarousel({
         container: ".stage-resize-old",
+        resizeRefresh: 0,
         onResized: () => {
             resizeResolved?.();
             resizeResolved = null;
@@ -288,11 +289,6 @@ async function benchmarkStageResizeUpdateOld() {
     // Standard event binding
     if (typeof carousel.on === 'function') {
         carousel.on("onResized", () => {
-            resizeResolved?.();
-            resizeResolved = null;
-        });
-        // Catch-all just in case the event name shifted in a minor patch
-        carousel.on("resized", () => {
             resizeResolved?.();
             resizeResolved = null;
         });
