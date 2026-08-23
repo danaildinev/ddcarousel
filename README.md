@@ -755,6 +755,14 @@ npm install
 
 Production builds are generated in the dist directory.
 
+### Bundle size
+
+DDCarousel stays **lightweight and compact** while still providing a broad set of carousel features at roughly **28 KB raw / ~9 KB gzip** for the ESM core and **36 KB raw / ~11 KB gzip** for the complete minified UMD build — around **70% smaller when gzipped**.
+
+Optional ESM modules are only about **1–4 KB each** and are loaded dynamically when needed, keeping the initial bundle small.
+
+*Sizes are approximate and may vary slightly between releases.*
+
 ### Development build
 
 `npm run build:dev` uses the `src/testing` directory as a local testing playground and builds the development ESM module and CSS there.
