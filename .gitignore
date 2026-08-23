@@ -3,6 +3,9 @@ dist/
 testing/
 NOTES.md
 
+demo/css/ddcarousel.min.css
+demo/js/ddcarousel.umd.min.js
+
 # Windows
 Thumbs.db
 desktop.ini

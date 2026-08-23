@@ -29,7 +29,9 @@
 		"build:types": "tsc --emitDeclarationOnly",
 		"type-check": "tsc --noEmit",
 		"bundle:types": "api-extractor run --local",
-		"clean:types": "node utils/clean-types.js"
+		"clean:types": "node utils/clean-types.js",
+		"demo:build": "node ./utils/setup-demo.js",
+		"demo:watch:css": "sass --watch --no-source-map ./demo/css/demos.scss:./demo/css/demos.css"
 	},
 	"repository": {
 		"type": "git",
@@ -52,10 +54,11 @@
 		"@microsoft/api-extractor": "^7.58.12",
 		"@testing-library/dom": "^10.4.1",
 		"@types/jsdom": "^28.0.3",
+		"concurrently": "^10.0.5",
 		"css-loader": "^7.1.4",
 		"jsdom": "^29.1.1",
 		"mini-css-extract-plugin": "^2.10.1",
-		"sass": "^1.97.3",
+		"sass": "^1.103.1",
 		"sass-loader": "^16.0.7",
 		"terser-webpack-plugin": "^5.4.0",
 		"ts-loader": "^9.5.4",
