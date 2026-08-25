@@ -4,298 +4,154 @@
 <head>
 	<meta charset="UTF-8" />
 	<meta name="viewport" content="width=device-width, initial-scale=1.0" />
-	<meta http-equiv="X-UA-Compatible" content="ie=edge" />
 	<title>DDCarousel Demos</title>
-	<link rel="stylesheet" href="../dist/ddcarousel.min.css" />
+	<link rel="preconnect" href="https://fonts.googleapis.com">
+	<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+	<link rel="stylesheet" href="css/ddcarousel.min.css" />
 	<link rel="stylesheet" href="css/demos.css" />
+	<link
+		href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@100..800&family=Nunito+Sans:ital,opsz,wght@0,6..12,200..1000;1,6..12,200..1000&display=swap"
+		rel="stylesheet">
 </head>
 
 <body>
-	<div id="top">
-		<a href="#" id="toggle-nav"><span class="arrow"></span> Menu</a>
-		<div class="info">
-			<a href="https://github.com/danaildinev/ddcarousel"
-				target="_blank">https://github.com/danaildinev/ddcarousel</a>
-		</div>
-	</div>
-	<nav class="contents">
-		<ul>
-			<li><a href="#default">Default</a></li>
-			<li><a href="#disabledMouse">Disabled mouse drag</a></li>
-			<li><a href="#multiple">Multiple slides + navigation</a></li>
-			<li><a href="#centered">Centered slide </a></li>
-			<li><a href="#autoHeight">Auto height + one item per page </a></li>
-			<li><a href="#responsive">Responsive + fullWidth</a></li>
-			<li><a href="#vertical">Vertical orientation </a></li>
-			<li><a href="#urlnav">Url navigation</a></li>
-			<li><a href="#lazydemo">Lazy loading</a></li>
-			<li><a href="#autoplay">Autoplay </a></li>
-			<li><a href="#disabledTouch">Disabled touch drag</a></li>
-			<li><a href="#customLabels">Custom navigation labels</a></li>
-			<li><a href="#customanim">Custom animation config</a></li>
-			<li><a href="#keyboardNav">Keyboard navigation</a></li>
-			<li><a href="#events">Events + methods</a></li>
-		</ul>
-	</nav>
-	<div class="carousel-section">
+	<header class="main-header">
 		<div class="container">
-			<h1>DDCarousel demos</h1>
-			<p>
+			<div class="main-header__content">
+				<h1 class="main-header__logo">DDCarousel demos</h1>
+				<a class="main-header__link" href="https://github.com/danaildinev/ddcarousel"
+					target="_blank">github.com/danaildinev/ddcarousel</a>
+			</div>
+		</div>
+	</header>
+	<div class="demos">
+		<section class="demos__sidebar">
+			<h4 class="demos__sidebar-title">General</h4>
+			<ul class="demos__list">
+				<li>
+					<button type="button" data-demo="#default">
+						<h3 class="demos__title">Default</h3>
+						<span class="demos__description">Default carousel settings.</span>
+					</button>
+				</li>
+				<li>
+					<button type="button" data-demo="#disabledMouse">
+						<h3 class="demos__title">Disabled mouse drag</h3>
+						<span class="demos__description">Default carousel with mouse dragging disabled.</span>
+					</button>
+				</li>
+				<li>
+					<button type="button" data-demo="#multiple">
+						<h3 class="demos__title">Multiple slides + navigation</h3>
+						<span class="demos__description">Carousel with 3 slides per page and navigation.</span>
+					</button>
+				</li>
+				<li>
+					<button type="button" data-demo="#centered">
+						<h3 class="demos__title">Centered slide</h3>
+						<span class="demos__description">Multiple visible slides with the active slide
+							centered.</span>
+					</button>
+				</li>
+				<li>
+					<button type="button" data-demo="#autoHeight">
+						<h3 class="demos__title">Auto height + one item per page</h3>
+						<span class="demos__description">Automatically adjust carousel height on slide change based
+							on
+							the highest visible slide and change one item per page</span>
+					</button>
+				</li>
+				<li>
+					<button type="button" data-demo="#responsive">
+						<h3 class="demos__title">Responsive + full width</h3>
+						<span class="demos__description">Different carousel settings based on viewport width.</span>
+					</button>
+				</li>
+				<li>
+					<button type="button" data-demo="#vertical">
+						<h3 class="demos__title">Vertical orientation</h3>
+						<span class="demos__description">Vertical carousel with two slides per page and a custom
+							starting
+							page.</span>
+					</button>
+				</li>
+				<li>
+					<button type="button" data-demo="#urlnav">
+						<h3 class="demos__title">URL navigation</h3>
+						<span class="demos__description">Control the carousel with links generated from slide
+							data.</span>
+					</button>
+				</li>
+				<li>
+					<button type="button" data-demo="#lazydemo">
+						<h3 class="demos__title">Lazy loading</h3>
+						<span class="demos__description">Lazy load active images and preload upcoming slides.</span>
+					</button>
+				</li>
+				<li>
+					<button type="button" data-demo="#autoplay">
+						<h3 class="demos__title">Autoplay</h3>
+						<span class="demos__description">Automatic slide changes with pause controls and progress
+							bar.</span>
+					</button>
+				</li>
+				<li>
+					<button type="button" data-demo="#disabledTouch">
+						<h3 class="demos__title">Disabled touch drag</h3>
+						<span class="demos__description">Touch dragging disabled while mouse dragging remains
+							enabled.</span>
+					</button>
+				</li>
+				<li>
+					<button type="button" data-demo="#customLabels">
+						<h3 class="demos__title">Custom navigation labels</h3>
+						<span class="demos__description">Use custom content for the previous and next navigation
+							controls.</span>
+					</button>
+				</li>
+				<li>
+					<button type="button" data-demo="#customanim">
+						<h3 class="demos__title">Custom animation config</h3>
+						<span class="demos__description">Customized swipe thresholds, drag distance and animation
+							behavior.</span>
+					</button>
+				</li>
+				<li>
+					<button type="button" data-demo="#keyboardNav">
+						<h3 class="demos__title">Keyboard navigation</h3>
+						<span class="demos__description">Navigate between pages using the keyboard arrow
+							keys.</span>
+					</button>
+				</li>
+				<li>
+					<button type="button" data-demo="#events">
+						<h3 class="demos__title">Events + methods</h3>
+						<span class="demos__description">Explore carousel events, runtime state and public
+							methods.</span>
+						<span class="demos__meta">Short and full/detailed event output.</span>
+					</button>
+				</li>
+			</ul>
+		</section>
+		<section class="demos__preview">
+			<header class="demos__preview-header">
+				<h2 class="demos__preview-title">Preview title</h2>
+				<p class="demos__preview-description">Preview description</p>
+				<span class="demos__preview-meta">Preview meta</span>
+			</header>
 
-				<a class="center" href="https://github.com/danaildinev/ddcarousel"
-					target="_blank">https://github.com/danaildinev/ddcarousel</a>
-			</p>
-			<p>Demos with different carousel settings.<br />Important: Styles of slides are not included in
-				examples!
-			</p>
-		</div>
-	</div>
-	<div id="default" class="carousel-section">
-		<div class="container">
-			<h2>Default</h2>
-			<p>Default slider settings</p>
-			<div class="ddcarousel default"></div>
-		</div>
-	</div>
-	<div id="disabledMouse" class="carousel-section">
-		<div class="container">
-			<h2>Disabled mouse drag</h2>
-			<p>Similar example as the previous one, but this time mouse dragging is disabled.</p>
-			<div class="ddcarousel disabledMouse"></div>
-			<textarea data-slider="disabledMouse" readonly></textarea>
-		</div>
-	</div>
-	<div id="multiple" class="carousel-section">
-		<div class="container">
-			<h2>Multiple slides + navigation</h2>
-			<p>Carousel with 3 slides per page.</p>
-			<div class="ddcarousel items"></div>
-			<textarea data-slider="items" readonly></textarea>
-		</div>
-	</div>
-	<div id="centered" class="carousel-section">
-		<div class="container">
-			<h2>Centered slide</h2>
-			<p>
-				Example with centered slide. Currently only one slide per swipe is possible even though there are
-				multiple slides per page. Active slide is the centered one.
-			</p>
-			<div class="ddcarousel centered"></div>
-			<textarea data-slider="centered" readonly></textarea>
-		</div>
-	</div>
-	<div id="autoHeight" class="carousel-section">
-		<div class="container">
-			<h2>Auto height + one item per page</h2>
-			<p>
-				Change carousel height automatically on slide change based on the highest visible slide. Also showing
-				the new feature to change one item per swipe.
-			</p>
-			<div class="ddcarousel autoHeight"></div>
-			<textarea data-slider="autoHeight" readonly></textarea>
-		</div>
-	</div>
-	<div id="responsive" class="carousel-section">
-		<div class="container">
-			<h2>Responsive</h2>
-			<p>
-				Try resizing the page to see different options based on viewport. You can also see the new 'fullWidth'
-				option enabled below 768px width.
-			</p>
-			<div class="ddcarousel responsive"></div>
-			<textarea data-slider="responsive" readonly></textarea>
-		</div>
-	</div>
-	<div id="vertical" class="carousel-section">
-		<div class="container">
-			<h2>Vertical orientation + starting page</h2>
-			<p>This examples shows vertical orientation of carousel with two slides per page and starting page set to 3.
-			</p>
-			<div class="ddcarousel vertical"></div>
-			<textarea data-slider="vertical" readonly></textarea>
-		</div>
-	</div>
-	<div id="urlnav" class="carousel-section">
-		<div class="container">
-			<h2>Url navigation</h2>
-			<p>Control slider with links. Links and titles are based on attributes specified for every slide.</p>
-			<div class="ddcarousel url">
-				<div class="box" data-id="first" data-title="First slide">First</div>
-				<div class="box">Second</div>
-				<div class="box" data-id="third" data-title="Third slide">Third</div>
-				<div class="box">Fourth</div>
-				<div class="box" data-id="fifth" data-title="Fifth slide">Fifth</div>
+			<div class="demos__preview-content">
+				Slider content
 			</div>
-			<textarea data-slider="url" readonly></textarea>
-		</div>
-	</div>
-	<div id="lazydemo" class="carousel-section">
-		<div class="container">
-			<h2>Lazy load images</h2>
-			<p>Lazy loading of images in carousel. This demo will lazy load images on changing active slides and also
-				preload the next 2 images (total of 4 images loaded).</p>
-			<div class="ddcarousel lazy">
-				<div>
-					<img data-src="images/img1.jpg" alt="Image 1">
-				</div>
-				<div>
-					<img data-src="images/img2.jpg" alt="Image 2">
-				</div>
-				<div>
-					<img data-src="images/img3.jpg" alt="Image 3">
-				</div>
-				<div>
-					<img data-src="images/img4.jpg" alt="Image 4">
-				</div>
-				<div>
-					<img data-src="images/img5.jpg" alt="Image 5">
-				</div>
-				<div>
-					<img data-src="images/img6.jpg" alt="Image 6">
-				</div>
-				<div>
-					<img data-src="images/img7.jpg" alt="Image 7">
-				</div>
-				<div>
-					<img data-src="images/img8.jpg" alt="Image 8">
-				</div>
-				<div>
-					<img data-src="images/img9.jpg" alt="Image 9">
-				</div>
-				<div>
-					<img data-src="images/img10.jpg" alt="Image 10">
-				</div>
-			</div>
-			<textarea data-slider="lazy" readonly></textarea>
-		</div>
-	</div>
-	<div id="autoplay" class="carousel-section">
-		<div class="container">
-			<h2>Autoplay</h2>
-			<p>Autoplay feature with speed set to 3 seconds, enabled pause on hover/touch and progress bar (enabled by
-				default). Use buttons to toggle on/off.</p>
-			<p>
-			<div class="ddcarousel autoplay"></div>
-			<button class="btn" id="apStop">Stop</button>
-			<button class="btn" id="apStart">Start</button>
-			</p>
-			<textarea data-slider="autoplay" readonly></textarea>
-		</div>
-	</div>
-	<div id="disabledTouch" class="carousel-section">
-		<div class="container">
-			<h2>Disabled touch drag</h2>
-			<p>In this example, touch is disabled but mouse dragging still works.</p>
-			<div class="ddcarousel disabledTouch"></div>
-			<textarea data-slider="disabledTouch" readonly></textarea>
-		</div>
-	</div>
-	<div id="customLabels" class="carousel-section">
-		<div class="container">
-			<h2>Custom navigation labels</h2>
-			<p>Use custom labels for navigation links.</p>
-			<div class="ddcarousel customLabels"></div>
-			<textarea data-slider="customLabels" readonly></textarea>
-		</div>
-	</div>
-	<div id="customanim" class="carousel-section">
-		<div class="container">
-			<h2>Custom animation config</h2>
-			<p>
-				In this example some animation properties are changed.</p>
-			<p>
-				<strong>touchSwipeThreshold</strong> is changed to <strong>1</strong>, so the user can swipe easier
-				than default. <strong>touchMaxSlideDist</strong> is also set to high value, so that user can swipe
-				longer before reaching the max swiping distance. <strong>slideChangeDuration</strong> and
-				<strong>swipeSmooth</strong> is increased for smoother experience.
-			</p>
-			<div class="ddcarousel customAnim"></div>
-			<textarea data-slider="customAnim" readonly></textarea>
-		</div>
-	</div>
-	<div id="keyboardNav" class="carousel-section">
-		<div class="container">
-			<h2>Keyboard navigation</h2>
-			<p>
-				Use arrow keys on your keyboard to change slides.</p>
-			<p>
-			<div class="ddcarousel keyboardNav"></div>
-			<textarea data-slider="keyboardNav" readonly></textarea>
-		</div>
-	</div>
-	<div id="events" class="carousel-section">
-		<div class="container">
-			<h2>Events</h2>
-			<div class="code-container">
-				<div>
-					<h3>All events</h3>
-					<ul class="events-list">
-						<li data-event="carousel:initalize"><span class="status"></span>Initialize</li>
-						<li data-event="carousel:initalized"><span class="status"></span>Initialized</li>
-						<li data-event="config:changed">
-							<span class="status"></span>Config changed <strong>(new)</strong>
-						</li>
-						<li data-event="module:created">
-							<span class="status"></span>Module created <strong>(new)</strong>
-						</li>
-						<li data-event="module:initialized">
-							<span class="status"></span>Module initialized <strong>(new)</strong>
-						</li>
-						<li data-event="module:destroyed">
-							<span class="status"></span>Module destroyed <strong>(new)</strong>
-						</li>
-						<li data-event="stage:created">
-							<span class="status"></span>Stage created <strong>(new)</strong>
-						</li>
-						<li data-event="stage:resized">
-							<span class="status"></span>Stage resized <strong>(new)</strong>
-						</li>
-						<li data-event="page:change">
-							<span class="status"></span>Page change
-						</li>
-						<li data-event="page:change:request">
-							<span class="status"></span>Page change request <strong>(new)</strong>
-						</li>
-						<li data-event="transition:end"><span class="status"></span>Transition end</li>
-						<li data-event="drag:start"><span class="status"></span>Drag start</li>
-						<li data-event="drag:dragging"><span class="status"></span>Dragging</li>
-						<li data-event="drag:end"><span class="status"></span>Drag end</li>
-						<li data-event="module:autoplay:started">
-							<span class="status"></span>Autoplay started <strong>(new)</strong>
-						</li>
-						<li data-event="module:autoplay:stopped">
-							<span class="status"></span>Autoplay stopped <strong>(new)</strong>
-						</li>
-					</ul>
-				</div>
-				<div>
-					<h3>Events history</h3>
-					<textarea id="eventLog" readonly></textarea>
-				</div>
-			</div>
-			<h3>Methods</h3>
-			<p>
-				<input id="inputGoToSlide" type="number" value="2" placeholder="1" style="width: 60px;">
-				<button class="btn" id="eventsGoToSlide">Go</button>
-				<button class="btn" id="eventsPrevSlide">Previous</button>
-				<button class="btn" id="eventsNextSlide">Next</button>
-				<button class="btn" id="eventsApStart">Start autoplay</button>
-				<button class="btn" id="eventsApStop">Stop autoplay</button>
-				<button class="btn" id="eventsGetStatus">Get status</button>
-				<button class="btn" id="resizeContainer">Resize random</button>
-				<button class="btn" id="eventsGetCurrentPage">Get current page</button>
-				<button class="btn" id="eventsGetTotalPages">Get total pages</button>
-				<button class="btn" id="eventsGetTotalSlides">Get total slides</button>
-				<button class="btn" id="eventsDestroy">Destroy</button>
-				<button class="btn" id="eventsDestroyKeep">Destroy (keep slides)</button>
-				<button class="btn" id="eventsInit">Initialize</button>
-				<button class="btn" id="eventsAddSlide">Add new slide (after destroy)</button>
-			</p>
-			<div class="ddcarousel events"></div>
-		</div>
+
+			<footer class="demos__preview-footer">
+				<div class="demos__preview-actions">Actions</div>
+				<div class="demos__preview-extra">Extra</div>
+			</footer>
+		</section>
 	</div>
 </body>
-<script src="../dist/ddcarousel.umd.min.js"></script>
+<script src="js/ddcarousel.umd.min.js"></script>
 <script src="js/main.js"></script>
 
 </html>
