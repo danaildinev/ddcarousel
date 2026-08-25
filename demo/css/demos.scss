@@ -9,8 +9,8 @@ $color-background: #fafafa;
 $color-background-hover: #f5f5f5;
 $color-muted: #777;
 $color-muted-light: #999;
-$color-accent: rgb(255, 74, 58);
-$color-accent-background: rgb(255, 225, 218);
+$color-accent: #6a06ff;
+$color-accent-background: #6365f144;
 
 $font-family-base: "Nunito Sans", system-ui, sans-serif;
 $font-family-code: "JetBrains Mono", Consolas, monospace;
@@ -19,7 +19,7 @@ $font-line-height: 1.4;
 $font-size-h1: 1.8rem;
 $font-size-h2: 1.6rem;
 $font-size-h3: 1.2rem;
-$font-size-h4: 1rem;
+$font-size-h4: 0.86rem;
 
 $demos-sidebar-width: 420px;
 $demos-gap: 32px;
@@ -50,6 +50,43 @@ svg {
     display: block;
     max-width: 100%;
     height: auto;
+}
+
+button,
+details {
+    display: block;
+    padding: 6px 12px;
+    border: 1px solid $color-border-light;
+    border-radius: $border-radius;
+    background: $color-background;
+    color: $color-text;
+    cursor: pointer;
+    transition: all $transition-default-speed ease-in-out;
+
+    &:hover {
+        border-color: $color-border;
+        background: $color-background-hover;
+    }
+
+    &.active {
+        border-color: $color-accent;
+        background: $color-accent-background;
+    }
+}
+
+details {
+    text-align: left;
+    pre {
+        background: $color-background;
+    }
+}
+
+pre {
+    cursor: text;
+    text-align: left;
+    padding: 8px;
+    font-family: $font-family-code;
+    font-size: 0.8rem;
 }
 
 ul {
@@ -177,8 +214,9 @@ textarea {
         }
     }
 
-    &__sidebar-title {
-        margin: 0 0 16px;
+    &__sidebar-title,
+    &__sidebar-sub-title {
+        margin: 16px 0;
         text-align: left;
     }
 
@@ -188,21 +226,10 @@ textarea {
         gap: 8px;
 
         button {
-            display: block;
             width: 100%;
-            padding: 10px 12px;
-            border: 1px solid $color-border-light;
-            border-radius: $border-radius;
-            background: $color-background;
-            color: $color-text;
             text-align: left;
-            cursor: pointer;
-            transition: all $transition-default-speed ease-in-out;
-
-            &:hover {
-                border-color: $color-border;
-                background: $color-background-hover;
-            }
+            display: flex;
+            flex-direction: column;
 
             &.active {
                 border-color: $color-accent;
@@ -235,10 +262,10 @@ textarea {
         justify-content: center;
         align-items: center;
         text-align: center;
-        grid-template-rows: 3fr 1fr 3fr;
+        width: 100%;
 
         &-header {
-            align-self: end;
+            align-self: center;
         }
 
         &-title {
@@ -252,15 +279,88 @@ textarea {
         &-meta {
             color: $color-muted;
         }
+
+        &-content {
+            width: 1000px;
+        }
+
+        &-actions {
+            display: grid;
+            gap: 8px;
+            grid-auto-flow: column;
+        }
     }
+
     &__preview-footer {
         display: flex;
         flex-direction: row;
-        justify-content: space-between;
-        align-self: start;
+        align-items: start;
+        justify-content: center;
 
         @include mobile {
             flex-direction: column;
+        }
+    }
+}
+
+.demo-carousel {
+    height: 350px;
+
+    .ddcarousel-item {
+        [class^="item"] {
+            display: grid;
+            align-items: center;
+            padding: 30px;
+            color: #fff;
+            font-weight: 500;
+        }
+
+        .item-1 {
+            background: #6366f1;
+        }
+
+        .item-2 {
+            background: #0ea5e9;
+        }
+
+        .item-3 {
+            background: #06b6d4;
+        }
+
+        .item-4 {
+            background: #14b8a6;
+        }
+
+        .item-5 {
+            background: #22c55e;
+        }
+
+        .item-6 {
+            background: #84cc16;
+        }
+
+        .item-7 {
+            background: #eab308;
+        }
+
+        .item-8 {
+            background: #f97316;
+        }
+
+        .item-9 {
+            background: #ef4444;
+        }
+
+        .item-10 {
+            background: #ec4899;
+        }
+
+        .item-11 {
+            background: #d946ef;
+        }
+
+        .item-12 {
+            background: #8b5cf6;
         }
     }
 }

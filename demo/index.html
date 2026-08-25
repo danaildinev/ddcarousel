@@ -26,109 +26,254 @@
 	</header>
 	<div class="demos">
 		<section class="demos__sidebar">
-			<h4 class="demos__sidebar-title">General</h4>
+			<h3 class="demos__sidebar-title">General</h3>
 			<ul class="demos__list">
 				<li>
 					<button type="button" data-demo="#default">
-						<h3 class="demos__title">Default</h3>
-						<span class="demos__description">Default carousel settings.</span>
-					</button>
-				</li>
-				<li>
-					<button type="button" data-demo="#disabledMouse">
-						<h3 class="demos__title">Disabled mouse drag</h3>
-						<span class="demos__description">Default carousel with mouse dragging disabled.</span>
-					</button>
-				</li>
-				<li>
-					<button type="button" data-demo="#multiple">
-						<h3 class="demos__title">Multiple slides + navigation</h3>
-						<span class="demos__description">Carousel with 3 slides per page and navigation.</span>
-					</button>
-				</li>
-				<li>
-					<button type="button" data-demo="#centered">
-						<h3 class="demos__title">Centered slide</h3>
-						<span class="demos__description">Multiple visible slides with the active slide
-							centered.</span>
+						<span class="demos__title">Default</span>
+						<span class="demos__description">Default carousel settings</span>
 					</button>
 				</li>
 				<li>
 					<button type="button" data-demo="#autoHeight">
-						<h3 class="demos__title">Auto height + one item per page</h3>
+						<span class="demos__title">Auto height</span>
 						<span class="demos__description">Automatically adjust carousel height on slide change based
-							on
-							the highest visible slide and change one item per page</span>
+							on the highest visible slide</span>
 					</button>
 				</li>
+
+				<li>
+					<button type="button" data-demo="#itemsPerPage">
+						<span class="demos__title">Items per page</span>
+						<span class="demos__description">Multiple items per page</span>
+					</button>
+				</li>
+
+				<li>
+					<button type="button" data-demo="#startPage">
+						<span class="demos__title">Start page</span>
+						<span class="demos__description">Set a custom startin page</span>
+					</button>
+				</li>
+
+				<li>
+					<button type="button" data-demo="#gap">
+						<span class="demos__title">Gap</span>
+						<span class="demos__description">Space between slides</span>
+					</button>
+				</li>
+
+				<li>
+					<button type="button" data-demo="#vertical">
+						<span class="demos__title">Vertical orientation</span>
+						<span class="demos__description">Vertical carousel with two slides per page and change size
+							the
+							carousel width based on its widest slide</span>
+					</button>
+				</li>
+
 				<li>
 					<button type="button" data-demo="#responsive">
-						<h3 class="demos__title">Responsive + full width</h3>
+						<span class="demos__title">Responsive</span>
 						<span class="demos__description">Different carousel settings based on viewport width.</span>
 					</button>
 				</li>
+
 				<li>
-					<button type="button" data-demo="#vertical">
-						<h3 class="demos__title">Vertical orientation</h3>
-						<span class="demos__description">Vertical carousel with two slides per page and a custom
-							starting
-							page.</span>
+					<button type="button" data-demo="#touchDrag">
+						<span class="demos__title">Touch drag</span>
+						<span class="demos__description">Enabled only touch drag</span>
 					</button>
 				</li>
+
 				<li>
-					<button type="button" data-demo="#urlnav">
-						<h3 class="demos__title">URL navigation</h3>
-						<span class="demos__description">Control the carousel with links generated from slide
-							data.</span>
+					<button type="button" class="demos__list-drag" data-demo="#dragSnapMode">
+						<span class="demos__title">Touch drag snap mode</span>
+						<span class="demos__description">Control how the target slide is selected after
+							dragging</span>
 					</button>
 				</li>
+
 				<li>
-					<button type="button" data-demo="#lazydemo">
-						<h3 class="demos__title">Lazy loading</h3>
-						<span class="demos__description">Lazy load active images and preload upcoming slides.</span>
+					<button type="button" data-demo="#mouseDrag">
+						<span class="demos__title">Mouse drag</span>
+						<span class="demos__description">Enabled only mouse drag</span>
 					</button>
 				</li>
+
 				<li>
-					<button type="button" data-demo="#autoplay">
-						<h3 class="demos__title">Autoplay</h3>
-						<span class="demos__description">Automatic slide changes with pause controls and progress
-							bar.</span>
+					<button type="button" data-demo="#multiple">
+						<span class="demos__title">Multiple slides + navigation</span>
+						<span class="demos__description">Carousel with 3 slides per page and navigation.</span>
 					</button>
 				</li>
+
 				<li>
-					<button type="button" data-demo="#disabledTouch">
-						<h3 class="demos__title">Disabled touch drag</h3>
-						<span class="demos__description">Touch dragging disabled while mouse dragging remains
-							enabled.</span>
+					<button type="button" data-demo="#centered">
+						<span class="demos__title">Centered slide</span>
+						<span class="demos__description">Multiple visible slides with the active slide
+							centered.</span>
 					</button>
 				</li>
-				<li>
-					<button type="button" data-demo="#customLabels">
-						<h3 class="demos__title">Custom navigation labels</h3>
-						<span class="demos__description">Use custom content for the previous and next navigation
-							controls.</span>
-					</button>
-				</li>
-				<li>
-					<button type="button" data-demo="#customanim">
-						<h3 class="demos__title">Custom animation config</h3>
-						<span class="demos__description">Customized swipe thresholds, drag distance and animation
-							behavior.</span>
-					</button>
-				</li>
+
 				<li>
 					<button type="button" data-demo="#keyboardNav">
-						<h3 class="demos__title">Keyboard navigation</h3>
+						<span class="demos__title">Keyboard navigation</span>
 						<span class="demos__description">Navigate between pages using the keyboard arrow
 							keys.</span>
 					</button>
 				</li>
+
+				<li>
+					<button type="button" data-demo="#swipeThreshold">
+						<span class="demos__title">Swipe threshold</span>
+						<span class="demos__description">Set a custom drag distance required to trigger a page
+							change</span>
+					</button>
+				</li>
+
+				<li>
+					<button type="button" data-demo="#dragMaxDistance">
+						<span class="demos__title">Drag max distance</span>
+						<span class="demos__description">Set a custom maximum allowed drag distance</span>
+					</button>
+				</li>
+
+				<li>
+					<button type="button" data-demo="#resizeDebounce">
+						<span class="demos__title">Custom resize debounce</span>
+						<span class="demos__description">Set a custom delay before recalculating the carousel after
+							resizing. Resize your browser to see in it action.</span>
+					</button>
+				</li>
+
+				<li>
+					<button type="button" data-demo="#swipeSmooth">
+						<span class="demos__title">Swipe smoothing</span>
+						<span class="demos__description">Set a custom drag movement smoothing</span>
+					</button>
+				</li>
+
+				<li>
+					<button type="button" data-demo="#slideChangeDuration">
+						<span class="demos__title">Slide change duration</span>
+						<span class="demos__description">Set a custom slide change duration</span>
+					</button>
+				</li>
+
 				<li>
 					<button type="button" data-demo="#events">
-						<h3 class="demos__title">Events + methods</h3>
-						<span class="demos__description">Explore carousel events, runtime state and public
-							methods.</span>
-						<span class="demos__meta">Short and full/detailed event output.</span>
+						<span class="demos__title">Events</span>
+						<span class="demos__description">Visual representation of firing different events</span>
+					</button>
+				</li>
+
+			</ul>
+
+			<h3 class="demos__sidebar-title">Modules</h3>
+
+			<h4 class="demos__sidebar-sub-title">Navigation</h4>
+			<ul class="demos__list">
+				<li>
+					<button type="button" data-demo="#nav">
+						<span class="demos__title">Navigation</span>
+					</button>
+				</li>
+
+				<li>
+					<button type="button" data-demo="#navCustomButtons">
+						<span class="demos__title">Navigation with custom buttons</span>
+					</button>
+				</li>
+			</ul>
+
+			<h4 class="demos__sidebar-sub-title">Autoplay</h4>
+			<ul class="demos__list">
+				<li>
+					<button type="button" data-demo="#autoplay">
+						<span class="demos__title">Autoplay</span>
+					</button>
+				</li>
+
+				<li>
+					<button type="button" data-demo="#autoplaySpeedProgress">
+						<span class="demos__title">Autoplay speed and progress bar</span>
+					</button>
+				</li>
+
+				<li>
+					<button type="button" data-demo="#autoplaySpeedProgress">
+						<span class="demos__title">Autoplay pause on hover and tab hidden</span>
+					</button>
+				</li>
+
+				<li>
+					<button type="button" data-demo="#autoplayEvents">
+						<span class="demos__title">Autoplay events</span>
+					</button>
+				</li>
+			</ul>
+
+
+			<h4 class="demos__sidebar-sub-title">Pagination</h4>
+			<ul class="demos__list">
+				<li>
+					<button type="button" data-demo="#pagination">
+						<span class="demos__title">Pagination</span>
+					</button>
+				</li>
+			</ul>
+
+			<h4 class="demos__sidebar-sub-title">Lazy Load</h4>
+			<ul class="demos__list">
+				<li>
+					<button type="button" data-demo="#lazyLoad">
+						<span class="demos__title">Lazy loading</span>
+						<span class="demos__description">Lazy load active images and preload upcoming slides.</span>
+					</button>
+				</li>
+
+				<li>
+					<button type="button" data-demo="#lazyLoadPreload">
+						<span class="demos__title">Lazy loading preload</span>
+						<span class="demos__description">Preload upcoming slides with a custom number of slides to
+							preload</span>
+					</button>
+				</li>
+			</ul>
+
+			<h4 class="demos__sidebar-sub-title">URL Navigation</h4>
+			<ul class="demos__list">
+				<li>
+					<button type="button" data-demo="#urlNav">
+						<span class="demos__title">URL navigation</span>
+					</button>
+				</li>
+
+				<li>
+					<button type="button" data-demo="#urlNavContainer">
+						<span class="demos__title">URL navigation in a custom container</span>
+					</button>
+				</li>
+			</ul>
+
+			<h4 class="demos__sidebar-sub-title">Loop</h4>
+			<ul class="demos__list">
+				<li>
+					<button type="button" data-demo="#loop">
+						<span class="demos__title">Loop/infinite scroll</span>
+					</button>
+				</li>
+
+				<li>
+					<button type="button" data-demo="#loopMultipleItemsPerPage">
+						<span class="demos__title">Loop on multiple items per page</span>
+					</button>
+				</li>
+
+				<li>
+					<button type="button" data-demo="#loopMultipleItemsPerPageAndCentered">
+						<span class="demos__title">Loop on centered slide and multiple items per page</span>
 					</button>
 				</li>
 			</ul>
@@ -152,6 +297,6 @@
 	</div>
 </body>
 <script src="js/ddcarousel.umd.min.js"></script>
-<script src="js/main.js"></script>
+<script type="module" src="js/main.js"></script>
 
 </html>

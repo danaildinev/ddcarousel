@@ -22,6 +22,43 @@ svg {
   height: auto;
 }
 
+button,
+details {
+  display: block;
+  padding: 6px 12px;
+  border: 1px solid #eee;
+  border-radius: 4px;
+  background: #fafafa;
+  color: #333;
+  cursor: pointer;
+  transition: all 0.15s ease-in-out;
+}
+button:hover,
+details:hover {
+  border-color: #ccc;
+  background: #f5f5f5;
+}
+button.active,
+details.active {
+  border-color: #6a06ff;
+  background: rgba(99, 101, 241, 0.2666666667);
+}
+
+details {
+  text-align: left;
+}
+details pre {
+  background: #fafafa;
+}
+
+pre {
+  cursor: text;
+  text-align: left;
+  padding: 8px;
+  font-family: "JetBrains Mono", Consolas, monospace;
+  font-size: 0.8rem;
+}
+
 ul {
   list-style: none;
   margin: 0;
@@ -59,7 +96,7 @@ h3 {
 }
 
 h4 {
-  font-size: 1rem;
+  font-size: 0.86rem;
   font-weight: 600;
   text-transform: uppercase;
 }
@@ -72,8 +109,8 @@ a {
 strong {
   font-family: "JetBrains Mono", Consolas, monospace;
   font-weight: 100;
-  color: rgb(255, 74, 58);
-  background: rgb(255, 225, 218);
+  color: #6a06ff;
+  background: rgba(99, 101, 241, 0.2666666667);
 }
 
 textarea {
@@ -149,8 +186,8 @@ textarea:focus {
     overflow: visible;
   }
 }
-.demos__sidebar-title {
-  margin: 0 0 16px;
+.demos__sidebar-title, .demos__sidebar-sub-title {
+  margin: 16px 0;
   text-align: left;
 }
 .demos__list {
@@ -159,24 +196,14 @@ textarea:focus {
   gap: 8px;
 }
 .demos__list button {
-  display: block;
   width: 100%;
-  padding: 10px 12px;
-  border: 1px solid #eee;
-  border-radius: 4px;
-  background: #fafafa;
-  color: #333;
   text-align: left;
-  cursor: pointer;
-  transition: all 0.15s ease-in-out;
-}
-.demos__list button:hover {
-  border-color: #ccc;
-  background: #f5f5f5;
+  display: flex;
+  flex-direction: column;
 }
 .demos__list button.active {
-  border-color: rgb(255, 74, 58);
-  background: rgb(255, 225, 218);
+  border-color: #6a06ff;
+  background: rgba(99, 101, 241, 0.2666666667);
 }
 .demos__title {
   margin: 0;
@@ -199,10 +226,10 @@ textarea:focus {
   justify-content: center;
   align-items: center;
   text-align: center;
-  grid-template-rows: 3fr 1fr 3fr;
+  width: 100%;
 }
 .demos__preview-header {
-  align-self: end;
+  align-self: center;
 }
 .demos__preview-title {
   margin-bottom: 14px;
@@ -213,14 +240,69 @@ textarea:focus {
 .demos__preview-meta {
   color: #777;
 }
+.demos__preview-content {
+  width: 1000px;
+}
+.demos__preview-actions {
+  display: grid;
+  gap: 8px;
+  grid-auto-flow: column;
+}
 .demos__preview-footer {
   display: flex;
   flex-direction: row;
-  justify-content: space-between;
-  align-self: start;
+  align-items: start;
+  justify-content: center;
 }
 @media (max-width: 768px) {
   .demos__preview-footer {
     flex-direction: column;
   }
+}
+
+.demo-carousel {
+  height: 350px;
+}
+.demo-carousel .ddcarousel-item [class^=item] {
+  display: grid;
+  align-items: center;
+  padding: 30px;
+  color: #fff;
+  font-weight: 500;
+}
+.demo-carousel .ddcarousel-item .item-1 {
+  background: #6366f1;
+}
+.demo-carousel .ddcarousel-item .item-2 {
+  background: #0ea5e9;
+}
+.demo-carousel .ddcarousel-item .item-3 {
+  background: #06b6d4;
+}
+.demo-carousel .ddcarousel-item .item-4 {
+  background: #14b8a6;
+}
+.demo-carousel .ddcarousel-item .item-5 {
+  background: #22c55e;
+}
+.demo-carousel .ddcarousel-item .item-6 {
+  background: #84cc16;
+}
+.demo-carousel .ddcarousel-item .item-7 {
+  background: #eab308;
+}
+.demo-carousel .ddcarousel-item .item-8 {
+  background: #f97316;
+}
+.demo-carousel .ddcarousel-item .item-9 {
+  background: #ef4444;
+}
+.demo-carousel .ddcarousel-item .item-10 {
+  background: #ec4899;
+}
+.demo-carousel .ddcarousel-item .item-11 {
+  background: #d946ef;
+}
+.demo-carousel .ddcarousel-item .item-12 {
+  background: #8b5cf6;
 }

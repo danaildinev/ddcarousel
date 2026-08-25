@@ -1,244 +1,155 @@
+import { demoConfigs } from "./demo-configs.js";
+
+const loremIpsum = `Lorem ipsum dolor sit amet, consectetur adipiscing elit.In nec lectus et erat commodo ornare. 
+Ut dictum lectus ac aliquet ultrices. Morbi vitae mauris felis. Praesent cursus, massa vitae ultrices cursus, 
+mi erat gravida elit, ac fringilla metus nisl eget elit. Aliquam erat volutpat. Lorem ipsum dolor sit amet, 
+consectetur adipiscing elit. In nec lectus et erat commodo ornare. Ut dictum lectus ac aliquet ultrices. Morbi mi 
+erat gravida elit, ac fringilla metus nisl eget elit. Aliquam erat volutpat. Aliquam erat volutpat. Lorem ipsum 
+dolor sit amet, consectetur adipiscing elit. Lorem ipsum dolor sit amet, consectetur adipiscing elit.In nec lectus et erat commodo ornare. 
+Ut dictum lectus ac aliquet ultrices. Morbi vitae mauris felis. Praesent cursus, massa vitae ultrices cursus, 
+mi erat gravida elit, ac fringilla metus nisl eget elit. Aliquam erat volutpat. Lorem ipsum dolor sit amet, 
+consectetur adipiscing elit. In nec lectus et erat commodo ornare. Ut dictum lectus ac aliquet ultrices. Morbi mi 
+erat gravida elit, ac fringilla metus nisl eget elit. Aliquam erat volutpat. Aliquam erat volutpat. Lorem ipsum 
+dolor sit amet, consectetur adipiscing elit.`;
+
+export const preview = {
+	title: document.querySelector(".demos__preview-title"),
+	description: document.querySelector(".demos__preview-description"),
+	meta: document.querySelector(".demos__preview-meta"),
+	content: document.querySelector(".demos__preview-content"),
+	actions: document.querySelector(".demos__preview-actions"),
+	extra: document.querySelector(".demos__preview-extra"),
+};
+
+let sidebar;
+
 document.addEventListener("DOMContentLoaded", () => {
-	const log = document.getElementById("eventLog"),
-		navContents = document.querySelector("nav.contents"),
-		eventItem = document.querySelectorAll(".events-list li");
+	sidebar = document.querySelector(".demos__sidebar");
+	sidebar.addEventListener("click", е => {
+		const button = е.target.closest("button[data-demo]");
+		loadDemo(button);
+	});
 
-	// set initial value to event labels
-	function resetEventLabels() {
-		for (i = 0; i < eventItem.length; i++) {
-			eventItem[i].className = "";
-			eventItem[i].querySelector(".status").innerHTML = "off";
-		}
+	const initialDemo = sidebar.querySelector('button[data-demo="#default"]');
+	if (initialDemo) {
+		loadDemo(initialDemo);
 	}
-	resetEventLabels();
-	setInterval(() => resetEventLabels(), 1000);
-
-	// populate carousels with placeholder items inside
-	const carousels = document.querySelectorAll(".ddcarousel"),
-		carouselItem = document.createElement("div");
-	carouselItem.classList.add("box");
-	for (let i = 0; i < carousels.length; i++) {
-		for (let j = 1; j < 11; j++) {
-			const item = carouselItem.cloneNode(true);
-			item.textContent = j;
-			carousels[i].appendChild(item);
-		}
-	}
-
-	function navClose() {
-		navContents.classList.remove("show");
-		document.body.classList.remove("nav-opened");
-	}
-
-	function writeLog(data) {
-		log.innerHTML += data + "\r\n";
-		log.scrollTop = log.scrollHeight;
-	}
-
-	function setActiveEvent(name) {
-		writeLog(name);
-		const event = document.querySelector(`.events-list [data-event='${name}']`);
-		event.className = "active";
-		event.querySelector(".status").innerHTML = "on";
-	}
-
-	function addSlide() {
-		var slide = document.createElement("div");
-		slide.classList.add("box");
-		slide.textContent = "New slide " + Math.floor(Math.random() * 20);
-		document.querySelector('.ddcarousel.events').appendChild(slide);
-		writeLog("Added new slide. You can now initialize the carousel.")
-	}
-
-	function getStatus() {
-		const status = events.getStatus();
-		console.log(status);
-		writeLog(`${getStatus()}\r\n${JSON.stringify(status, null, "  ")}\r\nEnd of getStatus()! Open your console and then you trigger again for more details.`);
-	}
-
-	function toggleNav() {
-		e.preventDefault();
-		if (navContents.classList.contains("show")) {
-			navClose();
-		} else {
-			navContents.classList.add("show");
-			document.body.classList.add("nav-opened");
-		}
-	}
-
-	document.getElementById("toggle-nav").addEventListener("click", () => toggleNav());
-	window.addEventListener("hashchange", () => navClose());
-
-	const carouselConfigs = {
-		default: {
-			container: ".default",
-		},
-		items: {
-			container: ".items",
-			items: 3,
-			nav: true,
-			pagination: false,
-		},
-		centered: {
-			container: ".centered",
-			items: 3,
-			centerSlide: true,
-		},
-		autoHeight: {
-			items: 3,
-			container: ".autoHeight",
-			itemPerPage: true,
-		},
-		responsive: {
-			container: ".responsive",
-			nav: true,
-			pagination: false,
-			items: 3,
-			autoplay: false,
-			responsive: {
-				768: {
-					items: 2,
-					pagination: true,
-					nav: false,
-					autoplay: true
-				},
-				480: {
-					items: 1,
-					pagination: true,
-					nav: false,
-					autoplay: true
-				},
-			}
-		},
-		vertical: {
-			container: ".vertical",
-			items: 2,
-			itemPerPage: true,
-			vertical: true,
-			startPage: 2,
-			autoHeight: false
-		},
-		url: {
-			container: ".url",
-			pagination: false,
-			urlNav: true,
-		},
-		lazy: {
-			container: ".lazy",
-			autoHeight: false,
-			items: 2,
-			lazyLoad: true,
-			lazyPreload: true,
-			lazyPreloadSlides: 2,
-		},
-		autoplay: {
-			items: 3,
-			container: ".autoplay",
-			autoplay: true,
-			autoplaySpeed: 3000,
-			autoplayPauseHover: true
-		},
-		disabledTouch: {
-			container: ".disabledTouch",
-			touchDrag: false
-		},
-		disabledMouse: {
-			container: ".disabledMouse",
-			mouseDrag: false
-		},
-		customLabels: {
-			container: ".customLabels",
-			pagination: false,
-			nav: true,
-			labelNavPrev: "< Prev",
-			labelNavNext: "Next >"
-		},
-		customAnim: {
-			container: ".customAnim",
-			items: 3,
-			touchSwipeThreshold: 1,
-			touchMaxSlideDist: 1000,
-			swipeSmooth: 0.2,
-			slideChangeDuration: 1.2
-		},
-		keyboardNav: {
-			container: ".keyboardNav",
-			keyboardNavigation: true
-		},
-		events: {
-			container: ".events",
-			items: 3,
-			startPage: 1,
-			autoplay: true,
-			responsive: {
-				700: {
-					items: 2
-				},
-				500: {
-					items: 1
-				}
-			},
-			"on:carousel:initalize": e => setActiveEvent("carousel:initalize", e),
-			"on:carousel:initalized": e => setActiveEvent("carousel:initalized", e),
-			"on:module:created": e => setActiveEvent("module:created", e),
-			"on:module:initialized": e => setActiveEvent("module:initialized", e),
-			"on:module:destroyed": e => setActiveEvent("module:destroyed", e),
-			"on:module:autoplay:started": e => setActiveEvent("module:autoplay:started", e),
-			"on:module:autoplay:stopped": e => setActiveEvent("module:autoplay:stopped", e),
-			"on:stage:created": e => setActiveEvent("stage:created", e),
-			"on:stage:resized": e => setActiveEvent("stage:resized", e),
-			"on:page:change": e => setActiveEvent("page:change", e),
-			"on:page:change:request": e => setActiveEvent("page:change:request", e),
-			"on:transition:end": e => setActiveEvent("transition:end", e),
-			"on:drag:start": e => setActiveEvent("drag:start", e),
-			"on:drag:dragging": e => setActiveEvent("drag:dragging", e),
-			"on:drag:end": e => setActiveEvent("drag:end", e),
-			"on:config:changed": e => setActiveEvent("config:changed", e),
-		}
-	};
-
-	// populate src textboxes
-	const textareas = document.querySelectorAll("textarea[data-slider]");
-	for (let i = 0; i < textareas.length; i++) {
-		const textarea = textareas[i],
-			code = {};
-
-		Object.assign(code, carouselConfigs[textarea.dataset.slider]);
-		code['container'] = undefined;
-		if (code !== undefined) {
-			const text = JSON.stringify(code, null, "  ");
-			textarea.innerHTML = text.replace(/"([^"]+)":/g, '$1:');
-		}
-	}
-
-	// initialize carousels
-	for (const [key, value] of Object.entries(carouselConfigs)) {
-		if (key === "events" || key === "autoplay")
-			continue;
-		ddcarousel(value);
-	}
-	const events = ddcarousel(carouselConfigs['events']),
-		autoplay = ddcarousel(carouselConfigs['autoplay']);
-
-	function resizeContainer() {
-		document.querySelector(".ddcarousel.events").style.width = Math.floor(Math.random() * 80) + 20 + "%";
-	}
-
-	document.getElementById("apStop").addEventListener("click", () => autoplay.module("autoplay").stop());
-	document.getElementById("apStart").addEventListener("click", () => autoplay.module("autoplay").start());
-	document.getElementById("resizeContainer").addEventListener("click", () => resizeContainer());
-
-	document.getElementById("eventsApStart").addEventListener("click", () => events.module("autoplay").start());
-	document.getElementById("eventsApStop").addEventListener("click", () => events.module("autoplay").stop());
-	document.getElementById("eventsGoToSlide").addEventListener("click", () => events.changePage(parseInt(document.getElementById("inputGoToSlide").value)));
-	document.getElementById("eventsPrevSlide").addEventListener("click", () => events.prevPage());
-	document.getElementById("eventsNextSlide").addEventListener("click", () => events.nextPage());
-	document.getElementById("eventsGetCurrentPage").addEventListener("click", () => writeLog(events.getCurrentPage()));
-	document.getElementById("eventsGetTotalPages").addEventListener("click", () => writeLog(events.getTotalPages()));
-	document.getElementById("eventsGetTotalSlides").addEventListener("click", () => writeLog(events.getTotalSlides()));
-	document.getElementById("eventsDestroyKeep").addEventListener("click", () => events.destroy());
-	document.getElementById("eventsDestroy").addEventListener("click", () => events.destroy(true));
-	document.getElementById("eventsInit").addEventListener("click", () => events.init(carouselConfigs['events']));
-	document.getElementById("eventsAddSlide").addEventListener("click", () => addSlide());
-	document.getElementById("eventsGetStatus").addEventListener("click", () => getStatus());
 });
+
+async function loadDemo(button) {
+	const { key } = getDemoContent(button);
+	const demo = demoConfigs[key];
+
+	setActiveButton(button);
+
+	resetPreview();
+	setPreviewContent(button);
+	createCarousel(demo.slides);
+
+	const demoConfig = demo.config;
+	const config = {
+		container: ".demo-carousel",
+		...demoConfig,
+	};
+	const instance = getCarousel();
+	const carousel = instance();
+	const context = carousel;
+
+	try {
+		await carousel.init(config);
+		renderConfig(config);
+	} catch (error) {
+		console.error(error);
+		preview.meta.textContent = "Failed to initialize demo";
+		writeOutput(error.message);
+	}
+}
+
+export function getCarousel() {
+	return window.ddcarousel;
+}
+
+function getDemoContent(button) {
+	return {
+		key: button.dataset.demo?.replace(/^#/, "") ?? "",
+		title: button.querySelector(".demos__title")?.textContent.trim() ?? "",
+		description: button.querySelector(".demos__description")?.textContent.trim() ?? "",
+		meta: button.querySelector(".demos__meta")?.textContent.trim() ?? "",
+	};
+}
+
+function setPreviewContent(button) {
+	const { title, description, meta } = getDemoContent(button);
+
+	preview.title.textContent = title;
+	preview.description.textContent = description;
+	preview.meta.textContent = meta;
+	preview.description.hidden = !description;
+	preview.meta.hidden = !meta;
+}
+
+function resetPreview() {
+	preview.title.textContent = "";
+	preview.description.textContent = "";
+	preview.meta.textContent = "";
+
+	preview.content.replaceChildren();
+	preview.actions.replaceChildren();
+	preview.extra.replaceChildren();
+}
+
+function setActiveButton(button) {
+	sidebar.querySelector("button[data-demo].active")?.classList.remove("active");
+	button.classList.add("active");
+}
+
+function createOutput() {
+	let output = preview.extra.querySelector(".demos__runtime-output");
+	if (!output) {
+		output = document.createElement("pre");
+		output.className = "demos__runtime-output";
+
+		preview.extra.append(output);
+	}
+
+	return output;
+}
+
+function writeOutput(value) {
+	createOutput().textContent = JSON.stringify(value);
+}
+
+function renderConfig(config) {
+	const details = document.createElement("details");
+	details.className = "demos__config";
+
+	const summary = document.createElement("summary");
+	summary.textContent = "Configuration";
+
+	const pre = document.createElement("pre");
+	pre.textContent = JSON.stringify(config, null, 2);
+
+	details.append(summary, pre);
+	preview.extra.append(details);
+}
+
+const getRandomLoremTextLength = t => t.slice(0, 100 + Math.floor(Math.random() * (t.length - 500))).replace(/\s\w+$/, "");
+
+export function createCarousel(slides = 12) {
+	const content = `
+		<div class="ddcarousel demo-carousel">
+			${Array.from({ length: slides }, (_, index) => {
+
+		const number = index + 1;
+		const content = `${number}. ${getRandomLoremTextLength(loremIpsum)}`;
+
+		return `<div class="item-${number}">${content}</div>`;
+	}).join("")}
+		</div>
+	`;
+
+	preview.content.innerHTML = content;
+	return preview.content.querySelector(".demo-carousel");
+}
+
+
