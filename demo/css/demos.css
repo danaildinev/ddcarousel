@@ -30,6 +30,7 @@ details {
   border-radius: 4px;
   background: #fafafa;
   color: #333;
+  font-size: 0.9rem;
   cursor: pointer;
   transition: all 0.15s ease-in-out;
 }
@@ -40,7 +41,7 @@ details:hover {
 }
 button.active,
 details.active {
-  border-color: #6a06ff;
+  border-color: #6366f1;
   background: rgba(99, 101, 241, 0.2666666667);
 }
 
@@ -63,6 +64,16 @@ ul {
   list-style: none;
   margin: 0;
   padding: 0;
+}
+
+dialog {
+  padding: 20px;
+  border: 0;
+  border-radius: 8px;
+  margin: auto;
+}
+dialog::backdrop {
+  background: rgba(0, 0, 0, 0.5);
 }
 
 body {
@@ -102,14 +113,14 @@ h4 {
 }
 
 a {
-  color: #6a06ff;
+  color: #6366f1;
   text-decoration: none;
 }
 
 strong {
   font-family: "JetBrains Mono", Consolas, monospace;
   font-weight: 100;
-  color: #6a06ff;
+  color: #6366f1;
   background: rgba(99, 101, 241, 0.2666666667);
 }
 
@@ -202,7 +213,7 @@ textarea:focus {
   flex-direction: column;
 }
 .demos__list button.active {
-  border-color: #6a06ff;
+  border-color: #6366f1;
   background: rgba(99, 101, 241, 0.2666666667);
 }
 .demos__title {
@@ -217,9 +228,7 @@ textarea:focus {
   font-size: 0.86rem;
 }
 .demos__meta {
-  margin-top: 5px;
-  color: #999;
-  font-size: 0.86rem;
+  display: none;
 }
 .demos__preview {
   display: grid;
@@ -241,7 +250,8 @@ textarea:focus {
   color: #777;
 }
 .demos__preview-content {
-  width: 1000px;
+  width: 1024px;
+  margin: 0 auto;
 }
 .demos__preview-actions {
   display: grid;
@@ -250,6 +260,7 @@ textarea:focus {
 }
 .demos__preview-footer {
   display: flex;
+  gap: 8px;
   flex-direction: row;
   align-items: start;
   justify-content: center;
@@ -261,7 +272,14 @@ textarea:focus {
 }
 
 .demo-carousel {
+  --ddcarousel-nav-color: #fff;
+  --ddcarousel-autoplay-bar-color: #aaa;
+  background: #f1f1f1;
   height: 350px;
+}
+.demo-carousel.fixed-height [class^=item] {
+  height: inherit;
+  overflow: hidden;
 }
 .demo-carousel .ddcarousel-item [class^=item] {
   display: grid;
@@ -305,4 +323,29 @@ textarea:focus {
 }
 .demo-carousel .ddcarousel-item .item-12 {
   background: #8b5cf6;
+}
+
+#statusPopup {
+  width: min(700px, 90vw);
+  max-height: 80vh;
+}
+#statusPopup__header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 12px;
+}
+#statusPopup pre {
+  max-height: 60vh;
+  overflow: auto;
+  white-space: pre-wrap;
+}
+
+.demo-url-nav {
+  --ddcarousel-url-nav-color-active: #6366f1;
+  padding: 0 20px;
+  margin: 0 0 20px;
+  border: 1px solid #6366f1;
+  border-radius: 4px;
+  background: rgba(99, 101, 241, 0.2666666667);
 }

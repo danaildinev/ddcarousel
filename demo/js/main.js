@@ -22,42 +22,77 @@ export const preview = {
 };
 
 let sidebar;
+let carousel;
+
+let statusPopup;
+let statusPopupTitle;
+let statusPopupContent;
 
 document.addEventListener("DOMContentLoaded", () => {
+	statusPopup = document.querySelector("#statusPopup");
+	statusPopupTitle = document.querySelector("#statusPopup__title");
+	statusPopupContent = document.querySelector("#statusPopup__content");
+
+	document.querySelector("#statusPopup__close").addEventListener("click", () => statusPopup.close());
+
 	sidebar = document.querySelector(".demos__sidebar");
 	sidebar.addEventListener("click", е => {
 		const button = е.target.closest("button[data-demo]");
 		loadDemo(button);
 	});
 
-	const initialDemo = sidebar.querySelector('button[data-demo="#default"]');
+	const initialDemo = sidebar.querySelector('button[data-demo="default"]');
 	if (initialDemo) {
 		loadDemo(initialDemo);
 	}
 });
 
-async function loadDemo(button) {
+async function loadDemo(button, configOverrides = {}) {
 	const { key } = getDemoContent(button);
 	const demo = demoConfigs[key];
 
 	setActiveButton(button);
 
+	if (carousel) {
+		carousel.destroy(true);
+		carousel = null;
+	}
+
 	resetPreview();
 	setPreviewContent(button);
-	createCarousel(demo.slides);
+
+	if (typeof demo.render === "function") {
+		demo.render();
+	} else {
+		createCarousel(demo.slides, demo.renderOptions ?? {});
+	}
 
 	const demoConfig = demo.config;
 	const config = {
 		container: ".demo-carousel",
 		...demoConfig,
+		...configOverrides,
 	};
-	const instance = getCarousel();
-	const carousel = instance();
-	const context = carousel;
 
 	try {
+		carousel = window.ddcarousel();
 		await carousel.init(config);
-		renderConfig(config);
+
+		const context = {
+			carousel,
+			button,
+			key,
+			config,
+			reload(configOverride = {}) {
+				return loadDemo(button, { ...configOverrides, ...configOverride });
+			},
+		};
+
+		addStandardActions(context);
+
+		if (typeof demo.actions === "function") {
+			demo.actions(context);
+		}
 	} catch (error) {
 		console.error(error);
 		preview.meta.textContent = "Failed to initialize demo";
@@ -66,12 +101,12 @@ async function loadDemo(button) {
 }
 
 export function getCarousel() {
-	return window.ddcarousel;
+	return carousel;
 }
 
 function getDemoContent(button) {
 	return {
-		key: button.dataset.demo?.replace(/^#/, "") ?? "",
+		key: button.dataset.demo.trim() ?? "",
 		title: button.querySelector(".demos__title")?.textContent.trim() ?? "",
 		description: button.querySelector(".demos__description")?.textContent.trim() ?? "",
 		meta: button.querySelector(".demos__meta")?.textContent.trim() ?? "",
@@ -96,6 +131,9 @@ function resetPreview() {
 	preview.content.replaceChildren();
 	preview.actions.replaceChildren();
 	preview.extra.replaceChildren();
+
+	preview.content.removeAttribute("style");
+	delete preview.content.dataset.resized;
 }
 
 function setActiveButton(button) {
@@ -116,40 +154,73 @@ function createOutput() {
 }
 
 function writeOutput(value) {
-	createOutput().textContent = JSON.stringify(value);
+	createOutput().textContent = stringify(value);
+	console.log(value);
 }
 
-function renderConfig(config) {
-	const details = document.createElement("details");
-	details.className = "demos__config";
-
-	const summary = document.createElement("summary");
-	summary.textContent = "Configuration";
-
-	const pre = document.createElement("pre");
-	pre.textContent = JSON.stringify(config, null, 2);
-
-	details.append(summary, pre);
-	preview.extra.append(details);
+function stringify(value) {
+	try {
+		return typeof value === "string" ? value : JSON.stringify(value, null, 2);
+	} catch {
+		return String(value);
+	}
 }
 
-const getRandomLoremTextLength = t => t.slice(0, 100 + Math.floor(Math.random() * (t.length - 500))).replace(/\s\w+$/, "");
+const defaultMaxContentLength = 500;
+function getRandomLoremTextLength(text, maxContentLength = defaultMaxContentLength) {
+	const maxLength = Math.min(maxContentLength, text.length);
+	const minLength = Math.min(20, maxLength);
+	const length = minLength + Math.floor(Math.random() * (maxLength - minLength + 1));
 
-export function createCarousel(slides = 12) {
+	return text.slice(0, length).replace(/\s\w*$/, "");
+}
+
+export function createCarousel(slides = 12, { urlData = false, urlNavContainer = false, maxCotentLength, carouselClass } = {}) {
 	const content = `
-		<div class="ddcarousel demo-carousel">
+		${urlNavContainer ? `<nav class="demo-url-nav"></nav>` : ""}
+
+		<div id="demo-carousel" class="ddcarousel demo-carousel ${carouselClass ?? ""}">
 			${Array.from({ length: slides }, (_, index) => {
 
 		const number = index + 1;
-		const content = `${number}. ${getRandomLoremTextLength(loremIpsum)}`;
+		const urlAttributes = urlData ? `data-id="slide-${number}" data-title="Slide ${number}"` : "";
+		const content = `${number}. ${getRandomLoremTextLength(loremIpsum, maxCotentLength)}`;
 
-		return `<div class="item-${number}">${content}</div>`;
+		return `<div class="item-${number}" ${urlAttributes}>${content}</div>`;
 	}).join("")}
 		</div>
 	`;
 
 	preview.content.innerHTML = content;
-	return preview.content.querySelector(".demo-carousel");
+	return preview.content.querySelector("#demo-carousel");
 }
 
+export function addAction(label, callback) {
+	const button = document.createElement("button");
+	button.type = "button";
+	button.textContent = label;
 
+	button.addEventListener("click", async () => {
+		try {
+			await callback();
+		} catch (error) {
+			console.error(error);
+		}
+	});
+
+	preview.actions.append(button);
+	return button;
+}
+
+function addStandardActions(context) {
+	addAction("Previous", () => context.carousel.prevPage());
+	addAction("Next", () => context.carousel.nextPage());
+	addAction("Get status", () => showModal("Status", stringify(carousel.getStatus())));
+	addAction("Configuration", () => showModal("Configuration", stringify(context.config)));
+}
+
+function showModal(title, content) {
+	statusPopupTitle.textContent = title
+	statusPopupContent.textContent = content
+	statusPopup.showModal();
+}

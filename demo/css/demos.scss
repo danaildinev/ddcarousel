@@ -1,7 +1,9 @@
 @import "./grid";
 
 $color-text: #333;
-$color-link: #6a06ff;
+$color-accent: #6366f1;
+$color-accent-background: #6365f144;
+$color-link: $color-accent;
 $color-border: #ccc;
 $color-border-light: #eee;
 $color-shadow: #ddd;
@@ -9,8 +11,6 @@ $color-background: #fafafa;
 $color-background-hover: #f5f5f5;
 $color-muted: #777;
 $color-muted-light: #999;
-$color-accent: #6a06ff;
-$color-accent-background: #6365f144;
 
 $font-family-base: "Nunito Sans", system-ui, sans-serif;
 $font-family-code: "JetBrains Mono", Consolas, monospace;
@@ -25,8 +25,10 @@ $demos-sidebar-width: 420px;
 $demos-gap: 32px;
 
 $border-radius: 4px;
+$button-font-size: 0.9rem;
 $button-border-radius: 14px;
 $transition-default-speed: 0.15s;
+$carousel-background: #f1f1f1;
 
 *,
 *::before,
@@ -60,6 +62,7 @@ details {
     border-radius: $border-radius;
     background: $color-background;
     color: $color-text;
+    font-size: $button-font-size;
     cursor: pointer;
     transition: all $transition-default-speed ease-in-out;
 
@@ -93,6 +96,17 @@ ul {
     list-style: none;
     margin: 0;
     padding: 0;
+}
+
+dialog {
+    padding: 20px;
+    border: 0;
+    border-radius: 8px;
+    margin: auto;
+
+    &::backdrop {
+        background: rgb(0 0 0 / 50%);
+    }
 }
 
 body {
@@ -252,9 +266,7 @@ textarea {
     }
 
     &__meta {
-        margin-top: 5px;
-        color: $color-muted-light;
-        font-size: 0.86rem;
+        display: none;
     }
 
     &__preview {
@@ -281,7 +293,8 @@ textarea {
         }
 
         &-content {
-            width: 1000px;
+            width: 1024px;
+            margin: 0 auto;
         }
 
         &-actions {
@@ -293,6 +306,7 @@ textarea {
 
     &__preview-footer {
         display: flex;
+        gap: 8px;
         flex-direction: row;
         align-items: start;
         justify-content: center;
@@ -304,7 +318,18 @@ textarea {
 }
 
 .demo-carousel {
+    --ddcarousel-nav-color: #fff;
+    --ddcarousel-autoplay-bar-color: #aaa;
+
+    background: $carousel-background;
     height: 350px;
+
+    &.fixed-height {
+        [class^="item"] {
+            height: inherit;
+            overflow: hidden;
+        }
+    }
 
     .ddcarousel-item {
         [class^="item"] {
@@ -363,4 +388,32 @@ textarea {
             background: #8b5cf6;
         }
     }
+}
+
+#statusPopup {
+    width: min(700px, 90vw);
+    max-height: 80vh;
+
+    &__header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 12px;
+    }
+
+    pre {
+        max-height: 60vh;
+        overflow: auto;
+        white-space: pre-wrap;
+    }
+}
+
+.demo-url-nav {
+    --ddcarousel-url-nav-color-active: #{$color-accent};
+
+    padding: 0 20px;
+    margin: 0 0 20px;
+    border: 1px solid $color-accent;
+    border-radius: $border-radius;
+    background: $color-accent-background;
 }

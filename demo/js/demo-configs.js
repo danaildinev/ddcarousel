@@ -1,16 +1,16 @@
-
-import { createCarousel } from "./main.js";
+import { addAction, getCarousel, createCarousel, preview } from "./main.js";
 
 export const demoConfigs = {
     default: {
         config: {},
     },
-    autoHeight: {
+    fixedHeight: {
         config: {
-            autoHeight: true,
+            items: 2,
+            autoHeight: false,
         },
-        render() {
-            createCarousel(7, { variableHeight: true, });
+        renderOptions: {
+            carouselClass: "fixed-height",
         },
     },
     itemsPerPage: {
@@ -18,7 +18,6 @@ export const demoConfigs = {
             items: 3,
             itemPerPage: true,
         },
-        slides: 9,
     },
     startPage: {
         config: {
@@ -30,6 +29,274 @@ export const demoConfigs = {
             items: 3,
             gap: 24,
         },
+    },
+    vertical: {
+        config: {
+            vertical: true,
+            items: 2,
+        },
+    },
+    verticalMaxContentWidth: {
+        config: {
+            vertical: true,
+            items: 2,
+            verticalMaxContentWidth: true,
+        },
+        renderOptions: {
+            maxCotentLength: 80
+        },
+    },
+    responsive: {
+        config: {
+            items: 3,
+            gap: 20,
+            pagination: true,
+            nav: false,
+            responsive: {
+                480: {
+                    items: 1,
+                    gap: 0,
+                    pagination: false,
+                    nav: true,
+                    autoplay: true
+                },
+                768: {
+                    items: 2,
+                    gap: 10,
+                    pagination: false,
+                    nav: true,
+                },
+            },
+        },
+        renderOptions: {
+            maxCotentLength: 200
+        },
+        actions() {
+            addAction("Resize to 479px", () => {
+                preview.content.style.width = "479px";
+                window.dispatchEvent(new Event("resize"));
+            });
+
+            addAction("Resize to 767px", () => {
+                preview.content.style.width = "767px";
+                window.dispatchEvent(new Event("resize"));
+            });
+
+            addAction("Revert to original", () => {
+                preview.content.removeAttribute("style");
+                window.dispatchEvent(new Event("resize"));
+            });
+        },
+    },
+    touchDrag: {
+        config: {
+            touchDrag: true,
+            mouseDrag: false,
+        },
+    },
+    dragSnapMode: {
+        config: {
+            items: 3,
+            dragSnapMode: "swipe",
+        },
+        actions(context) {
+            addAction("Change to 'Swipe' mode", () => {
+                context.reload({ dragSnapMode: "swipe" });
+            });
+
+            addAction("Change to 'Closest' mode", () => {
+                context.reload({ dragSnapMode: "closest" });
+            });
+        },
+    },
+    mouseDrag: {
+        config: {
+            touchDrag: false,
+            mouseDrag: true,
+        },
+    },
+    centered: {
+        config: {
+            items: 3,
+            centerSlide: true,
+        },
+        slides: 9,
+    },
+    keyboardNav: {
+        config: {
+            keyboardNavigation: true,
+        },
+    },
+    swipeThreshold: {
+        config: {
+            swipeThreshold: 400,
+        },
+    },
+    dragMaxDistance: {
+        config: {
+            items: 3,
+            dragMaxDistance: 800,
+        },
+    },
+    resizeDebounce: {
+        config: {
+            resizeDebounce: 700,
+            items: 3,
+        },
+        actions() {
+            addAction("Trigger resize", () => {
+                const resized = preview.content.dataset.resized !== "true";
+                preview.content.dataset.resized = String(resized);
+
+                animateWidth(preview.content, resized ? 800 : 1000, 1000, 200);
+            });
+        },
+    },
+    swipeSmooth: {
+        config: {
+            swipeSmooth: 0.5,
+        },
+    },
+    slideChangeDuration: {
+        config: {
+            slideChangeDuration: 1.5,
+        },
+    },
+    events: {
+        config: {},
+    },
+    nav: {
+        config: {
+            items: 3,
+            nav: true,
+        },
+    },
+    navCustomButtons: {
+        config: {
+            items: 3,
+            nav: true,
+            navPrevContent: "← Previous",
+            navNextContent: "Next →",
+        },
+    },
+    autoplay: {
+        config: {
+            autoplay: true,
+        },
+        actions: addAutoplayActions,
+    },
+    autoplaySpeedNoProgress: {
+        config: {
+            autoplay: true,
+            autoplaySpeed: 1500,
+            autoplayProgress: false,
+        },
+        actions: addAutoplayActions,
+        render() {
+            createCarousel(40)
+        }
+    },
+    autoplayPause: {
+        config: {
+            autoplay: true,
+            autoplayPauseHover: true,
+            autoplayPauseOnTabHidden: true,
+        },
+        actions: addAutoplayActions,
+    },
+    autoplayEvents: {
+        config: {
+            autoplay: true,
+        },
+        actions: addAutoplayActions,
+    },
+    pagination: {
+        config: {
+            pagination: true,
+        },
+        slides: 8,
+    },
+    lazyLoad: {
+        config: {
+            lazyLoad: true,
+        },
+    },
+    lazyLoadPreload: {
+        config: {
+            lazyLoad: true,
+            lazyPreload: true,
+            lazyPreloadSlides: 2,
+        },
+    },
+    urlNav: {
+        config: {
+            urlNav: true,
+        },
+        render() {
+            createCarousel(5, { urlData: true });
+        },
+    },
+    urlNavContainer: {
+        config: {
+            urlNav: true,
+            urlNavContainer: ".demo-url-nav",
+        },
+        render() {
+            createCarousel(5, { urlData: true, urlNavContainer: true });
+        },
+    },
+    loop: {
+        config: {
+            loop: true,
+        },
+    },
+    loopMultipleItemsPerPage: {
+        config: {
+            loop: true,
+            items: 3,
+        },
+        slides: 9,
+    },
+    loopMultipleItemsPerPageAndCentered: {
+        config: {
+            loop: true,
+            items: 3,
+            centerSlide: true,
+        },
         slides: 9,
     },
 };
+
+function addAutoplayActions() {
+    const getAutoplay = () => getCarousel().module("autoplay");
+
+    addAction("Start autoplay", () => {
+        const autoplay = getAutoplay();
+        autoplay.start();
+    });
+
+    addAction("Stop autoplay", () => {
+        const autoplay = getAutoplay();
+        autoplay.stop();
+    });
+}
+
+function animateWidth(element, targetWidth, duration = 2000) {
+    const startWidth = element.getBoundingClientRect().width;
+    const startTime = performance.now();
+
+    function animate(time) {
+        const progress = Math.min((time - startTime) / duration, 1);
+        const width = startWidth + (targetWidth - startWidth) * progress;
+
+        element.style.width = `${width}px`;
+
+        window.dispatchEvent(new Event("resize"));
+
+        if (progress < 1) {
+            requestAnimationFrame(animate);
+        }
+    }
+
+    requestAnimationFrame(animate);
+}
