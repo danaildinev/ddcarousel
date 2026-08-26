@@ -201,21 +201,10 @@ export default class Stage {
 
     #setInitialDimensions() {
         if (this.#config.verticalMaxContentWidth) {
-            let maxWidth = 0,
-                elWidth;
-
-            this.#slides.forEach(el => {
-                elWidth = el.getBoundingClientRect().width;
-
-                if (elWidth > maxWidth)
-                    maxWidth = elWidth;
-            });
-
-            const maxAvailableWidth = document.body.offsetWidth;
-            if (maxWidth > maxAvailableWidth) {
-                const carouselRect = this.#container.getBoundingClientRect();
-                maxWidth = maxAvailableWidth - carouselRect.left;
-            }
+            const maxSlideWidth = Math.max(...this.#slides.map(slide => slide.getBoundingClientRect().width));
+            const parentContainer = this.#container.parentElement ?? this.#container;
+            const maxAvailableWidth = parentContainer.getBoundingClientRect().width;
+            const maxWidth = Math.min(maxSlideWidth, maxAvailableWidth);
 
             this.#container.style.width = maxWidth + "px";
         }
