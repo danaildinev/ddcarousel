@@ -388,7 +388,7 @@ Module ID: `nav`
 Page navigation indicators.
 Module ID: `pagination`
 
-- `pagination` - Enable pagination (boolean, default: `true`)
+- `pagination` - Enable pagination (boolean, default: `false`)
 
 ### Autoplay
 

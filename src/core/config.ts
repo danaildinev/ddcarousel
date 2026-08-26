@@ -35,7 +35,6 @@ export class Config {
     #setDefaultConfig(): CarouselConfig {
         return {
             container: `.ddcarousel`,
-            pagination: true,
             autoHeight: true,
             fullWidth: true,
             startPage: 0,
