@@ -1,5 +1,36 @@
 import { addAction, getCarousel, createCarousel, preview } from "./main.js";
 
+const autoplayEvents = [
+    "module:autoplay:started",
+    "module:autoplay:stopped",
+];
+
+const carouselEvents = [
+    "carousel:initialize",
+    "carousel:initialized",
+    "carousel:destroy",
+    "carousel:destroyed",
+    "config:applied",
+    "module:loaded",
+    "module:initialized",
+    "module:destroyed",
+    "module:unloaded",
+    "stage:created",
+    "stage:changed",
+    "stage:resized",
+    "page:change:request",
+    "page:change:index",
+    "page:change:scroll:before",
+    "page:change:scroll:after",
+    "page:changed",
+    "slide:scroll",
+    "drag:start:pre",
+    "drag:start",
+    "drag:dragging",
+    "drag:end",
+    "transition:end",
+];
+
 export const demoConfigs = {
     default: {
         config: {},
@@ -164,6 +195,33 @@ export const demoConfigs = {
     },
     events: {
         config: {},
+        afterInit(context) {
+            createEventLogger(context, carouselEvents);
+        },
+        actions(context) {
+            addAction("Log status", async () => {
+                const status = await context.carousel.getStatus();
+                updateLog("Status", status);
+            });
+
+            addAction("Destroy", () => context.carousel.destroy(false));
+
+            addAction("Initialize new instance", async () => {
+                createCarousel(12);
+
+                const carousel = ddcarousel();
+                context.carousel = carousel;
+
+                preview.events.replaceChildren();
+                createEventLogger(context, carouselEvents);
+
+                await carousel.init(context.config);
+            });
+
+            addAction("Load pagination module", async () => await context.carousel.loadModule("pagination"));
+
+            addAction("Unload pagination module", async () => await context.carousel.unloadModule("pagination"));
+        },
     },
     nav: {
         config: {
@@ -209,6 +267,9 @@ export const demoConfigs = {
             autoplay: true,
         },
         actions: addAutoplayActions,
+        afterInit(context) {
+            createEventLogger(context, autoplayEvents);
+        },
     },
     pagination: {
         config: {
@@ -299,4 +360,42 @@ function animateWidth(element, targetWidth, duration = 2000) {
     }
 
     requestAnimationFrame(animate);
+}
+
+function createEventLogger(context, events) {
+    const list = document.createElement("ul");
+    list.className = "demo__preview-events-list";
+
+    context.eventListeners = [];
+
+    events.forEach(event => {
+        const item = document.createElement("li");
+        item.dataset.event = event;
+        item.textContent = event;
+        list.append(item);
+
+        const callback = payload => carouselEvent(item, event, payload);
+
+        context.carousel.on(event, callback);
+        context.eventListeners.push({ event, callback });
+    });
+
+    preview.events.append(list);
+}
+
+function carouselEvent(item, event, payload) {
+    item.classList.add("active");
+
+    setTimeout(() => item.classList.remove("active"), 500);
+
+    updateLog(event, payload);
+}
+
+const updateLog = (е, payload) => {
+    const time = new Date().toLocaleTimeString();
+    const payloadText = payload === undefined ? "\n" : `\n${JSON.stringify(payload, null, 2)}\n`;
+    console.log(payload)
+
+    log.value += `[${time}] ${е}${payloadText}`;
+    log.scrollTop = log.scrollHeight;
 }

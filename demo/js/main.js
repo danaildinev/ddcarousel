@@ -13,12 +13,14 @@ erat gravida elit, ac fringilla metus nisl eget elit. Aliquam erat volutpat. Ali
 dolor sit amet, consectetur adipiscing elit.`;
 
 export const preview = {
-	title: document.querySelector(".demos__preview-title"),
-	description: document.querySelector(".demos__preview-description"),
-	meta: document.querySelector(".demos__preview-meta"),
-	content: document.querySelector(".demos__preview-content"),
-	actions: document.querySelector(".demos__preview-actions"),
-	extra: document.querySelector(".demos__preview-extra"),
+	title: document.querySelector(".demo__preview-title"),
+	description: document.querySelector(".demo__preview-description"),
+	meta: document.querySelector(".demo__preview-meta"),
+	content: document.querySelector(".demo__preview-content"),
+	footer: document.querySelector(".demo__preview-footer"),
+	events: document.querySelector(".demo__preview-events"),
+	actions: document.querySelector(".demo__preview-actions"),
+	extra: document.querySelector(".demo__preview-extra"),
 };
 
 let sidebar;
@@ -93,6 +95,10 @@ async function loadDemo(button, configOverrides = {}) {
 		if (typeof demo.actions === "function") {
 			demo.actions(context);
 		}
+
+		if (typeof demo.afterInit === "function") {
+			demo.afterInit(context);
+		}
 	} catch (error) {
 		console.error(error);
 		preview.meta.textContent = "Failed to initialize demo";
@@ -131,6 +137,7 @@ function resetPreview() {
 	preview.content.replaceChildren();
 	preview.actions.replaceChildren();
 	preview.extra.replaceChildren();
+	preview.events.replaceChildren();
 
 	preview.content.removeAttribute("style");
 	delete preview.content.dataset.resized;

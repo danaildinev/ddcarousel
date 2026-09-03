@@ -268,7 +268,9 @@ textarea {
     &__meta {
         display: none;
     }
+}
 
+.demo {
     &__preview {
         display: grid;
         justify-content: center;
@@ -302,24 +304,56 @@ textarea {
             gap: 8px;
             grid-auto-flow: column;
         }
-    }
 
-    &__preview-footer {
-        display: flex;
-        gap: 8px;
-        flex-direction: row;
-        align-items: start;
-        justify-content: center;
+        &-footer {
+            display: flex;
+            gap: 8px;
+            flex-direction: row;
+            align-items: start;
+            justify-content: center;
 
-        @include mobile {
-            flex-direction: column;
+            @include mobile {
+                flex-direction: column;
+            }
+        }
+
+        &-events {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+
+            &-list {
+                height: 30vh;
+                display: flex;
+                flex-direction: column;
+                flex-wrap: wrap;
+
+                [data-event] {
+                    font-size: 0.9rem;
+                    margin: 4px;
+                    padding: 4px 8px;
+                    background: $color-border-light;
+                    border: 1px solid $color-border-light;
+                    border-radius: $border-radius;
+                    transition: 0.2s ease-out background;
+
+                    &.active {
+                        background: #22c55e;
+                    }
+                }
+            }
+
+            &-log {
+                height: auto;
+                font-size: 0.78rem;
+                padding: 6px;
+            }
         }
     }
 }
 
 .demo-carousel {
     --ddcarousel-nav-color: #fff;
-    --ddcarousel-autoplay-bar-color: #aaa;
+    --ddcarousel-autoplay-bar-color: #000;
 
     background: $carousel-background;
     height: 350px;
