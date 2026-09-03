@@ -95,15 +95,23 @@ describe("Config", () => {
     it("applyConfig emits old, new, default, and internal override metadata", () => {
         const events = new Events();
         const applied = vi.fn();
-        const config = new Config(events, baseConfig({ pagination: true, items: 1, gap: 0 }));
+        const config = new Config(events, baseConfig({ items: 1, gap: 0 }));
         events.on(EVENTS.CONFIG_APPLIED, applied);
 
         config.updateSettings({ items: 3 });
 
         expect(applied).toHaveBeenLastCalledWith(expect.objectContaining({
-            default: expect.objectContaining({ items: 1, pagination: true }),
+            default: expect.objectContaining({ items: 1, gap: 0 }),
             old: expect.objectContaining({ items: 1, gap: 0 }),
             new: expect.objectContaining({ items: 3, gap: 0 }),
+            isInternalOverride: false,
+        }));
+
+        config.updateSettings({ pagination: true });
+
+        expect(applied).toHaveBeenLastCalledWith(expect.objectContaining({
+            old: expect.objectContaining({ items: 3 }),
+            new: expect.objectContaining({ items: 3, pagination: true }),
             isInternalOverride: false,
         }));
 

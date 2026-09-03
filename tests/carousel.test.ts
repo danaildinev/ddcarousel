@@ -368,9 +368,7 @@ describe("Carousel core", () => {
         ]);
         expect(status.visibleSlides).toEqual([0]);
         expect(status.currentTranslate).toBe(0);
-        expect(status.modules).toEqual([
-            "pagination",
-        ]);
+        expect(status.modules).toEqual([]);
         expect(status.closestSlidesIndexes).toEqual({
             left: 0,
             center: 0,
