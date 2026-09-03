@@ -66,25 +66,30 @@ export default class Autoplay extends BaseModule<AutoplayConfig> {
         this.#detachEvents();
     }
 
+    #isLastPage() {
+        return this.#currentPage >= this.getStatus().totalPages;
+    }
+
     #onPageChanged = (e: CarouselEvents[typeof EVENTS.PAGE_CHANGED]) => {
         if (!this.isInitialized) {
             return;
         }
 
         this.#currentPage = e.currentPage;
-        if (this.#currentPage < this.getStatus().totalPages) {
-            this.start();
-        }
-        else {
+
+        if (this.#isLastPage()) {
             this.stop();
             this.#toggleProgressBar(false);
+            return;
         }
+
+        this.#restart();
     };
 
     #stopOnTabHidden = () => document.hidden ? this.stop() : this.start();
 
     start = () => {
-        if (!this.isInitialized || this.#currentPage === this.getStatus().totalPages || this.#autoPlay !== undefined) {
+        if (!this.isInitialized || this.#isLastPage() || this.#autoPlay !== undefined) {
             return;
         }
 
@@ -101,14 +106,17 @@ export default class Autoplay extends BaseModule<AutoplayConfig> {
         this.events.emit(EVENTS_AUTOPLAY.STARTED);
     }
 
+    #restart() {
+        if (this.#autoPlay !== undefined) {
+            clearInterval(this.#autoPlay);
+            this.#autoPlay = undefined;
+        }
+
+        this.start();
+    }
+
     #handler() {
         this.events.emit(EVENTS.PAGE_CHANGE_REQUEST, { index: "next" });
-        this.#restartProgressBar();
-
-        if (this.#currentPage == this.getStatus().totalPages) {
-            clearInterval(this.#autoPlay);
-            this.#toggleProgressBar(false);
-        }
     }
 
     stop = () => {

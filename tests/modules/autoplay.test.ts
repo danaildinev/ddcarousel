@@ -302,4 +302,34 @@ describe("Autoplay module", () => {
 
         vi.useRealTimers();
     });
+
+    it("restarts autoplay timer on page change", async () => {
+        vi.useFakeTimers();
+
+        renderCarousel(5);
+
+        const pageChangeRequest = vi.fn();
+        const carousel = new Carousel(baseConfig({
+            items: 1,
+            slideChangeDuration: 0,
+            autoplay: true,
+            autoplaySpeed: 5000,
+        }));
+        await carousel.ready;
+        carousel.on(EVENTS.PAGE_CHANGE_REQUEST, pageChangeRequest);
+
+        vi.advanceTimersByTime(4000);
+        carousel.nextPage();
+        expect(carousel.getCurrentPage()).toBe(1);
+
+        const requestsAfterPageChange = pageChangeRequest.mock.calls.length;
+
+        vi.advanceTimersByTime(1000); // The original timer would have fired here.
+        expect(pageChangeRequest).toHaveBeenCalledTimes(requestsAfterPageChange);
+
+        vi.advanceTimersByTime(4000); // The restarted 5000ms timer should fire here.
+        expect(pageChangeRequest).toHaveBeenCalledTimes(requestsAfterPageChange + 1);
+
+        vi.useRealTimers();
+    });
 });
