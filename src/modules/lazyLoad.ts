@@ -12,7 +12,7 @@ export type LazyLoadConfig = {
 export default class LazyLoad extends BaseModule<LazyLoadConfig> {
     id: string = "lazyLoad";
     moduleConfig: LazyLoadConfig = {
-        preload: true,
+        preload: false,
         preloadSlides: 1,
     };
 
