@@ -171,7 +171,7 @@ export const demoConfigs = {
     },
     events: {
         config: {},
-        afterInit(context) {
+        beforeInit(context) {
             createLogger(context, carouselEvents);
         },
         actions(context) {

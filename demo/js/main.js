@@ -77,9 +77,6 @@ async function loadDemo(button, configOverrides = {}) {
 	};
 
 	try {
-		carousel = window.ddcarousel();
-		await carousel.init(config);
-
 		const context = {
 			carousel,
 			button,
@@ -89,6 +86,14 @@ async function loadDemo(button, configOverrides = {}) {
 				return loadDemo(button, { ...configOverrides, ...configOverride });
 			},
 		};
+
+		context.carousel = window.ddcarousel();
+
+		if (typeof demo.beforeInit === "function") {
+			demo.beforeInit(context);
+		}
+
+		await context.carousel.init(config);
 
 		addStandardActions(context);
 
