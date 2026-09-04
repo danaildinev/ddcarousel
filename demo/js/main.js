@@ -187,7 +187,10 @@ function getRandomLoremTextLength(text, maxContentLength = defaultMaxContentLeng
 	return text.slice(0, length).replace(/\s\w*$/, "");
 }
 
-export function createCarousel(slides = 12, { urlData = false, urlNavContainer = false, maxCotentLength, carouselClass } = {}) {
+export function createCarousel(slides = 12, { urlData = false, urlNavContainer = false, lazyImages = false, maxCotentLength, carouselClass } = {}) {
+	const imageWidth = 500;
+	const imageHeight = 500;
+
 	const content = `
 		${urlNavContainer ? `<nav class="demo-url-nav"></nav>` : ""}
 
@@ -196,7 +199,7 @@ export function createCarousel(slides = 12, { urlData = false, urlNavContainer =
 
 		const number = index + 1;
 		const urlAttributes = urlData ? `data-id="slide-${number}" data-title="Slide ${number}"` : "";
-		const content = `${number}. ${getRandomLoremTextLength(loremIpsum, maxCotentLength)}`;
+		const content = lazyImages ? `<img data-src="images/img${number}.jpg" alt="Image ${number}" width="${imageWidth}" height="${imageHeight}">` : `${number}. ${getRandomLoremTextLength(loremIpsum, maxCotentLength)}`;;
 
 		return `<div class="item-${number}" ${urlAttributes}>${content}</div>`;
 	}).join("")}
@@ -227,7 +230,7 @@ export function addAction(label, callback) {
 function addStandardActions(context) {
 	addAction("Previous", () => context.carousel.prevPage());
 	addAction("Next", () => context.carousel.nextPage());
-	addAction("Get status", () => showModal("Status", stringify(carousel.getStatus())));
+	addAction("Get status", () => showModal("Status", stringify(context.carousel.getStatus())));
 	addAction("Configuration", () => showModal("Configuration", stringify(context.config)));
 }
 

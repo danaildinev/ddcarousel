@@ -262,13 +262,21 @@ export const demoConfigs = {
     lazyLoad: {
         config: {
             lazyLoad: true,
+            items: 2,
+        },
+        render() {
+            createCarousel(10, { lazyImages: true });
         },
     },
     lazyLoadPreload: {
         config: {
             lazyLoad: true,
-            lazyPreload: true,
-            lazyPreloadSlides: 2,
+            lazyLoadPreload: true,
+            lazyLoadPreloadSlides: 2,
+            items: 2,
+        },
+        render() {
+            createCarousel(10, { lazyImages: true });
         },
     },
     urlNav: {
