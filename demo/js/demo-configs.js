@@ -245,9 +245,11 @@ export const demoConfigs = {
     autoplayEvents: {
         config: {
             autoplay: true,
+            autoplayPauseHover: true,
+            autoplayPauseOnTabHidden: true,
         },
         actions: addAutoplayActions,
-        afterInit(context) {
+        beforeInit(context) {
             createLogger(context, autoplayEvents);
         },
     },
