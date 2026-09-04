@@ -273,12 +273,25 @@ textarea {
 .demo {
     &__preview {
         display: grid;
+        grid-template-rows: 1fr 1fr 1fr;
+        grid-template-areas:
+            "header  events"
+            "content events"
+            "footer  events";
+        gap: $container-padding;
         justify-content: center;
         align-items: center;
         text-align: center;
+        padding: 0 $container-padding;
         width: 100%;
+        height: calc(100vh - 80px);
+
+        &:has(.demo__preview-events:empty) {
+            grid-template-columns: 1fr;
+        }
 
         &-header {
+            grid-area: header;
             align-self: center;
         }
 
@@ -295,6 +308,7 @@ textarea {
         }
 
         &-content {
+            grid-area: content;
             width: 1024px;
             margin: 0 auto;
         }
@@ -307,6 +321,7 @@ textarea {
 
         &-footer {
             display: flex;
+            grid-area: footer;
             gap: 8px;
             flex-direction: row;
             align-items: start;
@@ -319,17 +334,30 @@ textarea {
 
         &-events {
             display: grid;
-            grid-template-columns: 1fr 1fr;
+            grid-area: events;
+            grid-template-rows: 1fr 4fr;
+            gap: $container-padding;
+            height: 100%;
+
+            &:empty {
+                display: none;
+            }
+
+            & > :nth-child(4) {
+                grid-column: 2;
+                grid-row: 1 / span 3;
+            }
 
             &-list {
-                height: 30vh;
                 display: flex;
-                flex-direction: column;
                 flex-wrap: wrap;
+                align-items: start;
+                flex-direction: row;
+                overflow-y: auto;
 
                 [data-event] {
                     font-size: 0.9rem;
-                    margin: 4px;
+                    margin: 0 4px 4px 0;
                     padding: 4px 8px;
                     background: $color-border-light;
                     border: 1px solid $color-border-light;
@@ -343,9 +371,9 @@ textarea {
             }
 
             &-log {
-                height: auto;
                 font-size: 0.78rem;
                 padding: 6px;
+                height: auto;
             }
         }
     }

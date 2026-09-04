@@ -233,12 +233,21 @@ textarea:focus {
 
 .demo__preview {
   display: grid;
+  grid-template-rows: 1fr 1fr 1fr;
+  grid-template-areas: "header  events" "content events" "footer  events";
+  gap: 12px;
   justify-content: center;
   align-items: center;
   text-align: center;
+  padding: 0 12px;
   width: 100%;
+  height: calc(100vh - 80px);
+}
+.demo__preview:has(.demo__preview-events:empty) {
+  grid-template-columns: 1fr;
 }
 .demo__preview-header {
+  grid-area: header;
   align-self: center;
 }
 .demo__preview-title {
@@ -251,6 +260,7 @@ textarea:focus {
   color: #777;
 }
 .demo__preview-content {
+  grid-area: content;
   width: 1024px;
   margin: 0 auto;
 }
@@ -261,6 +271,7 @@ textarea:focus {
 }
 .demo__preview-footer {
   display: flex;
+  grid-area: footer;
   gap: 8px;
   flex-direction: row;
   align-items: start;
@@ -273,17 +284,28 @@ textarea:focus {
 }
 .demo__preview-events {
   display: grid;
-  grid-template-columns: 1fr 1fr;
+  grid-area: events;
+  grid-template-rows: 1fr 4fr;
+  gap: 12px;
+  height: 100%;
+}
+.demo__preview-events:empty {
+  display: none;
+}
+.demo__preview-events > :nth-child(4) {
+  grid-column: 2;
+  grid-row: 1/span 3;
 }
 .demo__preview-events-list {
-  height: 30vh;
   display: flex;
-  flex-direction: column;
   flex-wrap: wrap;
+  align-items: start;
+  flex-direction: row;
+  overflow-y: auto;
 }
 .demo__preview-events-list [data-event] {
   font-size: 0.9rem;
-  margin: 4px;
+  margin: 0 4px 4px 0;
   padding: 4px 8px;
   background: #eee;
   border: 1px solid #eee;
@@ -294,9 +316,9 @@ textarea:focus {
   background: #22c55e;
 }
 .demo__preview-events-log {
-  height: auto;
   font-size: 0.78rem;
   padding: 6px;
+  height: auto;
 }
 
 .demo-carousel {
