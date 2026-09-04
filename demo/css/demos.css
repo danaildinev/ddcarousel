@@ -303,6 +303,8 @@ textarea:focus {
   --ddcarousel-nav-color: #fff;
   --ddcarousel-autoplay-bar-color: #000;
   background: #f1f1f1;
+}
+.demo-carousel.fixed-height, .demo-carousel.ddcarousel-vertical {
   height: 350px;
 }
 .demo-carousel.fixed-height [class^=item] {
@@ -373,7 +375,9 @@ textarea:focus {
   --ddcarousel-url-nav-color-active: #6366f1;
   padding: 0 20px;
   margin: 0 0 20px;
-  border: 1px solid #6366f1;
+  border: 1px solid #999;
   border-radius: 4px;
-  background: rgba(99, 101, 241, 0.2666666667);
+}
+.demo-url-nav li a {
+  color: #999;
 }

@@ -356,7 +356,11 @@ textarea {
     --ddcarousel-autoplay-bar-color: #000;
 
     background: $carousel-background;
-    height: 350px;
+
+    &.fixed-height,
+    &.ddcarousel-vertical {
+        height: 350px;
+    }
 
     &.fixed-height {
         [class^="item"] {
@@ -447,7 +451,10 @@ textarea {
 
     padding: 0 20px;
     margin: 0 0 20px;
-    border: 1px solid $color-accent;
+    border: 1px solid $color-muted-light;
     border-radius: $border-radius;
-    background: $color-accent-background;
+
+    li a {
+        color: $color-muted-light;
+    }
 }

@@ -31,6 +31,9 @@ const carouselEvents = [
     "transition:end",
 ];
 
+const logTextareaClass = "demo__preview-events-log";
+let log;
+
 export const demoConfigs = {
     default: {
         config: {},
@@ -39,6 +42,7 @@ export const demoConfigs = {
         config: {
             items: 2,
             autoHeight: false,
+            pagination: true
         },
         renderOptions: {
             carouselClass: "fixed-height",
@@ -48,11 +52,13 @@ export const demoConfigs = {
         config: {
             items: 3,
             itemPerPage: true,
+            pagination: true
         },
     },
     startPage: {
         config: {
             startPage: 2,
+            pagination: true
         },
     },
     gap: {
@@ -200,8 +206,12 @@ export const demoConfigs = {
         },
         actions(context) {
             addAction("Log status", async () => {
-                const status = await context.carousel.getStatus();
-                updateLog("Status", status);
+                try {
+                    const status = await context.carousel.getStatus();
+                    updateLog("Status", status);
+                } catch (e) {
+                    updateLog(e.message)
+                }
             });
 
             addAction("Destroy", () => context.carousel.destroy(false));
@@ -366,6 +376,10 @@ function createEventLogger(context, events) {
     const list = document.createElement("ul");
     list.className = "demo__preview-events-list";
 
+    log = document.createElement("textarea");
+    log.className = logTextareaClass;
+    log.readOnly = true;
+
     context.eventListeners = [];
 
     events.forEach(event => {
@@ -380,7 +394,7 @@ function createEventLogger(context, events) {
         context.eventListeners.push({ event, callback });
     });
 
-    preview.events.append(list);
+    preview.events.append(list, log);
 }
 
 function carouselEvent(item, event, payload) {
@@ -391,11 +405,11 @@ function carouselEvent(item, event, payload) {
     updateLog(event, payload);
 }
 
-const updateLog = (е, payload) => {
+const updateLog = (e, payload) => {
     const time = new Date().toLocaleTimeString();
     const payloadText = payload === undefined ? "\n" : `\n${JSON.stringify(payload, null, 2)}\n`;
-    console.log(payload)
+    console.log(e, payload)
 
-    log.value += `[${time}] ${е}${payloadText}`;
+    log.value += `[${time}] ${e}${payloadText}`;
     log.scrollTop = log.scrollHeight;
 }
