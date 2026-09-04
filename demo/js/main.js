@@ -231,3 +231,38 @@ function showModal(title, content) {
 	statusPopupContent.textContent = content
 	statusPopup.showModal();
 }
+
+export function animateWidth(element, targetWidth, duration = 2000) {
+	const startWidth = element.getBoundingClientRect().width;
+	const startTime = performance.now();
+
+	function animate(time) {
+		const progress = Math.min((time - startTime) / duration, 1);
+		const width = startWidth + (targetWidth - startWidth) * progress;
+
+		element.style.width = `${width}px`;
+
+		window.dispatchEvent(new Event("resize"));
+
+		if (progress < 1) {
+			requestAnimationFrame(animate);
+		}
+	}
+
+	requestAnimationFrame(animate);
+}
+
+export function throttle(callback, delay) {
+	let lastCall = 0;
+
+	return (...args) => {
+		const now = performance.now();
+
+		if (now - lastCall < delay) {
+			return;
+		}
+
+		lastCall = now;
+		callback(...args);
+	};
+}

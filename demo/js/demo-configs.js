@@ -1,35 +1,5 @@
-import { addAction, getCarousel, createCarousel, preview } from "./main.js";
-
-const autoplayEvents = [
-    "module:autoplay:started",
-    "module:autoplay:stopped",
-];
-
-const carouselEvents = [
-    "carousel:initialize",
-    "carousel:initialized",
-    "carousel:destroy",
-    "carousel:destroyed",
-    "config:applied",
-    "module:loaded",
-    "module:initialized",
-    "module:destroyed",
-    "module:unloaded",
-    "stage:created",
-    "stage:changed",
-    "stage:resized",
-    "page:change:request",
-    "page:change:index",
-    "page:change:scroll:before",
-    "page:change:scroll:after",
-    "page:changed",
-    "slide:scroll",
-    "drag:start:pre",
-    "drag:start",
-    "drag:dragging",
-    "drag:end",
-    "transition:end",
-];
+import { addAction, getCarousel, createCarousel, preview, animateWidth, throttle } from "./main.js";
+import { carouselEvents, autoplayEvents } from "./events.js";
 
 const logTextareaClass = "demo__preview-events-log";
 let log;
@@ -202,7 +172,7 @@ export const demoConfigs = {
     events: {
         config: {},
         afterInit(context) {
-            createEventLogger(context, carouselEvents);
+            createLogger(context, carouselEvents);
         },
         actions(context) {
             addAction("Log status", async () => {
@@ -223,7 +193,7 @@ export const demoConfigs = {
                 context.carousel = carousel;
 
                 preview.events.replaceChildren();
-                createEventLogger(context, carouselEvents);
+                createLogger(context, carouselEvents);
 
                 await carousel.init(context.config);
             });
@@ -278,7 +248,7 @@ export const demoConfigs = {
         },
         actions: addAutoplayActions,
         afterInit(context) {
-            createEventLogger(context, autoplayEvents);
+            createLogger(context, autoplayEvents);
         },
     },
     pagination: {
@@ -352,27 +322,7 @@ function addAutoplayActions() {
     });
 }
 
-function animateWidth(element, targetWidth, duration = 2000) {
-    const startWidth = element.getBoundingClientRect().width;
-    const startTime = performance.now();
-
-    function animate(time) {
-        const progress = Math.min((time - startTime) / duration, 1);
-        const width = startWidth + (targetWidth - startWidth) * progress;
-
-        element.style.width = `${width}px`;
-
-        window.dispatchEvent(new Event("resize"));
-
-        if (progress < 1) {
-            requestAnimationFrame(animate);
-        }
-    }
-
-    requestAnimationFrame(animate);
-}
-
-function createEventLogger(context, events) {
+function createLogger(context, events) {
     const list = document.createElement("ul");
     list.className = "demo__preview-events-list";
 
@@ -413,19 +363,4 @@ const updateLog = (e, payload) => {
 
     log.value += `[${time}] ${e}${payloadText}`;
     log.scrollTop = log.scrollHeight;
-}
-
-function throttle(callback, delay) {
-    let lastCall = 0;
-
-    return (...args) => {
-        const now = performance.now();
-
-        if (now - lastCall < delay) {
-            return;
-        }
-
-        lastCall = now;
-        callback(...args);
-    };
 }
