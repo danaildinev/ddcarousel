@@ -101,6 +101,8 @@ export default class Stage {
         if (this.#config.keyboardNavigation) {
             window.addEventListener("keydown", this.#keyboardHandler);
         }
+
+        this.#container.classList.toggle(CSS_CLASSES.autoHeight, this.#config.autoHeight)
     }
 
     #create() {
@@ -646,6 +648,8 @@ export default class Stage {
         if (slide !== null) {
             this.#scrollToSlide(slide, false);
         }
+
+        this.#container.classList.toggle(CSS_CLASSES.autoHeight, e.new.autoHeight)
     }
 
     #keyboardHandler = (e: KeyboardEvent) => {

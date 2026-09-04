@@ -15,11 +15,13 @@
 }
 
 .ddcarousel {
-	transition: height 0.3s ease-in-out;
 	margin-bottom: 50px;
 	position: relative;
 	&.full-width {
 		width: 100%;
+	}
+	&.auto-height {
+		transition: height 0.3s ease-in-out;
 	}
 	&-vertical {
 		.ddcarousel-stage {
