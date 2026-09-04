@@ -388,7 +388,8 @@ function createEventLogger(context, events) {
         item.textContent = event;
         list.append(item);
 
-        const callback = payload => carouselEvent(item, event, payload);
+        const handler = payload => carouselEvent(item, event, payload);
+        const callback = event === "drag:dragging" ? throttle(handler, 100) : handler;
 
         context.carousel.on(event, callback);
         context.eventListeners.push({ event, callback });
@@ -412,4 +413,19 @@ const updateLog = (e, payload) => {
 
     log.value += `[${time}] ${e}${payloadText}`;
     log.scrollTop = log.scrollHeight;
+}
+
+function throttle(callback, delay) {
+    let lastCall = 0;
+
+    return (...args) => {
+        const now = performance.now();
+
+        if (now - lastCall < delay) {
+            return;
+        }
+
+        lastCall = now;
+        callback(...args);
+    };
 }
