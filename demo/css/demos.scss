@@ -17,6 +17,7 @@ $font-family-code: "JetBrains Mono", Consolas, monospace;
 $font-size-base: 16px;
 $font-line-height: 1.4;
 $font-size-h1: 1.8rem;
+$font-size-h1-mobile: 1.2rem;
 $font-size-h2: 1.6rem;
 $font-size-h3: 1.2rem;
 $font-size-h4: 0.86rem;
@@ -28,7 +29,13 @@ $border-radius: 4px;
 $button-font-size: 0.9rem;
 $button-border-radius: 14px;
 $transition-default-speed: 0.15s;
+
 $carousel-background: #f1f1f1;
+$carousel-width-desktop: 900px;
+$carousel-width-tablet: 700px;
+$carousel-width-mobile: 100%;
+
+$header-btn-width: 60px;
 
 *,
 *::before,
@@ -129,6 +136,10 @@ h4 {
 
 h1 {
     font-size: $font-size-h1;
+
+    @include mobile() {
+        font-size: $font-size-h1-mobile;
+    }
 }
 
 h2 {
@@ -189,20 +200,43 @@ textarea {
 }
 
 .main-header {
-    margin: 12px 0;
+    padding: 12px 0;
+
     &__content {
         display: flex;
         flex-direction: row;
         justify-content: space-between;
         align-items: center;
+        flex: 1;
+        margin-right: $header-btn-width;
 
         @include mobile() {
             flex-direction: column;
         }
     }
 
+    &__toggle-sidebar {
+        display: none;
+        margin-right: $container-padding;
+        width: $header-btn-width;
+
+        @include tablet() {
+            display: block;
+        }
+
+        svg {
+            margin: 0 auto;
+        }
+    }
+
     &__link {
         font-size: 0.94rem;
+    }
+
+    .container {
+        display: flex;
+        flex-direction: row;
+        align-items: center;
     }
 }
 
@@ -211,27 +245,50 @@ textarea {
     grid-template-columns: $demos-sidebar-width 1fr;
     gap: $demos-gap;
 
-    @include mobile() {
+    @include tablet {
         grid-template-columns: 1fr;
         gap: 24px;
     }
 
     &__sidebar {
-        max-height: calc(100vh - 70px);
+        height: calc(100vh - 70px);
         overflow-y: auto;
         padding: $container-padding;
+        background: $color-background;
 
-        @include mobile() {
-            position: static;
-            max-height: none;
-            overflow: visible;
+        @include tablet() {
+            position: absolute;
+            top: 0;
+            left: 0;
+            z-index: 1;
+            height: 100vh;
+            display: none;
+        }
+
+        &.active {
+            display: block;
+        }
+
+        &-title,
+        &-sub-title {
+            margin: 16px 0;
+            text-align: left;
+
+            &:first-of-type {
+                margin-top: 0;
+            }
         }
     }
 
-    &__sidebar-title,
-    &__sidebar-sub-title {
-        margin: 16px 0;
-        text-align: left;
+    &__close-btn {
+        display: none;
+
+        @include tablet() {
+            display: inline-block;
+            position: absolute;
+            top: $container-padding;
+            right: $container-padding;
+        }
     }
 
     &__list {
@@ -274,6 +331,7 @@ textarea {
     &__preview {
         display: grid;
         grid-template-rows: 1fr 1fr 1fr;
+        grid-template-columns: 2fr 1fr;
         grid-template-areas:
             "header  events"
             "content events"
@@ -285,6 +343,28 @@ textarea {
         padding: 0 $container-padding;
         width: 100%;
         height: calc(100vh - 80px);
+
+        &[data-demo="events"],
+        &[data-demo="autoplayEvents"] {
+            @include tablet() {
+                grid-template-areas: "header" "content" "footer" "events";
+                grid-template-columns: none;
+            }
+
+            .demo__preview-title,
+            .demo__preview-footer {
+                padding: 30px;
+            }
+
+            .demo__preview-content {
+                width: 600px;
+                padding: 40px 0;
+
+                @include mobile() {
+                    width: 100%;
+                }
+            }
+        }
 
         &:has(.demo__preview-events:empty) {
             grid-template-columns: 1fr;
@@ -309,14 +389,23 @@ textarea {
 
         &-content {
             grid-area: content;
-            width: 1024px;
+            width: $carousel-width-desktop;
             margin: 0 auto;
+
+            @include tablet {
+                width: $carousel-width-tablet;
+            }
+
+            @include mobile {
+                width: $carousel-width-mobile;
+            }
         }
 
         &-actions {
-            display: grid;
+            display: flex;
             gap: 8px;
-            grid-auto-flow: column;
+            flex-wrap: wrap;
+            justify-content: center;
         }
 
         &-footer {
@@ -324,7 +413,7 @@ textarea {
             grid-area: footer;
             gap: 8px;
             flex-direction: row;
-            align-items: start;
+            align-items: center;
             justify-content: center;
 
             @include mobile {
@@ -404,6 +493,11 @@ textarea {
             padding: 30px;
             color: #fff;
             font-weight: 500;
+
+            @include mobile() {
+                font-size: 0.84rem;
+                padding: $container-padding;
+            }
         }
 
         .item-1 {

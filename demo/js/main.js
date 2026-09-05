@@ -13,6 +13,7 @@ erat gravida elit, ac fringilla metus nisl eget elit. Aliquam erat volutpat. Ali
 dolor sit amet, consectetur adipiscing elit.`;
 
 export const preview = {
+	preview: document.querySelector(".demo__preview"),
 	title: document.querySelector(".demo__preview-title"),
 	description: document.querySelector(".demo__preview-description"),
 	meta: document.querySelector(".demo__preview-meta"),
@@ -24,11 +25,15 @@ export const preview = {
 };
 
 let sidebar;
+let sidebarActive = false;
 let carousel;
+let breakpointMobile = 768;
 
 let statusPopup;
 let statusPopupTitle;
 let statusPopupContent;
+
+const cssVarBreakpointMobile = "--demo-grid-breakpoint-mobile";
 
 document.addEventListener("DOMContentLoaded", () => {
 	statusPopup = document.querySelector("#statusPopup");
@@ -36,23 +41,30 @@ document.addEventListener("DOMContentLoaded", () => {
 	statusPopupContent = document.querySelector("#statusPopup__content");
 
 	document.querySelector("#statusPopup__close").addEventListener("click", () => statusPopup.close());
+	document.querySelectorAll("button[data-demo]").forEach(el => el.addEventListener("click", () => loadDemo(el)));
+	document.querySelector(".demos__close-btn").addEventListener("click", () => toggleSidebar());
+	document.querySelector(".main-header__toggle-sidebar").addEventListener("click", () => toggleSidebar());
 
 	sidebar = document.querySelector(".demos__sidebar");
-	sidebar.addEventListener("click", е => {
-		const button = е.target.closest("button[data-demo]");
-		loadDemo(button);
-	});
-
 	const initialDemo = sidebar.querySelector('button[data-demo="default"]');
 	if (initialDemo) {
 		loadDemo(initialDemo);
 	}
+
+	const rootStyles = window.getComputedStyle(document.documentElement);
+	breakpointMobile = parseInt(rootStyles.getPropertyValue(cssVarBreakpointMobile));
 });
+
+function toggleSidebar(isActive) {
+	sidebarActive = isActive ?? !sidebarActive;
+	sidebar.classList.toggle("active", sidebarActive)
+}
 
 async function loadDemo(button, configOverrides = {}) {
 	const { key } = getDemoContent(button);
 	const demo = demoConfigs[key];
 
+	toggleSidebar(false);
 	setActiveButton(button);
 
 	if (carousel) {
@@ -125,13 +137,14 @@ function getDemoContent(button) {
 }
 
 function setPreviewContent(button) {
-	const { title, description, meta } = getDemoContent(button);
+	const { title, description, meta, key } = getDemoContent(button);
 
 	preview.title.textContent = title;
 	preview.description.textContent = description;
 	preview.meta.textContent = meta;
 	preview.description.hidden = !description;
 	preview.meta.hidden = !meta;
+	preview.preview.dataset.demo = key
 }
 
 function resetPreview() {
@@ -182,7 +195,11 @@ const defaultMaxContentLength = 500;
 function getRandomLoremTextLength(text, maxContentLength = defaultMaxContentLength) {
 	const maxLength = Math.min(maxContentLength, text.length);
 	const minLength = Math.min(20, maxLength);
-	const length = minLength + Math.floor(Math.random() * (maxLength - minLength + 1));
+	let length = minLength + Math.floor(Math.random() * (maxLength - minLength + 1));
+
+	if (window.innerWidth < breakpointMobile) {
+		length = Math.max(10, Math.round(length / 2.4));
+	}
 
 	return text.slice(0, length).replace(/\s\w*$/, "");
 }
