@@ -1,4 +1,5 @@
 :root {
+	--ddcarousel-bg-color: transparent;
 	--ddcarousel-nav-color: #333;
 	--ddcarousel-nav-font-size: 1rem;
 	--ddcarousel-nav-margin: 8px;
@@ -11,12 +12,13 @@
 	--ddcarousel-dot-color: rgba(204, 204, 204, 0.4);
 	--ddcarousel-dot-color-active: rgb(204, 204, 204);
 	--ddcarousel-autoplay-bar-color: #007ec2;
+	--ddcarousel-autoplay-bar-height: 4px;
 	--ddcarousel-autoplay-animation: ddcarousel-autoplay-progress;
 }
 
 .ddcarousel {
-	margin-bottom: 50px;
 	position: relative;
+	background: var(--ddcarousel-bg-color);
 	&.full-width {
 		width: 100%;
 	}
@@ -153,6 +155,7 @@
 		width: 100%;
 		height: 100%;
 		background: var(--ddcarousel-autoplay-bar-color);
+		height: var(--ddcarousel-autoplay-bar-height);
 		transform-origin: left;
 		transform: scaleX(0);
 	}
