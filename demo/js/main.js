@@ -36,6 +36,8 @@ let statusPopupContent;
 const cssVarBreakpointMobile = "--demo-grid-breakpoint-mobile";
 
 document.addEventListener("DOMContentLoaded", () => {
+	initTheme();
+
 	statusPopup = document.querySelector("#statusPopup");
 	statusPopupTitle = document.querySelector("#statusPopup__title");
 	statusPopupContent = document.querySelector("#statusPopup__content");
@@ -54,6 +56,31 @@ document.addEventListener("DOMContentLoaded", () => {
 	const rootStyles = window.getComputedStyle(document.documentElement);
 	breakpointMobile = parseInt(rootStyles.getPropertyValue(cssVarBreakpointMobile));
 });
+
+function initTheme() {
+	const toggleBtn = document.getElementById('theme-toggle');
+	const html = document.documentElement;
+
+	const savedTheme = localStorage.getItem('theme');
+	if (savedTheme) {
+		html.setAttribute('data-theme', savedTheme);
+	}
+
+	toggleBtn.addEventListener('click', () => {
+		const currentTheme = html.getAttribute('data-theme');
+
+		let newTheme;
+		if (!currentTheme) {
+			const prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+			newTheme = prefersDark ? 'light' : 'dark';
+		} else {
+			newTheme = currentTheme === 'dark' ? 'light' : 'dark';
+		}
+
+		html.setAttribute('data-theme', newTheme);
+		localStorage.setItem('theme', newTheme);
+	});
+}
 
 function toggleSidebar(isActive) {
 	sidebarActive = isActive ?? !sidebarActive;

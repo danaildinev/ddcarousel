@@ -1,16 +1,54 @@
 @import "./grid";
 
-$color-text: #333;
-$color-accent: #6366f1;
-$color-accent-background: #6365f144;
-$color-link: $color-accent;
-$color-border: #ccc;
+$color-text-light: #333;
+$color-text-dark: #e8e8e8;
+$color-accent-light: #6366f1;
+$color-accent-dark: #818cf8;
+$color-accent-background-light: #6365f144;
+$color-accent-background-dark: #818cf833;
+$color-link-light: $color-accent-light;
+$color-link-dark: $color-accent-dark;
 $color-border-light: #eee;
-$color-shadow: #ddd;
-$color-background: #fafafa;
-$color-background-hover: #f5f5f5;
-$color-muted: #777;
-$color-muted-light: #999;
+$color-border-dark: #343434;
+$color-shadow-light: #ddd;
+$color-shadow-dark: #0006;
+$color-background-light: #fafafa;
+$color-background-dark: #181818;
+$color-background-hover-light: #f5f5f5;
+$color-background-hover-dark: #232323;
+$color-muted-light: #777;
+$color-muted-dark: #a3a3a3;
+$color-muted-secondary-light: #999;
+$color-muted-secondary-dark: #7f7f7f;
+$color-carousel-background-light: #f1f1f1;
+$color-carousel-background-dark: #333;
+$color-carousel-autoplay-light: #333;
+$color-carousel-autoplay-dark: #fff;
+
+:root {
+    color-scheme: light dark;
+
+    &[data-theme="light"] {
+        color-scheme: light;
+    }
+
+    &[data-theme="dark"] {
+        color-scheme: dark;
+    }
+
+    --color-text: light-dark(#{$color-text-light}, #{$color-text-dark});
+    --color-text-muted: light-dark(#{$color-muted-light}, #{$color-muted-dark});
+    --color-text-muted-secondary: light-dark(#{$color-muted-secondary-light}, #{$color-muted-secondary-dark});
+    --color-accent: light-dark(#{$color-accent-light}, #{$color-accent-dark});
+    --color-accent-background: light-dark(#{$color-accent-background-light}, #{$color-accent-background-dark});
+    --color-link: light-dark(#{$color-link-light}, #{$color-link-dark});
+    --color-border: light-dark(#{$color-border-light}, #{$color-border-dark});
+    --color-shadow: light-dark(#{$color-shadow-light}, #{$color-shadow-dark});
+    --color-background: light-dark(#{$color-background-light}, #{$color-background-dark});
+    --color-background-hover: light-dark(#{$color-background-hover-light}, #{$color-background-hover-dark});
+    --color-carousel-background: light-dark(#{$color-carousel-background-light}, #{$color-carousel-background-dark});
+    --color-carousel-autoplay: light-dark(#{$color-carousel-autoplay-light}, #{$color-carousel-autoplay-dark});
+}
 
 $font-family-base: "Nunito Sans", system-ui, sans-serif;
 $font-family-code: "JetBrains Mono", Consolas, monospace;
@@ -30,7 +68,6 @@ $button-font-size: 0.9rem;
 $button-border-radius: 14px;
 $transition-default-speed: 0.15s;
 
-$carousel-background: #f1f1f1;
 $carousel-width-desktop: 900px;
 $carousel-width-tablet: 700px;
 $carousel-width-mobile: 100%;
@@ -47,6 +84,26 @@ $header-btn-width: 60px;
     margin: 0;
 }
 
+[data-theme="dark"] {
+    .theme-icon {
+        transform: rotate(40deg);
+
+        .sun-center {
+            transform: scale(1.15);
+        }
+
+        .mask-circle {
+            cx: 16;
+            cy: 7;
+        }
+
+        .sun-rays {
+            transform: scale(0);
+            opacity: 0;
+        }
+    }
+}
+
 input,
 button,
 textarea,
@@ -61,33 +118,41 @@ svg {
     height: auto;
 }
 
+svg {
+    &.svg-icon {
+        width: 24px;
+        height: 24px;
+        color: var(--text-color);
+    }
+}
+
 button,
 details {
     display: block;
     padding: 6px 12px;
-    border: 1px solid $color-border-light;
+    border: 1px solid var(--color-border);
     border-radius: $border-radius;
-    background: $color-background;
-    color: $color-text;
+    background: var(--color-background);
+    color: var(--color-text);
     font-size: $button-font-size;
     cursor: pointer;
     transition: all $transition-default-speed ease-in-out;
 
     &:hover {
-        border-color: $color-border;
-        background: $color-background-hover;
+        border-color: var(--color-border);
+        background: var(--color-background-hover);
     }
 
     &.active {
-        border-color: $color-accent;
-        background: $color-accent-background;
+        border-color: var(--color-accent);
+        background: var(--color-accent-background);
     }
 }
 
 details {
     text-align: left;
     pre {
-        background: $color-background;
+        background: var(--color-background);
     }
 }
 
@@ -123,7 +188,11 @@ body {
     line-height: $font-line-height;
     font-size: $font-size-base;
     font-optical-sizing: auto;
-    color: $color-text;
+    color: var(--color-text);
+    background-color: var(--color-background);
+    transition:
+        background-color 0.3s,
+        color 0.3s;
 }
 
 h1,
@@ -157,30 +226,30 @@ h4 {
 }
 
 a {
-    color: $color-link;
+    color: var(--color-link);
     text-decoration: none;
 }
 
 strong {
     font-family: $font-family-code;
     font-weight: 100;
-    color: $color-accent;
-    background: $color-accent-background;
+    color: var(--color-accent);
+    background: var(--color-accent-background);
 }
 
 textarea {
     width: 100%;
     height: 150px;
     padding: 12px;
-    border: 1px solid $color-border-light;
+    border: 1px solid var(--color-border);
     border-radius: $border-radius;
-    background: $color-background;
+    background: var(--color-background);
     font-family: $font-family-code;
     font-size: 0.8rem;
 
     &:focus {
         outline: 0;
-        box-shadow: 0 0 3px 3px $color-shadow;
+        box-shadow: 0 0 3px 3px var(--color-shadow);
     }
 }
 
@@ -204,11 +273,11 @@ textarea {
 
     &__content {
         display: flex;
+        margin: 0 $container-padding;
         flex-direction: row;
         justify-content: space-between;
         align-items: center;
         flex: 1;
-        margin-right: $header-btn-width;
 
         @include mobile() {
             flex-direction: column;
@@ -217,8 +286,6 @@ textarea {
 
     &__toggle-sidebar {
         display: none;
-        margin-right: $container-padding;
-        width: $header-btn-width;
 
         @include tablet() {
             display: block;
@@ -238,6 +305,17 @@ textarea {
         flex-direction: row;
         align-items: center;
     }
+
+    .theme-icon {
+        transition: transform 0.5s ease-in-out;
+
+        .sun-center,
+        .mask-circle,
+        .sun-rays {
+            transition: all 0.5s ease-in-out;
+            transform-origin: center;
+        }
+    }
 }
 
 .demos {
@@ -254,7 +332,7 @@ textarea {
         height: calc(100vh - 70px);
         overflow-y: auto;
         padding: $container-padding;
-        background: $color-background;
+        background: var(--color-background);
 
         @include tablet() {
             position: absolute;
@@ -303,8 +381,8 @@ textarea {
             flex-direction: column;
 
             &.active {
-                border-color: $color-accent;
-                background: $color-accent-background;
+                border-color: var(--color-accent);
+                background: var(--color-accent-background);
             }
         }
     }
@@ -318,7 +396,7 @@ textarea {
 
     &__description {
         margin-top: 3px;
-        color: $color-muted;
+        color: var(--color-text-muted);
         font-size: 0.86rem;
     }
 
@@ -384,7 +462,7 @@ textarea {
         }
 
         &-meta {
-            color: $color-muted;
+            color: var(--color-text-muted);
         }
 
         &-content {
@@ -448,8 +526,8 @@ textarea {
                     font-size: 0.9rem;
                     margin: 0 4px 4px 0;
                     padding: 4px 8px;
-                    background: $color-border-light;
-                    border: 1px solid $color-border-light;
+                    background: var(--color-border);
+                    border: 1px solid var(--color-border);
                     border-radius: $border-radius;
                     transition: 0.2s ease-out background;
 
@@ -470,9 +548,9 @@ textarea {
 
 .demo-carousel {
     --ddcarousel-nav-color: #fff;
-    --ddcarousel-autoplay-bar-color: #000;
+    --ddcarousel-autoplay-bar-color: var(--color-carousel-autoplay);
 
-    background: $carousel-background;
+    background: var(--color-carousel-background);
 
     &.fixed-height,
     &.ddcarousel-vertical {
@@ -569,14 +647,14 @@ textarea {
 }
 
 .demo-url-nav {
-    --ddcarousel-url-nav-color-active: #{$color-accent};
+    --ddcarousel-url-nav-color-active: var(--color-accent);
 
     padding: 0 20px;
     margin: 0 0 20px;
-    border: 1px solid $color-muted-light;
+    border: 1px solid var(--color-text-muted);
     border-radius: $border-radius;
 
     li a {
-        color: $color-muted-light;
+        color: var(--color-muted);
     }
 }
