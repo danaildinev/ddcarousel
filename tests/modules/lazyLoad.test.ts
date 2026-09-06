@@ -24,9 +24,10 @@ describe("LazyLoad module", () => {
     });
 
     it("lazy loads active and preloaded slide images", async () => {
-        renderCarousel(4, { lazyImages: true });
+        renderCarousel(5, { lazyImages: true });
         const carousel = new Carousel(baseConfig({
             lazyLoad: true,
+            lazyLoadPreload: true,
             lazyLoadPreloadSlides: 1,
         }));
         await carousel.ready;
@@ -58,6 +59,7 @@ describe("LazyLoad module", () => {
 
         const carousel = new Carousel(baseConfig({
             lazyLoad: true,
+            lazyLoadPreload: true,
             lazyLoadPreloadSlides: 5,
         }));
         await carousel.ready;
@@ -165,6 +167,7 @@ describe("LazyLoad module", () => {
         const carousel = new Carousel(baseConfig({
             items: 1,
             lazyLoad: true,
+            lazyLoadPreload: true,
             lazyLoadPreloadSlides: 1,
         }));
         await carousel.ready;
@@ -191,6 +194,7 @@ describe("LazyLoad module", () => {
 
         const carousel = new Carousel(baseConfig({
             lazyLoad: true,
+            lazyLoadPreload: true,
             lazyLoadPreloadSlides: 2,
         }));
         await carousel.ready;
