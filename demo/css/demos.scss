@@ -128,7 +128,10 @@ svg {
 
 button,
 details {
-    display: block;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 6px;
     padding: 6px 12px;
     border: 1px solid var(--color-border);
     border-radius: $border-radius;
@@ -146,6 +149,10 @@ details {
     &.active {
         border-color: var(--color-accent);
         background: var(--color-accent-background);
+    }
+
+    a {
+        color: var(--color-text);
     }
 }
 
@@ -271,17 +278,33 @@ textarea {
 .main-header {
     padding: 12px 0;
 
+    @include mobile() {
+        button {
+            a {
+                display: none;
+            }
+        }
+    }
+
     &__content {
         display: flex;
-        margin: 0 $container-padding;
         flex-direction: row;
-        justify-content: space-between;
         align-items: center;
         flex: 1;
 
         @include mobile() {
-            flex-direction: column;
+            display: block;
+
+            justify-content: center;
         }
+    }
+
+    &__right {
+        display: flex;
+        flex-direction: row;
+        justify-content: end;
+        align-items: center;
+        gap: $container-padding;
     }
 
     &__toggle-sidebar {
@@ -304,6 +327,7 @@ textarea {
         display: flex;
         flex-direction: row;
         align-items: center;
+        gap: $container-padding;
     }
 
     .theme-icon {
@@ -379,6 +403,8 @@ textarea {
             text-align: left;
             display: flex;
             flex-direction: column;
+            align-items: start;
+            gap: 0;
 
             &.active {
                 border-color: var(--color-accent);
@@ -446,6 +472,7 @@ textarea {
 
         &:has(.demo__preview-events:empty) {
             grid-template-columns: 1fr;
+            gap: 0;
         }
 
         &-header {

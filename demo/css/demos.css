@@ -75,7 +75,10 @@ svg.svg-icon {
 
 button,
 details {
-  display: block;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
   padding: 6px 12px;
   border: 1px solid var(--color-border);
   border-radius: 4px;
@@ -94,6 +97,10 @@ button.active,
 details.active {
   border-color: var(--color-accent);
   background: var(--color-accent-background);
+}
+button a,
+details a {
+  color: var(--color-text);
 }
 
 details {
@@ -199,7 +206,7 @@ textarea:focus {
 
 .container {
   width: 100%;
-  max-width: 1260px;
+  max-width: 100%;
   margin: 0 auto;
   padding: 0 12px;
 }
@@ -217,18 +224,29 @@ textarea:focus {
 .main-header {
   padding: 12px 0;
 }
+@media (max-width: 767px) {
+  .main-header button a {
+    display: none;
+  }
+}
 .main-header__content {
   display: flex;
-  margin: 0 12px;
   flex-direction: row;
-  justify-content: space-between;
   align-items: center;
   flex: 1;
 }
 @media (max-width: 767px) {
   .main-header__content {
-    flex-direction: column;
+    display: block;
+    justify-content: center;
   }
+}
+.main-header__right {
+  display: flex;
+  flex-direction: row;
+  justify-content: end;
+  align-items: center;
+  gap: 12px;
 }
 .main-header__toggle-sidebar {
   display: none;
@@ -248,6 +266,7 @@ textarea:focus {
   display: flex;
   flex-direction: row;
   align-items: center;
+  gap: 12px;
 }
 .main-header .theme-icon {
   transition: transform 0.5s ease-in-out;
@@ -317,6 +336,8 @@ textarea:focus {
   text-align: left;
   display: flex;
   flex-direction: column;
+  align-items: start;
+  gap: 0;
 }
 .demos__list button.active {
   border-color: var(--color-accent);
@@ -372,6 +393,7 @@ textarea:focus {
 }
 .demo__preview:has(.demo__preview-events:empty) {
   grid-template-columns: 1fr;
+  gap: 0;
 }
 .demo__preview-header {
   grid-area: header;
