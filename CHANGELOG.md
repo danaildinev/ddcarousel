@@ -43,6 +43,7 @@ Major TypeScript rewrite with a new modular architecture, modern ESM distributio
     - `modules` - IDs of currently loaded modules
     - `closestSlidesIndexes` - closest slide indexes relative to the current stage position
 - Added `carousel.ready` - a promise that resolves after carousel initialization and module loading have completed.
+- Added `data-state` container attribute reflecting the current carousel lifecycle state: `idle`, `initializing`, `ready`, `failed`, `destroying`, and `destroyed`.
 - Fixed a broken stage when `items` was set to `0` or a negative value. Invalid values now fall back to the default `items` value.
 - Fixed `items` being mutated when the configured value exceeded the available slide count. The configured value is now preserved while the stage uses a clamped effective item count internally for layout, pagination, visible slides, and centering.
 - Improved resize handling: stage size changes are detected automatically, with layout, slide positions, and responsive configuration recalculated after resizing has stopped to reduce unnecessary updates during continuous resizing.

@@ -29,6 +29,8 @@ export default class Carousel {
 
         this.#events = new Events();
 
+        this.#changeState('idle');
+
         this.ready = new Promise((resolve, reject) => {
             this.#resolveReady = resolve;
             this.#rejectReady = reject;
@@ -45,32 +47,36 @@ export default class Carousel {
         }
     }
 
+    #getState(): CarouselState {
+        return this.#state;
+    }
+
     async init(config?: Partial<CarouselConfig>): Promise<void> {
         // avoid init in SSR
         if (typeof window === "undefined" || typeof document === "undefined") {
             throw error("Carousel cannot be initialized outside of a browser environment.");
         }
 
-        if (this.#state === 'initializing') {
+        if (this.#getState() === 'initializing') {
             console.warn("Already initializing!");
             await this.ready;
             return;
         }
 
-        if (this.#state === "ready") {
+        if (this.#getState() === "ready") {
             console.warn("Already initialized!");
             return;
         }
 
-        if (this.#state === 'destroyed') {
+        if (this.#getState() === 'destroyed') {
             throw error("A destroyed carousel cannot be initialized again");
         }
 
-        if (this.#state === 'failed') {
+        if (this.#getState() === 'failed') {
             throw error("A failed carousel cannot be initialized again");
         }
 
-        this.#state = 'initializing';
+        this.#changeState('initializing');
 
         const initToken = Symbol();
         this.#initToken = initToken;
@@ -109,7 +115,7 @@ export default class Carousel {
             await this.#moduleLoader.loadAll();
 
             // was the carousel destroyed while we were waiting?
-            if (this.#initToken !== initToken || this.#state !== 'initializing') {
+            if (this.#initToken !== initToken || this.#getState() !== 'initializing') {
                 this.#resolveReady(); // resolve gracefully so awaiters don't hang forever
                 return;
             }
@@ -117,7 +123,7 @@ export default class Carousel {
             // initialize modules synchronously
             this.#moduleLoader.initAll();
 
-            this.#state = 'ready';
+            this.#changeState('ready');
             this.#events.emit(EVENTS.INITIALIZED, this.getStatus());
             this.#resolveReady();
         } catch (cause) {
@@ -133,7 +139,7 @@ export default class Carousel {
                 this.#stage = undefined;
                 this.#config = undefined;
 
-                this.#state = 'failed';
+                this.#changeState('failed');
                 this.#initToken = null;
 
                 this.#rejectReady(cause);
@@ -143,12 +149,20 @@ export default class Carousel {
         }
     }
 
+    async #changeState(state: CarouselState) {
+        this.#state = state;
+
+        if (this.#container) {
+            this.#container.dataset.state = state;
+        }
+    }
+
     destroy(restoreSlides: boolean = true) {
-        if (this.#state === 'destroying' || this.#state === 'destroyed') {
+        if (this.#getState() === 'destroying' || this.#getState() === 'destroyed') {
             return;
         }
 
-        this.#state = 'destroying';
+        this.#changeState('destroying');
 
         // invalidate any in-flight init
         this.#initToken = null;
@@ -169,7 +183,7 @@ export default class Carousel {
         this.#moduleLoader = undefined;
         this.#events = undefined;
 
-        this.#state = 'destroyed';
+        this.#changeState('destroyed');
 
         this.#resolveReady();
     }
@@ -286,8 +300,8 @@ export default class Carousel {
         const closestSlidesIndexes = getClosestSlideIndexes(offsets, viewportCenter, currentTranslate, ["left", "center", "right"]);
 
         return {
-            state: this.#state,
-            initialized: this.#state === "ready",
+            state: this.#getState(),
+            initialized: this.#getState() === "ready",
             currentPage: this.#stage.currentPage,
             totalPages: this.#stage.totalPages,
             slides: this.#stage.getSlides(),
