@@ -71,7 +71,8 @@ Major TypeScript rewrite with a new modular architecture, modern ESM distributio
     - Navigation
     - URL navigation
 - Added dynamic loading of optional modules, reducing the core bundle size when those features are not enabled.
-- Add module-specific classes with currently loaded modules into carousel container
+- Added module-level style loading with support for loading external CSS files, inline CSS injecting, or use both.
+- Added module-specific classes with currently loaded modules into carousel container
 - Added `carousel.module(Foo.id)` for retrieving loaded module instance
 - Added `carousel.loadModule()` and `carousel.unloadModule()` methods for manually loading and unloading internal modules.
 - Modules are now automatically loaded and unloaded when their related configuration changes, including responsive breakpoint changes.

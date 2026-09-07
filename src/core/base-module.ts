@@ -6,6 +6,11 @@ import type { Events } from "./events";
 import type { Module } from "./module";
 import type { PriorityPayload } from "../types/event-payload.types";
 
+export interface ModuleStyle {
+    href?: string;
+    css?: string;
+}
+
 export abstract class BaseModule<TConfig = Record<string, unknown>> implements Module {
     abstract id: string;
 
@@ -15,6 +20,7 @@ export abstract class BaseModule<TConfig = Record<string, unknown>> implements M
     protected container: HTMLDivElement;
     protected moduleConfig?: TConfig;
     protected configOverride?: Partial<CarouselConfig>;
+    protected styles?: ModuleStyle | ModuleStyle[];
 
     private moduleConfigKeyMap?: Map<keyof TConfig, string>;
 
@@ -46,11 +52,69 @@ export abstract class BaseModule<TConfig = Record<string, unknown>> implements M
             this.configClass.setModuleOverride(this.id, this.configOverride);
         }
 
+        this.#loadStyles();
+
         this.container.classList.add(`ddcarousel-module-${this.id}`)
 
         this.isInitialized = true;
         this.initialize();
         this.emitInitialized();
+    }
+
+    #loadStyles() {
+        if (!this.styles) {
+            return;
+        }
+
+        const styles = Array.isArray(this.styles) ? this.styles : [this.styles];
+        const inlineStyles: string[] = [];
+
+        for (const style of styles) {
+            if (style.href) {
+                this.#loadExternalStyle(style.href);
+            }
+
+            if (style.css) {
+                inlineStyles.push(style.css);
+            }
+        }
+
+        if (inlineStyles.length > 0) {
+            this.#injectStyle(inlineStyles.join("\n"));
+        }
+    }
+
+    #loadExternalStyle(href: string) {
+        const urlHref = new URL(href, document.baseURI).href;
+
+        const exists = Array.from(document.querySelectorAll<HTMLLinkElement>('link[rel="stylesheet"]')).some(link => link.href === urlHref);
+        if (exists) {
+            return;
+        }
+
+        const link = document.createElement("link");
+        link.rel = "stylesheet";
+        link.href = urlHref;
+
+        link.dataset.ddcarouselModuleStyle = this.id;
+        link.dataset.ddcarouselStyleType = "external";
+        link.addEventListener("error", e => console.warn(`Error loading stylesheet for module "${this.id}": ${urlHref}`), { once: true });
+
+        document.head.append(link);
+    }
+
+    #injectStyle(css: string) {
+        const selector = `style[data-ddcarousel-module-style="${this.id}"][data-ddcarousel-style-type="inline"]`;
+        if (document.head.querySelector(selector)) {
+            return;
+        }
+
+        const style = document.createElement("style");
+        style.dataset.ddcarouselModuleStyle = this.id;
+        style.dataset.ddcarouselStyleType = "inline";
+        style.textContent = css;
+
+        document.head.append(style);
     }
 
     destroyLifecycle() {
