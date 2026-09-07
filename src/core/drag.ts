@@ -118,6 +118,8 @@ export default class Drag {
 
         this.#events.emit(EVENTS.DRAG_PRE_START, dragState);
 
+        this.#stageDom.classList.add(CSS_CLASSES.stageDragging);
+
         // read back modified value
         this.#currentTranslate = dragState.currentTranslate;
 
@@ -207,6 +209,8 @@ export default class Drag {
         }
 
         this.#events.emit(EVENTS.DRAG_END);
+
+        this.#stageDom.classList.remove(CSS_CLASSES.stageDragging);
 
         // if swipe threshold is not enough, scroll to original position
         if (this.#config.dragSnapMode === DragSnapMode.Swipe && (this.#swipeDistance < this.#config.swipeThreshold || this.#stayOnThisSlide)) {

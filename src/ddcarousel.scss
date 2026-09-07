@@ -59,10 +59,11 @@
 		transition-timing-function: ease-out;
 		touch-action: pan-y;
 
-		&--disabled {
-			.ddcarousel__item {
+		&--dragging {
+			user-select: none;
+
+			> .ddcarousel__item {
 				pointer-events: none;
-				user-select: none;
 			}
 		}
 	}

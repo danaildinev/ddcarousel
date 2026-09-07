@@ -1,6 +1,7 @@
 export const CSS_CLASSES = {
     container: "ddcarousel__container",
     stage: "ddcarousel__stage",
+    stageDragging: "ddcarousel__stage-dragging",
     disabled: "ddcarousel__stage--disabled",
     item: "ddcarousel__item",
     fullWidth: "ddcarousel--full-width",
