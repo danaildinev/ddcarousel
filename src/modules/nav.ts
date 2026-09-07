@@ -29,8 +29,6 @@ export default class Nav extends BaseModule {
     #prevBtn?: HTMLElement;
     #nextBtn?: HTMLElement;
 
-    #inactiveClass = "inactive";
-
     constructor(params: ModuleContext) {
         super(params);
     }
@@ -95,7 +93,7 @@ export default class Nav extends BaseModule {
     }
 
     #refreshNav() {
-        this.#prevBtn?.classList.toggle(this.#inactiveClass, this.#currentPage === 0);
-        this.#nextBtn?.classList.toggle(this.#inactiveClass, this.#currentPage === this.#totalPages);
+        this.#prevBtn?.setAttribute("data-visible", this.#currentPage > 0 ? "true" : "false");
+        this.#nextBtn?.setAttribute("data-visible", this.#currentPage < this.#totalPages ? "true" : "false");
     }
 }

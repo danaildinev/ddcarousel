@@ -4,8 +4,8 @@ import { CSS_CLASSES } from "../../src/constants/css-classes";
 import { baseConfig, renderCarousel } from "../helpers";
 import Nav from "../../src/modules/nav";
 
-const prev = () => document.querySelector<HTMLElement>(`.${CSS_CLASSES.prev}`);
-const next = () => document.querySelector<HTMLElement>(`.${CSS_CLASSES.next}`);
+const prev = () => document.querySelector<HTMLElement>(`.${CSS_CLASSES.prev}`) as HTMLElement;
+const next = () => document.querySelector<HTMLElement>(`.${CSS_CLASSES.next}`) as HTMLElement;
 
 afterEach(() => {
     vi.useRealTimers();
@@ -25,12 +25,12 @@ describe("Nav module", () => {
 
         expect(prev()?.textContent).toBe("Prev");
         expect(next()?.textContent).toBe("Next");
-        expect(prev()?.classList.contains("inactive")).toBe(true);
+        expect(prev()?.dataset.visible).toBe("false");
 
         next()?.click();
 
         expect(carousel.getCurrentPage()).toBe(1);
-        expect(prev()?.classList.contains("inactive")).toBe(false);
+        expect(prev()?.dataset.visible).toBe("true");
     });
 
     it("uses default labels are not set", async () => {
@@ -40,8 +40,8 @@ describe("Nav module", () => {
         }));
         await carousel.ready;
 
-        expect(prev()?.innerHTML).toBe(Nav.chevronSvg);
-        expect(next()?.innerHTML).toBe(Nav.chevronSvg);
+        expect(prev()?.innerHTML).toBe(Nav.chevronSvgPrev);
+        expect(next()?.innerHTML).toBe(Nav.chevronSvgNext);
     });
 
     it("uses custom nav HTML content when labels are not set", async () => {
@@ -57,7 +57,7 @@ describe("Nav module", () => {
         expect(next()?.innerHTML).toBe("<span>Right</span>");
     });
 
-    it("updates inactive state when page changes programmatically", async () => {
+    it("updates visible state when page changes programmatically", async () => {
         renderCarousel(6);
 
         const carousel = new Carousel(baseConfig({
@@ -66,19 +66,19 @@ describe("Nav module", () => {
         }));
         await carousel.ready;
 
-        expect(prev()?.classList.contains("inactive")).toBe(true);
-        expect(next()?.classList.contains("inactive")).toBe(false);
+        expect(prev()?.dataset.visible).toBe("false");
+        expect(next()?.dataset.visible).toBe("true");
 
         carousel.nextPage();
 
         expect(carousel.getCurrentPage()).toBe(1);
-        expect(prev()?.classList.contains("inactive")).toBe(false);
-        expect(next()?.classList.contains("inactive")).toBe(false);
+        expect(prev()?.dataset.visible).toBe("true");
+        expect(next()?.dataset.visible).toBe("true");
 
         carousel.prevPage();
 
         expect(carousel.getCurrentPage()).toBe(0);
-        expect(prev()?.classList.contains("inactive")).toBe(true);
+        expect(prev()?.dataset.visible).toBe("false");
     });
 
     it("disables prev button on the first page", async () => {
@@ -93,12 +93,12 @@ describe("Nav module", () => {
         carousel.nextPage();
 
         expect(carousel.getCurrentPage()).toBe(1);
-        expect(prev()?.classList.contains("inactive")).toBe(false);
+        expect(prev()?.dataset.visible).toBe("true");
 
         carousel.prevPage();
 
         expect(carousel.getCurrentPage()).toBe(0);
-        expect(prev()?.classList.contains("inactive")).toBe(true);
+        expect(prev()?.dataset.visible).toBe("false");
     });
 
     it("disables next button on the last page", async () => {
@@ -114,7 +114,7 @@ describe("Nav module", () => {
         carousel.nextPage();
 
         expect(carousel.getCurrentPage()).toBe(2);
-        expect(prev()?.classList.contains("inactive")).toBe(false);
-        expect(next()?.classList.contains("inactive")).toBe(true);
+        expect(prev()?.dataset.visible).toBe("true");
+        expect(next()?.dataset.visible).toBe("false");
     });
 });

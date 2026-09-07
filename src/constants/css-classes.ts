@@ -10,9 +10,9 @@ export const CSS_CLASSES = {
 
     pagination: "ddcarousel__pagination",
     dot: "ddcarousel__pagination-dot",
-    prev: "ddcarousel__prev",
-    next: "ddcarousel__next",
-    nav: "ddcarousel__nav",
+    nav: "ddcarousel-module-nav",
+    prev: "ddcarousel-module-nav__prev",
+    next: "ddcarousel-module-nav__next",
     urls: "ddcarousel__urls",
     progress: "ddcarousel-module-autoplay__progress",
     progressBar: "ddcarousel-module-autoplay__progress-bar",
