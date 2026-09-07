@@ -7,13 +7,19 @@ import type { ModuleContext } from "../types/module.params";
 export default class Nav extends BaseModule {
     id: string = "nav";
 
-    static chevronSvg: string = `
-        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="currentColor" class="chevron" viewBox="0 0 16 16">
+    static chevronSvgPrev: string = `
+        <svg width="24" height="24" fill="currentColor" class="chevron" viewBox="0 0 16 16">
         <path fill-rule="evenodd" d="M11.354 1.646a.5.5 0 0 1 0 .708L5.707 8l5.647 5.646a.5.5 0 0 1-.708.708l-6-6a.5.5 0 0 1 0-.708l6-6a.5.5 0 0 1 .708 0"></path>
         </svg>`;
 
-    #navPrevContentDefault: string = Nav.chevronSvg;
-    #navNextContentDefault: string = Nav.chevronSvg;
+    static chevronSvgNext: string = `
+        <svg width="24" height="24" fill="currentColor" class="chevron" viewBox="0 0 16 16" style="transform: scaleX(-1);">
+        <path fill-rule="evenodd" d="M11.354 1.646a.5.5 0 0 1 0 .708L5.707 8l5.647 5.646a.5.5 0 0 1-.708.708l-6-6a.5.5 0 0 1 0-.708l6-6a.5.5 0 0 1 .708 0"></path>
+        </svg>
+    `;
+
+    #navPrevContentDefault: string = Nav.chevronSvgPrev;
+    #navNextContentDefault: string = Nav.chevronSvgNext;
     #navPrevConfigKey = 'navPrevContent';
     #navNextConfigKey = 'navNextContent';
 

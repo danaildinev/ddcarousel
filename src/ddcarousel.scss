@@ -124,7 +124,7 @@
 
 	&__next {
 		right: var(--ddcarousel-nav-margin);
-		transform: translateY(-50%) rotate(180deg);
+		transform: translateY(-50%);
 	}
 
 	&__urls {
