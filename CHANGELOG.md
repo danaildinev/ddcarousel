@@ -29,6 +29,7 @@ Major TypeScript rewrite with a new modular architecture, modern ESM distributio
 - `init()` is now asynchronous and returns a `Promise<void>`, allowing initialization and module loading to be awaited.
 - Changed `destroy(true)` behavior. Passing `true` now restores the container to its state before carousel initialization instead of fully clearing it.
 - Changed the default value of `dragMaxDistance` to `0`, allowing unrestricted carousel dragging by default.
+- Migrated carousel CSS classes to BEM naming. Custom CSS and selectors targeting the previous class names must be updated (for example: `.ddcarousel-item` -> `.ddcarousel__item` and etc...)
 - Dropped support for old browsers and Internet Explorer. The JavaScript target is now ES2022, supported by modern browsers.
 
 ### Features & Improvements
@@ -59,6 +60,7 @@ Major TypeScript rewrite with a new modular architecture, modern ESM distributio
 - Fixed responsive configuration values not reverting when leaving a breakpoint. Properties defined only within responsive breakpoints now restore their original or default values when the breakpoint is no longer active.
 - Improved drag cancellation handling, ensuring interrupted gestures revert cleanly.
 - Replaced separate mouse and touch handling with the [Pointer Events](https://developer.mozilla.org/en-US/docs/Web/API/PointerEvent) input model, providing a unified implementation for mouse, touch, and pen input.
+- Replaced the internal disabled stage state with the BEM modifier `.ddcarousel__stage--dragging`, which is added during active dragging and removed when it ends, while preserving the existing pointer-interaction behavior.
 
 ### Modules
 - Implemented a new module system for a more modular and extensible architecture, with support planned for loading an external modules in the future. Several carousel features are now implemented as separate internal module:
@@ -69,6 +71,7 @@ Major TypeScript rewrite with a new modular architecture, modern ESM distributio
     - Navigation
     - URL navigation
 - Added dynamic loading of optional modules, reducing the core bundle size when those features are not enabled.
+- Add module-specific classes with currently loaded modules into carousel container
 - Added `carousel.module(Foo.id)` for retrieving loaded module instance
 - Added `carousel.loadModule()` and `carousel.unloadModule()` methods for manually loading and unloading internal modules.
 - Modules are now automatically loaded and unloaded when their related configuration changes, including responsive breakpoint changes.
@@ -112,6 +115,7 @@ Major TypeScript rewrite with a new modular architecture, modern ESM distributio
 
 ### Styling & UI
 - Added new CSS variables:
+    - `--ddcarousel-bg-color`
     - `--ddcarousel-nav-color`
     - `--ddcarousel-nav-font-size` - navigation text size when using custom text instead of the default SVG icon
     - `--ddcarousel-url-nav-color`
@@ -124,11 +128,13 @@ Major TypeScript rewrite with a new modular architecture, modern ESM distributio
     - `--ddcarousel-dot-radius`
 	- `--ddcarousel-autoplay-animation`
 	- `--ddcarousel-autoplay-bar-color`
+    - `--ddcarousel-autoplay-bar-height`
     - `--ddcarousel-autoplay-speed` - autoplay progress animation duration, controlled internally by JavaScript
 - Added a default navigation text color and a corresponding CSS variable
 - Added a separate color for inactive pagination dots instead of relying on opacity
 - Added a new design for navigation previous and next buttons
 - Fixed incorrect carousel height when using `centerSlides` together with `autoHeight`
+- Migrated carousel CSS class names to BEM naming for improved consistency and maintainability.
 - Improved autoplay prograss bar animation by using GPU accelerated `transform` CSS property
 - Improved pagination styling
 - Replaced navigation previous and next button content with SVG chevron icons

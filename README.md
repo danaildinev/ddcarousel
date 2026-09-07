@@ -292,7 +292,7 @@ This provides type-safe configuration, event callbacks, carousel state, and modu
 
 - `mouseDrag` - Enable dragging with mouse input (boolean, default: `true`)
 
-- `dragSnapMode` - Control how the target slide is selected after dragging. Using drag snap mode enables `centerSlide` and works best with `dragMaxDistance: 0`. (swipe/closest, default: `swipe`)
+- `dragSnapMode` - Control how the target slide is selected after dragging. `swipe` mode changes one page in the drag direction. `closest` mode snaps to the nearest slide based on where you release the drag. Using drag snap mode enables `centerSlide` and works best with `dragMaxDistance: 0`. (swipe/closest, default: `swipe`)
 
 - `keyboardNavigation` - Enable navigation using keyboard arrow keys (boolean, default: `false`)
 
@@ -332,6 +332,7 @@ Or scope them to a specific carousel. This allows multiple carousel instances on
 ```
 
 Available customization options:
+- `--ddcarousel-bg-color` - Carousel background.
 - `--ddcarousel-nav-color` - Navigation button/icon color.
 - `--ddcarousel-nav-font-size` - Navigation text size when using custom text instead of the default SVG icons.
 - `--ddcarousel-url-nav-color` - Default URL navigation text color.
@@ -344,6 +345,7 @@ Available customization options:
 - `--ddcarousel-dot-radius` - Pagination dot border radius.
 - `--ddcarousel-autoplay-animation` - CSS animation used by the autoplay progress indicator.
 - `--ddcarousel-autoplay-bar-color` - Autoplay progress bar color.
+- `--ddcarousel-autoplay-bar-height` - Autoplay progress bar height.
 - `--ddcarousel-autoplay-speed` - Autoplay progress animation duration. This value is controlled internally based on the configured autoplay speed.
 
 ## Modules
