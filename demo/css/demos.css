@@ -486,14 +486,14 @@ textarea:focus {
   --ddcarousel-autoplay-bar-color: var(--color-carousel-autoplay);
   background: var(--color-carousel-background);
 }
-.demo-carousel.fixed-height, .demo-carousel.ddcarousel-vertical {
+.demo-carousel.fixed-height, .demo-carousel.ddcarousel--vertical {
   height: 350px;
 }
-.demo-carousel.fixed-height [class^=item] {
+.demo-carousel--fixed-height [class^=item] {
   height: inherit;
   overflow: hidden;
 }
-.demo-carousel .ddcarousel-item [class^=item] {
+.demo-carousel .ddcarousel__item [class^=item] {
   display: grid;
   align-items: center;
   padding: 30px;
@@ -501,45 +501,45 @@ textarea:focus {
   font-weight: 500;
 }
 @media (max-width: 767px) {
-  .demo-carousel .ddcarousel-item [class^=item] {
+  .demo-carousel .ddcarousel__item [class^=item] {
     font-size: 0.84rem;
     padding: 12px;
   }
 }
-.demo-carousel .ddcarousel-item .item-1 {
+.demo-carousel .ddcarousel__item .item-1 {
   background: #6366f1;
 }
-.demo-carousel .ddcarousel-item .item-2 {
+.demo-carousel .ddcarousel__item .item-2 {
   background: #0ea5e9;
 }
-.demo-carousel .ddcarousel-item .item-3 {
+.demo-carousel .ddcarousel__item .item-3 {
   background: #06b6d4;
 }
-.demo-carousel .ddcarousel-item .item-4 {
+.demo-carousel .ddcarousel__item .item-4 {
   background: #14b8a6;
 }
-.demo-carousel .ddcarousel-item .item-5 {
+.demo-carousel .ddcarousel__item .item-5 {
   background: #22c55e;
 }
-.demo-carousel .ddcarousel-item .item-6 {
+.demo-carousel .ddcarousel__item .item-6 {
   background: #84cc16;
 }
-.demo-carousel .ddcarousel-item .item-7 {
+.demo-carousel .ddcarousel__item .item-7 {
   background: #eab308;
 }
-.demo-carousel .ddcarousel-item .item-8 {
+.demo-carousel .ddcarousel__item .item-8 {
   background: #f97316;
 }
-.demo-carousel .ddcarousel-item .item-9 {
+.demo-carousel .ddcarousel__item .item-9 {
   background: #ef4444;
 }
-.demo-carousel .ddcarousel-item .item-10 {
+.demo-carousel .ddcarousel__item .item-10 {
   background: #ec4899;
 }
-.demo-carousel .ddcarousel-item .item-11 {
+.demo-carousel .ddcarousel__item .item-11 {
   background: #d946ef;
 }
-.demo-carousel .ddcarousel-item .item-12 {
+.demo-carousel .ddcarousel__item .item-12 {
   background: #8b5cf6;
 }
 

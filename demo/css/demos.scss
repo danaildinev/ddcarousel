@@ -580,18 +580,18 @@ textarea {
     background: var(--color-carousel-background);
 
     &.fixed-height,
-    &.ddcarousel-vertical {
+    &.ddcarousel--vertical {
         height: 350px;
     }
 
-    &.fixed-height {
+    &--fixed-height {
         [class^="item"] {
             height: inherit;
             overflow: hidden;
         }
     }
 
-    .ddcarousel-item {
+    .ddcarousel__item {
         [class^="item"] {
             display: grid;
             align-items: center;
