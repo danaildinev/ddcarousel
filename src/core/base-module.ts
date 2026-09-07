@@ -20,6 +20,7 @@ export abstract class BaseModule<TConfig = Record<string, unknown>> implements M
     protected container: HTMLDivElement;
     protected moduleConfig?: TConfig;
     protected configOverride?: Partial<CarouselConfig>;
+    protected configOverrideEmitUpdate?: boolean;
     protected styles?: ModuleStyle | ModuleStyle[];
 
     private moduleConfigKeyMap?: Map<keyof TConfig, string>;
@@ -49,7 +50,7 @@ export abstract class BaseModule<TConfig = Record<string, unknown>> implements M
 
         if (this.configOverride) {
             // update config state completely silently
-            this.configClass.setModuleOverride(this.id, this.configOverride);
+            this.configClass.setModuleOverride(this.id, this.configOverride, this.configOverrideEmitUpdate);
         }
 
         this.#loadStyles();
