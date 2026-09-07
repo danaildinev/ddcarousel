@@ -38,7 +38,7 @@ describe("UrlNav module", () => {
         links[2]?.click();
 
         expect(carousel.getCurrentPage()).toBe(2);
-        expect(document.querySelectorAll(".url-target li")[2]?.classList.contains("active")).toBe(true);
+        expect(document.querySelectorAll<HTMLElement>(".url-target li")[2]?.dataset.active).toBe("true");
     });
 
     it("change page with goToUrl", async () => {
@@ -130,10 +130,10 @@ describe("UrlNav module", () => {
 
         carousel.prevPage();
 
-        const items = container()!.querySelectorAll(`.${CSS_CLASSES.urls} li`);
+        const items = container()!.querySelectorAll<HTMLElement>(`.${CSS_CLASSES.urls} li`);
 
-        expect(items[1]?.classList.contains("active")).toBe(true);
-        expect(items[2]?.classList.contains("active")).toBe(false);
+        expect(items[1]?.dataset.active).toBe("true");
+        expect(items[2]?.dataset.active).toBe("false");
     });
 
     it("does not remove the custom urlNavContainer on destroy", async () => {

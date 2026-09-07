@@ -62,8 +62,11 @@ export default class UrlNav extends BaseModule {
                 href = "#" + slideId,
                 title = slideTitle ?? "";
 
+            item.classList.add("ddcarousel-module-urlNav__link")
+
             link.href = href;
             link.textContent = title;
+            link.dataset.active = "false";
 
             // todo fix: This will not work properly when config items > 1. Then pages != slides and slide id's w match (this feature is based on latest v1.4.0)
             link.addEventListener("click", () => this.events.emit(EVENTS.PAGE_CHANGE_REQUEST, { index: slide.dataset.slide, enableAnim: true }));
@@ -116,7 +119,7 @@ export default class UrlNav extends BaseModule {
 
     #updateActiveLink(currentPage: number) {
         for (const item of this.#navItems) {
-            item.domElement.classList.toggle("active", item.slideId === currentPage);
+            item.domElement.setAttribute("data-active", item.slideId === currentPage ? "true" : "false");
         }
     }
 }

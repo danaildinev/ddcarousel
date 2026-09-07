@@ -1,23 +1,27 @@
-.ddcarousel__urls {
-    margin: 16px 0;
-    list-style: none;
-    padding: 0;
-    display: flex;
-
-    li {
-        margin-right: 14px;
-
-        &:last-child {
-            margin-right: 0;
+.ddcarousel {
+    &-module-urlNav {
+        &__container {
+            margin: 16px 0;
+            list-style: none;
+            padding: 0;
+            display: flex;
         }
 
-        a {
-            color: var(--ddcarousel-url-nav-color);
-        }
+        &__link {
+            margin-right: 14px;
 
-        &.active {
+            &:last-child {
+                margin-right: 0;
+            }
+
             a {
-                color: var(--ddcarousel-url-nav-color-active);
+                color: var(--ddcarousel-url-nav-color);
+            }
+
+            &[data-active="true"] {
+                a {
+                    color: var(--ddcarousel-url-nav-color-active);
+                }
             }
         }
     }
