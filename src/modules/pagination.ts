@@ -49,7 +49,6 @@ export default class Pagination extends BaseModule {
             let dot = document.createElement("span");
             dot.classList.add(CSS_CLASSES.dot);
             dot.dataset[DATA.dataset.slide] = i.toString();
-            dot.dataset.active = "false";
             dot.role = "button";
             dot.addEventListener("click", () => this.events.emit(EVENTS.PAGE_CHANGE_REQUEST, { index: i }));
             pagination.appendChild(dot);
@@ -87,16 +86,7 @@ export default class Pagination extends BaseModule {
     }
 
     #setActiveDot() {
-        let active = this.#paginationContainer?.querySelector(`.${CSS_CLASSES.dot}[${this.#activeDataAttr}="true"]`);
-        if (active != null) {
-            active.setAttribute(this.#activeDataAttr, "false")
-        }
-
-        active = this.#paginationContainer?.querySelector(`.${CSS_CLASSES.dot}[${DATA.attrs.slide}="${this.#currentPage}"]`);
-        if (active == null) {
-            return;
-        }
-
-        active.setAttribute(this.#activeDataAttr, "true")
+        this.#paginationContainer?.querySelector(`.${CSS_CLASSES.dot}[${this.#activeDataAttr}]`)?.removeAttribute(this.#activeDataAttr);
+        this.#paginationContainer?.querySelector(`.${CSS_CLASSES.dot}[${DATA.attrs.slide}="${this.#currentPage}"]`)?.toggleAttribute(this.#activeDataAttr, true);
     }
 }

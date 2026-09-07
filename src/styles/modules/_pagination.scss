@@ -20,7 +20,7 @@
             transition: 0.1s all ease-in-out;
             cursor: pointer;
 
-            &[data-active="true"] {
+            &[data-active] {
                 background: var(--ddcarousel-dot-color-active);
             }
         }

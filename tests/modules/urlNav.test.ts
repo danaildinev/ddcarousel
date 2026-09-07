@@ -10,6 +10,8 @@ afterEach(() => {
     vi.restoreAllMocks();
 });
 
+const activeDataAttr = "data-active";
+
 describe("UrlNav module", () => {
     it("creates URL navigation inside carousel container by default", async () => {
         renderCarousel(2, { urlData: true });
@@ -38,7 +40,7 @@ describe("UrlNav module", () => {
         links[2]?.click();
 
         expect(carousel.getCurrentPage()).toBe(2);
-        expect(document.querySelectorAll<HTMLElement>(".url-target li")[2]?.dataset.active).toBe("true");
+        expect(document.querySelectorAll<HTMLElement>(".url-target li")[2]?.hasAttribute(activeDataAttr)).toBe(true);
     });
 
     it("change page with goToUrl", async () => {
@@ -132,8 +134,8 @@ describe("UrlNav module", () => {
 
         const items = container()!.querySelectorAll<HTMLElement>(`.${CSS_CLASSES.urls} li`);
 
-        expect(items[1]?.dataset.active).toBe("true");
-        expect(items[2]?.dataset.active).toBe("false");
+        expect(items[1]?.hasAttribute(activeDataAttr)).toBe(true);
+        expect(items[2]?.hasAttribute(activeDataAttr)).toBe(false);
     });
 
     it("does not remove the custom urlNavContainer on destroy", async () => {
