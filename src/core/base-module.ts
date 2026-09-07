@@ -46,6 +46,8 @@ export abstract class BaseModule<TConfig = Record<string, unknown>> implements M
             this.configClass.setModuleOverride(this.id, this.configOverride);
         }
 
+        this.container.classList.add(`ddcarousel-module-${this.id}`)
+
         this.isInitialized = true;
         this.initialize();
         this.emitInitialized();

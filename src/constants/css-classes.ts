@@ -14,8 +14,8 @@ export const CSS_CLASSES = {
     next: "ddcarousel__next",
     nav: "ddcarousel__nav",
     urls: "ddcarousel__urls",
-    progress: "ddcarousel__progress",
-    progressBar: "ddcarousel__progress-bar",
+    progress: "ddcarousel-module-autoplay__progress",
+    progressBar: "ddcarousel-module-autoplay__progress-bar",
 
     // may not be needed
     slidePrev: "slide-prev",

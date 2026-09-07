@@ -145,18 +145,18 @@ describe("Autoplay module", () => {
         }));
         await carousel.ready;
 
-        const progress = container()!.querySelector(`.${CSS_CLASSES.progress}`)!;
+        const progress = container()!.querySelector(`.${CSS_CLASSES.progress}`)! as HTMLElement;
 
-        expect(progress.classList.contains("active")).toBe(true);
+        expect(progress.dataset.state).toBe("active");
 
         vi.advanceTimersByTime(100);
         expect(carousel.getCurrentPage()).toBe(1);
-        expect(progress.classList.contains("active")).toBe(true);
+        expect(progress.dataset.state).toBe("active");
 
         vi.advanceTimersByTime(100);
         expect(carousel.getCurrentPage()).toBe(2);
 
-        expect(progress.classList.contains("active")).toBe(false);
+        expect(progress.dataset.state).toBe("inactive");
 
         vi.useRealTimers();
     });

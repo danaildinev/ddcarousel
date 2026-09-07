@@ -132,7 +132,7 @@ export default class Autoplay extends BaseModule<AutoplayConfig> {
 
     #toggleProgressBar = (visible: boolean) => {
         const progress = this.#progressBar?.parentElement;
-        progress?.classList.toggle("active", visible);
+        progress?.setAttribute("data-state", visible ? "active" : "inactive");
     };
 
     #restartProgressBar() {
