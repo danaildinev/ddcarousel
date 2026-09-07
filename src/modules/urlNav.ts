@@ -17,6 +17,11 @@ export default class UrlNav extends BaseModule {
     static readonly id = "urlNav";
     id: string = "urlNav";
 
+    configOverride: Partial<CarouselConfig> = {
+        items: 1
+    }
+    configOverrideEmitUpdate: boolean = true;
+
     #urlNavContainerKey = "urlNavContainer"
 
     #navItems!: UrlNavItem[];
