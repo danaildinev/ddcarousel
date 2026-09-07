@@ -8,12 +8,15 @@ export const CSS_CLASSES = {
     autoHeight: "ddcarousel--auto-height",
     vertical: "ddcarousel--vertical",
 
-    pagination: "ddcarousel__pagination",
-    dot: "ddcarousel__pagination-dot",
+    pagination: "ddcarousel-module-pagination__container",
+    dot: "ddcarousel-module-pagination__dot",
+
     nav: "ddcarousel-module-nav",
     prev: "ddcarousel-module-nav__prev",
     next: "ddcarousel-module-nav__next",
+
     urls: "ddcarousel__urls",
+
     progress: "ddcarousel-module-autoplay__progress",
     progressBar: "ddcarousel-module-autoplay__progress-bar",
 

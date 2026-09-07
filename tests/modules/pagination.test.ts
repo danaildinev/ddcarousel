@@ -1,6 +1,5 @@
 import { afterEach, describe, expect, it, vi } from "vitest";
 import Carousel from "../../src/core/carousel";
-import Pagination from "../../src/modules/pagination";
 import { baseConfig, pagination, renderCarousel } from "../helpers";
 
 afterEach(() => {
@@ -28,12 +27,12 @@ describe("Pagination module", () => {
         await carousel.init(baseConfig({ items: 2, pagination: true }))
 
         expect(pagination()).toHaveLength(2);
-        expect(pagination()[0]?.classList.contains("active")).toBe(true);
+        expect(pagination()[0]?.dataset.active).toBe("true");
 
         pagination()[1]?.click();
 
         expect(carousel.getCurrentPage()).toBe(1);
-        expect(pagination()[1]?.classList.contains("active")).toBe(true);
+        expect(pagination()[1]?.dataset.active).toBe("true");
     });
 
     it("does not render pagination when there is a single page", async () => {
@@ -67,7 +66,7 @@ describe("Pagination module", () => {
 
         expect(pagination()).toHaveLength(3);
 
-        const active = pagination().filter(dot => dot.classList.contains("active"));
+        const active = pagination().filter(dot => dot.dataset.active === "true");
 
         expect(active).toHaveLength(1);
         expect(active[0]).toBe(pagination()[0]);
@@ -81,10 +80,10 @@ describe("Pagination module", () => {
 
         pagination()[2]!.click();
 
-        expect(pagination()[0]?.classList.contains("active")).toBe(false);
-        expect(pagination()[1]?.classList.contains("active")).toBe(false);
-        expect(pagination()[2]?.classList.contains("active")).toBe(true);
-        expect(pagination().filter(dot => dot.classList.contains("active"))).toHaveLength(1);
+        expect(pagination()[0]?.dataset.active).toBe("false");
+        expect(pagination()[1]?.dataset.active).toBe("false");
+        expect(pagination()[2]?.dataset.active).toBe("true");
+        expect(pagination().filter(dot => dot.dataset.active === "true")).toHaveLength(1);
     });
 
     it("updates active dot across multiple page changes", async () => {
@@ -94,16 +93,16 @@ describe("Pagination module", () => {
         await carousel.init(baseConfig({ items: 2, pagination: true }));
 
         pagination()[1]!.click();
-        expect(pagination()[1]?.classList.contains("active")).toBe(true);
+        expect(pagination()[1]?.dataset.active).toBe("true");
 
         pagination()[3]!.click();
-        expect(pagination()[1]?.classList.contains("active")).toBe(false);
-        expect(pagination()[3]?.classList.contains("active")).toBe(true);
+        expect(pagination()[1]?.dataset.active).toBe("false");
+        expect(pagination()[3]?.dataset.active).toBe("true");
 
         pagination()[0]!.click();
-        expect(pagination()[3]?.classList.contains("active")).toBe(false);
-        expect(pagination()[0]?.classList.contains("active")).toBe(true);
-        expect(pagination().filter(dot => dot.classList.contains("active"))).toHaveLength(1);
+        expect(pagination()[3]?.dataset.active).toBe("false");
+        expect(pagination()[0]?.dataset.active).toBe("true");
+        expect(pagination().filter(dot => dot.dataset.active === "true")).toHaveLength(1);
     });
 
     it("updates the active dot when page changes programmatically", async () => {
@@ -115,14 +114,14 @@ describe("Pagination module", () => {
         carousel.nextPage();
 
         expect(carousel.getCurrentPage()).toBe(1);
-        expect(pagination()[0]?.classList.contains("active")).toBe(false);
-        expect(pagination()[1]?.classList.contains("active")).toBe(true);
+        expect(pagination()[0]?.dataset.active).toBe("false");
+        expect(pagination()[1]?.dataset.active).toBe("true");
 
         carousel.prevPage();
 
         expect(carousel.getCurrentPage()).toBe(0);
-        expect(pagination()[0]?.classList.contains("active")).toBe(true);
-        expect(pagination()[1]?.classList.contains("active")).toBe(false);
-        expect(pagination().filter(dot => dot.classList.contains("active"))).toHaveLength(1);
+        expect(pagination()[0]?.dataset.active).toBe("true");
+        expect(pagination()[1]?.dataset.active).toBe("false");
+        expect(pagination().filter(dot => dot.dataset.active === "true")).toHaveLength(1);
     });
 });
