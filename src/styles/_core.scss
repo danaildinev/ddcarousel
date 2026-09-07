@@ -1,0 +1,62 @@
+.ddcarousel {
+    position: relative;
+    background: var(--ddcarousel-bg-color);
+
+    &--full-width {
+        width: 100% !important;
+    }
+
+    &--auto-height {
+        transition: height 0.3s ease-in-out;
+    }
+
+    &--vertical {
+        .ddcarousel__stage {
+            height: auto;
+            flex-direction: column;
+            touch-action: pan-x;
+        }
+
+        .ddcarousel__item {
+            width: 100%;
+
+            > div {
+                height: 100%;
+            }
+        }
+    }
+
+    &__container {
+        position: relative;
+        width: 100%;
+        height: 100%;
+        overflow: hidden;
+    }
+
+    &__stage {
+        display: flex;
+        position: absolute;
+        height: 100%;
+        backface-visibility: hidden;
+        transition-timing-function: ease-out;
+        touch-action: pan-y;
+
+        &--dragging {
+            user-select: none;
+
+            > .ddcarousel__item {
+                pointer-events: none;
+            }
+        }
+    }
+
+    &__item {
+        height: 100%;
+        flex: 0 0 auto;
+
+        img {
+            width: 100%;
+            height: auto;
+        }
+    }
+}

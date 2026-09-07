@@ -1,0 +1,17 @@
+:root {
+    --ddcarousel-bg-color: transparent;
+    --ddcarousel-nav-color: #333;
+    --ddcarousel-nav-font-size: 1rem;
+    --ddcarousel-nav-margin: 8px;
+    --ddcarousel-url-nav-color: #333;
+    --ddcarousel-url-nav-color-active: #007ec2;
+    --ddcarousel-pagination-bottom: 32px;
+    --ddcarousel-dot-size: 12px;
+    --ddcarousel-dot-spacing: 5px;
+    --ddcarousel-dot-radius: 50%;
+    --ddcarousel-dot-color: rgba(204, 204, 204, 0.4);
+    --ddcarousel-dot-color-active: rgb(204, 204, 204);
+    --ddcarousel-autoplay-bar-color: #007ec2;
+    --ddcarousel-autoplay-bar-height: 4px;
+    --ddcarousel-autoplay-animation: ddcarousel-autoplay-progress;
+}

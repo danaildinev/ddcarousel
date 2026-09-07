@@ -1,4 +1,4 @@
-import "./ddcarousel.scss";
+import "./styles/ddcarousel.scss";
 import Carousel from "./core/carousel";
 import { EVENTS } from "./constants/events-list";
 import { EVENTS_AUTOPLAY } from "./modules/autoplay";

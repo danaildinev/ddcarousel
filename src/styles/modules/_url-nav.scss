@@ -1,0 +1,24 @@
+.ddcarousel__urls {
+    margin: 16px 0;
+    list-style: none;
+    padding: 0;
+    display: flex;
+
+    li {
+        margin-right: 14px;
+
+        &:last-child {
+            margin-right: 0;
+        }
+
+        a {
+            color: var(--ddcarousel-url-nav-color);
+        }
+
+        &.active {
+            a {
+                color: var(--ddcarousel-url-nav-color-active);
+            }
+        }
+    }
+}

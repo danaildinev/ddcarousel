@@ -1,0 +1,24 @@
+.ddcarousel {
+    &__prev,
+    &__next {
+        position: absolute;
+        top: 50%;
+        transform: translateY(-50%);
+        color: var(--ddcarousel-nav-color);
+        font-size: var(--ddcarousel-nav-font-size);
+        line-height: 0;
+        cursor: pointer;
+
+        &.inactive {
+            visibility: hidden;
+        }
+    }
+
+    &__prev {
+        left: var(--ddcarousel-nav-margin);
+    }
+
+    &__next {
+        right: var(--ddcarousel-nav-margin);
+    }
+}
