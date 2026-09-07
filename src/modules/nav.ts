@@ -51,17 +51,17 @@ export default class Nav extends BaseModule {
         this.#currentPage = status.currentPage;
 
 
-        const prevBtn = document.createElement("div"),
-            nextBtn = document.createElement("div");
+        const prevBtn = document.createElement("button"),
+            nextBtn = document.createElement("button");
 
         prevBtn.classList.add(CSS_CLASSES.prev);
         prevBtn.innerHTML = (this.config[this.#navPrevConfigKey] ?? this.#navPrevContentDefault).toString();
-        prevBtn.role = "button";
+        prevBtn.type = "button";
         prevBtn.addEventListener("click", () => this.events.emit(EVENTS.PAGE_CHANGE_REQUEST, { index: this.#currentPage - 1 }));
 
         nextBtn.classList.add(CSS_CLASSES.next);
         nextBtn.innerHTML = (this.config[this.#navNextConfigKey] ?? this.#navNextContentDefault).toString();
-        nextBtn.role = "button";
+        nextBtn.type = "button";
         nextBtn.addEventListener("click", () => this.events.emit(EVENTS.PAGE_CHANGE_REQUEST, { index: this.#currentPage + 1 }));
 
         this.container.append(prevBtn, nextBtn);

@@ -147,6 +147,8 @@ export default class Stage {
 
             slide.classList.add(CSS_CLASSES.item);
             slide.dataset[DATA.dataset.slide] = i.toString();
+            slide.ariaHidden = "true";
+            slide.inert = true;
             slide.appendChild(source);
             stageDiv.appendChild(slide);
             // ... create url nav
@@ -383,9 +385,18 @@ export default class Stage {
     }
 
     #setVisibleSlides() {
-        const previousVisibleSlides = this.visibleSlides;
+        const previousVisibleSlides: number[] = this.visibleSlides;
 
-        previousVisibleSlides.forEach(i => this.#container.querySelector(`[${DATA.attrs.slide}="${i}"]`)?.classList.remove(CSS_CLASSES.slideVisible));
+        previousVisibleSlides.forEach(i => {
+            const slide = this.#container.querySelector<HTMLElement>(`[${DATA.attrs.slide}="${i}"]`);
+            if (slide === null) {
+                return;
+            }
+
+            slide.classList.remove(CSS_CLASSES.slideVisible);
+            slide.ariaHidden = "true";
+            slide.inert = true;
+        });
 
         const visibleSlides: number[] = [];
         const config = this.#config;
@@ -417,7 +428,16 @@ export default class Stage {
             }
         }
 
-        visibleSlides.forEach(i => this.#container.querySelector(`[${DATA.attrs.slide}="${i}"]`)?.classList.add(CSS_CLASSES.slideVisible));
+        visibleSlides.forEach(i => {
+            const slide = this.#container.querySelector<HTMLElement>(`[${DATA.attrs.slide}="${i}"]`);
+            if (slide === null) {
+                return;
+            }
+
+            slide.classList.add(CSS_CLASSES.slideVisible);
+            slide.ariaHidden = "false";
+            slide.inert = false;
+        });
         this.visibleSlides = visibleSlides;
     }
 
