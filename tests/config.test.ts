@@ -193,6 +193,172 @@ describe("Config", () => {
         expect(applied).toHaveBeenCalledTimes(2);
     });
 
+    it("applies responsive config at the exact breakpoint width", () => {
+        const responsive = {
+            480: { items: 1, gap: 0 },
+            768: { items: 2, gap: 10 },
+        } as unknown as CarouselConfig["responsive"];
+
+        const config = new Config(
+            new Events(),
+            baseConfig({
+                items: 3,
+                gap: 20,
+                responsive,
+            })
+        );
+
+        config.refreshResponsive(480);
+        expect(config.current).toEqual(expect.objectContaining({ items: 1, gap: 0, }));
+
+        config.refreshResponsive(768);
+        expect(config.current).toEqual(expect.objectContaining({ items: 2, gap: 10, }));
+    });
+
+    it("selects the correct responsive config around breakpoint boundaries", () => {
+        const responsive = {
+            480: { items: 1 },
+            768: { items: 2 },
+        } as unknown as CarouselConfig["responsive"];
+
+        const config = new Config(
+            new Events(),
+            baseConfig({
+                items: 3,
+                responsive,
+            })
+        );
+
+        config.refreshResponsive(479);
+        expect(config.current.items).toBe(1);
+
+        config.refreshResponsive(480);
+        expect(config.current.items).toBe(1);
+
+        config.refreshResponsive(481);
+        expect(config.current.items).toBe(2);
+
+        config.refreshResponsive(767);
+        expect(config.current.items).toBe(2);
+
+        config.refreshResponsive(768);
+        expect(config.current.items).toBe(2);
+
+        config.refreshResponsive(769);
+        expect(config.current.items).toBe(3);
+    });
+
+    it("restores user config when moving directly outside the responsive range", () => {
+        const responsive = {
+            480: {
+                items: 1,
+                gap: 0,
+                pagination: false,
+                nav: true,
+            },
+            768: {
+                items: 2,
+                gap: 10,
+                pagination: false,
+                nav: true,
+            },
+        } as unknown as CarouselConfig["responsive"];
+
+        const config = new Config(
+            new Events(),
+            baseConfig({
+                items: 3,
+                gap: 20,
+                pagination: true,
+                nav: false,
+                responsive,
+            })
+        );
+
+        config.refreshResponsive(480);
+        expect(config.current).toEqual(expect.objectContaining({
+            items: 1,
+            gap: 0,
+            pagination: false,
+            nav: true,
+        }));
+
+        // skip the 768 range and go directly back to desktop.
+        config.refreshResponsive(1200);
+        expect(config.current).toEqual(expect.objectContaining({
+            items: 3,
+            gap: 20,
+            pagination: true,
+            nav: false,
+        }));
+    });
+
+    it("can re-enter responsive mode after leaving the responsive range", () => {
+        const responsive = {
+            480: { items: 1 },
+            768: { items: 2 },
+        } as unknown as CarouselConfig["responsive"];
+
+        const config = new Config(
+            new Events(),
+            baseConfig({
+                items: 3,
+                responsive,
+            })
+        );
+
+        config.refreshResponsive(480);
+        expect(config.current.items).toBe(1);
+
+        config.refreshResponsive(1200);
+        expect(config.current.items).toBe(3);
+
+        config.refreshResponsive(768);
+        expect(config.current.items).toBe(2);
+
+        config.refreshResponsive(320);
+        expect(config.current.items).toBe(1);
+    });
+
+    it("does not mutate user config when applying responsive overrides", () => {
+        const responsive = {
+            480: {
+                items: 1,
+                gap: 0,
+                pagination: false,
+            },
+        } as unknown as CarouselConfig["responsive"];
+
+        const config = new Config(
+            new Events(),
+            baseConfig({
+                items: 3,
+                gap: 20,
+                pagination: true,
+                responsive,
+            })
+        );
+
+        config.refreshResponsive(480);
+        expect(config.current).toEqual(expect.objectContaining({
+            items: 1,
+            gap: 0,
+            pagination: false,
+        }));
+        expect(config.user).toEqual(expect.objectContaining({
+            items: 3,
+            gap: 20,
+            pagination: true,
+        }));
+
+        config.refreshResponsive(1000);
+        expect(config.current).toEqual(expect.objectContaining({
+            items: 3,
+            gap: 20,
+            pagination: true,
+        }));
+    });
+
     it("does not rebuild responsive config when there are no responsive settings or breakpoint changes", () => {
         const events = new Events();
         const applied = vi.fn();

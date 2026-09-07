@@ -79,13 +79,13 @@ export const demoConfigs = {
             maxCotentLength: 200
         },
         actions() {
-            addAction("Resize to 479px", () => {
-                preview.content.style.width = "479px";
+            addAction("Resize to 480px", () => {
+                preview.content.style.width = "480px";
                 window.dispatchEvent(new Event("resize"));
             });
 
-            addAction("Resize to 767px", () => {
-                preview.content.style.width = "767px";
+            addAction("Resize to 768px", () => {
+                preview.content.style.width = "768px";
                 window.dispatchEvent(new Event("resize"));
             });
 

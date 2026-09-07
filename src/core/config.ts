@@ -187,7 +187,7 @@ export class Config {
         const matched = Object.keys(responsive)
             .map(Number)
             .sort((a, b) => a - b)
-            .find(breakpoint => width < breakpoint) ?? null;
+            .find(breakpoint => width <= breakpoint) ?? null;
 
         if (matched === this.#lastResponsiveBp) {
             return;
