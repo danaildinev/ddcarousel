@@ -1,16 +1,37 @@
-import { afterEach, describe, expect, it, vi } from "vitest";
+import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 import Carousel from "../../src/core/carousel";
 import { baseConfig, container, renderCarousel } from "../helpers";
 import { CSS_CLASSES } from "../../src/constants/css-classes";
 import UrlNav from "../../src/modules/urlNav";
+import { CarouselConfig, EVENTS } from "../../src/ddcarousel";
+
+beforeEach(() => {
+    history.replaceState(null, "", "/");
+});
 
 afterEach(() => {
     vi.useRealTimers();
+    carousel?.destroy();
+    carousel = undefined;
+
+    history.replaceState(null, "", "/");
     document.body.innerHTML = "";
+
     vi.restoreAllMocks();
 });
 
+let carousel: Carousel | undefined;
+
 const activeDataAttr = "data-active";
+
+const carousels: Carousel[] = [];
+
+function createCarousel(config?: CarouselConfig) {
+    const carousel = new Carousel(config);
+    carousels.push(carousel);
+
+    return carousel;
+}
 
 describe("UrlNav module", () => {
     it("creates URL navigation inside carousel container by default", async () => {
@@ -157,5 +178,165 @@ describe("UrlNav module", () => {
 
         expect(customContainer.querySelector(`.${CSS_CLASSES.urls}`)).toBeNull();
         expect(document.querySelector(".url-nav-container")).toBe(customContainer);
+    });
+
+    it("navigates to the slide matching the initial URL hash", async () => {
+        renderCarousel(3, { urlData: true });
+
+        history.replaceState(null, "", "#slide-3");
+
+        carousel = new Carousel();
+        await carousel.init({
+            container: ".ddcarousel",
+            urlNav: true
+        });
+
+        expect(carousel.getCurrentPage()).toBe(1);
+    });
+
+    it("navigates to the initial URL hash without animation", async () => {
+        renderCarousel(3, { urlData: true });
+
+        history.replaceState(null, "", "#slide-3");
+
+        const carousel = new Carousel();
+        const pageChangeRequest = vi.fn();
+
+        carousel.on(EVENTS.PAGE_CHANGE_REQUEST, pageChangeRequest);
+
+        await carousel.init({
+            container: ".ddcarousel",
+            urlNav: true
+        });
+
+        expect(window.location.hash).toBe("#slide-3");
+        expect(carousel.getCurrentPage()).toBe(2);
+
+        expect(pageChangeRequest).toHaveBeenCalledWith(
+            expect.objectContaining({
+                index: "2",
+                animate: false
+            })
+        );
+    });
+
+    it("does not change the page when the initial hash does not match a slide", async () => {
+        renderCarousel(3, { urlData: true });
+
+        history.replaceState(null, "", "#missing");
+
+        const carousel = new Carousel();
+        await carousel.init({
+            container: ".ddcarousel",
+            urlNav: true
+        });
+
+        expect(carousel.getCurrentPage()).toBe(0);
+    });
+
+    it("does not change the page when there is no URL hash", async () => {
+        renderCarousel(3, { urlData: true });
+
+        history.replaceState(null, "", window.location.pathname);
+
+        const carousel = new Carousel();
+        await carousel.init({
+            container: ".ddcarousel",
+            urlNav: true
+        });
+
+        expect(carousel.getCurrentPage()).toBe(0);
+    });
+
+    it("responds to URL hash changes", async () => {
+        renderCarousel(3, { urlData: true });
+
+        const carousel = new Carousel();
+        await carousel.init({
+            container: ".ddcarousel",
+            urlNav: true
+        });
+
+        expect(carousel.getCurrentPage()).toBe(0);
+
+        window.location.hash = "#slide-3";
+
+        await vi.waitFor(() => {
+            expect(carousel.getCurrentPage()).toBe(2);
+        });
+    });
+
+    it("animates page changes caused by hash changes", async () => {
+        renderCarousel(3, { urlData: true });
+
+        const carousel = new Carousel();
+        const pageChangeRequest = vi.fn();
+
+        carousel.on(EVENTS.PAGE_CHANGE_REQUEST, pageChangeRequest);
+        await carousel.init({
+            container: ".ddcarousel",
+            urlNav: true
+        });
+
+        pageChangeRequest.mockClear();
+
+        window.location.hash = "#slide-2";
+
+        await vi.waitFor(() => {
+            expect(pageChangeRequest).toHaveBeenCalledWith(
+                expect.objectContaining({
+                    index: "1",
+                    animate: true
+                })
+            );
+        });
+    });
+
+    it("ignores hash changes that do not match a slide", async () => {
+        renderCarousel(3, { urlData: true });
+
+        const carousel = new Carousel();
+        await carousel.init({
+            container: ".ddcarousel",
+            urlNav: true
+        });
+
+        window.location.hash = "#missing";
+
+        await new Promise(resolve => setTimeout(resolve, 0));
+
+        expect(carousel.getCurrentPage()).toBe(0);
+    });
+
+    it("stops responding to hash changes after the urlNav module is unloaded", async () => {
+        history.replaceState(null, "", "/");
+
+        expect(window.location.hash).toBe("");
+        renderCarousel(3, { urlData: true });
+
+        const carousel = new Carousel();
+
+        await carousel.init({
+            container: ".ddcarousel",
+            urlNav: true
+        });
+
+        // Must still be page 0 after initialization.
+        expect(carousel.getCurrentPage()).toBe(0);
+
+        await carousel.unloadModule("urlNav");
+
+        // Unloading must not change the page.
+        expect(carousel.getCurrentPage()).toBe(0);
+
+        history.replaceState(null, "", "#slide-5");
+
+        // replaceState itself must not change carousel state.
+        expect(carousel.getCurrentPage()).toBe(0);
+
+        window.dispatchEvent(new HashChangeEvent("hashchange"));
+
+        // UrlNav is unloaded, so hashchange must now do nothing.
+        expect(carousel.getCurrentPage()).toBe(0);
     });
 });
