@@ -316,6 +316,18 @@ export const demoConfigs = {
         },
         slides: 9,
     },
+    mouseWheel: {
+        config: {
+            mouseWheel: true,
+        },
+    },
+    mouseWheelCustom: {
+        config: {
+            mouseWheel: true,
+            mouseWheelThreshold: 300,
+            mouseWheelDelay: 500,
+        },
+    },
 };
 
 function addAutoplayActions() {
