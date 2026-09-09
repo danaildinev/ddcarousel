@@ -8,6 +8,8 @@ import { getSlidesOffsets, getClosestSlideIndexes, type SlideOffsets } from "../
 import type { Events } from "./events";
 import type { Config } from "./config";
 
+const carouselRoots = new WeakSet<Element>();
+
 export default class Drag {
     #configClass: Config;
     #status: CarouselStatus;
@@ -32,10 +34,13 @@ export default class Drag {
     #swipeDistance: number = 0;
     #stayOnThisSlide: boolean = false;
 
+    #containerDom: HTMLDivElement;
+
     constructor(config: Config, events: Events, status: CarouselStatus, container: HTMLDivElement) {
         this.#configClass = config;
         this.#status = status;
         this.#events = events;
+        this.#containerDom = container;
 
         const stage = container.querySelector<HTMLDivElement>(`.${CSS_CLASSES.stage}`);
         if (stage === null) {
@@ -50,6 +55,8 @@ export default class Drag {
     }
 
     initialize() {
+        carouselRoots.add(this.#containerDom);
+
         this.#attachEvents();
         this.#stageDom.classList.add(CSS_CLASSES.disabled);
 
@@ -58,6 +65,8 @@ export default class Drag {
     }
 
     destroy() {
+        carouselRoots.delete(this.#containerDom);
+
         this.#detachEvents();
         this.#stageDom.classList.remove(CSS_CLASSES.disabled);
     }
@@ -100,7 +109,22 @@ export default class Drag {
         this.#currentTranslate = e.currentTranslate;
     }
 
+    #eventBelongsToNestedCarousel(e: PointerEvent): boolean {
+        const path = e.composedPath();
+        const currentRootIndex = path.indexOf(this.#containerDom);
+
+        if (currentRootIndex === -1) {
+            return false;
+        }
+
+        return path.slice(0, currentRootIndex).some(target => target instanceof Element && carouselRoots.has(target));
+    }
+
     #dragStart = (e: PointerEvent) => {
+        if (this.#eventBelongsToNestedCarousel(e)) {
+            return;
+        }
+
         if (this.#stageDom === null)
             throw error("Drag start failed! Stage was not found!");
 
