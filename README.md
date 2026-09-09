@@ -12,7 +12,7 @@ Lightweight, dependency-free carousel written in TypeScript and built for the mo
 - Horizontal, vertical and centered layouts
 - Infinite / loop scrolling
 - Mouse, touch and pen dragging with configurable snapping and swipe behavior
-- Navigation, pagination and keyboard controls
+- Navigation, pagination, keyboard ad mouse wheel controls
 - Autoplay with pause controls and progress indicator
 - Lazy image loading with configurable preloading
 - URL-based slide navigation
@@ -454,6 +454,16 @@ Enables loop/infinite scrolling
 Module ID: `loop`
 
 * `loop` - Enable loop mode (boolean, default: `false`)
+
+### Mouse wheel
+
+Navigate between carousel pages using the mouse wheel or trackpad.
+
+- `mouseWheel` - Enables page navigation using the mouse wheel or trackpad. (boolean, default: `false`)
+
+- `mouseWheelThreshold` - Minimum wheel movement required before changing page. (number, default: `40`)
+
+- `mouseWheelDelay` - Additional cooldown after the page transition finishes before another wheel navigation is allowed. The current slide transition must also finish first. Set to `0` to unlock immediately after the transition ends. (numberm, default: `0`)
 
 
 ## Methods
