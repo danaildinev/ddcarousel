@@ -80,11 +80,7 @@ export default class MouseWheel extends BaseModule {
             return;
         }
 
-        this.#isLocked = true;
-
-        if (this.config.slideChangeDuration <= 0) {
-            this.#unlock();
-        }
+        this.#lock();
     };
 
     #onTransitionEnd = () => {
@@ -92,8 +88,31 @@ export default class MouseWheel extends BaseModule {
             return;
         }
 
-        this.#unlock();
+        this.#scheduleUnlock();
     };
+
+    #scheduleUnlock() {
+        clearTimeout(this.#unlockTimeout);
+
+        const delay = (this.getResolvedConfig("delay") as number) ?? this.moduleConfig.delay;
+
+        this.#unlockTimeout = setTimeout(() => this.#isLocked = false, delay);
+    }
+
+    #lock() {
+        this.#isLocked = true;
+
+        clearTimeout(this.#unlockTimeout);
+
+        const transitionDuration = this.config.slideChangeDuration ?? 0;
+        if (transitionDuration <= 0) {
+            this.#unlock();
+            return;
+        }
+
+        // safety fallback in case transition:end wont emit
+        this.#unlockTimeout = setTimeout(() => this.#unlock(), transitionDuration + 100);
+    }
 
     #unlock() {
         clearTimeout(this.#unlockTimeout);
