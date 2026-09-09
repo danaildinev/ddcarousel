@@ -53,6 +53,7 @@ Major TypeScript rewrite with a new modular architecture, modern ESM distributio
 - Added a new `dragSnapMode` option to control how the target slide is selected after dragging, either based on swipe direction or the slide closest to the center of the stage.
     - Enabling `dragSnapMode` also enables `centerSlide`.
     - Works best with `dragMaxDistance: 0`.
+- Added a new `mouseWheel` option to enable mouse wheel or trackpad page navigation with configurable movement threshold and post-transition delay.
 - Fixed unintended page changes when clicking the stage without dragging.
 - Fixed dragging when `dragMaxDistance` is set to `0` or a negative value. A value of `0` now allows freely scrolling through the slides.
 - Fixed touch dragging not working on touch devices
