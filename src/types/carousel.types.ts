@@ -2,6 +2,7 @@ import type { CarouselOnEvents } from "../constants/events-list";
 import type Autoplay from "../modules/autoplay";
 import type LazyLoad from "../modules/lazyLoad";
 import type Loop from "../modules/loop";
+import type MouseWheel from "../modules/mouseWheel";
 import type Nav from "../modules/nav";
 import type Pagination from "../modules/pagination";
 import type UrlNav from "../modules/urlNav";
@@ -64,6 +65,7 @@ export type CarouselModuleMap = {
     lazyLoad: LazyLoad;
     loop: Loop;
     urlNav: UrlNav;
+    mouseWheel: MouseWheel;
 };
 
 export type ModuleId = keyof CarouselModuleMap;

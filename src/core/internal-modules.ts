@@ -5,6 +5,7 @@ export const INTERNAL_MODULES = [
     "nav",
     "pagination",
     "urlNav",
+    "mouseWheel"
 ] as const;
 
 export type InternalModule = typeof INTERNAL_MODULES[number];
