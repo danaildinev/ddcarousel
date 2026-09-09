@@ -31,7 +31,7 @@
 		"bundle:types": "api-extractor run --local",
 		"clean:types": "node utils/clean-types.js",
 		"demo:build": "node ./utils/setup-demo.js",
-		"demo:watch:css": "sass --watch --no-source-map ./demo/css/demos.scss:./demo/css/demos.css"
+		"demo:watch:css": "sass --watch --no-source-map ./showcase/styles/demos/demos.scss:./showcase/dist/demos.css"
 	},
 	"repository": {
 		"type": "git",

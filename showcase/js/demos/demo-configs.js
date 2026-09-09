@@ -1,4 +1,4 @@
-import { addAction, getCarousel, createCarousel, preview, animateWidth, throttle } from "./main.js";
+import { addAction, getCarousel, createCarousel, preview, animateWidth, throttle } from "./demos.js";
 import { carouselEvents, autoplayEvents } from "./events.js";
 
 const logTextareaClass = "demo__preview-events-log";

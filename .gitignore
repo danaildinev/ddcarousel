@@ -3,8 +3,7 @@ dist/
 testing/
 NOTES.md
 
-demo/css/ddcarousel.min.css
-demo/js/ddcarousel.umd.min.js
+showcase/dist
 
 # Windows
 Thumbs.db
