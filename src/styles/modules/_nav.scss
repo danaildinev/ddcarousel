@@ -9,6 +9,8 @@
             font-size: var(--ddcarousel-nav-font-size);
             line-height: 0;
             cursor: pointer;
+            background: transparent;
+            border: none;
 
             &[data-visible="false"] {
                 visibility: hidden;
