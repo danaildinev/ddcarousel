@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>ddcarousel</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <script>try { const t = localStorage.getItem("theme"); if (t === "light" || t === "dark") document.documentElement.dataset.theme = t } catch { }</script>
+    <link rel="stylesheet" href="dist/ddcarousel.min.css" />
+    <link rel="stylesheet" href="dist/showcase.css" />
+    <link
+        href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@100..800&family=Nunito+Sans:ital,opsz,wght@0,6..12,200..1000;1,6..12,200..1000&display=swap"
+        rel="stylesheet">
+</head>
+
+<body>
+    <header class="main-header">
+        <div class="container">
+            <div class="main-header__left">
+                <button class="main-header__link main-header__toggle-sidebar" type="button">
+                    <svg class="svg-icon">
+                        <use href="/images/icons.svg#icon-menu"></use>
+                    </svg>
+                </button>
+            </div>
+            <div class="main-header__content">
+                <a href="#" class="main-header__title">ddcarousel</a>
+            </div>
+            <div class="main-header__right">
+                <nav class="main-header__links">
+                    <a class="main-header__link" href="https://github.com/danaildinev/ddcarousel" target="_blank">
+                        <svg class="svg-icon">
+                            <use href="/images/icons.svg#icon-github"></use>
+                        </svg>
+                        <span class="main-header__link--text">GitHub</span>
+                    </a>
+                    <button id="theme-toggle" class="main-header__link" type="button">
+                        <svg class="svg-icon">
+                            <use href="/images/icons.svg#icon-theme"></use>
+                        </svg>
+                    </button>
+                </nav>
+            </div>
+        </div>
+    </header>
+</body>
+
+<script src="dist/ddcarousel.umd.min.js"></script>
+<script type="module" src="js/showcase/showcase.js"></script>
+
+</html>

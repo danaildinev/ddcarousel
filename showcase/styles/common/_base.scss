@@ -1,0 +1,323 @@
+@import "./reset";
+
+:root {
+    color-scheme: light dark;
+
+    &[data-theme="light"] {
+        color-scheme: light;
+    }
+
+    &[data-theme="dark"] {
+        color-scheme: dark;
+    }
+
+    --color-text: light-dark(#{$color-text-light}, #{$color-text-dark});
+    --color-text-muted: light-dark(#{$color-text-muted-light}, #{$color-text-muted-dark});
+    --color-text-muted-secondary: light-dark(#{$color-text-muted-secondary-light}, #{$color-text-muted-secondary-dark});
+    --color-accent: light-dark(#{$color-accent-light}, #{$color-accent-dark});
+    --color-accent-background: light-dark(#{$color-accent-background-light}, #{$color-accent-background-dark});
+    --color-link: light-dark(#{$color-link-light}, #{$color-link-dark});
+    --color-border: light-dark(#{$color-border-light}, #{$color-border-dark});
+    --color-shadow: light-dark(#{$color-shadow-light}, #{$color-shadow-dark});
+    --color-background: light-dark(#{$color-background-light}, #{$color-background-dark});
+    --color-background-hover: light-dark(#{$color-background-hover-light}, #{$color-background-hover-dark});
+    --color-background-gradient-a: light-dark(
+        #{$color-background-gradient-a-light},
+        #{$color-background-gradient-a-dark}
+    );
+    --color-background-gradient-b: light-dark(
+        #{$color-background-gradient-b-light},
+        #{$color-background-gradient-b-dark}
+    );
+    --color-background-gradient-c: light-dark(
+        #{$color-background-gradient-c-light},
+        #{$color-background-gradient-c-dark}
+    );
+    --color-background-transparent: color-mix(in srgb, var(--color-background) 60%, transparent);
+    --color-background-transparent-darken: color-mix(in srgb, var(--color-background) 96%, transparent);
+}
+
+[data-theme="dark"] {
+    .theme-icon {
+        transform: rotate(40deg);
+
+        .sun-center {
+            transform: scale(1.15);
+        }
+
+        .mask-circle {
+            cx: 16;
+            cy: 7;
+        }
+
+        .sun-rays {
+            transform: scale(0);
+            opacity: 0;
+        }
+    }
+}
+
+body {
+    position: relative;
+    font-family: $font-family-base;
+    line-height: $font-line-height;
+    font-size: $font-size-base;
+    font-optical-sizing: auto;
+    color: var(--color-text);
+    background:
+        radial-gradient(circle at 15% 10%, var(--color-background-gradient-a), transparent 30rem),
+        radial-gradient(circle at 85% 24%, var(--color-background-gradient-b), transparent 32rem),
+        var(--color-background);
+    transition:
+        background-color 0.3s,
+        color 0.3s;
+}
+
+h1,
+h2,
+h3,
+h4 {
+    font-weight: 500;
+    text-align: center;
+    letter-spacing: -0.02em;
+}
+
+h1 {
+    font-size: $font-size-h1;
+
+    @include mobile() {
+        font-size: $font-size-h1-mobile;
+    }
+}
+
+h2 {
+    font-size: $font-size-h2;
+}
+
+h3 {
+    font-size: $font-size-h3;
+}
+
+h4 {
+    font-size: $font-size-h4;
+    font-weight: 600;
+    text-transform: uppercase;
+}
+
+a {
+    color: var(--color-link);
+    text-decoration: none;
+}
+
+svg {
+    &.svg-icon {
+        width: 24px;
+        height: 24px;
+        color: var(--color-text);
+    }
+}
+
+button,
+details {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 6px;
+    padding: 6px 12px;
+    border: 1px solid var(--color-border);
+    border-radius: $border-radius;
+    background: var(--color-background);
+    color: var(--color-text);
+    font-size: $button-font-size;
+    cursor: pointer;
+    transition: all $transition-default-speed ease-in-out;
+
+    &:hover {
+        border-color: var(--color-accent);
+        background: var(--color-background-hover);
+    }
+
+    &.active {
+        border-color: var(--color-accent);
+        background: var(--color-accent-background);
+    }
+
+    a {
+        color: var(--color-text);
+    }
+}
+
+details {
+    text-align: left;
+    pre {
+        background: var(--color-background);
+    }
+}
+
+pre {
+    cursor: text;
+    text-align: left;
+    padding: 8px;
+    font-family: $font-family-code;
+    font-size: 0.8rem;
+}
+
+strong {
+    font-family: $font-family-code;
+    font-weight: 100;
+    color: var(--color-accent);
+    background: var(--color-accent-background);
+}
+
+textarea {
+    width: 100%;
+    height: 150px;
+    padding: 12px;
+    border: 1px solid var(--color-border);
+    border-radius: $border-radius;
+    background: var(--color-background-transparent);
+    font-family: $font-family-code;
+    font-size: 0.8rem;
+
+    &:focus {
+        outline: 0;
+        box-shadow: 0 0 3px 3px var(--color-shadow);
+    }
+}
+
+dialog {
+    padding: $container-padding;
+    border: 0;
+    border-radius: $border-radius;
+    margin: auto;
+
+    &::backdrop {
+        background: rgb(0 0 0 / 50%);
+    }
+}
+
+.container {
+    width: 100%;
+    max-width: $container-width-desktop;
+    margin: 0 auto;
+    padding: 0 $container-padding;
+
+    @include tablet {
+        max-width: $container-width-tablet;
+    }
+
+    @include mobile {
+        max-width: $container-width-mobile;
+    }
+}
+
+.main-header {
+    padding: 12px 0;
+    border-bottom: 1px solid var(--color-border);
+    background: var(--color-background-transparent);
+
+    button {
+        background: transparent;
+    }
+
+    @include mobile() {
+        button {
+            a {
+                display: none;
+            }
+        }
+    }
+
+    &__content {
+        display: flex;
+        flex-direction: row;
+        align-items: center;
+        flex: 1;
+
+        @include mobile() {
+            display: block;
+            justify-content: center;
+        }
+    }
+
+    &__title {
+        font-size: 0.94rem;
+        font-weight: 700;
+        color: var(--color-text);
+    }
+
+    &__left {
+        display: none !important;
+
+        @include tablet() {
+            display: block !important;
+        }
+    }
+
+    &__right {
+        display: flex;
+        flex-direction: row;
+        justify-content: end;
+        align-items: center;
+        gap: $container-padding;
+    }
+
+    &__toggle-sidebar {
+        svg {
+            margin: 0 auto;
+        }
+    }
+
+    &__links {
+        display: flex;
+        align-items: center;
+        gap: $container-padding / 2;
+    }
+
+    &__link {
+        display: flex;
+        align-items: center;
+        gap: 6px;
+        padding: 7px 10px;
+        font-size: 0.84rem;
+        border: 1px solid transparent;
+        border-radius: 4px;
+        color: var(--color-text-muted);
+        cursor: pointer;
+        transition: all 0.3s ease-in-out;
+
+        &:hover {
+            color: var(--color-accent);
+            background: var(--color-accent-background);
+            border-color: transparent;
+
+            svg {
+                color: inherit;
+            }
+        }
+
+        @include mobile() {
+            &--text {
+                display: none;
+            }
+        }
+    }
+
+    .container {
+        display: flex;
+        flex-direction: row;
+        align-items: center;
+        gap: $container-padding;
+    }
+
+    .theme-icon {
+        transition: transform 0.5s ease-in-out;
+
+        .sun-center,
+        .mask-circle,
+        .sun-rays {
+            transition: all 0.5s ease-in-out;
+            transform-origin: center;
+        }
+    }
+}

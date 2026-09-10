@@ -14,4 +14,4 @@ await Promise.all([
     copyFile(path.join(sourceDir, carouselCss), path.join(targetDir, carouselCss))
 ]);
 
-console.log("UMD and CSS files copied to demo");
+console.log("ddcarousel UMD and CSS files copied to showcase folder");

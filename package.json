@@ -30,8 +30,9 @@
 		"type-check": "tsc --noEmit",
 		"bundle:types": "api-extractor run --local",
 		"clean:types": "node utils/clean-types.js",
-		"demo:build": "node ./utils/setup-demo.js",
-		"demo:watch:css": "sass --watch --no-source-map ./showcase/styles/demos/demos.scss:./showcase/dist/demos.css"
+		"demo:watch:css": "sass --watch --no-source-map ./showcase/styles/demos.scss:./showcase/dist/demos.css",
+		"showcase:watch:css": "sass --watch --no-source-map ./showcase/styles/showcase.scss:./showcase/dist/showcase.css",
+		"showcase:build": "node ./utils/setup-showcase.js"
 	},
 	"repository": {
 		"type": "git",
