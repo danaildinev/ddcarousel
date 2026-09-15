@@ -262,7 +262,7 @@ dialog {
         gap: $container-padding;
     }
 
-    &__toggle-sidebar {
+    &__sidebar-toggle {
         svg {
             margin: 0 auto;
         }
@@ -302,7 +302,7 @@ dialog {
         }
 
         @include mobile() {
-            &--text {
+            &-label {
                 display: none;
             }
         }

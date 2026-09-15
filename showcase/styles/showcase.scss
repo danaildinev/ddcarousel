@@ -2,8 +2,8 @@
 @import "./common/grid";
 @import "./common/base";
 
-.main-header__links-page {
-    --ddcarousel-url-nav-color: var(--color-text);
+.main-header__links {
+    --ddcarousel-url-nav-color: var(--color-text-muted);
     --ddcarousel-url-nav-color-active: var(--color-accent);
 }
 

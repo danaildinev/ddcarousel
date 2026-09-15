@@ -5,7 +5,7 @@ document.addEventListener("DOMContentLoaded", () => {
         pagination: true,
         nav: true,
         urlNav: true,
-        urlNavContainer: ".main-header__links-page"
+        urlNavContainer: ".main-header__links.showcase"
     });
 
     showcase.ready.catch(console.error);
