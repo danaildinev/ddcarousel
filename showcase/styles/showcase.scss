@@ -1,3 +1,31 @@
 @import "./common/variables";
 @import "./common/grid";
 @import "./common/base";
+
+.main-header__links-page {
+    --ddcarousel-url-nav-color: var(--color-text);
+    --ddcarousel-url-nav-color-active: var(--color-accent);
+}
+
+.container {
+    width: $container-width-desktop;
+}
+
+.showcase__carousel {
+    --ddcarousel-dot-color: var(--color-text);
+    --ddcarousel-dot-color-active: var(--color-accent);
+    --ddcarousel-nav-color: var(--color-text);
+
+    width: 100vw;
+    height: calc(100vh - $header-height);
+}
+
+.hero {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) minmax(440px, 1fr);
+    height: calc(100vh - $header-height);
+    justify-content: center;
+    align-items: center;
+    gap: 32px;
+    color: var(--color-text-muted);
+}

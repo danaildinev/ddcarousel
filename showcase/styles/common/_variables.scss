@@ -2,11 +2,12 @@ $font-family-base: "Nunito Sans", system-ui, sans-serif;
 $font-family-code: "JetBrains Mono", Consolas, monospace;
 $font-size-base: 16px;
 $font-line-height: 1.4;
-$font-size-h1: 1.8rem;
-$font-size-h1-mobile: 1.2rem;
+$font-size-h1: clamp(2.3rem, 6vw, 6rem);
 $font-size-h2: 1.6rem;
 $font-size-h3: 1.15rem;
-$font-size-h4: 0.86rem;
+$font-size-h3: 1.15rem;
+$font-size-h4: 0.92rem;
+$font-size-sm: 0.74rem;
 
 $color-text-light: #333;
 $color-text-dark: #e8e8e8;
@@ -44,9 +45,11 @@ $button-font-size: 0.9rem;
 $button-border-radius: 14px;
 $transition-default-speed: 0.15s;
 
+$header-height: 64px;
+
 $container-padding: 12px;
 
-$container-width-desktop: 100%;
+$container-width-desktop: 1120px;
 $container-width-tablet: 960px;
 $container-width-mobile: 100%;
 

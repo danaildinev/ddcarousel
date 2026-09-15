@@ -29,6 +29,8 @@
                 <a href="#" class="main-header__title">ddcarousel</a>
             </div>
             <div class="main-header__right">
+                <nav class="main-header__links-page">
+                </nav>
                 <nav class="main-header__links">
                     <a class="main-header__link" href="https://github.com/danaildinev/ddcarousel" target="_blank">
                         <svg class="svg-icon">
@@ -45,9 +47,24 @@
             </div>
         </div>
     </header>
+
+    <main class="showcase">
+        <div class="ddcarousel showcase__carousel">
+            <div class="showcase__page" data-id="home" data-title="Home">
+                <div class="container hero">
+                    Home
+                </div>
+            </div>
+            <div class="showcase__page" data-id="test" data-title="Test page">
+                <div class="container hero">
+                    Test
+                </div>
+            </div>
+        </div>
+    </main>
 </body>
 
-<script src="dist/ddcarousel.umd.min.js"></script>
-<script type="module" src="js/showcase/showcase.js"></script>
+<script src="dist/ddcarousel.umd.min.js" defer></script>
+<script type="module" src="js/showcase/showcase.js" defer></script>
 
 </html>

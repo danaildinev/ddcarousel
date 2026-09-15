@@ -1,3 +1,4 @@
+@import "./variables";
 @import "./reset";
 
 :root {
@@ -77,17 +78,14 @@ h1,
 h2,
 h3,
 h4 {
-    font-weight: 500;
+    font-weight: 300;
     text-align: center;
-    letter-spacing: -0.02em;
+    letter-spacing: -0.04em;
 }
 
 h1 {
     font-size: $font-size-h1;
-
-    @include mobile() {
-        font-size: $font-size-h1-mobile;
-    }
+    line-height: 1;
 }
 
 h2 {
@@ -212,6 +210,8 @@ dialog {
 }
 
 .main-header {
+    display: flex;
+    height: $header-height;
     padding: 12px 0;
     border-bottom: 1px solid var(--color-border);
     background: var(--color-background-transparent);
@@ -274,6 +274,7 @@ dialog {
         gap: $container-padding / 2;
     }
 
+    .ddcarousel-module-urlNav__link,
     &__link {
         display: flex;
         align-items: center;
@@ -294,6 +295,10 @@ dialog {
             svg {
                 color: inherit;
             }
+        }
+
+        &[data-active] {
+            background-color: var(--color-accent-background);
         }
 
         @include mobile() {
