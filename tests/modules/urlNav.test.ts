@@ -6,7 +6,7 @@ import UrlNav from "../../src/modules/urlNav";
 import { CarouselConfig, EVENTS } from "../../src/ddcarousel";
 
 beforeEach(() => {
-    history.replaceState(null, "", "/");
+    window.history.replaceState(null, "", "/");
 });
 
 afterEach(() => {
@@ -14,7 +14,7 @@ afterEach(() => {
     carousel?.destroy();
     carousel = undefined;
 
-    history.replaceState(null, "", "/");
+    window.history.replaceState(null, "", "/");
     document.body.innerHTML = "";
 
     vi.restoreAllMocks();
@@ -183,7 +183,7 @@ describe("UrlNav module", () => {
     it("navigates to the slide matching the initial URL hash", async () => {
         renderCarousel(3, { urlData: true });
 
-        history.replaceState(null, "", "#slide-3");
+        window.history.replaceState(null, "", "#slide-3");
 
         carousel = new Carousel();
         await carousel.init({
@@ -191,13 +191,13 @@ describe("UrlNav module", () => {
             urlNav: true
         });
 
-        expect(carousel.getCurrentPage()).toBe(1);
+        expect(carousel.getCurrentPage()).toBe(2);
     });
 
     it("navigates to the initial URL hash without animation", async () => {
         renderCarousel(3, { urlData: true });
 
-        history.replaceState(null, "", "#slide-3");
+        window.history.replaceState(null, "", "#slide-3");
 
         const carousel = new Carousel();
         const pageChangeRequest = vi.fn();
@@ -223,7 +223,7 @@ describe("UrlNav module", () => {
     it("does not change the page when the initial hash does not match a slide", async () => {
         renderCarousel(3, { urlData: true });
 
-        history.replaceState(null, "", "#missing");
+        window.history.replaceState(null, "", "#missing");
 
         const carousel = new Carousel();
         await carousel.init({
@@ -237,7 +237,7 @@ describe("UrlNav module", () => {
     it("does not change the page when there is no URL hash", async () => {
         renderCarousel(3, { urlData: true });
 
-        history.replaceState(null, "", window.location.pathname);
+        window.history.replaceState(null, "", window.location.pathname);
 
         const carousel = new Carousel();
         await carousel.init({
@@ -309,7 +309,7 @@ describe("UrlNav module", () => {
     });
 
     it("stops responding to hash changes after the urlNav module is unloaded", async () => {
-        history.replaceState(null, "", "/");
+        window.history.replaceState(null, "", "/");
 
         expect(window.location.hash).toBe("");
         renderCarousel(3, { urlData: true });
@@ -329,7 +329,7 @@ describe("UrlNav module", () => {
         // Unloading must not change the page.
         expect(carousel.getCurrentPage()).toBe(0);
 
-        history.replaceState(null, "", "#slide-5");
+        window.history.replaceState(null, "", "#slide-5");
 
         // replaceState itself must not change carousel state.
         expect(carousel.getCurrentPage()).toBe(0);
