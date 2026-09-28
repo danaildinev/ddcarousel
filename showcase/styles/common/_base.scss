@@ -213,8 +213,8 @@ dialog {
     display: flex;
     height: $header-height;
     padding: 12px 0;
-    border-bottom: 1px solid var(--color-border);
-    background: var(--color-background-transparent);
+    //border-bottom: 1px solid var(--color-border);
+    //background: var(--color-background-transparent);
 
     button {
         background: transparent;
@@ -228,22 +228,11 @@ dialog {
         }
     }
 
-    &__content {
-        display: flex;
-        flex-direction: row;
-        align-items: center;
-        flex: 1;
-
-        @include mobile() {
-            display: block;
-            justify-content: center;
-        }
-    }
-
     &__title {
         font-size: 0.94rem;
         font-weight: 700;
         color: var(--color-text);
+        margin-right: calc($button-padding-horizontal * 3);
     }
 
     &__left {
@@ -259,7 +248,6 @@ dialog {
         flex-direction: row;
         justify-content: end;
         align-items: center;
-        gap: $container-padding;
     }
 
     &__sidebar-toggle {
@@ -272,6 +260,18 @@ dialog {
         display: flex;
         align-items: center;
         gap: $container-padding / 2;
+
+        &:not(:last-of-type) {
+            margin-right: $header-spacing;
+        }
+    }
+
+    &__link {
+        &--text {
+            @include tablet() {
+                display: none;
+            }
+        }
     }
 
     .ddcarousel-module-urlNav__link,
@@ -312,7 +312,8 @@ dialog {
         display: flex;
         flex-direction: row;
         align-items: center;
-        gap: $container-padding;
+        justify-content: center;
+        gap: $header-spacing;
     }
 
     .theme-icon {

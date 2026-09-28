@@ -16,6 +16,23 @@ $carousel-width-mobile: 100%;
     --color-carousel-autoplay: light-dark(#{$color-carousel-autoplay-light}, #{$color-carousel-autoplay-dark});
 }
 
+.main-header {
+    .container {
+        gap: 8px;
+    }
+}
+
+#theme-toggle {
+    position: absolute;
+    right: 12px;
+    top: 12px;
+    opacity: 0.5;
+
+    @include tablet {
+        position: static;
+    }
+}
+
 .demos {
     display: grid;
     grid-template-columns: $demos-sidebar-width 1fr;
@@ -27,11 +44,14 @@ $carousel-width-mobile: 100%;
     }
 
     &__sidebar {
-        height: calc(100vh - 70px);
+        height: calc(100vh - $header-height - 32px);
         overflow-y: auto;
         padding: $container-padding;
+        margin: 16px;
         background: var(--color-background-transparent);
-        border-right: 1px solid var(--color-border);
+        border: 1px solid var(--color-border);
+        border-radius: 8px;
+        box-shadow: 0 0 12px -4px var(--color-background-transparent-darken);
 
         @include tablet() {
             position: absolute;
@@ -40,6 +60,7 @@ $carousel-width-mobile: 100%;
             z-index: 1;
             height: 100vh;
             display: none;
+            margin: 0;
         }
 
         @include mobile() {
