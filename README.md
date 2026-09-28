@@ -91,10 +91,10 @@ Readable non-minified builds and ESM files do not include source maps.
 
 ### HTML structure
 
-Create a container and place your slides directly inside it:
+Create a container with `ddcarousel` class and place your slides directly inside it:
 
 ```html
-<div class="carousel">
+<div class="ddcarousel">
     <div>Slide 1</div>
     <div>Slide 2</div>
     <div>Slide 3</div>
@@ -155,6 +155,8 @@ Then initialize the carousel:
         container: ".carousel",
         items: 3,
     });
+
+    carousel.ready.catch(console.error);
 </script>
 ```
 
@@ -166,6 +168,8 @@ You can also create a `Carousel` instance directly:
         container: ".carousel",
         items: 3,
     });
+
+    carousel.ready.catch(console.error);
 </script>
 ```
 
@@ -414,9 +418,11 @@ Module ID: `autoplay`
 - `stop()` - Stop autoplay
 
 #### Events
-- `module:autoplay:started` - Emitted when autoplay starts
+`import { AUTOPLAY_EVENTS } from "ddcarousel/modules/autoplay";`
 
-- `module:autoplay:stopped` - Emitted when autoplay stops
+- `AUTOPLAY_EVENTS.STARTED` (`module:autoplay:started`) - Emitted when autoplay starts
+
+- `AUTOPLAY_EVENTS.STOPPED` (`module:autoplay:stopped`) - Emitted when autoplay stops
 
 ### Lazy Load
 
