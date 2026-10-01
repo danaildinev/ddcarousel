@@ -451,7 +451,13 @@ export default class Stage {
         return this.slidesByPage[page ?? this.currentPage] || [];
     }
 
-    #onStageTransitionEnd = () => this.#events.emit(EVENTS.TRANSITION_END);
+    #onStageTransitionEnd = (e: TransitionEvent) => {
+        if (e.target !== this.#stage) {
+            return;
+        }
+
+        this.#events.emit(EVENTS.TRANSITION_END);
+    };
 
     #onPageChanged = (e: CarouselEvents[typeof EVENTS.PAGE_CHANGED]) => this.#changePage(e.currentPage);
 

@@ -1,10 +1,11 @@
 import { afterEach, describe, expect, it, vi } from "vitest";
 import Carousel from "../src/core/carousel";
 import { CSS_CLASSES } from "../src/constants/css-classes";
-import { baseConfig, carouselCustomClass, container, items, renderCarousel, stage } from "./helpers";
+import { baseConfig, carouselCustomClass, container, items, renderCarousel, renderNestedCarousels, stage, transitionEnd } from "./helpers";
 import Drag from "../src/core/drag";
 import Stage from "../src/core/stage";
 import ModuleLoader from "../src/core/module-loader";
+import { EVENTS } from "../src/ddcarousel";
 
 afterEach(() => {
     vi.useRealTimers();
@@ -377,3 +378,79 @@ describe("Carousel core", () => {
     });
 });
 
+describe("Nested carousels", () => {
+    it("scrolls the outer carousel to its own slide", () => {
+        const { outerStage, innerStage, outerEvents, outerSlides, innerSlides } = renderNestedCarousels();
+        const scrollAfter = vi.fn();
+
+        outerEvents.on(EVENTS.PAGE_CHANGE_SCROLL_AFTER, scrollAfter);
+        outerEvents.emit(EVENTS.PAGE_CHANGE_REQUEST, {
+            index: 1,
+            animate: true
+        });
+
+        expect(outerStage.currentPage).toBe(1);
+        expect(outerStage.currentTranslate).toBe(-1000);
+        expect(outerSlides[1]!.classList.contains(CSS_CLASSES.slideVisible)).toBe(true);
+        expect(outerSlides[0]!.classList.contains(CSS_CLASSES.slideVisible)).toBe(false);
+        expect(innerStage.currentPage).toBe(0);
+        expect(innerSlides[0]!.classList.contains(CSS_CLASSES.slideVisible)).toBe(true);
+        expect(innerSlides[1]!.classList.contains(CSS_CLASSES.slideVisible)).toBe(false);
+        expect(scrollAfter).toHaveBeenLastCalledWith(
+            expect.objectContaining({
+                currentPage: 1,
+                currentTranslate: -1000
+            })
+        );
+    });
+
+    it("scrolls the nested carousel without changing the outer carousel", () => {
+        const { outerStage, innerStage, innerEvents } = renderNestedCarousels();
+
+        innerEvents.emit(EVENTS.PAGE_CHANGE_REQUEST, {
+            index: 1,
+            animate: true
+        });
+
+        expect(innerStage.currentPage).toBe(1);
+        expect(innerStage.currentTranslate).toBe(-500);
+        expect(outerStage.currentPage).toBe(0);
+        expect(outerStage.currentTranslate).toBe(0);
+    });
+
+    it("keeps outer and nested slide visibility independent", () => {
+        const { outerStage, innerStage, outerEvents, innerEvents, outerSlides, innerSlides } = renderNestedCarousels();
+
+        innerEvents.emit(EVENTS.PAGE_CHANGE_REQUEST, {
+            index: 1,
+            animate: false
+        });
+
+        expect(innerStage.currentPage).toBe(1);
+        expect(innerSlides[1]!.classList.contains(CSS_CLASSES.slideVisible)).toBe(true);
+
+        outerEvents.emit(EVENTS.PAGE_CHANGE_REQUEST, {
+            index: 1,
+            animate: false
+        });
+
+        expect(outerStage.currentPage).toBe(1);
+        expect(innerStage.currentPage).toBe(1);
+        expect(outerSlides[1]!.classList.contains(CSS_CLASSES.slideVisible)).toBe(true);
+        expect(innerSlides[1]!.classList.contains(CSS_CLASSES.slideVisible)).toBe(true);
+    });
+
+    it("does not emit outer transition end from nested stage", () => {
+        const { outerEvents, innerEvents, innerStageDom } = renderNestedCarousels();
+
+        const outerCallback = vi.fn();
+        const innerCallback = vi.fn();
+
+        outerEvents.on(EVENTS.TRANSITION_END, outerCallback);
+        innerEvents.on(EVENTS.TRANSITION_END, innerCallback);
+        innerStageDom.dispatchEvent(transitionEnd("transform"));
+
+        expect(innerCallback).toHaveBeenCalledTimes(1);
+        expect(outerCallback).not.toHaveBeenCalled();
+    });
+});
