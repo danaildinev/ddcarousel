@@ -121,13 +121,7 @@ export default class Stage {
         this.#container?.appendChild(stateContainer);
         stateContainer.appendChild(stageDiv);
 
-        //get stage DOM
-        const stage = this.#container.querySelector<HTMLDivElement>(`.${CSS_CLASSES.stage}`);
-        if (stage == null) {
-            throw error("Invalid stage element");
-        }
-
-        this.#stage = stage;
+        this.#stage = stageDiv;
 
         if (slidesSource.length == 0) {
             throw error(`No content found in container. Destroying carousel...`);
@@ -345,14 +339,13 @@ export default class Stage {
 
             this.#updateSlideDimensions(slide);
 
-            const slideCurrent = this.#container.querySelector<HTMLDivElement>(`[${DATA.attrs.slide}="${i}"] > div`);
-            if (slideCurrent === null) {
+            const slideCurrent = slide.firstElementChild as HTMLDivElement;
+            if (!slideCurrent) {
                 console.warn(`Slide ${i} was not found and height won't be calculated!`);
                 continue;
             }
 
-            const slideHeight = this.#getOuterHeight(slideCurrent);
-            slidesHeights.push(slideHeight);
+            slidesHeights.push(this.#getOuterHeight(slideCurrent));
         }
 
         return slidesHeights;
@@ -388,8 +381,8 @@ export default class Stage {
         const previousVisibleSlides: number[] = this.visibleSlides;
 
         previousVisibleSlides.forEach(i => {
-            const slide = this.#container.querySelector<HTMLElement>(`[${DATA.attrs.slide}="${i}"]`);
-            if (slide === null) {
+            const slide = this.#slides[i];
+            if (!slide) {
                 return;
             }
 
@@ -429,8 +422,8 @@ export default class Stage {
         }
 
         visibleSlides.forEach(i => {
-            const slide = this.#container.querySelector<HTMLElement>(`[${DATA.attrs.slide}="${i}"]`);
-            if (slide === null) {
+            const slide = this.#slides[i];
+            if (!slide) {
                 return;
             }
 
@@ -571,9 +564,11 @@ export default class Stage {
     }
 
     #getSlideDom = (index = -1): HTMLDivElement | null => {
-        const attr = DATA.attrs.slide;
-        let selector = index > -1 ? `[${attr}='${index}']` : `[${attr}].${CSS_CLASSES.slideVisible}`;
-        return this.#container.querySelector<HTMLDivElement>(selector);
+        if (index >= 0) {
+            return this.#slides[index] ?? null;
+        }
+
+        return this.#slides.find(slide => slide.classList.contains(CSS_CLASSES.slideVisible)) ?? null;
     }
 
     #onSlideScroll = (e: CarouselEvents[typeof EVENTS.SLIDE_SCROLL]) => this.#scrollToSlide(e.slide, e.animate, e.specifiedPosition);
