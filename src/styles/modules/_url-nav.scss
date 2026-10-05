@@ -1,10 +1,19 @@
 .ddcarousel {
+    &--full-page {
+        .ddcarousel-module-urlNav__container {
+            position: absolute;
+            top: 12px;
+            left: 50%;
+            transform: translate(-50%);
+        }
+    }
+
     &-module-urlNav {
         &__container {
+            display: flex;
             margin: 16px 0;
             list-style: none;
             padding: 0;
-            display: flex;
         }
 
         &__link {
