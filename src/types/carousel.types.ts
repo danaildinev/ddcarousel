@@ -30,6 +30,7 @@ export type CarouselConfig = {
     resizeDebounce: number;
     swipeSmooth: number;
     slideChangeDuration: number;
+    slideChangeEasing?: string;
     [key: string]: unknown;
 }
 

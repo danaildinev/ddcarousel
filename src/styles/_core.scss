@@ -65,7 +65,7 @@
         position: absolute;
         height: 100%;
         backface-visibility: hidden;
-        transition-timing-function: ease-out;
+        transition-timing-function: var(--ddcarousel-transition-easing);
         touch-action: pan-y;
 
         &--dragging {

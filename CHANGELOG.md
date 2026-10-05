@@ -37,6 +37,7 @@ Major TypeScript rewrite with a new modular architecture, modern ESM distributio
 - Added a new `gap` option for controlling spacing between slides
 - Added a new `urlNavContainer` for specifying a custom URL navigation container
 - Added a new `fullscreen` mode for viewport-sized carousel layouts
+- Added a new `slideChangeEasing` configuration option for customizing slide transition CSS easing
 - Added new properties to `getStatus()`:
     - `state` - current carousel state
     - `slides` - array with carousel slides
@@ -134,6 +135,7 @@ Major TypeScript rewrite with a new modular architecture, modern ESM distributio
 	- `--ddcarousel-autoplay-bar-color`
     - `--ddcarousel-autoplay-bar-height`
     - `--ddcarousel-autoplay-speed` - autoplay progress animation duration, controlled internally by JavaScript
+    - `--ddcarousel-transition-easing` -  CSS variable for styling transition easing
 - Added a default navigation text color and a corresponding CSS variable
 - Added a separate color for inactive pagination dots instead of relying on opacity
 - Added a new design for navigation previous and next buttons

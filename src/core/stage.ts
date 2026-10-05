@@ -9,6 +9,8 @@ import type { Config } from "./config";
 import type { Events } from "./events";
 
 export default class Stage {
+    static readonly CSS_VAR_TRANSITION_EASING = "--ddcarousel-transition-easing";
+
     #configClass!: Config;
     #events!: Events;
 
@@ -226,6 +228,13 @@ export default class Stage {
         // full width?
         container.classList.toggle(CSS_CLASSES.fullWidth, config.fullWidth && !config.verticalMaxContentWidth);
         container.classList.toggle(CSS_CLASSES.fullPage, config.fullPage);
+
+        const easing = config.slideChangeEasing;
+        if (easing) {
+            container.style.setProperty(Stage.CSS_VAR_TRANSITION_EASING, config.slideChangeEasing);
+        } else {
+            container.style.removeProperty(Stage.CSS_VAR_TRANSITION_EASING);
+        }
 
         if (config.vertical) {
             container.classList.add(CSS_CLASSES.vertical);

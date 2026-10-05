@@ -312,6 +312,8 @@ This provides type-safe configuration, event callbacks, carousel state, and modu
 
 - `slideChangeDuration` - Slide transition animation duration in seconds (number, default: `0.5`)
 
+- `slideChangeEasing` - CSS easing function used for slide transitions. (string, default: `cubic-bezier(0.22, 1, 0.36, 1)`)
+
 - `swipeSmooth` - Controls drag movement smoothing (number, default: `0`)
 
 - `resizeDebounce` - Delay in milliseconds before recalculating the carousel after resizing. Stage size changes are detected automatically. Layout, slide positions and responsive configuration are recalculated after resizing. (number, default: `200`)
@@ -353,6 +355,7 @@ Available customization options:
 - `--ddcarousel-autoplay-bar-color` - Autoplay progress bar color.
 - `--ddcarousel-autoplay-bar-height` - Autoplay progress bar height.
 - `--ddcarousel-autoplay-speed` - Autoplay progress animation duration. This value is controlled internally based on the configured autoplay speed.
+- `--ddcarousel-transition-easing` - Controls the easing function used by slide transitions.
 
 ### Fullscreen layouts
 
