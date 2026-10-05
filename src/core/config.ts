@@ -37,6 +37,7 @@ export class Config {
             container: `.ddcarousel`,
             autoHeight: true,
             fullWidth: true,
+            fullPage: false,
             startPage: 0,
             items: 1,
             itemPerPage: false,
@@ -88,8 +89,12 @@ export class Config {
             next.centerSlide = true;
         }
 
-        if (next.vertical) {
+        if (next.vertical || next.fullPage) {
             next.autoHeight = false;
+        }
+
+        if (next.fullPage) {
+            next.fullWidth = false;
         }
 
         return next;

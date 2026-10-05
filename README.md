@@ -284,6 +284,8 @@ This provides type-safe configuration, event callbacks, carousel state, and modu
 
 - `fullWidth` - Expand the carousel to the full available width (boolean, default: `true`)
 
+- `fullPage` - Turn a carousel into a full screen viewport-sized layout, useful for single-page websites.
+
 - `centerSlide` - Center the active slide (boolean, default: `false`)
 
 - `startPage` - Set starting page (number, default: `0`)
@@ -351,6 +353,10 @@ Available customization options:
 - `--ddcarousel-autoplay-bar-color` - Autoplay progress bar color.
 - `--ddcarousel-autoplay-bar-height` - Autoplay progress bar height.
 - `--ddcarousel-autoplay-speed` - Autoplay progress animation duration. This value is controlled internally based on the configured autoplay speed.
+
+### Fullscreen layouts
+
+ddcarousel can power more than traditional content sliders. Enable `fullPage` to make the carousel occupy the entire viewport and use each item as a full-page section.
 
 ## Modules
 

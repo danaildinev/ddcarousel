@@ -225,6 +225,7 @@ export default class Stage {
 
         // full width?
         container.classList.toggle(CSS_CLASSES.fullWidth, config.fullWidth && !config.verticalMaxContentWidth);
+        container.classList.toggle(CSS_CLASSES.fullPage, config.fullPage);
 
         if (config.vertical) {
             container.classList.add(CSS_CLASSES.vertical);

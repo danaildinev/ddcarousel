@@ -6,6 +6,33 @@
         width: 100% !important;
     }
 
+    &--full-page {
+        position: absolute;
+        left: 0;
+        top: 0;
+        width: 100% !important;
+        height: 100dvh !important;
+        overflow: hidden;
+        transition: none;
+
+        .ddcarousel__item {
+            display: grid;
+            align-items: safe center;
+            min-height: 0;
+            overflow-x: hidden;
+            overflow-y: auto;
+            overscroll-behavior-y: contain;
+        }
+
+        &.ddcarousel--vertical {
+            .ddcarousel__item {
+                > div {
+                    height: auto;
+                }
+            }
+        }
+    }
+
     &--auto-height {
         transition: height 0.3s ease-in-out;
     }

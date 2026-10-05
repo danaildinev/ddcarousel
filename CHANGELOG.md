@@ -36,6 +36,7 @@ Major TypeScript rewrite with a new modular architecture, modern ESM distributio
 - Added a new loop/infinite scrolling feature
 - Added a new `gap` option for controlling spacing between slides
 - Added a new `urlNavContainer` for specifying a custom URL navigation container
+- Added a new `fullscreen` mode for viewport-sized carousel layouts
 - Added new properties to `getStatus()`:
     - `state` - current carousel state
     - `slides` - array with carousel slides

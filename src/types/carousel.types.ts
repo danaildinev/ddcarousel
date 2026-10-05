@@ -12,6 +12,7 @@ export type CarouselConfig = {
     container: string | HTMLDivElement;
     autoHeight: boolean;
     fullWidth: boolean;
+    fullPage?: boolean;
     startPage: number;
     items: number;
     gap: number;

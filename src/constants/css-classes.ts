@@ -5,6 +5,7 @@ export const CSS_CLASSES = {
     disabled: "ddcarousel__stage--disabled",
     item: "ddcarousel__item",
     fullWidth: "ddcarousel--full-width",
+    fullPage: "ddcarousel--full-page",
     autoHeight: "ddcarousel--auto-height",
     vertical: "ddcarousel--vertical",
 
