@@ -1,5 +1,6 @@
-import { addAction, getCarousel, createCarousel, preview, animateWidth, throttle } from "./demos.js";
+import { addAction, getCarousel, createCarousel, preview, animateWidth } from "./demos.js";
 import { carouselEvents, autoplayEvents } from "./events.js";
+import { throttle } from "../common.js";
 
 const logTextareaClass = "demo__preview-events-log";
 let log;
@@ -167,6 +168,12 @@ export const demoConfigs = {
     slideChangeDuration: {
         config: {
             slideChangeDuration: 1.5,
+        },
+    },
+    customTransitionEasing: {
+        config: {
+            slideChangeDuration: 2,
+            slideChangeEasing: "cubic-bezier(0, 0.8, 0, 1.04)",
         },
     },
     events: {
