@@ -34,7 +34,7 @@
     }
 
     &--auto-height {
-        transition: height 0.3s ease-in-out;
+        transition: height var(--ddcarousel-auto-height-duration) var(--ddcarousel-auto-height-easing);
     }
 
     &--vertical {

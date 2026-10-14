@@ -356,6 +356,8 @@ Available customization options:
 - `--ddcarousel-autoplay-bar-height` - Autoplay progress bar height.
 - `--ddcarousel-autoplay-speed` - Autoplay progress animation duration. This value is controlled internally based on the configured autoplay speed.
 - `--ddcarousel-transition-easing` - Controls the easing function used by slide transitions.
+- `--ddcarousel-auto-height-duration` -  Duration of auto-height transitions
+- `--ddcarousel-auto-height-easing` - Easing function used for auto-height transitions
 
 ### Fullscreen layouts
 

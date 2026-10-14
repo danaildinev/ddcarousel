@@ -136,6 +136,8 @@ Major TypeScript rewrite with a new modular architecture, modern ESM distributio
     - `--ddcarousel-autoplay-bar-height`
     - `--ddcarousel-autoplay-speed` - autoplay progress animation duration, controlled internally by JavaScript
     - `--ddcarousel-transition-easing` -  CSS variable for styling transition easing
+    - `--ddcarousel-auto-height-duration` - CSS variable for customizing auto-height transition duration.
+    - `--ddcarousel-auto-height-easing` -  CSS variable for customizing auto-height transition easing.
 - Added a default navigation text color and a corresponding CSS variable
 - Added a separate color for inactive pagination dots instead of relying on opacity
 - Added a new design for navigation previous and next buttons
