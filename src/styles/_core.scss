@@ -75,6 +75,10 @@
                 pointer-events: none;
             }
         }
+
+        &--disabled {
+            user-select: none;
+        }
     }
 
     &__item {
