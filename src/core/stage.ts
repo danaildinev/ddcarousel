@@ -23,6 +23,7 @@ export default class Stage {
     #resizeObserver: ResizeObserver | null = null;
     #mutationObserver: MutationObserver | null = null;
     #resizeTimeout?: ReturnType<typeof setTimeout>;
+    #lastObservedWidth: number | null = null;
 
     #originalSlides: string = "";
     #originalClasses: string = "";
@@ -97,7 +98,30 @@ export default class Stage {
             animate: false
         });
 
-        this.#resizeObserver = new ResizeObserver(() => this.#resizeEvent());
+        this.#resizeObserver = new ResizeObserver(e => {
+            const entry = e[0];
+            if (!entry) {
+                return;
+            }
+
+            const width = entry.contentRect.width;
+
+            // initial value
+            if (this.#lastObservedWidth === null) {
+                this.#lastObservedWidth = width;
+                return;
+            }
+
+            // fix jumping animation on slide change - ignore height-only or minimal width changes 
+            // to prevent unnecessary stage recalc that interrupt slide transitions (#onStageResized())
+            if (Math.abs(width - this.#lastObservedWidth) < 0.5) {
+                return;
+            }
+
+            this.#lastObservedWidth = width;
+            this.#resizeEvent();
+        });
+
         this.#resizeObserver.observe(this.#container);
 
         if (this.#config.keyboardNavigation) {
@@ -168,6 +192,7 @@ export default class Stage {
         this.currentTranslate = 0;
         this.#originalClasses = "";
         this.#originalSlides = "";
+        this.#lastObservedWidth = null;
 
         this.#containerWidth = 0;
         this.#containerHeight = 0;
@@ -462,6 +487,7 @@ export default class Stage {
     }
 
     #onStageTransitionEnd = (e: TransitionEvent) => {
+        //if (e.target !== this.#stage || e.propertyName !== "transform") {
         if (e.target !== this.#stage) {
             return;
         }

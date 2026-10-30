@@ -65,6 +65,7 @@
         position: absolute;
         height: 100%;
         backface-visibility: hidden;
+        transition-property: transform;
         transition-timing-function: var(--ddcarousel-transition-easing);
         touch-action: pan-y;
 
