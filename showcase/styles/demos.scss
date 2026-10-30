@@ -1,6 +1,7 @@
 @import "./common/variables";
 @import "./common/grid";
 @import "./common/base";
+@import "./common/components";
 
 $container-width-desktop: 100%;
 
@@ -19,17 +20,6 @@ $carousel-width-mobile: 100%;
 .main-header {
     .container {
         gap: 8px;
-    }
-}
-
-#theme-toggle {
-    position: absolute;
-    right: 12px;
-    top: 12px;
-    opacity: 0.5;
-
-    @include tablet {
-        position: static;
     }
 }
 
@@ -220,8 +210,7 @@ $carousel-width-mobile: 100%;
         &-events {
             display: grid;
             grid-area: events;
-            grid-template-rows: 1fr 4fr;
-            gap: $container-padding;
+            grid-template-rows: 2fr 6fr;
             height: 100%;
             padding-top: $container-padding;
 
@@ -234,34 +223,14 @@ $carousel-width-mobile: 100%;
                 grid-row: 1 / span 3;
             }
 
-            &-list {
-                display: flex;
-                flex-wrap: wrap;
-                align-items: start;
-                flex-direction: row;
-                overflow-y: auto;
-
-                [data-event] {
-                    font-size: 0.9rem;
-                    margin: 0 4px 4px 0;
-                    padding: 4px 8px;
-                    background: var(--color-background-transparent);
-                    border: 1px solid var(--color-border);
-                    border-radius: $border-radius;
-                    transition: background 0.2s ease-in-out;
-                    color: var(--color-text-muted);
-
-                    &.active {
-                        background: var(--color-event-active);
-                        color: #fff;
-                    }
-                }
-            }
-
             &-log {
                 font-size: 0.78rem;
                 padding: 6px;
                 height: auto;
+            }
+
+            .pills {
+                padding-bottom: $container-padding;
             }
         }
     }

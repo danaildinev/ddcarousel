@@ -1,3 +1,4 @@
+import { initTheme } from "../common.js";
 import { demoConfigs } from "./demo-configs.js";
 
 const loremIpsum = `Lorem ipsum dolor sit amet, consectetur adipiscing elit.In nec lectus et erat commodo ornare. 
@@ -56,31 +57,6 @@ document.addEventListener("DOMContentLoaded", () => {
 	const rootStyles = window.getComputedStyle(document.documentElement);
 	breakpointMobile = parseInt(rootStyles.getPropertyValue(cssVarBreakpointMobile));
 });
-
-function initTheme() {
-	const toggleBtn = document.getElementById('theme-toggle');
-	const html = document.documentElement;
-
-	const savedTheme = localStorage.getItem('theme');
-	if (savedTheme) {
-		html.setAttribute('data-theme', savedTheme);
-	}
-
-	toggleBtn.addEventListener('click', () => {
-		const currentTheme = html.getAttribute('data-theme');
-
-		let newTheme;
-		if (!currentTheme) {
-			const prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
-			newTheme = prefersDark ? 'light' : 'dark';
-		} else {
-			newTheme = currentTheme === 'dark' ? 'light' : 'dark';
-		}
-
-		html.setAttribute('data-theme', newTheme);
-		localStorage.setItem('theme', newTheme);
-	});
-}
 
 function toggleSidebar(isActive) {
 	sidebarActive = isActive ?? !sidebarActive;
@@ -302,19 +278,4 @@ export function animateWidth(element, targetWidth, duration = 2000) {
 	}
 
 	requestAnimationFrame(animate);
-}
-
-export function throttle(callback, delay) {
-	let lastCall = 0;
-
-	return (...args) => {
-		const now = performance.now();
-
-		if (now - lastCall < delay) {
-			return;
-		}
-
-		lastCall = now;
-		callback(...args);
-	};
 }

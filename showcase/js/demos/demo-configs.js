@@ -353,7 +353,7 @@ function addAutoplayActions() {
 
 function createLogger(context, events) {
     const list = document.createElement("ul");
-    list.className = "demo__preview-events-list";
+    list.className = "demo__preview-events-list pills";
 
     log = document.createElement("textarea");
     log.className = logTextareaClass;
