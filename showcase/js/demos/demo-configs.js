@@ -173,7 +173,7 @@ export const demoConfigs = {
     customTransitionEasing: {
         config: {
             slideChangeDuration: 2,
-            slideChangeEasing: "cubic-bezier(0, 0.8, 0, 1.04)",
+            slideChangeEasing: "cubic-bezier(0, 0.8, 0, 1)",
         },
     },
     events: {
