@@ -17,25 +17,16 @@
     --color-text-muted-secondary: light-dark(#{$color-text-muted-secondary-light}, #{$color-text-muted-secondary-dark});
     --color-accent: light-dark(#{$color-accent-light}, #{$color-accent-dark});
     --color-accent-background: light-dark(#{$color-accent-background-light}, #{$color-accent-background-dark});
+    --color-accent-stronger: #{$color-accent-stronger};
     --color-link: light-dark(#{$color-link-light}, #{$color-link-dark});
     --color-border: light-dark(#{$color-border-light}, #{$color-border-dark});
     --color-shadow: light-dark(#{$color-shadow-light}, #{$color-shadow-dark});
     --color-background: light-dark(#{$color-background-light}, #{$color-background-dark});
     --color-background-hover: light-dark(#{$color-background-hover-light}, #{$color-background-hover-dark});
-    --color-background-gradient-a: light-dark(
-        #{$color-background-gradient-a-light},
-        #{$color-background-gradient-a-dark}
-    );
-    --color-background-gradient-b: light-dark(
-        #{$color-background-gradient-b-light},
-        #{$color-background-gradient-b-dark}
-    );
-    --color-background-gradient-c: light-dark(
-        #{$color-background-gradient-c-light},
-        #{$color-background-gradient-c-dark}
-    );
+    --color-background-gradient: light-dark(#{$color-background-gradient-light}, #{$color-background-gradient-dark});
     --color-background-transparent: color-mix(in srgb, var(--color-background) 60%, transparent);
     --color-background-transparent-darken: color-mix(in srgb, var(--color-background) 96%, transparent);
+    --color-event-active: #{$color-event-active};
 }
 
 [data-theme="dark"] {
@@ -65,10 +56,7 @@ body {
     font-size: $font-size-base;
     font-optical-sizing: auto;
     color: var(--color-text);
-    background:
-        radial-gradient(circle at 15% 10%, var(--color-background-gradient-a), transparent 30rem),
-        radial-gradient(circle at 85% 24%, var(--color-background-gradient-b), transparent 32rem),
-        var(--color-background);
+    background: radial-gradient(ellipse at 50% 15%, var(--color-background-gradient) 0%, transparent 75%);
     transition:
         background-color 0.3s,
         color 0.3s;
@@ -79,7 +67,6 @@ h2,
 h3,
 h4 {
     font-weight: 300;
-    text-align: center;
     letter-spacing: -0.04em;
 }
 
@@ -94,6 +81,7 @@ h2 {
 
 h3 {
     font-size: $font-size-h3;
+    letter-spacing: -0.02em;
 }
 
 h4 {
@@ -111,7 +99,7 @@ svg {
     &.svg-icon {
         width: 24px;
         height: 24px;
-        color: var(--color-text);
+        color: var(--color-text-muted);
     }
 }
 
@@ -165,6 +153,8 @@ strong {
     font-weight: 100;
     color: var(--color-accent);
     background: var(--color-accent-background);
+    padding: 2px 4px;
+    border-radius: $border-radius;
 }
 
 textarea {
@@ -213,6 +203,7 @@ dialog {
     display: flex;
     height: $header-height;
     padding: 12px 0;
+    width: 100%;
     //border-bottom: 1px solid var(--color-border);
     //background: var(--color-background-transparent);
 

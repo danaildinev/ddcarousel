@@ -44,6 +44,8 @@ $carousel-width-mobile: 100%;
     }
 
     &__sidebar {
+        display: grid;
+        gap: 16px;
         height: calc(100vh - $header-height - 32px);
         overflow-y: auto;
         padding: $container-padding;
@@ -61,24 +63,14 @@ $carousel-width-mobile: 100%;
             height: 100vh;
             display: none;
             margin: 0;
+
+            &.active {
+                display: grid;
+            }
         }
 
         @include mobile() {
             background: var(--color-background);
-        }
-
-        &.active {
-            display: block;
-        }
-
-        &-title,
-        &-sub-title {
-            margin: 16px 0;
-            text-align: left;
-
-            &:first-of-type {
-                margin-top: 0;
-            }
         }
     }
 
@@ -260,7 +252,7 @@ $carousel-width-mobile: 100%;
                     color: var(--color-text-muted);
 
                     &.active {
-                        background: #07a340;
+                        background: var(--color-event-active);
                         color: #fff;
                     }
                 }
@@ -308,7 +300,7 @@ $carousel-width-mobile: 100%;
         }
 
         .item-1 {
-            background: #6366f1;
+            background: #1976d2;
         }
 
         .item-2 {
