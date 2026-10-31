@@ -631,7 +631,7 @@ describe("Stage core", () => {
         expect(carousel.getStatus().config.current?.dragSnapMode).toBe(DragSnapMode.Closest);
     });
 
-    it("updates responsive config after a resize", () => {
+    it("applies initial responsive config and updates it after resizing", () => {
         vi.useFakeTimers();
         renderCarousel(4, { width: 500 });
         const carousel = new Carousel(baseConfig({
@@ -643,7 +643,7 @@ describe("Stage core", () => {
             } as CarouselConfig["responsive"],
         }));
 
-        expect(carousel.getStatus().config.current?.items).toBe(3);
+        expect(carousel.getStatus().config.current?.items).toBe(2);
 
         container()!.style.width = "300px";
         triggerResizeObservers();

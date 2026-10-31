@@ -98,6 +98,8 @@ export default class Carousel {
             }
             this.#container = container;
 
+            this.#config.refreshResponsive(this.#container.getBoundingClientRect().width);
+
             this.#stage = new Stage(this.#config, this.#events);
 
             this.#drag = new Drag(this.#config, this.#events, this.getStatus(), this.#container);
