@@ -8,6 +8,7 @@
 
     @include tablet {
         position: static;
+        opacity: 1;
     }
 }
 
@@ -40,7 +41,7 @@
 .note {
     padding-left: 12px;
     border-left: 2px solid var(--color-accent);
-    background-color: var(--color-background-transparent);
+    //background-color: var(--color-background-transparent);
     color: var(--color-text-muted);
     font-size: 0.86rem;
     line-height: 1.6;

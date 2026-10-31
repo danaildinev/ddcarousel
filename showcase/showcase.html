@@ -18,16 +18,7 @@
 <body>
     <header class="main-header">
         <div class="container">
-            <div class="main-header__left">
-                <button class="main-header__link main-header__sidebar-toggle" type="button">
-                    <svg class="svg-icon">
-                        <use href="/images/icons.svg#icon-menu"></use>
-                    </svg>
-                </button>
-            </div>
-            <div class="main-header__content">
-                <a href="#" class="main-header__title">ddcarousel</a>
-            </div>
+            <a href="#" class="main-header__title">ddcarousel</a>
             <div class="main-header__right">
                 <nav class="main-header__links showcase">
                 </nav>
@@ -44,6 +35,11 @@
                         </svg>
                     </button>
                 </nav>
+                <button class="main-header__link main-header__sidebar-open" type="button">
+                    <svg class="svg-icon">
+                        <use href="/images/icons.svg#icon-menu"></use>
+                    </svg>
+                </button>
             </div>
         </div>
     </header>
@@ -52,7 +48,39 @@
         <div class="ddcarousel showcase__carousel">
             <div class="showcase__page" data-id="home" data-title="Home">
                 <div class="container hero">
-                    Home
+                    <div class="hero__content">
+                        <h1>Your modern carousel</h1>
+                        <p class="hero__lead">
+                            Lightweight, dependency-free, written in TypeScript. Built for modern web, responsive
+                            layouts, optional modules, typed events and a compact core - without a UI framework or
+                            runtime dependency.
+                        </p>
+                        <div class="hero__highlights">
+                            <span><strong>~9 KB</strong> gzip ESM core</span>
+                            <span><strong>0</strong> dependencies</span>
+                            <span><strong>ES2022</strong> modern browsers</span>
+                        </div>
+                        <p class="note note--static">
+                            This showcase is using <strong>ddcarousel</strong> right now. Every main section on this
+                            page is a slide in the carousel.
+                        </p>
+                    </div>
+
+                    <div class="hero__demo">
+                        <div class="ddcarousel demo__carousel">
+                        </div>
+
+                        <div class="demo__config pills">
+                            <span>nested instance</span>
+                            <span>nav: true</span>
+                            <span>pagination: true</span>
+                            <span>loop: true</span>
+                            <span data-event="on:drag:dragging">on:drag:dragging</span>
+                            <span data-event="on:drag:end">on:drag:end</span>
+                            <span data-event="on:page:changed">on:page:changed</span>
+                        </div>
+                    </div>
+
                 </div>
             </div>
             <div class="showcase__page" data-id="test" data-title="Test page">

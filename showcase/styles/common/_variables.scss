@@ -2,7 +2,7 @@ $font-family-base: "Nunito Sans", system-ui, sans-serif;
 $font-family-code: "JetBrains Mono", Consolas, monospace;
 $font-size-base: 16px;
 $font-line-height: 1.4;
-$font-size-h1: clamp(2.3rem, 6vw, 6rem);
+$font-size-h1: clamp(3rem, 4vw, 5rem);
 $font-size-h2: 1.6rem;
 $font-size-h3: 1.15rem;
 $font-size-h3: 1.15rem;
@@ -17,7 +17,7 @@ $color-text-muted-secondary-light: #999;
 $color-text-muted-secondary-dark: #7f7f7f;
 $color-accent-light: #006ec9;
 $color-accent-stronger: #0056ab;
-$color-accent-dark: #0071f2;
+$color-accent-dark: #51a2ff;
 $color-accent-background-light: #006ec91a;
 $color-accent-background-dark: #0071f226;
 $color-link-light: $color-accent-light;
@@ -49,7 +49,7 @@ $header-spacing: 48px;
 
 $container-padding: 12px;
 
-$container-width-desktop: 1120px;
+$container-width-desktop: 1260px;
 $container-width-tablet: 960px;
 $container-width-mobile: 100%;
 
