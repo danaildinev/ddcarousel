@@ -79,11 +79,6 @@ function initDemoCarousel() {
         nav: true,
         pagination: true,
         loop: true,
-        responsive: {
-            1024: {
-                nav: false,
-            }
-        },
         "on:drag:dragging": () => handlerDragging(),
         "on:drag:end": () => handlerDragEnd(),
         "on:page:changed": () => handlerPageChanged(),

@@ -119,7 +119,7 @@ body {
     &__content {
         display: grid;
         gap: clamp(32px, 2vw, 5vw);
-        border: 1px solid red;
+
         @include mobile {
             @include centered-hero;
         }
@@ -134,7 +134,7 @@ body {
     &__demo {
         display: grid;
         gap: 14px;
-        border: 1px solid red;
+
         @include mobile {
             @include centered-hero;
         }
@@ -179,7 +179,7 @@ body {
         flex-direction: column;
         align-items: start;
         justify-content: center;
-        padding: clamp(40px, 4vw, 4vw);
+        padding: clamp(52px, 4vw, 4vw);
         color: #fff;
 
         &--one {
