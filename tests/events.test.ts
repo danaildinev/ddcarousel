@@ -1,7 +1,7 @@
 import { afterEach, describe, expect, it, vi } from "vitest";
 import Carousel from "../src/core/carousel";
 import { EVENTS } from "../src/constants/events-list";
-import { baseConfig, renderCarousel, stage, triggerResizeObservers } from "./helpers";
+import { baseConfig, container, renderCarousel, stage, triggerResizeObservers } from "./helpers";
 import { CarouselEvents } from "../src/types/event.types";
 import { fireEvent } from "@testing-library/dom";
 import { PriorityPayload } from "../src/types/event-payload.types";
@@ -170,7 +170,7 @@ describe("Carousel events", () => {
         expect(listener).toHaveBeenCalledTimes(1);
     });
 
-    it("emits stage resized after resize observer throttling", async () => {
+    it("emits stage resized after a width change and debounce", () => {
         vi.useFakeTimers();
 
         renderCarousel(2);
@@ -179,8 +179,10 @@ describe("Carousel events", () => {
         const listener = vi.fn();
 
         carousel.on(EVENTS.STAGE_RESIZED, listener);
+
+        // simulate an actual container width change.
+        container()!.style.width = "600px";
         triggerResizeObservers();
-        vi.runAllTicks();
 
         expect(listener).not.toHaveBeenCalled();
         vi.advanceTimersByTime(25);

@@ -1,25 +1,50 @@
 import type { DOMWindow } from "jsdom";
 
-export const resizeObservers = new Set<ResizeObserverCallback>();
+export const resizeObservers = new Set<ResizeObserverMock>();
+
+class ResizeObserverMock implements ResizeObserver {
+    #callback: ResizeObserverCallback;
+    private targets = new Set<Element>();
+
+    constructor(callback: ResizeObserverCallback) {
+        this.#callback = callback;
+        resizeObservers.add(this);
+    }
+
+    observe(target: Element) {
+        this.targets.add(target);
+    }
+
+    unobserve(target: Element) {
+        this.targets.delete(target);
+    }
+
+    disconnect() {
+        this.targets.clear();
+        resizeObservers.delete(this);
+    }
+
+    trigger(width?: number, height?: number) {
+        const entries = [...this.targets].map(target => {
+            const rect = target.getBoundingClientRect();
+
+            return {
+                target,
+                contentRect: {
+                    width: width ?? rect.width,
+                    height: height ?? rect.height,
+                },
+            } as ResizeObserverEntry;
+        });
+
+        if (entries.length > 0) {
+            this.#callback(entries, this);
+        }
+    }
+}
 
 export function installDomMocks(window: DOMWindow) {
     const MouseEventBase = window.MouseEvent;
-
-    class ResizeObserverMock {
-        #callback: ResizeObserverCallback;
-
-        constructor(callback: ResizeObserverCallback) {
-            this.#callback = callback;
-            resizeObservers.add(callback);
-        }
-
-        observe() { }
-        unobserve() { }
-
-        disconnect() {
-            resizeObservers.delete(this.#callback);
-        }
-    }
 
     class PointerEventMock extends MouseEventBase {
         pointerType: string;
@@ -42,8 +67,10 @@ export function installDomMocks(window: DOMWindow) {
     (globalThis as any).ResizeObserver = window.ResizeObserver;
     (globalThis as any).PointerEvent = window.PointerEvent;
 
-    (globalThis as any).triggerResizeObservers = () => {
-        resizeObservers.forEach(cb => cb([], {} as ResizeObserver));
+    (globalThis as any).triggerResizeObservers = (width?: number, height?: number) => {
+        for (const observer of resizeObservers) {
+            observer.trigger(width, height);
+        }
     };
 }
 

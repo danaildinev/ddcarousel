@@ -111,7 +111,10 @@ export const container = () => document.querySelector<HTMLElement>(".ddcarousel"
 export const stage = () => document.querySelector<HTMLElement>(`.${CSS_CLASSES.stage}`);
 export const items = () => Array.from(document.querySelectorAll<HTMLElement>(`.${CSS_CLASSES.item}`));
 export const pagination = () => Array.from(document.querySelectorAll<HTMLElement>(`.${CSS_CLASSES.dot}`));
-export const triggerResizeObservers = () => (globalThis as typeof globalThis & { triggerResizeObservers: () => void }).triggerResizeObservers();
+export const triggerResizeObservers = (width?: number, height?: number) =>
+    (globalThis as typeof globalThis & {
+        triggerResizeObservers: (width?: number, height?: number) => void;
+    }).triggerResizeObservers(width, height);
 export const rect = (left: number, width: number, top = 0, height = 300): DOMRect => ({
     x: left,
     y: top,

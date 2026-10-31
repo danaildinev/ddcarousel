@@ -23,7 +23,7 @@ export default class Stage {
     #resizeObserver: ResizeObserver | null = null;
     #mutationObserver: MutationObserver | null = null;
     #resizeTimeout?: ReturnType<typeof setTimeout>;
-    #lastObservedWidth: number | null = null;
+    #lastObservedWidth: number | null = 0;
 
     #originalSlides: string = "";
     #originalClasses: string = "";
@@ -98,6 +98,7 @@ export default class Stage {
             animate: false
         });
 
+        this.#lastObservedWidth = this.#container.getBoundingClientRect().width;
         this.#resizeObserver = new ResizeObserver(e => {
             const entry = e[0];
             if (!entry) {

@@ -289,11 +289,21 @@ describe("Stage core", () => {
         const onResized = vi.fn();
         carousel.on(EVENTS.STAGE_RESIZED, onResized);
 
+        container()!.style.width = "800px";
         triggerResizeObservers();
-        triggerResizeObservers();
-        triggerResizeObservers();
-        vi.advanceTimersByTime(20);
+        vi.advanceTimersByTime(10);
 
+        container()!.style.width = "700px";
+        triggerResizeObservers();
+        vi.advanceTimersByTime(10);
+
+        container()!.style.width = "600px";
+        triggerResizeObservers();
+
+        vi.advanceTimersByTime(19);
+        expect(onResized).not.toHaveBeenCalled();
+
+        vi.advanceTimersByTime(1);
         expect(onResized).toHaveBeenCalledTimes(1);
     });
 
