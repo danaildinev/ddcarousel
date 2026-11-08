@@ -82,7 +82,7 @@ export default class UrlNav extends BaseModule {
             link.textContent = title;
 
             // todo fix: This will not work properly when config items > 1. Then pages != slides and slide id's w match (this feature is based on latest v1.4.0)
-            link.addEventListener("click", () => this.events.emit(EVENTS.PAGE_CHANGE_REQUEST, { index: slide.dataset[DATA.dataset.slide], enableAnim: true }));
+            link.addEventListener("click", () => this.events.emit(EVENTS.PAGE_CHANGE_REQUEST, { index: slide.dataset[DATA.dataset.slide], animate: true }));
 
             item.appendChild(link);
             list.appendChild(item);
