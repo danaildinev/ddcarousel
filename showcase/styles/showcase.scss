@@ -261,6 +261,30 @@ h3 {
         gap: 12px;
     }
 
+    &__version {
+        display: inline-flex;
+        align-items: center;
+        gap: 8px;
+        padding: 6px 12px;
+        font-size: 0.8rem;
+        color: var(--color-text);
+        background: var(--color-accent-background);
+        border-radius: 50px;
+        text-decoration: none;
+        transition: all ease-in-out 0.2s;
+        justify-self: center;
+
+        &:hover {
+            color: var(--color-accent);
+            border-color: var(--color-accent);
+        }
+
+        &-number {
+            color: var(--color-accent);
+            font-weight: 600;
+        }
+    }
+
     @include mobile {
         &__grid {
             grid-template-columns: 1fr;

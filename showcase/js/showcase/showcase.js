@@ -98,4 +98,31 @@ function initDemoCarousel() {
             setTimeout(() => el.textContent = "Copy", 2000);
         });
     });
+
+    async function loadLatestVersion() {
+        const version = document.querySelector(".get-started__version");
+
+        try {
+            const response = await fetch("https://api.github.com/repos/danaildinev/ddcarousel/releases/latest");
+            if (!response.ok) {
+                return;
+            }
+
+            const release = await response.json();
+            version.querySelector(".get-started__version-number").textContent = release.tag_name;
+            version.href = release.html_url;
+
+            if (release.published_at) {
+                const date = new Date(release.published_at);
+                const dateElement = version.querySelector(".get-started__version-date");
+
+                dateElement.dateTime = release.published_at;
+                dateElement.textContent = new Intl.DateTimeFormat("en-US").format(date);
+            }
+        } catch (error) {
+            console.warn("Failed to fetch latest release:", error);
+        }
+    }
+
+    loadLatestVersion();
 }
