@@ -22,6 +22,7 @@ export default class Drag {
 
     #isDragging: boolean = false;
     #pointerId: number | null = null;
+    #suppressNextClick: boolean = false;
 
     #pointerStart: number = 0;
     #dragStartTranslate: number = 0;
@@ -58,7 +59,6 @@ export default class Drag {
         carouselRoots.add(this.#containerDom);
 
         this.#attachEvents();
-        this.#stageDom.classList.add(CSS_CLASSES.disabled);
 
         this.#slides = this.#getDomSlides();
         this.#cacheSlideOffsets();
@@ -67,8 +67,9 @@ export default class Drag {
     destroy() {
         carouselRoots.delete(this.#containerDom);
 
+        this.#finishDrag();
+        this.#suppressNextClick = false;
         this.#detachEvents();
-        this.#stageDom.classList.remove(CSS_CLASSES.disabled);
     }
 
     #attachEvents() {
@@ -81,6 +82,7 @@ export default class Drag {
         this.#updateProps(status);
 
         this.#stageDom.addEventListener("pointerdown", this.#dragStart);
+        this.#stageDom.addEventListener("click", this.#onStageClick, true);
         window.addEventListener("pointermove", this.#dragMove);
         window.addEventListener("pointerup", this.#dragEnd);
         window.addEventListener("pointercancel", this.#dragCancel);
@@ -93,6 +95,7 @@ export default class Drag {
 
     #detachEvents() {
         this.#stageDom.removeEventListener("pointerdown", this.#dragStart);
+        this.#stageDom.removeEventListener("click", this.#onStageClick, true);
         window.removeEventListener("pointermove", this.#dragMove);
         window.removeEventListener("pointerup", this.#dragEnd);
         window.removeEventListener("pointercancel", this.#dragCancel);
@@ -136,23 +139,15 @@ export default class Drag {
             return;
         }
 
-        const dragState = {
-            currentTranslate: this.#currentTranslate
-        };
-
-        this.#events.emit(EVENTS.DRAG_PRE_START, dragState);
-
-        this.#stageDom.classList.add(CSS_CLASSES.stageDragging);
-
-        // read back modified value
-        this.#currentTranslate = dragState.currentTranslate;
+        if (e.pointerType === "mouse" && e.button !== 0) {
+            return;
+        }
 
         const startPoint = this.#getInput(e);
         if (startPoint == undefined) {
             return;
         }
 
-        this.#isDragging = true;
         this.#pointerStart = startPoint;
         this.#pointerOffset = this.#pointerStart + -(this.#currentTranslate);
         this.#dragStartTranslate = this.#currentTranslate;
@@ -160,6 +155,23 @@ export default class Drag {
         this.#stayOnThisSlide = false;
         this.#lastTouch = this.#currentTranslate;
         this.#pointerId = e.pointerId;
+        this.#suppressNextClick = false;
+    }
+
+    #activateDrag(e: PointerEvent) {
+        this.#events.emit(EVENTS.DRAG_PRE_START, {
+            currentTranslate: this.#currentTranslate
+        });
+
+        this.#pointerOffset = this.#pointerStart - this.#currentTranslate;
+        this.#dragStartTranslate = this.#currentTranslate;
+        this.#currentTouch = this.#currentTranslate;
+        this.#lastTouch = this.#currentTranslate;
+
+        this.#isDragging = true;
+        this.#stageDom.classList.add(CSS_CLASSES.stageDragging, CSS_CLASSES.disabled);
+
+        // capture only after a real drag, so clicks on links keep their target!!
         this.#stageDom.setPointerCapture(e.pointerId);
 
         this.#events.emit(EVENTS.DRAG_START);
@@ -176,7 +188,7 @@ export default class Drag {
     }
 
     #dragMove = (e: PointerEvent) => {
-        if (!this.#isDragging || e.pointerId !== this.#pointerId) {
+        if (e.pointerId !== this.#pointerId) {
             return;
         }
 
@@ -185,6 +197,10 @@ export default class Drag {
         }
 
         const input = this.#getInput(e);
+
+        if (!this.#isDragging) {
+            this.#activateDrag(e);
+        }
 
         this.#lastTouch = this.#currentTouch;
 
@@ -228,13 +244,17 @@ export default class Drag {
 
     #dragEnd = (e: PointerEvent) => {
         // make sure multi-touch won't interrupt the current drag
-        if (!this.#isDragging || e.pointerId !== this.#pointerId) {
+        if (e.pointerId !== this.#pointerId) {
             return;
         }
 
-        this.#events.emit(EVENTS.DRAG_END);
+        if (!this.#isDragging) {
+            this.#finishDrag();
+            return;
+        }
 
-        this.#stageDom.classList.remove(CSS_CLASSES.stageDragging);
+        this.#suppressNextClick = true;
+        this.#events.emit(EVENTS.DRAG_END);
 
         // if swipe threshold is not enough, scroll to original position
         if (this.#config.dragSnapMode === DragSnapMode.Swipe && (this.#swipeDistance < this.#config.swipeThreshold || this.#stayOnThisSlide)) {
@@ -269,11 +289,15 @@ export default class Drag {
 
     #dragCancel = (e: PointerEvent) => {
         // make sure multi-touch won't interrupt the current drag
-        if (!this.#isDragging || e.pointerId !== this.#pointerId) {
+        if (e.pointerId !== this.#pointerId) {
             return;
         }
 
-        this.#revertDrag();
+        if (this.#isDragging) {
+            this.#revertDrag();
+        } else {
+            this.#finishDrag();
+        }
     }
 
     #revertDrag() {
@@ -282,9 +306,25 @@ export default class Drag {
     }
 
     #finishDrag() {
+        if (this.#pointerId !== null && this.#stageDom.hasPointerCapture?.(this.#pointerId)) {
+            this.#stageDom.releasePointerCapture?.(this.#pointerId);
+        }
+
+        this.#stageDom.classList.remove(CSS_CLASSES.stageDragging, CSS_CLASSES.disabled);
         this.#resetTransitionDuration();
         this.#isDragging = false;
         this.#pointerId = null;
+    }
+
+    #onStageClick = (e: MouseEvent) => {
+        if (!this.#suppressNextClick || e.detail === 0) {
+            return;
+        }
+
+        this.#suppressNextClick = false;
+
+        e.preventDefault();
+        e.stopImmediatePropagation();
     }
 
     #resetTransitionDuration = () => this.#stageDom.style.transitionDuration = `${this.#config.slideChangeDuration}s`;

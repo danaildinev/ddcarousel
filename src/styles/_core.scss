@@ -72,9 +72,9 @@
         &--dragging {
             user-select: none;
 
-            > .ddcarousel__item {
-                pointer-events: none;
-            }
+            // > .ddcarousel__item {
+            //     pointer-events: none;
+            // }
         }
 
         &--disabled {
