@@ -47,26 +47,26 @@
     <main class="showcase">
         <div class="ddcarousel showcase__carousel">
             <div class="showcase__page" data-id="home" data-title="Home">
-                <div class="container hero">
-                    <div class="hero__content">
+                <div class="container page">
+                    <div class="page__section">
                         <h1>Your modern carousel</h1>
-                        <p class="hero__lead">
+                        <p class="page__content">
                             Lightweight, dependency-free, written in TypeScript. Built for modern web, responsive
                             layouts, optional modules, typed events and a compact core - without a UI framework or
                             runtime dependency.
                         </p>
-                        <div class="hero__highlights">
-                            <span><strong>~9 KB</strong> gzip ESM core</span>
-                            <span><strong>0</strong> dependencies</span>
-                            <span><strong>ES2022</strong> modern browsers</span>
-                        </div>
+                        <ul class="list__highlights">
+                            <li class="list__highlights-item"><strong>~9 KB</strong> gzip ESM core</li>
+                            <li class="list__highlights-item"><strong>0</strong> dependencies</li>
+                            <li class="list__highlights-item"><strong>ES2022</strong> modern browsers</li>
+                        </ul>
                         <p class="note note--static">
                             This showcase is using <strong>ddcarousel</strong> right now. Every main section on this
                             page is a slide in the carousel.
                         </p>
                     </div>
 
-                    <div class="hero__demo">
+                    <div class="page__section page__demo">
                         <div class="ddcarousel demo__carousel">
                         </div>
 
@@ -83,9 +83,102 @@
 
                 </div>
             </div>
-            <div class="showcase__page" data-id="test" data-title="Test page">
-                <div class="container hero">
-                    Test
+            <div class="showcase__page" data-id="features" data-title="Features">
+                <div class="container page page-features">
+                    <div class="page__section">
+                        <h2>One core, a lot of ways to move.</h2>
+                        <p>
+                            Small by design. The ESM build keeps optional features out of the initial core. Enable a
+                            module in configuration and ddcarousel loads its chunk automatically.
+                        </p>
+                        <p>
+                            Prefer a classic <strong>&lt;script&gt;</strong> tag? A browser-ready UMD bundle is also
+                            available, with no
+                            bundler required.
+                        </p>
+                        <ul class="list__highlights list__highlights-boxed">
+                            <li class="list__highlights-item"><strong>~26 KB</strong> gzip ESM core</li>
+                            <li class="list__highlights-item"><strong>~9 KB</strong> gzip ESM core</li>
+                            <li class="list__highlights-item"><strong>~4 KB</strong> per module/optional module chunks
+                            </li>
+                            <li class="list__highlights-item"><strong>UMD</strong> ready for direct browser use</li>
+                        </ul>
+                    </div>
+                    <div class="page__section features">
+                        <h2>Main features</h2>
+                        <ul class="list__features">
+                            <li class="list__features-item">
+                                <h3>
+                                    1. Modular architecture
+                                </h3>
+                                <span>
+                                    Lightweight with optional modules that load automatically when
+                                    enabled.
+                                </span>
+                            </li>
+                            <li class="list__features-item">
+                                <h3>
+                                    2. Events & Lifecycle
+                                </h3>
+                                <span>
+                                    Hook into page changes, dragging, transitions, and module lifecycles.
+                                </span>
+                            </li>
+                            <li class="list__features-item">
+                                <h3>
+                                    3. Fully customizable
+                                </h3>
+                                <span>
+                                    Make ddcarousel your own with CSS variables, configurable controls, and extensive
+                                    behavior options.
+                                </span>
+                            </li>
+                            <li class="list__features-item">
+                                <h3>
+                                    4. Flexible layouts
+                                </h3>
+                                <span>
+                                    Horizontal or vertical, center slides, full-width layouts or automatically
+                                    adjust heights... countless possibilities.
+                                </span>
+                            </li>
+                            <li class="list__features-item">
+                                <h3>
+                                    5. Seamless infinite loop
+                                </h3>
+                                <span>
+                                    Keep the experience flowing with continuous navigation in every direction.
+                                </span>
+                            </li>
+                            <li class="list__features-item">
+                                <h3>
+                                    6. Multiple Navigations
+                                </h3>
+                                <span>
+                                    Navigate slides naturally using your mouse wheel or trackpad. Adjustable thresholds
+                                    and delays. URL hashes for direct navigation and shareable links.
+                                </span>
+                            </li>
+                            <li class="list__features-item">
+                                <h3>
+                                    7. Dynamic Runtime Control
+                                </h3>
+                                <span>
+                                    Control navigation, inspect live carousel state, and load or unload modules on
+                                    demand. Build interactive experiences without rebuilding the carousel.
+                                </span>
+                            </li>
+                            <li class="list__features-item">
+                                <h3>
+                                    8. Advanced User Experience
+                                </h3>
+                                <span>
+                                    Deliver smooth, intuitive interactions with customizable drag snapping, smart
+                                    autoplay, keyboard controls, and lazy loading.
+                                </span>
+                            </li>
+                        </ul>
+                    </div>
                 </div>
             </div>
         </div>
