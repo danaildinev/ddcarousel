@@ -118,3 +118,9 @@ Contributions, bug reports, and feature suggestions are always welcome.
 ## License
 
 By contributing to DDCarousel, you agree that your contributions will be licensed under the project's [MIT License](./LICENSE).
+
+## Financial Support
+
+If you'd like to support ddcarousel financially, you can make a voluntary donation through [Ko-fi](https://ko-fi.com/C1W52AD0X6).
+
+Donations help support the continued development and maintenance of the project, but are never required to contribute.

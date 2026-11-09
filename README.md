@@ -831,6 +831,14 @@ Following the contribution guidelines helps keep the project consistent and make
 
 Thank you in advance for taking the time to follow these guidelines and, most importantly, for choosing to contribute to the project. Any help is greatly appreciated! :)
 
+## ❤️ Support
+
+If you like **ddcarousel** and find it useful, consider supporting its development and maintenance! Every contribution is greatly appreciated and helps keep my project growing. 😊
+
+[![Support me on Ko-fi](https://ko-fi.com/img/githubbutton_sm.svg)](https://ko-fi.com/C1W52AD0X6)
+
+*Please mention **ddcarousel** in your donation message so I know which project you're supporting. If you'd like to be publicly acknowledged as a supporter, include your GitHub username and permission to list it in your donation message.*
+
 ## License
 
 The code is released under the [MIT License](https://github.com/danaildinev/ddcarousel/blob/master/LICENSE).
