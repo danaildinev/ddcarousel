@@ -84,4 +84,18 @@ function initDemoCarousel() {
         "on:page:changed": () => handlerPageChanged(),
     });
     demo.ready.catch(console.error);
+
+    document.querySelectorAll("[data-copy]").forEach(el => {
+        el.addEventListener("click", async () => {
+            const code = el.parentElement.querySelector("code");
+            if (!code) {
+                return
+            }
+
+            await navigator.clipboard.writeText(code.textContent.trim());
+
+            el.textContent = "Copied!";
+            setTimeout(() => el.textContent = "Copy", 2000);
+        });
+    });
 }
