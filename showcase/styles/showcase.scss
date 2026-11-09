@@ -118,7 +118,7 @@ h3 {
     color: var(--color-text-muted);
     padding: $header-height $container-padding;
 
-    &-features {
+    &--features {
         grid-template-columns: 1fr 1.5fr;
     }
 
@@ -137,18 +137,6 @@ h3 {
 
         @include mobile {
             @include centered-hero;
-        }
-
-        &.features {
-            display: inline;
-            padding: 16px;
-            overflow: auto;
-
-            h2 {
-                font-size: clamp(1.4rem, 1.6vw, 2rem);
-                text-align: center;
-                margin: 24px 0;
-            }
         }
     }
 
@@ -176,6 +164,44 @@ h3 {
         &__highlights {
             text-align: center;
             justify-content: center;
+        }
+    }
+}
+
+.features {
+    display: inline;
+    padding: 16px;
+    overflow: auto;
+
+    &__title {
+        font-size: clamp(1.4rem, 1.6vw, 2rem);
+        text-align: center;
+        margin: 24px 0;
+    }
+
+    &__list {
+        display: grid;
+        gap: 16px;
+        grid-template-columns: repeat(2, 1fr);
+
+        @include tablet {
+            grid-template-columns: 1fr;
+        }
+    }
+
+    &__item {
+        gap: 4px;
+
+        &-title {
+            color: var(--color-accent);
+            font-size: 1rem;
+            font-weight: 300;
+            margin-bottom: 4px;
+            text-transform: uppercase;
+        }
+
+        &-description {
+            font-size: 0.84rem;
         }
     }
 }
@@ -281,16 +307,6 @@ h3 {
             margin-bottom: 14px;
             box-shadow: 0 6px 12px var(--color-shadow);
         }
-    }
-}
-
-.list__features {
-    display: grid;
-    gap: 16px;
-    grid-template-columns: repeat(2, 1fr);
-
-    @include tablet {
-        grid-template-columns: 1fr;
     }
 }
 
