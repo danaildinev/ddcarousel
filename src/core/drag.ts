@@ -23,6 +23,7 @@ export default class Drag {
     #isDragging: boolean = false;
     #pointerId: number | null = null;
     #suppressNextClick: boolean = false;
+    static readonly #dragActivationDistance = 3;
 
     #pointerStart: number = 0;
     #dragStartTranslate: number = 0;
@@ -199,6 +200,10 @@ export default class Drag {
         const input = this.#getInput(e);
 
         if (!this.#isDragging) {
+            if (Math.abs(input - this.#pointerStart) < Drag.#dragActivationDistance) {
+                return;
+            }
+
             this.#activateDrag(e);
         }
 
