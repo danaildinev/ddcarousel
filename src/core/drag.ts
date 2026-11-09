@@ -157,6 +157,8 @@ export default class Drag {
         this.#lastTouch = this.#currentTranslate;
         this.#pointerId = e.pointerId;
         this.#suppressNextClick = false;
+
+        this.#stageDom.classList.add(CSS_CLASSES.disabled);
     }
 
     #activateDrag(e: PointerEvent) {
@@ -170,7 +172,7 @@ export default class Drag {
         this.#lastTouch = this.#currentTranslate;
 
         this.#isDragging = true;
-        this.#stageDom.classList.add(CSS_CLASSES.stageDragging, CSS_CLASSES.disabled);
+        this.#stageDom.classList.add(CSS_CLASSES.stageDragging);
 
         // capture only after a real drag, so clicks on links keep their target!!
         this.#stageDom.setPointerCapture(e.pointerId);
