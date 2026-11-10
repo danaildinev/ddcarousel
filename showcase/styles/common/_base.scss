@@ -24,7 +24,7 @@
     --color-background: light-dark(#{$color-background-light}, #{$color-background-dark});
     --color-background-hover: light-dark(#{$color-background-hover-light}, #{$color-background-hover-dark});
     --color-background-gradient: light-dark(#{$color-background-gradient-light}, #{$color-background-gradient-dark});
-    --color-background-transparent: color-mix(in srgb, var(--color-background) 60%, transparent);
+    --color-background-transparent: color-mix(in srgb, var(--color-background) 88%, transparent);
     --color-background-transparent-darken: color-mix(in srgb, var(--color-background) 96%, transparent);
     --color-event-active: #{$color-event-active};
 }
@@ -49,6 +49,39 @@
     }
 }
 
+@mixin navbar-link {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    padding: 7px 10px;
+    font-size: 0.84rem;
+    border-color: transparent;
+    border-radius: 4px;
+    color: var(--color-text-muted);
+    transition: all 0.3s ease-in-out;
+
+    &:hover {
+        color: var(--color-accent);
+        background: var(--color-accent-background);
+
+        svg {
+            color: inherit;
+        }
+    }
+
+    &[data-active] {
+        background-color: var(--color-accent-background);
+    }
+
+    @include tablet {
+        font-size: 1rem;
+
+        &--text {
+            display: none;
+        }
+    }
+}
+
 body {
     position: relative;
     font-family: $font-family-base;
@@ -67,22 +100,22 @@ h2,
 h3,
 h4 {
     font-weight: 300;
-    letter-spacing: -0.04em;
 }
 
 h1 {
     font-size: $font-size-h1;
     line-height: 1;
+    letter-spacing: -0.01em;
 }
 
 h2 {
     font-size: $font-size-h2;
     line-height: 1;
+    letter-spacing: -0.01em;
 }
 
 h3 {
     font-size: $font-size-h3;
-    letter-spacing: -0.02em;
 }
 
 h4 {
@@ -223,26 +256,56 @@ dialog {
 }
 
 .main-header {
+    --ddcarousel-url-nav-color: var(--color-text-muted);
+    --ddcarousel-url-nav-color-active: var(--color-accent);
+
     display: flex;
     height: $header-height;
     padding: 12px 0;
     width: 100%;
-    //border-bottom: 1px solid var(--color-border);
-    //background: var(--color-background-transparent);
+    position: absolute;
+    z-index: 1;
 
-    button {
-        background: transparent;
-    }
-
-    @include mobile() {
+    @include tablet() {
         height: initial;
-        padding-left: 12px;
+        padding-left: 8px;
 
         button {
             a {
                 display: none;
             }
         }
+    }
+
+    &__navigation {
+        display: flex;
+
+        @include tablet() {
+            display: none;
+
+            &.expanded {
+                display: flex;
+                flex-direction: column;
+                position: absolute;
+                left: 0;
+                top: 0;
+                width: 100%;
+                height: 100vh;
+                align-items: center;
+                justify-content: center;
+                background: var(--color-background-transparent-darken);
+                z-index: 1;
+                gap: 24px;
+            }
+
+            .main-header__links {
+                margin: 0;
+            }
+        }
+    }
+
+    button {
+        background: transparent;
     }
 
     &__title {
@@ -252,27 +315,6 @@ dialog {
         margin-right: calc($button-padding-horizontal * 3);
     }
 
-    &__left {
-        display: none !important;
-
-        @include tablet() {
-            display: block !important;
-        }
-    }
-
-    &__right {
-        display: flex;
-        flex-direction: row;
-        justify-content: end;
-        align-items: center;
-    }
-
-    &__sidebar-toggle {
-        svg {
-            margin: 0 auto;
-        }
-    }
-
     &__links {
         display: flex;
         align-items: center;
@@ -280,42 +322,47 @@ dialog {
 
         &:not(:last-of-type) {
             margin-right: $header-spacing;
+
+            @include tablet {
+                margin-right: 0;
+            }
+        }
+
+        @include tablet {
+            position: relative;
+            justify-content: center;
+            align-items: center;
+
+            &:first-child {
+                &::after {
+                    position: absolute;
+                    display: inline;
+                    width: 120px;
+                    height: 1px;
+                    bottom: -8px;
+                    background: var(--color-text-muted);
+                    opacity: 0.2;
+                    content: "";
+                }
+            }
+        }
+
+        @include mobile {
+            width: 100%;
+            flex-direction: column;
+            gap: 8px;
         }
     }
 
     &__link {
-        &--text {
-            @include tablet() {
-                display: none;
-            }
-        }
+        @include navbar-link;
     }
 
-    .ddcarousel-module-urlNav__link,
-    &__link {
-        display: flex;
-        align-items: center;
-        gap: 6px;
-        padding: 7px 10px;
-        font-size: 0.84rem;
-        border: 1px solid transparent;
-        border-radius: 4px;
-        color: var(--color-text-muted);
-        cursor: pointer;
-        transition: all 0.3s ease-in-out;
+    &__sidebar-open {
+        display: none;
 
-        &:hover {
-            color: var(--color-accent);
-            background: var(--color-accent-background);
-            border-color: transparent;
-
-            svg {
-                color: inherit;
-            }
-        }
-
-        &[data-active] {
-            background-color: var(--color-accent-background);
+        @include tablet {
+            display: block;
         }
     }
 
@@ -325,6 +372,10 @@ dialog {
         align-items: center;
         justify-content: center;
         gap: $header-spacing;
+
+        @include tablet {
+            justify-content: space-between;
+        }
     }
 
     .theme-icon {
@@ -343,7 +394,7 @@ dialog {
     .main-header__link-label {
         display: none;
 
-        @include mobile {
+        @include tablet {
             display: inline;
         }
     }

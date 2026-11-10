@@ -29,6 +29,8 @@ let sidebar;
 let sidebarActive = false;
 let carousel;
 let breakpointMobile = 768;
+let headerNavigation;
+let headerNavigationMarker;
 
 let statusPopup;
 let statusPopupTitle;
@@ -42,11 +44,15 @@ document.addEventListener("DOMContentLoaded", () => {
 	statusPopup = document.querySelector("#statusPopup");
 	statusPopupTitle = document.querySelector("#statusPopup__title");
 	statusPopupContent = document.querySelector("#statusPopup__content");
+	headerNavigation = document.querySelector(".main-header__navigation");
+	headerNavigationMarker = document.createElement("span");
+
+	headerNavigation.after(headerNavigationMarker);
 
 	document.querySelector("#statusPopup__close").addEventListener("click", () => statusPopup.close());
 	document.querySelectorAll("button[data-demo]").forEach(el => el.addEventListener("click", () => loadDemo(el)));
-	document.querySelector(".demos__close-btn").addEventListener("click", () => toggleSidebar());
-	document.querySelector(".main-header__toggle-sidebar").addEventListener("click", () => toggleSidebar());
+	document.querySelector(".demos__close-btn").addEventListener("click", () => toggleSidebar(false));
+	document.querySelector(".main-header__sidebar-open").addEventListener("click", () => toggleSidebar());
 
 	sidebar = document.querySelector(".demos__sidebar");
 	const initialDemo = sidebar.querySelector('button[data-demo="default"]');
@@ -60,7 +66,15 @@ document.addEventListener("DOMContentLoaded", () => {
 
 function toggleSidebar(isActive) {
 	sidebarActive = isActive ?? !sidebarActive;
-	sidebar.classList.toggle("active", sidebarActive)
+
+	if (sidebarActive) {
+		sidebar.querySelector(".demos__sidebar-title").before(headerNavigation);
+	} else {
+		headerNavigationMarker.before(headerNavigation);
+	}
+
+	sidebar.classList.toggle("active", sidebarActive);
+	document.body.classList.toggle("demos-menu-open", sidebarActive);
 }
 
 async function loadDemo(button, configOverrides = {}) {

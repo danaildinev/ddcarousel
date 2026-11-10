@@ -11,25 +11,19 @@
 	<link rel="stylesheet" href="dist/ddcarousel.min.css" />
 	<link rel="stylesheet" href="dist/demos.css" />
 	<link
-		href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@100..800&family=Nunito+Sans:ital,opsz,wght@0,6..12,200..1000;1,6..12,200..1000&display=swap"
+		href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@100..800&family=Xmind:wght@300..700&display=swap"
 		rel="stylesheet">
 </head>
 
 <body>
 	<header class="main-header">
 		<div class="container">
-			<div class="main-header__left">
-				<button class="main-header__link main-header__toggle-sidebar" type="button">
-					<svg class="svg-icon">
-						<use href="/images/icons.svg#icon-menu"></use>
-					</svg>
-				</button>
-			</div>
-			<div class="main-header__content">
-				<a href="#" class="main-header__title">DDCarousel demos</a>
-			</div>
-			<div class="main-header__right">
+			<a href="#" class="main-header__title">ddcarousel demos</a>
+			<div class="main-header__navigation">
 				<nav class="main-header__links">
+					<a class="main-header__link" href="./showcase.html" target="_blank">
+						<span class="main-header__link-label">Showcase</span>
+					</a>
 					<a class="main-header__link" href="https://github.com/danaildinev/ddcarousel" target="_blank">
 						<svg class="svg-icon">
 							<use href="/images/icons.svg#icon-github"></use>
@@ -40,13 +34,19 @@
 						<svg class="svg-icon">
 							<use href="/images/icons.svg#icon-theme"></use>
 						</svg>
+						<span class="main-header__link-label">Switch theme</span>
 					</button>
 				</nav>
 			</div>
+			<button class="main-header__link main-header__sidebar-open" type="button">
+				<svg class="svg-icon">
+					<use href="/images/icons.svg#icon-menu"></use>
+				</svg>
+			</button>
 		</div>
 	</header>
 	<div class="demos">
-		<nav class="demos__sidebar">
+		<aside id="demos-sidebar" class="demos__sidebar panel">
 			<button type="button" class="demos__close-btn">
 				<svg class="svg-icon" viewBox="0 0 24 24" fill="none">
 					<path d="M5 19L19 5" stroke="currentColor" stroke-width="2" stroke-linecap="round" />
@@ -345,8 +345,8 @@
 				ddcarousel does not apply slide background colors or other decorative slide styling by default, so your
 				slides will inherit the styles from your own project.
 			</p>
-		</nav>
-
+			</nav>
+		</aside>
 		<section class="demo__preview">
 			<header class="demo__preview-header">
 				<h2 class="demo__preview-title"></h2>
@@ -363,6 +363,7 @@
 
 			<div class="demo__preview-events"></div>
 		</section>
+
 	</div>
 
 	<dialog id="statusPopup">

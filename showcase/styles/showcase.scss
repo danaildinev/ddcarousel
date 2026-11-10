@@ -31,104 +31,22 @@ h3 {
 }
 
 .main-header {
-    --ddcarousel-url-nav-color: var(--color-text-muted);
-    --ddcarousel-url-nav-color-active: var(--color-accent);
-
-    position: absolute;
-    z-index: 1;
-
-    &__sidebar-open {
-        display: none;
-
-        @include mobile {
-            display: block;
-        }
-    }
-
-    &__navigation {
-        display: flex;
+    .ddcarousel-module-urlNav__link {
+        @include navbar-link;
     }
 
     @include mobile {
-        &__right {
-            gap: 0;
-        }
-
-        &__navigation {
-            display: none;
-
-            &.expanded {
-                display: flex;
-                flex-direction: column;
-                position: absolute;
-                left: 0;
-                top: 0;
-                width: 100%;
-                height: 100vh;
-                align-items: center;
-                justify-content: center;
-                background: var(--color-background-transparent-darken);
-                z-index: 1;
-
-                .main-header__sidebar-open {
-                    display: none !important;
-                }
-            }
-
-            .main-header__links {
-                margin: 0;
-            }
-        }
-
-        &__links {
-            width: 100%;
-            flex-direction: column;
-            justify-content: center;
-            align-items: center;
-            gap: 8px;
-            position: relative;
-
-            &:first-child {
-                margin-bottom: 28px;
-
-                &::after {
-                    position: absolute;
-                    display: inline;
-                    width: 120px;
-                    height: 1px;
-                    bottom: -8px;
-                    background: var(--color-text-muted);
-                    opacity: 0.2;
-                    content: "";
-                }
-            }
-        }
-
-        &__link {
-            font-size: 1rem;
-        }
-
         .ddcarousel-module-urlNav {
             &__container {
-                width: 100%;
-                height: 100%;
                 flex-direction: column;
-                justify-content: center;
                 align-items: center;
                 padding: 0 $container-padding;
-                margin-bottom: 8px;
                 gap: 8px;
             }
 
             &__link {
                 margin: 0;
-                font-size: 1rem;
-                padding: 12px 18px;
             }
-        }
-
-        .container {
-            justify-content: space-between;
         }
     }
 }
@@ -187,10 +105,10 @@ h3 {
 
         @include mobile {
             @include centered-hero;
-        }
 
-        &-title {
-            text-align: center;
+            &-title {
+                text-align: center;
+            }
         }
     }
 
