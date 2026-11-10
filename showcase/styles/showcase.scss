@@ -4,11 +4,11 @@
 @import "./common/components";
 
 @mixin centered-hero {
-    height: 100vh;
     display: flex;
     align-items: center;
     flex-direction: column;
     justify-content: center;
+    text-align: center;
 }
 
 .ddcarousel-module-pagination__dot {
@@ -149,7 +149,7 @@ h3 {
     width: 100%;
     justify-content: center;
     align-items: center;
-    gap: clamp(60px, 6vw, 7px);
+    gap: clamp(12px, 6vw, 7px);
     color: var(--color-text-muted);
     padding: calc($header-height + 14px) $container-padding;
 
@@ -158,9 +158,9 @@ h3 {
             padding: 0 $container-padding;
         }
 
-        .page__section {
-            @include mobile {
-                @include centered-hero;
+        @include mobile {
+            .page__section:first-child {
+                height: 100vh;
             }
         }
     }
@@ -184,6 +184,14 @@ h3 {
         gap: clamp(32px, 1.4vw, 5vw);
         justify-content: center;
         flex-direction: column;
+
+        @include mobile {
+            @include centered-hero;
+        }
+
+        &-title {
+            text-align: center;
+        }
     }
 
     &__lead {
@@ -197,6 +205,8 @@ h3 {
 
         @include mobile {
             @include centered-hero;
+
+            margin-bottom: 20vh;
         }
     }
 
@@ -240,6 +250,10 @@ h3 {
 
     &__item {
         gap: 4px;
+
+        @include mobile {
+            align-items: center;
+        }
 
         &-title {
             color: var(--color-accent);
@@ -340,13 +354,16 @@ h3 {
         }
 
         &__card {
+            text-align: center;
+            align-items: center;
+
             &--build {
                 grid-template-columns: 1fr;
             }
         }
 
         &__actions {
-            justify-content: flex-start;
+            justify-content: center;
         }
     }
 }
@@ -356,6 +373,10 @@ h3 {
     flex-wrap: wrap;
     gap: 4px 18px;
     font-size: 0.86rem;
+
+    @include mobile {
+        justify-content: center;
+    }
 
     &-item {
         display: flex;
@@ -380,6 +401,11 @@ h3 {
             background: var(--color-background-transparent);
             margin-bottom: 14px;
             box-shadow: 0 6px 12px var(--color-shadow);
+
+            @include mobile {
+                align-items: center;
+                flex-direction: row;
+            }
         }
     }
 }
@@ -389,6 +415,10 @@ h3 {
         height: clamp(320px, 40vw, 420px) !important;
         border-radius: 8px;
         overflow: hidden;
+
+        --ddcarousel-dot-color: #fff;
+        --ddcarousel-dot-color-active: var(--color-accent);
+        --ddcarousel-nav-color: #fff;
     }
 
     &__slide {
@@ -399,6 +429,7 @@ h3 {
         justify-content: center;
         padding: clamp(52px, 4vw, 4vw);
         color: #fff;
+        text-align: left;
 
         &--one {
             background: linear-gradient(120deg, #64b5f6, #1976d2);
@@ -416,6 +447,7 @@ h3 {
             margin-bottom: 10px;
             font-size: clamp(2rem, 3vw, 2.5rem);
             text-align: left;
+            color: #fff;
         }
     }
 
