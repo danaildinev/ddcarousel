@@ -19,7 +19,7 @@
     <header class="main-header">
         <div class="container">
             <a href="#" class="main-header__title">ddcarousel</a>
-            <div class="main-header__right">
+            <div class="main-header__navigation">
                 <nav class="main-header__links showcase">
                 </nav>
                 <nav class="main-header__links">
@@ -35,22 +35,23 @@
                     <button id="theme-toggle" class="main-header__link" type="button">
                         <svg class="svg-icon">
                             <use href="/images/icons.svg#icon-theme"></use>
+                            <span class="main-header__link-label">Switch theme</span>
                         </svg>
                     </button>
                 </nav>
-                <button class="main-header__link main-header__sidebar-open" type="button">
-                    <svg class="svg-icon">
-                        <use href="/images/icons.svg#icon-menu"></use>
-                    </svg>
-                </button>
             </div>
+            <button class="main-header__link main-header__sidebar-open" type="button">
+                <svg class="svg-icon">
+                    <use href="/images/icons.svg#icon-menu"></use>
+                </svg>
+            </button>
         </div>
     </header>
 
     <main class="showcase">
         <div class="ddcarousel showcase__carousel">
             <div class="showcase__page" data-id="home" data-title="Home">
-                <div class="container page">
+                <div class="container page page--home">
                     <div class="page__section">
                         <h1>Your modern carousel</h1>
                         <p class="page__content">
@@ -232,7 +233,7 @@
                                 </div>
 
                                 <div class="get-started__actions">
-                                    <a class="button button--accent button--lg" href="./demos.html"">
+                                    <a class="button button--accent button--lg" href="./demos.html">
                                         Explore demos
                                     </a>
                                     <a class=" button button--lg" href="https://github.com/danaildinev/ddcarousel">
@@ -245,8 +246,8 @@
                                     kofiWidgetOverlay.draw('danaildinev', {
                                         'type': 'floating-chat',
                                         'floating-chat.donateButton.text': 'Support me',
-                                        'floating-chat.donateButton.background-color': '#00b9fe',
-                                        'floating-chat.donateButton.text-color': '#fff'
+                                        'floating-chat.donateButton.background-color': '#006ec99c',
+                                        'floating-chat.donateButton.text-color': '#ccc'
                                     });
                                 </script>
                             </div>

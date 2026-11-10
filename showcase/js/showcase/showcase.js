@@ -1,6 +1,7 @@
 import { initTheme } from "../common.js";
 
 let menu,
+    kofi,
     menuExpanded = false;
 
 document.addEventListener("DOMContentLoaded", () => {
@@ -32,7 +33,8 @@ document.addEventListener("DOMContentLoaded", () => {
 
     showcase.ready.catch(console.error);
 
-    menu = document.querySelector(".main-header__links.showcase");
+    menu = document.querySelector(".main-header__navigation");
+    kofi = document.querySelector(".floatingchat-container-wrap-mobi")
 
     document.querySelector(".main-header__sidebar-open").addEventListener("click", () => toggleMenu())
 });
@@ -45,6 +47,7 @@ function toggleCarouselEvent(item) {
 function toggleMenu() {
     menuExpanded = !menuExpanded;
     menu.classList.toggle("expanded", menuExpanded)
+    kofi.classList.toggle("expanded", menuExpanded)
 }
 
 function initDemoCarousel() {

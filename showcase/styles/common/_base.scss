@@ -235,6 +235,9 @@ dialog {
     }
 
     @include mobile() {
+        height: initial;
+        padding-left: 12px;
+
         button {
             a {
                 display: none;
@@ -314,12 +317,6 @@ dialog {
         &[data-active] {
             background-color: var(--color-accent-background);
         }
-
-        @include mobile() {
-            &-label {
-                display: none;
-            }
-        }
     }
 
     .container {
@@ -338,6 +335,16 @@ dialog {
         .sun-rays {
             transition: all 0.5s ease-in-out;
             transform-origin: center;
+        }
+    }
+}
+
+#theme-toggle {
+    .main-header__link-label {
+        display: none;
+
+        @include mobile {
+            display: inline;
         }
     }
 }

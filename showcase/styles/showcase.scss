@@ -45,18 +45,21 @@ h3 {
         }
     }
 
+    &__navigation {
+        display: flex;
+    }
+
     @include mobile {
         &__right {
             gap: 0;
         }
 
-        &__links {
-            &.showcase {
-                display: none;
-            }
+        &__navigation {
+            display: none;
 
             &.expanded {
-                display: block;
+                display: flex;
+                flex-direction: column;
                 position: absolute;
                 left: 0;
                 top: 0;
@@ -71,6 +74,38 @@ h3 {
                     display: none !important;
                 }
             }
+
+            .main-header__links {
+                margin: 0;
+            }
+        }
+
+        &__links {
+            width: 100%;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            gap: 8px;
+            position: relative;
+
+            &:first-child {
+                margin-bottom: 28px;
+
+                &::after {
+                    position: absolute;
+                    display: inline;
+                    width: 120px;
+                    height: 1px;
+                    bottom: -8px;
+                    background: var(--color-text-muted);
+                    opacity: 0.2;
+                    content: "";
+                }
+            }
+        }
+
+        &__link {
+            font-size: 1rem;
         }
 
         .ddcarousel-module-urlNav {
@@ -80,8 +115,8 @@ h3 {
                 flex-direction: column;
                 justify-content: center;
                 align-items: center;
-                padding: $container-padding;
-                margin: 0;
+                padding: 0 $container-padding;
+                margin-bottom: 8px;
                 gap: 8px;
             }
 
@@ -93,7 +128,7 @@ h3 {
         }
 
         .container {
-            gap: 0;
+            justify-content: space-between;
         }
     }
 }
@@ -116,7 +151,19 @@ h3 {
     align-items: center;
     gap: clamp(60px, 6vw, 7px);
     color: var(--color-text-muted);
-    padding: $header-height $container-padding;
+    padding: calc($header-height + 14px) $container-padding;
+
+    &--home {
+        @include tablet {
+            padding: 0 $container-padding;
+        }
+
+        .page__section {
+            @include mobile {
+                @include centered-hero;
+            }
+        }
+    }
 
     &--features {
         grid-template-columns: 1fr 1.5fr;
@@ -137,10 +184,6 @@ h3 {
         gap: clamp(32px, 1.4vw, 5vw);
         justify-content: center;
         flex-direction: column;
-
-        @include mobile {
-            @include centered-hero;
-        }
     }
 
     &__lead {
@@ -160,7 +203,6 @@ h3 {
     @include mobile {
         display: flex;
         flex-direction: column;
-        padding: 0 $container-padding;
 
         h1,
         &__lead,
@@ -175,6 +217,10 @@ h3 {
     display: inline;
     padding: 16px;
     overflow: auto;
+
+    @include tablet {
+        padding: 0;
+    }
 
     &__title {
         font-size: clamp(1.4rem, 1.6vw, 2rem);
@@ -382,5 +428,23 @@ h3 {
                 color: #fff;
             }
         }
+    }
+}
+
+.floatingchat-container-wrap {
+    opacity: 0.7 !important;
+    transition: all 0.3s;
+
+    &:hover {
+        opacity: 1 !important;
+    }
+}
+
+.floatingchat-container-wrap-mobi {
+    opacity: 0.7 !important;
+    display: none;
+
+    &.expanded {
+        display: block;
     }
 }
