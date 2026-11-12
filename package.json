@@ -1,7 +1,7 @@
 {
 	"name": "ddcarousel",
 	"version": "2.0.0",
-	"description": "Simple and fast carousel slider written in vannila JS",
+	"description": "Lightweight, dependency-free carousel written in TypeScript and built for the modern web",
 	"type": "module",
 	"main": "./dist/ddcarousel.esm.js",
 	"module": "./dist/ddcarousel.esm.js",
@@ -15,8 +15,11 @@
 			"default": "./dist/ddcarousel.esm.js"
 		},
 		"./ddcarousel.css": "./dist/ddcarousel.css",
-		"./ddcarousel.min.css": "./dist/ddcarousel.min.css"
+		"./ddcarousel.min.css": "./dist/ddcarousel.min.css",
+		"./dist/ddcarousel.css": "./dist/ddcarousel.css",
+		"./dist/ddcarousel.min.css": "./dist/ddcarousel.min.css"
 	},
+	"style": "./dist/ddcarousel.min.css",
 	"files": [
 		"dist",
 		"CHANGELOG.md"
@@ -50,7 +53,7 @@
 	"bugs": {
 		"url": "https://github.com/danaildinev/ddcarousel/issues"
 	},
-	"homepage": "https://github.com/danaildinev/ddcarousel#readme",
+	"homepage": "https://danaildinev.github.io/ddcarousel/",
 	"devDependencies": {
 		"@microsoft/api-extractor": "^7.60.1",
 		"@testing-library/dom": "^10.4.1",
