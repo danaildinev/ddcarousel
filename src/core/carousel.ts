@@ -315,7 +315,10 @@ export default class Carousel {
             },
             currentTranslate: currentTranslate,
             modules: this.#moduleLoader?.modules.map(module => module.id) ?? [],
-            closestSlidesIndexes: closestSlidesIndexes
+            closestSlidesIndexes: closestSlidesIndexes,
+            // Deprecated v1 aliases
+            created: this.#getState() === "ready",
+            activeSlides: this.#stage.visibleSlides,
         };
     }
 }

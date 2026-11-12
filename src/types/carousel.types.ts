@@ -46,7 +46,9 @@ export type CarouselStatus = {
     config: CarouselStatusConfig;
     currentTranslate: number;
     modules: string[],
-    closestSlidesIndexes: ClosestSlideIndexes
+    closestSlidesIndexes: ClosestSlideIndexes,
+    created: boolean,
+    activeSlides: number[]
 }
 
 export type CarouselStatusConfig = {

@@ -17,8 +17,6 @@ Major TypeScript rewrite with a new modular architecture, modern ESM distributio
     - `labelNavNext` -> `navNextContent`
     - `touchMaxSlideDist` -> `dragMaxDistance`
     - `touchSwipeThreshold` -> `swipeThreshold`
-- Renamed `getStatus().created` -> `getStatus().initialized` to better represent completed carousel initialization.
-- Renamed `getStatus().activeSlides` -> `getStatus().visibleSlides` 
 - Replaced module-specific methods in favor of the new module API:
     - `autoplayStart()` -> `module<Autoplay>(Autoplay.id).start()`
     - `autoplayStop()` -> `module<Autoplay>(Autoplay.id).stop()`

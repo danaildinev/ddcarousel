@@ -603,6 +603,8 @@ await carousel.init({
     - `currentTranslate` - Current stage translate position
     - `modules` - IDs of currently loaded modules
     - `closestSlidesIndexes` - Closest slide indexes relative to the current stage position
+    - `created` (deprecated, use `initialized` instead)
+    - `activeSlides` (deprecated, use `visibleSlides` instead)
 
 - `carousel:destroy`
   Emitted before the carousel is destroyed.
