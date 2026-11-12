@@ -375,7 +375,7 @@ Each module has a unique ID that can be used to get module instance, load or unl
 ```ts
 import { Autoplay } from "ddcarousel";
 
-const autoplay = carousel.module(Autoplay.id);
+const autoplay = carousel.module<Autoplay>("autoplay");
 
 autoplay.start();
 autoplay.stop();
@@ -433,11 +433,11 @@ Module ID: `autoplay`
 - `stop()` - Stop autoplay
 
 #### Events
-`import { AUTOPLAY_EVENTS } from "ddcarousel/modules/autoplay";`
+`import { EVENTS_AUTOPLAY } from "ddcarousel";`
 
-- `AUTOPLAY_EVENTS.STARTED` (`module:autoplay:started`) - Emitted when autoplay starts
+- `EVENTS_AUTOPLAY.STARTED` (`module:autoplay:started`) - Emitted when autoplay starts
 
-- `AUTOPLAY_EVENTS.STOPPED` (`module:autoplay:stopped`) - Emitted when autoplay stops
+- `EVENTS_AUTOPLAY.STOPPED` (`module:autoplay:stopped`) - Emitted when autoplay stops
 
 ### Lazy Load
 

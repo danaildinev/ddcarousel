@@ -3,7 +3,8 @@ import Carousel from "../../src/core/carousel";
 import { CSS_CLASSES } from "../../src/constants/css-classes";
 import { EVENTS } from "../../src/constants/events-list";
 import { baseConfig, container, renderCarousel, stage } from "../helpers";
-import Autoplay, { EVENTS_AUTOPLAY } from "../../src/modules/autoplay";
+import Autoplay from "../../src/modules/autoplay";
+import { EVENTS_AUTOPLAY } from "../../src/constants/autoplay-events";
 
 afterEach(() => {
     vi.useRealTimers();

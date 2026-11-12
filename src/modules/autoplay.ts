@@ -1,4 +1,5 @@
 import { EVENTS } from './../constants/events-list';
+import { EVENTS_AUTOPLAY } from "../constants/autoplay-events";
 import { BaseModule } from "../core/base-module";
 import { CSS_CLASSES } from "../constants/css-classes";
 import { error } from "../utils/error-handler";
@@ -11,11 +12,6 @@ export type AutoplayConfig = {
     progress: boolean,
     pauseOnTabHidden: boolean
 }
-
-export const EVENTS_AUTOPLAY = {
-    STARTED: 'module:autoplay:started',
-    STOPPED: 'module:autoplay:stopped',
-} as const;
 
 export default class Autoplay extends BaseModule<AutoplayConfig> {
     static readonly id = "autoplay";
