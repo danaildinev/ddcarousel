@@ -38,14 +38,24 @@ export type CarouselOnEvents = {
 };
 
 export const LEGACY_EVENT_MAP: Record<string, keyof CarouselEvents> = {
+    /** @deprecated Use EVENTS.INITIALIZE instead. */
     onInitialize: EVENTS.INITIALIZE,
+    /** @deprecated Use EVENTS.INITIALIZED instead. */
     onInitialized: EVENTS.INITIALIZED,
+    /** @deprecated Use EVENTS.DRAG_START instead. */
     onDrag: EVENTS.DRAG_START,
+    /** @deprecated Use EVENTS.DRAG_DRAGGING instead. */
     onDragging: EVENTS.DRAG_DRAGGING,
+    /** @deprecated Use EVENTS.DRAG_END instead. */
     onDragged: EVENTS.DRAG_END,
+    /** @deprecated Use EVENTS.TRANSITION_END instead. */
     onTransitionend: EVENTS.TRANSITION_END,
+    /** @deprecated Use EVENTS.PAGE_CHANGED instead. */
     onChanged: EVENTS.PAGE_CHANGED,
+    /** @deprecated Use EVENTS.STAGE_RESIZED instead. */
     onResized: EVENTS.STAGE_RESIZED,
+    /** @deprecated Use EVENTS.DESTROY instead. */
     onDestroy: EVENTS.DESTROY,
+    /** @deprecated Use EVENTS.DESTROYED instead. */
     onDestroyed: EVENTS.DESTROYED
 };

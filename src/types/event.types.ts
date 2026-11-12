@@ -82,6 +82,7 @@ export type CarouselEvents = {
     [EVENTS.DRAG_END]: void;
 }
 
+/** @deprecated Use CarouselEvents with namespaced event names instead */
 export type LegacyCarouselEvents = {
     [K in keyof typeof LEGACY_EVENT_MAP]:
     CarouselEvents[(typeof LEGACY_EVENT_MAP)[K]];

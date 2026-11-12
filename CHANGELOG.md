@@ -46,6 +46,8 @@ Major TypeScript rewrite with a new modular architecture, modern ESM distributio
 - Added `data-state` container attribute reflecting the current carousel lifecycle state: `idle`, `initializing`, `ready`, `failed`, `destroying`, and `destroyed`.
 - Fixed a broken stage when `items` was set to `0` or a negative value. Invalid values now fall back to the default `items` value.
 - Fixed `items` being mutated when the configured value exceeded the available slide count. The configured value is now preserved while the stage uses a clamped effective item count internally for layout, pagination, visible slides, and centering.
+- Fixed links inside slides being unclickable being blocked when `mouseDrag` is enabled by delaying pointer capture until dragging begins. Text selection may still be limited because dragging the pointer can move the carousel.
+- Added movement threshold to prevent accidental dragging during slide interactions such as clicking link.
 - Improved resize handling: stage size changes are detected automatically, with layout, slide positions, and responsive configuration recalculated after resizing has stopped to reduce unnecessary updates during continuous resizing.
 - Removed the requirement to manually disable `autoHeight` when using `vertical`. Only the carousel height needs to be defined; child slide heights are now handled internally by the carousel styles.
 
@@ -199,6 +201,10 @@ Major TypeScript rewrite with a new modular architecture, modern ESM distributio
     - `onResized` -> `stage:resized`
     - `onDestroy` -> `carousel:destroy`
     - `onDestroyed` -> `carousel:destroyed`
+- Renamed the following `getStatus()` properties. Legacy names remain supported for backward compatibility but are deprecated and may be removed in v3:
+    - `created` → `initialized` - better represents completed carousel initialization
+    - `activeSlides` → `visibleSlides`
+- Legacy v1.x event names remain temporarily supported for backward compatibility but now use v2 event payloads. Migrate to the new namespaced events, as legacy event names may be removed in v3.
 
 ## v1.4.2 (2026 March 12)
 - Updated dependencies: bumped immutable and minimatch to the latest versions to address security vulnerabilities (CVE-2026-29063, CVE-2026-27903)
