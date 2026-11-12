@@ -1,6 +1,6 @@
 {
 	"name": "ddcarousel",
-	"version": "1.4.2",
+	"version": "2.0.0",
 	"description": "Simple and fast carousel slider written in vannila JS",
 	"type": "module",
 	"main": "./dist/ddcarousel.esm.js",
@@ -30,8 +30,8 @@
 		"type-check": "tsc --noEmit",
 		"bundle:types": "api-extractor run --local",
 		"clean:types": "node utils/clean-types.js",
-		"showcase:watch:css": "sass --watch --no-source-map ./showcase/styles/showcase.scss:./showcase/dist/showcase.css ./showcase/styles/demos.scss:./showcase/dist/demos.css",
-		"showcase:build": "npm run build:prod && node ./utils/setup-showcase.js",
+		"site:watch:css": "sass --watch --no-source-map ./docs/styles/showcase.scss:./docs/dist/showcase.css ./docs/styles/demos.scss:./docs/dist/demos.css",
+		"site:build": "npm run build:prod && node ./utils/setup-showcase.js",
 		"check:size": "node ./utils/size.js"
 	},
 	"repository": {
