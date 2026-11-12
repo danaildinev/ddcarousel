@@ -1,6 +1,7 @@
 # DDCarousel
 
 ![GitHub package.json version](https://img.shields.io/github/package-json/v/danaildinev/ddcarousel) ![GitHub](https://img.shields.io/github/license/danaildinev/ddcarousel)
+[![Tests & Build](https://github.com/danaildinev/ddcarousel/actions/workflows/test.yml/badge.svg)](https://github.com/danaildinev/ddcarousel/actions/workflows/test.yml)
 
 Lightweight, dependency-free carousel written in TypeScript and built for the modern web.
 
