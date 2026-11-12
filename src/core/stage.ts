@@ -257,7 +257,7 @@ export default class Stage {
 
         const easing = config.slideChangeEasing;
         if (easing) {
-            container.style.setProperty(Stage.CSS_VAR_TRANSITION_EASING, config.slideChangeEasing);
+            container.style.setProperty(Stage.CSS_VAR_TRANSITION_EASING, easing);
         } else {
             container.style.removeProperty(Stage.CSS_VAR_TRANSITION_EASING);
         }
