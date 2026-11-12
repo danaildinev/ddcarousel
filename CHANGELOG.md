@@ -1,6 +1,6 @@
 # Changelog
 
-## v2.0.0 (2026 August)
+## v2.0.0 (2026 November)
 
 Major TypeScript rewrite with a new modular architecture, modern ESM distribution, module lifecycle, and optimized production builds.
 
@@ -22,12 +22,12 @@ Major TypeScript rewrite with a new modular architecture, modern ESM distributio
     - `autoplayStop()` -> `module<Autoplay>(Autoplay.id).stop()`
     - `goToUrl()` -> `module<UrlNav>(UrlNav.id).goToUrl()`;
 - Replaced the v1.x event system with a new namespaced and strongly typed event API. 
-- Removed the `callbacks` config option. Events no longer use a shared optional callback payload. The generic v1.x callback properties `container`, `event`, `currentSlides`, `currentPage`, `totalSlides`, and `totalPages` are no longer automatically included with every event. Each v2 event now provides its own event-specific payload. Legacy v1.x event names remain supported temporarily, but use the new v2 callback payloads and will be removed in the next major version.
+- Removed the `callbacks` config option and shared callback payload. Events now provide event-specific payloads instead of automatically including the v1.x properties (`container`, `event`, `currentSlides`, `currentPage`, `totalSlides`, and `totalPages`). Use `getStatus()` to access additional carousel state.
 - Destroyed `Carousel` instances can no longer be initialized again with `init()`. You must create a new carousel instance after calling `destroy()`.
 - `init()` is now asynchronous and returns a `Promise<void>`, allowing initialization and module loading to be awaited.
 - Changed `destroy(true)` behavior. Passing `true` now restores the container to its state before carousel initialization instead of fully clearing it.
 - Changed the default value of `dragMaxDistance` to `0`, allowing unrestricted carousel dragging by default.
-- Migrated carousel CSS classes to BEM naming. Custom CSS and selectors targeting the previous class names must be updated (for example: `.ddcarousel-item` -> `.ddcarousel__item` and etc...)
+- Migrated carousel CSS classes to BEM naming (for example: `.ddcarousel-item` -> `.ddcarousel__item` and etc...)
 - Dropped support for old browsers and Internet Explorer. The JavaScript target is now ES2022, supported by modern browsers.
 
 ### Features & Improvements
@@ -189,8 +189,8 @@ Major TypeScript rewrite with a new modular architecture, modern ESM distributio
 - Improved Webpack configuration for library builds
 
 ### Deprecated
-- Deprecating `refresh()`. Carousel refresh is now handled automatically on stage resize. Calling this method now outputs a console warning and performs no action;
-- Legacy event names still remains supported for compatibility but will be removed in a future major version:
+- Removed the functionality of `refresh()`. Carousel layout updates and responsive configuration changes are now handled automatically on stage resize. Calling this method now outputs a console warning and performs no action. The method may be removed in v3;
+- Legacy v1.x event names remain supported for backward compatibility but now use v2 event-specific payloads. Migrate to the new namespaced events, as legacy event names may be removed in v3:
     - `onInitialize` -> `carousel:initialize`
     - `onInitialized` -> `carousel:initialized`,
     - `onDrag` -> `drag:start`
@@ -204,7 +204,6 @@ Major TypeScript rewrite with a new modular architecture, modern ESM distributio
 - Renamed the following `getStatus()` properties. Legacy names remain supported for backward compatibility but are deprecated and may be removed in v3:
     - `created` → `initialized` - better represents completed carousel initialization
     - `activeSlides` → `visibleSlides`
-- Legacy v1.x event names remain temporarily supported for backward compatibility but now use v2 event payloads. Migrate to the new namespaced events, as legacy event names may be removed in v3.
 
 ## v1.4.2 (2026 March 12)
 - Updated dependencies: bumped immutable and minimatch to the latest versions to address security vulnerabilities (CVE-2026-29063, CVE-2026-27903)
