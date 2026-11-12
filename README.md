@@ -66,6 +66,7 @@ It is optimized for a smaller initial payload - optional modules are downloaded 
 ddcarousel-autoplay.esm.js
 ddcarousel-lazyLoad.esm.js
 ddcarousel-loop.esm.js
+ddcarousel-mouseWheel.esm.js
 ddcarousel-nav.esm.js
 ddcarousel-pagination.esm.js
 ddcarousel-urlNav.esm.js
@@ -133,10 +134,12 @@ const carousel = new Carousel({
 Import the stylesheet as well:
 
 ```ts
-import "ddcarousel/dist/ddcarousel.css";
+import "ddcarousel/ddcarousel.css";
 // ... or use the minified stylesheet
-import "ddcarousel/dist/ddcarousel.min.css";
+import "ddcarousel/ddcarousel.min.css";
 ```
+
+The previous `ddcarousel/dist/ddcarousel.css` and `ddcarousel/dist/ddcarousel.min.css` paths are also supported for compatibility.
 
 ### UMD
 
@@ -789,9 +792,9 @@ Production builds are generated in the dist directory.
 
 ### Bundle size
 
-DDCarousel stays **lightweight and compact** while still providing a broad set of carousel features at roughly **28 KB raw / ~9 KB gzip** for the ESM core and **36 KB raw / ~11 KB gzip** for the complete minified UMD build — around **70% smaller when gzipped**.
+DDCarousel keeps its ESM core lightweight and loads optional modules dynamically when needed at roughly **~30 KB raw / ~10 KB gzip** for the ESM core + minified CSS. 
 
-Optional ESM modules are only about **1–4 KB each** and are loaded dynamically when needed, keeping the initial bundle small.
+The UMD build includes all features in a single browser-ready bundle. Optional ESM module chunks are loaded only when needed about **1–4 KB each**.
 
 *Sizes are approximate and may vary slightly between releases.*
 
