@@ -246,6 +246,8 @@ export default class Stage {
             return;
         }
 
+        this.#stage.toggleAttribute("data-ddcarousel-mouse-drag", this.#config.mouseDrag);
+
         const containerStyle = window.getComputedStyle(this.#container),
             container = this.#container,
             slides = this.#slides,

@@ -87,6 +87,7 @@ export default class Drag {
         window.addEventListener("pointermove", this.#dragMove);
         window.addEventListener("pointerup", this.#dragEnd);
         window.addEventListener("pointercancel", this.#dragCancel);
+        this.#stageDom.addEventListener("dragstart", this.#preventNativeImageDrag);
 
         this.#events.on(EVENTS.PAGE_CHANGED, this.#updateProps);
         this.#events.on(EVENTS.STAGE_RESIZED, this.#onStageResized);
@@ -100,6 +101,7 @@ export default class Drag {
         window.removeEventListener("pointermove", this.#dragMove);
         window.removeEventListener("pointerup", this.#dragEnd);
         window.removeEventListener("pointercancel", this.#dragCancel);
+        this.#stageDom.removeEventListener("dragstart", this.#preventNativeImageDrag);
 
         this.#events.off(EVENTS.PAGE_CHANGED, this.#updateProps);
         this.#events.off(EVENTS.STAGE_RESIZED, this.#onStageResized);
@@ -322,6 +324,16 @@ export default class Drag {
         this.#isDragging = false;
         this.#pointerId = null;
     }
+
+    #preventNativeImageDrag = (event: DragEvent): void => {
+        if (!this.#config.mouseDrag) {
+            return;
+        }
+
+        if (event.target instanceof HTMLImageElement) {
+            event.preventDefault();
+        }
+    };
 
     #onStageClick = (e: MouseEvent) => {
         if (!this.#suppressNextClick || e.detail === 0) {
