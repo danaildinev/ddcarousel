@@ -56,25 +56,30 @@ describe("Carousel events", () => {
     });
 
     it("emits config applied after configuration refresh", async () => {
-        renderCarousel(1);
+        renderCarousel(4, { width: 500 });
 
         const carousel = new Carousel();
         const listener = vi.fn();
 
         carousel.on(EVENTS.CONFIG_APPLIED, listener);
         await carousel.init(baseConfig({
+            items: 3,
+            resizeDebounce: 50,
             responsive: {
-                300: {
-                    items: 1,
-                },
+                300: { items: 1 },
             },
-        }))
+        }));
 
-        stage()!.style.width = "250px";
-        expect(stage()!.style.width).toBe("250px");
-        //expect(listener).toHaveBeenCalledTimes(1);
-        const event = listener.mock.calls[0][0];
-        expect(event.new.items).toBe(1);
+        expect(listener).not.toHaveBeenCalled();
+
+        vi.useFakeTimers();
+
+        container()!.style.width = "250px";
+        triggerResizeObservers();
+        vi.advanceTimersByTime(50);
+
+        expect(listener).toHaveBeenCalledTimes(1);
+        expect(listener.mock.calls[0][0].new.items).toBe(1);
     });
 
     it("emits page change request before changing pages", () => {

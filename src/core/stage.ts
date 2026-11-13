@@ -70,16 +70,12 @@ export default class Stage {
             throw error("Error creating stage!")
         }
 
-        this.#setInitialDimensions();
-        this.#update();
+        this.#updateLayoutClasses();
 
-        const previousConfig = this.#configClass.current;
         this.#configClass.refreshResponsive(this.#container.getBoundingClientRect().width, false);
 
-        if (this.#configClass.current !== previousConfig) {
-            this.#setInitialDimensions();
-            this.#update();
-        }
+        this.#setInitialDimensions();
+        this.#update();
 
         const callback = (mutationList: MutationRecord[], observer: MutationObserver) => {
             const hasChildChange = mutationList.some(m => m.type === "childList");
@@ -261,22 +257,13 @@ export default class Stage {
             slides = this.#slides,
             config = this.#config;
 
-        // full width?
-        container.classList.toggle(CSS_CLASSES.fullWidth, config.fullWidth && !config.verticalMaxContentWidth);
-        container.classList.toggle(CSS_CLASSES.fullPage, config.fullPage);
+        this.#updateLayoutClasses();
 
         const easing = config.slideChangeEasing;
         if (easing) {
             container.style.setProperty(Stage.CSS_VAR_TRANSITION_EASING, easing);
         } else {
             container.style.removeProperty(Stage.CSS_VAR_TRANSITION_EASING);
-        }
-
-        if (config.vertical) {
-            container.classList.add(CSS_CLASSES.vertical);
-        }
-        else {
-            container.classList.remove(CSS_CLASSES.vertical);
         }
 
         this.#containerWidth = parseInt(containerStyle.width);
@@ -294,6 +281,14 @@ export default class Stage {
             //this.#setActiveSlides();
             this.#updateContainerHeight();
         }
+    }
+
+    #updateLayoutClasses() {
+        const config = this.#config;
+
+        this.#container.classList.toggle(CSS_CLASSES.fullWidth, config.fullWidth && !config.verticalMaxContentWidth);
+        this.#container.classList.toggle(CSS_CLASSES.fullPage, config.fullPage);
+        this.#container.classList.toggle(CSS_CLASSES.vertical, config.vertical);
     }
 
     #calculateTotalPages() {
