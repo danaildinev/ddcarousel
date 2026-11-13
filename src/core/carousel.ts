@@ -4,6 +4,7 @@ import type { CarouselConfig, CarouselModuleMap, CarouselState, CarouselStatus, 
 import type { CarouselEvents, LegacyCarouselEvents } from "../types/event.types";
 import { error } from "../utils/error-handler";
 import { getClosestSlideIndexes, getSlidesOffsets } from "../utils/slide";
+import type { BaseModule } from "./base-module";
 import { Config } from "./config";
 import Drag from "./drag";
 import { Events } from "./events";
@@ -188,7 +189,9 @@ export default class Carousel {
         this.#resolveReady();
     }
 
-    module = <T extends ModuleId>(moduleId: T): CarouselModuleMap[T] => {
+    module<K extends ModuleId>(moduleId: K): CarouselModuleMap[K];
+    module<T extends BaseModule>(moduleId: string): T;
+    module(moduleId: string): BaseModule {
         if (!this.#moduleLoader) {
             throw error("ModuleLoader not initialized");
         }
@@ -199,8 +202,8 @@ export default class Carousel {
             throw error(`Module not found: ${moduleId}`);
         }
 
-        return module as CarouselModuleMap[T];
-    };
+        return module;
+    }
 
     on<K extends keyof CarouselEvents>(name: K, callback: (payload: CarouselEvents[K]) => void,): void;
     on<K extends keyof LegacyCarouselEvents>(name: K, callback: (payload: LegacyCarouselEvents[K]) => void,): void;

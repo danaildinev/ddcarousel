@@ -372,10 +372,13 @@ ddcarousel can power more than traditional content sliders. Enable `fullPage` to
 ddcarousel includes optional modules that are loaded only when needed.
 Each module has a unique ID that can be used to get module instance, load or unload it.
 
+You can access a loaded module using `carousel.module()`. The module type can be inferred from its id or explicitly specified. (if using TypeScript).
+
 ```ts
 import { Autoplay } from "ddcarousel";
 
-const autoplay = carousel.module<Autoplay>("autoplay");
+const autoplay = carousel.module(Autoplay.id);               // Inferred as Autoplay
+const autoplayTyped = carousel.module<Autoplay>("autoplay"); // Explicitly typed as Autoplay
 
 autoplay.start();
 autoplay.stop();
@@ -388,6 +391,9 @@ import { Autoplay } from "ddcarousel";
 await carousel.loadModule(Autoplay.id);
 await carousel.unloadModule(Autoplay.id);
 ```
+
+Note: `carousel.module()` returns an existing module instance and throws an error if the module is not loaded. 
+It does not load modules automatically. Use `loadModule()` to load a module at runtime.
 
 Modules enabled through configuration are loaded automatically (for example: `nav: true`). They may also be loaded or unloaded automatically when related configuration changes, for example responsive breakpoint changes on page resize.
 
