@@ -681,4 +681,46 @@ describe("Stage core", () => {
         ]);
         expect(status.visibleSlides).toEqual([0, 1, 2]);
     });
+
+    it.each([
+        [400, 1],
+        [700, 2],
+        [1200, 3],
+    ])("applies user-specified responsive config on init at %ipx", async (width, items) => {
+        renderCarousel(8, { width });
+
+        const carousel = new Carousel(baseConfig({
+            items: 3,
+            responsive: {
+                480: { items: 1 },
+                768: { items: 2 },
+            } as CarouselConfig["responsive"],
+        }));
+
+        await carousel.ready;
+
+        expect(carousel.getStatus().config.current?.items).toBe(items);
+        expect(carousel.getStatus().visibleSlides).toHaveLength(items);
+    });
+
+    it("does not emit CONFIG_APPLIED during initialization", async () => {
+        renderCarousel(8, { width: 400 });
+
+        const onConfigApplied = vi.fn();
+
+        const carousel = new Carousel(Object.assign(
+            baseConfig({
+                items: 3,
+                responsive: {
+                    480: { items: 1 },
+                } as CarouselConfig["responsive"],
+            }),
+            { [`on:${EVENTS.CONFIG_APPLIED}`]: onConfigApplied }
+        ));
+
+        await carousel.ready;
+
+        expect(carousel.getStatus().config.current?.items).toBe(1);
+        expect(onConfigApplied).not.toHaveBeenCalled();
+    });
 });

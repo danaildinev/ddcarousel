@@ -73,6 +73,14 @@ export default class Stage {
         this.#setInitialDimensions();
         this.#update();
 
+        const previousConfig = this.#configClass.current;
+        this.#configClass.refreshResponsive(this.#container.getBoundingClientRect().width, false);
+
+        if (this.#configClass.current !== previousConfig) {
+            this.#setInitialDimensions();
+            this.#update();
+        }
+
         const callback = (mutationList: MutationRecord[], observer: MutationObserver) => {
             const hasChildChange = mutationList.some(m => m.type === "childList");
 

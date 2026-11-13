@@ -28,7 +28,7 @@ export class Config {
         this.current = structuredClone(this.default);
         //this.responsive = {} as CarouselConfig;
 
-        this.updateSettings(this.user);
+        this.updateSettings(this.user, false);
     }
 
     // todo idea: lazyPreloadSlides = items * 2
@@ -182,7 +182,7 @@ export class Config {
         this.#applyConfig(next, true, emit);
     }
 
-    refreshResponsive = (width: number) => {
+    refreshResponsive = (width: number, emit: boolean = true) => {
         const responsive = this.user.responsive;
 
         if (!responsive) {
@@ -200,7 +200,7 @@ export class Config {
 
         this.#lastResponsiveBp = matched;
 
-        this.updateSettings(undefined, true);
+        this.updateSettings(undefined, emit);
     };
 
     reset() {
