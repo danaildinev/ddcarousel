@@ -5,6 +5,11 @@ import { BaseModule } from "../core/base-module";
 import type { ModuleContext } from "../types/module.params";
 import type { CarouselEvents } from "../types/event.types";
 
+/**
+ * Pagination module
+ *
+ * @public
+ */
 export default class Pagination extends BaseModule {
     id: string = "pagination";
 

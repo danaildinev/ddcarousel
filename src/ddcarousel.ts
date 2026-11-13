@@ -15,6 +15,14 @@ import type { LazyLoadConfig } from "./modules/lazyLoad";
 import { PRIORITY } from "./constants/priorities";
 import { EVENTS_AUTOPLAY } from "./constants/autoplay-events";
 
+/**
+ * Creates a new ddcarousel instance.
+ *
+ * @param config optional carousel config
+ * @returns carousel instance
+ *
+ * @public
+ */
 export default function ddcarousel(config?: Partial<CarouselConfig>) {
     return new Carousel(config);
 }

@@ -1,5 +1,10 @@
 import type { CarouselEvents } from "../types/event.types";
 
+/**
+ * Carousel events list
+ *
+ * @public
+ */
 export const EVENTS = {
     // lifecycle
     INITIALIZE: 'carousel:initialize',

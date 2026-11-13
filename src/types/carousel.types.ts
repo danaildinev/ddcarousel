@@ -8,6 +8,11 @@ import type Pagination from "../modules/pagination";
 import type UrlNav from "../modules/urlNav";
 import type { ClosestSlideIndexes } from "../utils/slide";
 
+/**
+ * Carousel config options
+ *
+ * @public
+ */
 export type CarouselConfig = {
     container: string | HTMLDivElement;
     autoHeight: boolean;
@@ -34,6 +39,11 @@ export type CarouselConfig = {
     [key: string]: unknown;
 }
 
+/**
+ * The current state and status of a carousel instance.
+ *
+ * @public
+ */
 export type CarouselStatus = {
     state: CarouselState;
     initialized: boolean;
@@ -51,17 +61,37 @@ export type CarouselStatus = {
     activeSlides: number[]
 }
 
+/**
+ * The current carousel config
+ *
+ * @public
+ */
 export type CarouselStatusConfig = {
     current?: CarouselConfig
 }
 
+/**
+ * The current carousel lifecycle state 
+ *
+ * @public
+ */
 export type CarouselState = 'idle' | 'initializing' | 'ready' | 'failed' | 'destroying' | 'destroyed';
 
+/**
+ * How the target slide is selected after dragging
+ *
+ * @public
+ */
 export enum DragSnapMode {
     Swipe = "swipe",
     Closest = "closest"
 }
 
+/**
+ * List with internal carousel modules
+ *
+ * @public
+ */
 export type CarouselModuleMap = {
     autoplay: Autoplay;
     nav: Nav;
@@ -72,4 +102,9 @@ export type CarouselModuleMap = {
     mouseWheel: MouseWheel;
 };
 
+/**
+ * Module unique id
+ *
+ * @public
+ */
 export type ModuleId = keyof CarouselModuleMap;

@@ -9,6 +9,11 @@ import { error } from "../utils/error-handler";
 
 type LoopDirection = "prev" | "next";
 
+/**
+ * Loop module
+ *
+ * @public
+ */
 export default class Loop extends BaseModule {
     id: string = "loop";
 

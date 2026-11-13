@@ -158,7 +158,7 @@ export abstract class BaseModule<TConfig = Record<string, unknown>> implements M
     /**
      * Builds a runtime config key for a module property by prefixing it with the module id 
      * and capitalize the first letter of the property.
-     * Example: module with id "autoplay" -> property: "speed" -> result: "autoplaySpeed"
+     * Example: module with id "autoplay" &gt; property: "speed" &gt; result: "autoplaySpeed"
      */
     protected buildConfigKey(property: string): string {
         return `${this.id}${property.charAt(0).toUpperCase()}${property.slice(1)}`;

@@ -11,6 +11,11 @@ import { Events } from "./events";
 import ModuleLoader from "./module-loader";
 import Stage from "./stage";
 
+/**
+ * Core carousel class
+ *
+ * @public
+ */
 export default class Carousel {
     #config?: Config | undefined;
     #stage?: Stage | undefined;

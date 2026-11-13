@@ -4,6 +4,11 @@ import { BaseModule } from "../core/base-module";
 import type { CarouselEvents } from "../types/event.types";
 import type { ModuleContext } from "../types/module.params";
 
+/**
+ * Navigation module
+ *
+ * @public
+ */
 export default class Nav extends BaseModule {
     id: string = "nav";
 

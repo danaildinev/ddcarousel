@@ -4,11 +4,21 @@ import { BaseModule } from "../core/base-module";
 import type { ModuleContext } from "../types/module.params";
 import type { CarouselEvents } from "../types/event.types";
 
+/**
+ * Lazy load module config options
+ *
+ * @public
+ */
 export type LazyLoadConfig = {
     preload: boolean,
     preloadSlides: number,
 }
 
+/**
+ * Lazy load module
+ *
+ * @public
+ */
 export default class LazyLoad extends BaseModule<LazyLoadConfig> {
     id: string = "lazyLoad";
     moduleConfig: LazyLoadConfig = {

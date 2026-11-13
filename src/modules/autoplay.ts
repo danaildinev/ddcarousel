@@ -6,6 +6,11 @@ import { error } from "../utils/error-handler";
 import type { ModuleContext } from "../types/module.params";
 import type { CarouselEvents } from "../types/event.types";
 
+/**
+ * Autoplay module config options
+ *
+ * @public
+ */
 export type AutoplayConfig = {
     speed: number,
     pauseHover: boolean,
@@ -13,6 +18,11 @@ export type AutoplayConfig = {
     pauseOnTabHidden: boolean
 }
 
+/**
+ * Autoplay module
+ *
+ * @public
+ */
 export default class Autoplay extends BaseModule<AutoplayConfig> {
     static readonly id = "autoplay";
     id: string = "autoplay";
