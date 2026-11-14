@@ -1,7 +1,6 @@
 import { afterEach, describe, expect, it, vi } from "vitest";
 import { CSS_CLASSES } from "../src/constants/css-classes";
 import { EVENTS } from "../src/constants/events-list";
-import Autoplay from "../src/modules/autoplay";
 import LazyLoad from "../src/modules/lazyLoad";
 import Nav from "../src/modules/nav";
 import Pagination from "../src/modules/pagination";
@@ -196,7 +195,6 @@ describe("ModuleLoader", () => {
     });
 
     it("can load every internal module without duplicate registry entries", async () => {
-        vi.spyOn(Autoplay.prototype, "initialize").mockImplementation(() => undefined);
         const loader = new ModuleLoader(createContext(createConfig({
             autoplay: true,
             lazyLoad: true,

@@ -18,9 +18,9 @@ Major TypeScript rewrite with a new modular architecture, modern ESM distributio
     - `touchMaxSlideDist` -> `dragMaxDistance`
     - `touchSwipeThreshold` -> `swipeThreshold`
 - Replaced module-specific methods in favor of the new module API:
-    - `autoplayStart()` -> `module<Autoplay>(Autoplay.id).start()`
-    - `autoplayStop()` -> `module<Autoplay>(Autoplay.id).stop()`
-    - `goToUrl()` -> `module<UrlNav>(UrlNav.id).goToUrl()`;
+    - `autoplayStart()` -> `module<Autoplay>("autoplay").start()`
+    - `autoplayStop()` -> `module<Autoplay>("autoplay").stop()`
+    - `goToUrl()` -> `module<UrlNav>("urlnav").goToUrl()`;
 - Replaced the v1.x event system with a new namespaced and strongly typed event API. 
 - Removed the `callbacks` config option and shared callback payload. Events now provide event-specific payloads instead of automatically including the v1.x properties (`container`, `event`, `currentSlides`, `currentPage`, `totalSlides`, and `totalPages`). Use `getStatus()` to access additional carousel state.
 - Destroyed `Carousel` instances can no longer be initialized again with `init()`. You must create a new carousel instance after calling `destroy()`.

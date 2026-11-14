@@ -6,7 +6,7 @@ import Drag from "../src/core/drag";
 import Stage from "../src/core/stage";
 import ModuleLoader from "../src/core/module-loader";
 import { EVENTS } from "../src/ddcarousel";
-import Autoplay from "../src/modules/autoplay";
+import type Autoplay from "../src/modules/autoplay";
 
 afterEach(() => {
     vi.useRealTimers();
@@ -383,7 +383,7 @@ describe("Carousel core", () => {
         const carousel = new Carousel(baseConfig({ autoplay: true }));
         await carousel.ready;
 
-        const inferred = carousel.module(Autoplay.id);
+        const inferred = carousel.module("autoplay");
         const explicit = carousel.module<Autoplay>("autoplay");
 
         expect(inferred).toBe(explicit);

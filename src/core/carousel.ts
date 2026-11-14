@@ -194,7 +194,6 @@ export default class Carousel {
         this.#resolveReady();
     }
 
-    module<K extends ModuleId>(moduleId: K): CarouselModuleMap[K];
     module<T extends BaseModule>(moduleId: string): T;
     module(moduleId: string): BaseModule {
         if (!this.#moduleLoader) {

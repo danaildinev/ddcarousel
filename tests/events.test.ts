@@ -5,7 +5,7 @@ import { baseConfig, container, renderCarousel, stage, triggerResizeObservers } 
 import { CarouselEvents } from "../src/types/event.types";
 import { fireEvent } from "@testing-library/dom";
 import { PriorityPayload } from "../src/types/event-payload.types";
-import Autoplay from "../src/modules/autoplay";
+import type Autoplay from "../src/modules/autoplay";
 
 afterEach(() => {
     vi.useRealTimers();
@@ -283,7 +283,7 @@ describe("Carousel events", () => {
             priority: 5,
         });
 
-        const moduleName = Autoplay.id;
+        const moduleName = "autoplay";
         const module = carousel.module<Autoplay>(moduleName);
         const result = module.tryOverridePriority(payload, 10);
 
@@ -298,7 +298,7 @@ describe("Carousel events", () => {
         const carousel = new Carousel(baseConfig({ autoplay: true }));
         await carousel.ready;
 
-        const moduleName = Autoplay.id;
+        const moduleName = "autoplay";
         const payload = createPayload({
             handled: true,
             priority: 20,
@@ -319,7 +319,7 @@ describe("Carousel events", () => {
         const carousel = new Carousel(baseConfig({ autoplay: true }));
         await carousel.ready;
 
-        const moduleName = Autoplay.id;
+        const moduleName = "autoplay";
         const payload = createPayload({
             handled: true,
             priority: 10,
