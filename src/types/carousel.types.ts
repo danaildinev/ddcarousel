@@ -13,7 +13,7 @@ import type { ClosestSlideIndexes } from "../utils/slide";
  *
  * @public
  */
-export type CarouselConfig = {
+export type CarouselConfig = CarouselOnEvents & {
     container: string | HTMLDivElement;
     autoHeight: boolean;
     fullWidth: boolean;
