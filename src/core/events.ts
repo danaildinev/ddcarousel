@@ -1,7 +1,11 @@
 import { LEGACY_EVENT_MAP } from "../constants/events-list";
 import type { CarouselEvents } from "../types/event.types";
-import { error } from "../utils/error-handler";
 
+/**
+ * Manages carousel event registration, emission, and cleanup
+ *
+ * @public
+ */
 export class Events {
     #events = new Map<string, Set<(payload: any) => void>>(); //unique used events
 

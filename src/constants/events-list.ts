@@ -38,10 +38,20 @@ export const EVENTS = {
     TRANSITION_END: 'transition:end',
 } as const;
 
+/**
+ * Carousel events to optional callbacks prefixed with "on:"
+ *
+ * @public
+ */
 export type CarouselOnEvents = {
     [K in keyof CarouselEvents as `on:${K & string}`]?: (payload: CarouselEvents[K]) => void;
 };
 
+/**
+ * Maps legacy event names from v1 to their corresponding carousel events
+ *
+ * @public
+ */
 export const LEGACY_EVENT_MAP: Record<string, keyof CarouselEvents> = {
     /** @deprecated Use EVENTS.INITIALIZE instead. */
     onInitialize: EVENTS.INITIALIZE,

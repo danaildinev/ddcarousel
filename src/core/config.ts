@@ -8,6 +8,11 @@ type ConfigEventHandler = {
     callback: (payload?: any) => void
 }
 
+/**
+ * Carousel configuration and responsive settings.
+ *
+ * @public
+ */
 export class Config {
     #events: Events;
 

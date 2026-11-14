@@ -2,6 +2,11 @@ import { EVENTS } from "../constants/events-list";
 import { BaseModule } from "../core/base-module";
 import type { ModuleContext } from "../types/module.params";
 
+/**
+ * Autoplay module config options
+ *
+ * @public
+ */
 export type MouseWheelConfig = {
     threshold: number;
     delay: number;
@@ -9,6 +14,11 @@ export type MouseWheelConfig = {
 
 type Direction = "prev" | "next";
 
+/**
+ * Mouse wheel module
+ *
+ * @public
+ */
 export default class MouseWheel extends BaseModule {
     static id = "mouseWheel";
     id = MouseWheel.id;

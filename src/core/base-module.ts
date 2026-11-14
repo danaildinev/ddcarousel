@@ -6,11 +6,21 @@ import type { Events } from "./events";
 import type { Module } from "./module";
 import type { PriorityPayload } from "../types/event-payload.types";
 
+/**
+ * Apply module style
+ *
+ * @public
+ */
 export interface ModuleStyle {
     href?: string;
     css?: string;
 }
 
+/**
+ * Base class for carousel modules.
+ *
+ * @public
+ */
 export abstract class BaseModule<TConfig = Record<string, unknown>> implements Module {
     abstract id: string;
 

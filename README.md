@@ -251,19 +251,38 @@ ddcarousel includes bundled TypeScript declarations and exports public types for
 
 ```ts
 import type {
+    // Carousel
     CarouselConfig,
     CarouselStatus,
     CarouselState,
     CarouselStatusConfig,
+    ClosestSlideIndexes,
+    ClosestSlideDirection,
+
+    // Events
     CarouselEvents,
+    CarouselOnEvents,
     LegacyCarouselEvents,
     PageChangePayload,
     PageChangeScrollPayload,
     ModuleEventPayload,
+    PriorityPayload,
+
+    // Core
+    Config,
+    Events,
+    Module,
+    ModuleContext,
+    ModuleStyle,
+    BaseModule,
     ModuleId,
     CarouselModuleMap,
+
+    // Modules
     Autoplay,
     AutoplayConfig,
+    MouseWheel,
+    MouseWheelConfig,
     Nav,
     Pagination,
     LazyLoad,
@@ -274,6 +293,20 @@ import type {
 ```
 
 This provides type-safe configuration, event callbacks, carousel state, and module APIs when using TypeScript.
+
+Module classes are exported as types only. Their implementations are loaded dynamically when needed, preserving the lightweight core bundle. 
+
+Runtime constants and classes can be imported separately:
+```ts
+import ddcarousel, {
+    Carousel,
+    EVENTS,
+    EVENTS_AUTOPLAY,
+    LEGACY_EVENT_MAP,
+    PRIORITY,
+    DragSnapMode
+} from "ddcarousel";
+```
 
 
 ## Config

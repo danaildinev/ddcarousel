@@ -7,8 +7,19 @@ export type SlideOffsets = {
     right: number
 }
 
+
+/**
+ * Direction of the closest slide relative to the current position
+ *
+ * @public
+ */
 export type ClosestSlideDirection = "left" | "right" | "center";
 
+/**
+ * Slide directions to their corresponding slide indices. Each direction is optional
+ *
+ * @public
+ */
 export type ClosestSlideIndexes = Partial<Record<ClosestSlideDirection, number>>;
 
 export function getSlidesOffsets(slides: HTMLElement[], vertical: boolean): SlideOffsets[] {
