@@ -62,12 +62,12 @@ export default class Nav extends BaseModule {
         prevBtn.classList.add(CSS_CLASSES.prev);
         prevBtn.innerHTML = (this.config[this.#navPrevConfigKey] ?? this.#navPrevContentDefault).toString();
         prevBtn.type = "button";
-        prevBtn.addEventListener("click", () => this.events.emit(EVENTS.PAGE_CHANGE_REQUEST, { index: this.#currentPage - 1 }));
+        prevBtn.addEventListener("click", () => this.events.emit(EVENTS.PAGE_CHANGE_REQUEST, { index: "prev" }));
 
         nextBtn.classList.add(CSS_CLASSES.next);
         nextBtn.innerHTML = (this.config[this.#navNextConfigKey] ?? this.#navNextContentDefault).toString();
         nextBtn.type = "button";
-        nextBtn.addEventListener("click", () => this.events.emit(EVENTS.PAGE_CHANGE_REQUEST, { index: this.#currentPage + 1 }));
+        nextBtn.addEventListener("click", () => this.events.emit(EVENTS.PAGE_CHANGE_REQUEST, { index: "next" }));
 
         this.container.append(prevBtn, nextBtn);
 
@@ -98,7 +98,10 @@ export default class Nav extends BaseModule {
     }
 
     #refreshNav() {
-        this.#prevBtn?.setAttribute("data-visible", this.#currentPage > 0 ? "true" : "false");
-        this.#nextBtn?.setAttribute("data-visible", this.#currentPage < this.#totalPages ? "true" : "false");
+        const status = this.getStatus();
+        const isLoopEnabled = status.modules.includes("loop") && status.config.current?.loop === true;
+
+        this.#prevBtn?.setAttribute("data-visible", isLoopEnabled || this.#currentPage > 0 ? "true" : "false");
+        this.#nextBtn?.setAttribute("data-visible", isLoopEnabled || this.#currentPage < this.#totalPages ? "true" : "false");
     }
 }
