@@ -117,4 +117,51 @@ describe("Nav module", () => {
         expect(prev()?.dataset.visible).toBe("true");
         expect(next()?.dataset.visible).toBe("false");
     });
+
+
+    it("keeps navigation visible and wraps pages when loop is enabled", async () => {
+        renderCarousel(4);
+
+        const carousel = new Carousel(baseConfig({
+            nav: true,
+            loop: true,
+            items: 1,
+        }));
+
+        await carousel.ready;
+
+        // Both arrows are visible on the first page.
+        expect(carousel.getCurrentPage()).toBe(0);
+        expect(prev()?.dataset.visible).toBe("true");
+        expect(next()?.dataset.visible).toBe("true");
+
+        // Previous wraps from the first to the last page.
+        prev()?.click();
+
+        expect(carousel.getCurrentPage()).toBe(3);
+        expect(prev()?.dataset.visible).toBe("true");
+        expect(next()?.dataset.visible).toBe("true");
+
+        // Next wraps from the last to the first page.
+        next()?.click();
+
+        expect(carousel.getCurrentPage()).toBe(0);
+
+        // Navigate normally to the last page.
+        next()?.click();
+        next()?.click();
+        next()?.click();
+
+        expect(carousel.getCurrentPage()).toBe(3);
+
+        // Both arrows remain visible at the last page.
+        expect(prev()?.dataset.visible).toBe("true");
+        expect(next()?.dataset.visible).toBe("true");
+
+        // Next wraps back to the first page.
+        next()?.click();
+
+        expect(carousel.getCurrentPage()).toBe(0);
+    });
+
 });
