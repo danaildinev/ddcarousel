@@ -6,7 +6,6 @@ import { DATA } from "../../src/constants/data-attrs";
 import { CarouselEvents } from "../../src/types/event.types";
 import { EVENTS } from "../../src/constants/events-list";
 import { fireEvent } from "@testing-library/dom";
-import Loop from "../../src/modules/loop";
 
 const getSlideOrder = (): number[] =>
     Array.from(container()!.querySelectorAll<HTMLDivElement>(`.${CSS_CLASSES.item}`)).map(slide => Number(slide.getAttribute(DATA.attrs.slide)));

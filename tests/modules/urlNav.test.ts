@@ -2,7 +2,7 @@ import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 import Carousel from "../../src/core/carousel";
 import { baseConfig, container, renderCarousel } from "../helpers";
 import { CSS_CLASSES } from "../../src/constants/css-classes";
-import UrlNav from "../../src/modules/urlNav";
+import type UrlNav from "../../src/modules/urlNav";
 import { CarouselConfig, EVENTS } from "../../src/ddcarousel";
 
 beforeEach(() => {
@@ -69,7 +69,7 @@ describe("UrlNav module", () => {
         const carousel = new Carousel(baseConfig({ urlNav: true }));
         await carousel.ready;
 
-        const module = carousel.module(UrlNav.id);
+        const module = carousel.module<UrlNav>("urlNav");
         module.goToUrl("slide-2", false);
 
         expect(carousel.getCurrentPage()).toBe(1);
@@ -136,7 +136,7 @@ describe("UrlNav module", () => {
         }));
         await carousel.ready;
 
-        expect(() => carousel.module("urlNav").goToUrl("missing")).toThrow("Slide missing was not found!");
+        expect(() => carousel.module<UrlNav>("urlNav").goToUrl("missing")).toThrow("Slide missing was not found!");
     });
 
     it("moves active class when navigating between pages", async () => {
