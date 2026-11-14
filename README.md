@@ -311,13 +311,13 @@ import ddcarousel, {
 
 ## Config
 
-- `container` - Carousel container selector. By default it searches for DOM element with `ddcarousel` class name (string)
+- `container` - Carousel container selector. By default it searches for DOM element with `ddcarousel` class name (string/HTMLDivElement)
 
 - `items` - Number of visible items per page. If `items` exceeds the available slide count, carousel uses an effective clamped value for layout while preserving the configured value. (number, default: `1`)
 
 - `itemPerPage` - Move one item at a time when changing pages (boolean, default: `false`)
 
-- `autoHeight` - Automatically adjust carousel height based on visible slides. Works with vertical carousels. (boolean, default: `true`)
+- `autoHeight` - Automatically adjust carousel height based on visible slides. Vertical mode automatically disables autoHeight. (boolean, default: `true`)
 
 - `fullWidth` - Expand the carousel to the full available width (boolean, default: `true`)
 
@@ -335,7 +335,10 @@ import ddcarousel, {
 
 - `mouseDrag` - Enable dragging with mouse input (boolean, default: `true`)
 
-- `dragSnapMode` - Control how the target slide is selected after dragging. `swipe` mode changes one page in the drag direction. `closest` mode snaps to the nearest slide based on where you release the drag. Using drag snap mode enables `centerSlide` and works best with `dragMaxDistance: 0`. (swipe/closest, default: `swipe`)
+- `dragSnapMode` - Control how the target slide is selected after dragging, either based on swipe direction or the slide closest to the center of the stage.
+    - `swipe` - navigate based on swipe direction
+    - `closest` - snap to the slide closest to the drag's ending position
+    - Using `closest` automatically enables `centerSlide` and works best with `dragMaxDistance: 0`
 
 - `keyboardNavigation` - Enable navigation using keyboard arrow keys (boolean, default: `false`)
 
@@ -380,9 +383,10 @@ Available customization options:
 - `--ddcarousel-bg-color` - Carousel background.
 - `--ddcarousel-nav-color` - Navigation button/icon color.
 - `--ddcarousel-nav-font-size` - Navigation text size when using custom text instead of the default SVG icons.
+- `--ddcarousel-nav-margin` - Navigation left and right buttons margin
 - `--ddcarousel-url-nav-color` - Default URL navigation text color.
 - `--ddcarousel-url-nav-color-active` - Active URL navigation text color.
-- `--ddcarousel-dots-bottom` - Vertical position of pagination dots from the bottom of the stage.
+- `--ddcarousel-pagination-bottom` - Vertical position of pagination dots from the bottom of the stage.
 - `--ddcarousel-dot-size` - Pagination dot size.
 - `--ddcarousel-dot-spacing` - Space between pagination dots.
 - `--ddcarousel-dot-color` - Inactive pagination dot color.
@@ -412,7 +416,7 @@ You can access a loaded module using `carousel.module()`. In TypeScript, specify
 ```ts
 import type { Autoplay } from "ddcarousel";
 
-const autoplayTyped = carousel.module<Autoplay>("autoplay");
+const autoplay = carousel.module<Autoplay>("autoplay");
 
 autoplay.start();
 autoplay.stop();
@@ -549,7 +553,7 @@ Navigate between carousel pages using the mouse wheel or trackpad.
 
 - `getCurrentPage()` - Get the current page index
 
-- `getTotalPages()` - Get the total number of pages
+- `getTotalPages()` - Get the last valid page index
 
 - `getTotalSlides()` - Get the total number of slides
 

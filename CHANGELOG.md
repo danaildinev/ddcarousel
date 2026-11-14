@@ -20,7 +20,7 @@ Major TypeScript rewrite with a new modular architecture, modern ESM distributio
 - Replaced module-specific methods in favor of the new module API:
     - `autoplayStart()` -> `module<Autoplay>("autoplay").start()`
     - `autoplayStop()` -> `module<Autoplay>("autoplay").stop()`
-    - `goToUrl()` -> `module<UrlNav>("urlnav").goToUrl()`;
+    - `goToUrl("home")` -> `module<UrlNav>("urlNav").goToUrl("home")`;
 - Replaced the v1.x event system with a new namespaced and strongly typed event API. 
 - Removed the `callbacks` config option and shared callback payload. Events now provide event-specific payloads instead of automatically including the v1.x properties (`container`, `event`, `currentSlides`, `currentPage`, `totalSlides`, and `totalPages`). Use `getStatus()` to access additional carousel state.
 - Destroyed `Carousel` instances can no longer be initialized again with `init()`. You must create a new carousel instance after calling `destroy()`.
@@ -34,7 +34,7 @@ Major TypeScript rewrite with a new modular architecture, modern ESM distributio
 - Added a new loop/infinite scrolling feature
 - Added a new `gap` option for controlling spacing between slides
 - Added a new `urlNavContainer` for specifying a custom URL navigation container
-- Added a new `fullscreen` mode for viewport-sized carousel layouts
+- Added a new `fullPage` mode for viewport-sized carousel layouts
 - Added a new `slideChangeEasing` configuration option for customizing slide transition CSS easing
 - Added new properties to `getStatus()`:
     - `state` - current carousel state
@@ -47,14 +47,12 @@ Major TypeScript rewrite with a new modular architecture, modern ESM distributio
 - Fixed a broken stage when `items` was set to `0` or a negative value. Invalid values now fall back to the default `items` value.
 - Fixed `items` being mutated when the configured value exceeded the available slide count. The configured value is now preserved while the stage uses a clamped effective item count internally for layout, pagination, visible slides, and centering.
 - Fixed links inside slides being unclickable being blocked when `mouseDrag` is enabled by delaying pointer capture until dragging begins. Text selection may still be limited because dragging the pointer can move the carousel.
-- Added movement threshold to prevent accidental dragging during slide interactions such as clicking link.
+- Added drag activation threshold to prevent accidental dragging during slide interactions such as clicking link.
 - Improved resize handling: stage size changes are detected automatically, with layout, slide positions, and responsive configuration recalculated after resizing has stopped to reduce unnecessary updates during continuous resizing.
 - Removed the requirement to manually disable `autoHeight` when using `vertical`. Only the carousel height needs to be defined; child slide heights are now handled internally by the carousel styles.
 
 ### Drag & Interaction
 - Added a new `dragSnapMode` option to control how the target slide is selected after dragging, either based on swipe direction or the slide closest to the center of the stage.
-    - Enabling `dragSnapMode` also enables `centerSlide`.
-    - Works best with `dragMaxDistance: 0`.
 - Added a new `mouseWheel` option to enable mouse wheel or trackpad page navigation with configurable movement threshold and post-transition delay.
 - Fixed unintended page changes when clicking the stage without dragging.
 - Fixed dragging when `dragMaxDistance` is set to `0` or a negative value. A value of `0` now allows freely scrolling through the slides.
@@ -67,20 +65,21 @@ Major TypeScript rewrite with a new modular architecture, modern ESM distributio
 - Replaced the internal disabled stage state with the BEM modifier `.ddcarousel__stage--dragging`, which is added during active dragging and removed when it ends, while preserving the existing pointer-interaction behavior.
 
 ### Modules
-- Implemented a new module system for a more modular and extensible architecture, with support planned for loading an external modules in the future. Several carousel features are now implemented as separate internal module:
+- Introduced a modular architecture, with plans to support creating and loading external modules in future releases. The following features are now implemented as optional internal modules:
     - Autoplay
     - Pagination
     - Loop
     - Lazy loading
+    - Mouse Wheel
     - Navigation
     - URL navigation
 - Added dynamic loading of optional modules, reducing the core bundle size when those features are not enabled.
 - Added module-level style loading with support for loading external CSS files, inline CSS injecting, or use both.
 - Added module-specific classes with currently loaded modules into carousel container
-- Added `carousel.module(Foo.id)` for retrieving loaded module instance
+- Added `carousel.module("moduleName")` or `carousel.module<ModuleName>("moduleName")` for retrieving loaded module instance
 - Added `carousel.loadModule()` and `carousel.unloadModule()` methods for manually loading and unloading internal modules.
 - Modules are now automatically loaded and unloaded when their related configuration changes, including responsive breakpoint changes.
-- Add priority-based event overrides for modules. Modules can now use `tryOverridePriority()` to claim supported event payloads based on priority. 
+- Added priority-based event overrides for modules. Modules can now use `tryOverridePriority()` to claim supported event payloads based on priority. 
     - Higher-priority handlers override the lower-priority ones
     - Equal-priority override attempts are ignored with a console warning.
     - Supported overridable events currently include:
@@ -103,13 +102,13 @@ Major TypeScript rewrite with a new modular architecture, modern ESM distributio
     - `drag:start:pre` emitted immediately before dragging starts, allowing internal modules to adjust drag-related state such as `currentTranslate`.
     - `page:change:request` - emitted whenever a user action or internal process requests a page change. `page:changed` is emitted after the page change completes successfully.
     - `page:changed:index` - emitted immediately before the active page index is changed, allowing modules to intercept and override the requested page.
-    - `page:change:scroll:before` - emitted immediately before the stage begins scrolling to the requested page.
-    - `page:change:scroll:after`- emitted after the stage has finished applying the requested scroll position.
+    - `page:change:scroll:before` - emitted immediately before the stage scroll position is applied.
+    - `page:change:scroll:after`- emitted after the stage scroll position has been applied, without waiting for the CSS transition to finish.
     - `config:applied` - emitted when the active configuration changes after initialization, for example when entering or leaving a responsive breakpoint.
     - `stage:created` - emitted when stage has been created 
     - `stage:changed` - emitted when changes in DOM structure
     - `slide:scroll` - emitted when starts slide scrolling
-- Fix `carousel:initialized` emitting too early before loading and initializing all modules 
+- Fixed `carousel:initialized` emitting too early before loading and initializing all modules 
 - Renamed events for a more consistent namespaced event system.
 - Event names passed to `carousel.on()` must not include the `on:` prefix. For example: `carousel.on(EVENTS.PAGE_CHANGED, callback)`
 - `stage:resized` is now attached to carousel stage resizing instead of the global `window` resize event. When triggered, it recalculates slide dimensions and positions, updates the stage transform, and reapplies responsive configuration when necessary
@@ -125,7 +124,7 @@ Major TypeScript rewrite with a new modular architecture, modern ESM distributio
     - `--ddcarousel-nav-font-size` - navigation text size when using custom text instead of the default SVG icon
     - `--ddcarousel-url-nav-color`
     - `--ddcarousel-url-nav-color-active`
-    - `--ddcarousel-dots-bottom`
+    - `--ddcarousel-pagination-bottom`
     - `--ddcarousel-dot-size`
     - `--ddcarousel-dot-spacing`
     - `--ddcarousel-dot-color`
@@ -141,23 +140,25 @@ Major TypeScript rewrite with a new modular architecture, modern ESM distributio
 - Added a default navigation text color and a corresponding CSS variable
 - Added a separate color for inactive pagination dots instead of relying on opacity
 - Added a new design for navigation previous and next buttons
-- Fixed incorrect carousel height when using `centerSlides` together with `autoHeight`
+- Fixed incorrect carousel height when using `centerSlide` together with `autoHeight`
 - Migrated carousel CSS class names to BEM naming for improved consistency and maintainability.
-- Improved autoplay prograss bar animation by using GPU accelerated `transform` CSS property
+- Improved autoplay prograss bar animation by using GPU-accelerated `transform` CSS property
 - Improved pagination styling
 - Replaced navigation previous and next button content with SVG chevron icons
 - URL navigation now automatically marks the currently active item and updates it when the active slide changes.
-- Autoplay progress bar animation is now handled with CSS animation and uses a new `active` class to toggle its visibility;
+- Autoplay progress bar animation is now controlled using CSS animation and `data-state` attribute to toggle its visibility;
 - Navigation arrows are now positioned relative to stage and moved to the sides
 - Pagination dots are now placed relative to the stage and moved inside it by default
 - Removed navigation buttons container
 - Removed unnecessary wrapper element for URL navigation module
 
 ### Code & Architecture
-- Rewritten the core in TypeScript for improved type safety and maintainability.
+- Rewrote the carousel core in TypeScript for improved type safety and maintainability.
 - Improved compatibility with React and Vue applications due to the architectural changes.
-- Refactored multiple internal components and introduced additional performance improvements.
+- Refactored internal components and introduced performance improvements.
 - Added public TypeScript exports for carousel configuration, state, events, payloads, and module APIs.
+- Improved module instance typing to support accessing module-specific methods.
+- Added TSDoc annotations
 
 ### Testing
 - Added a Vitest + JSDOM test suite covering core carousel behavior, dragging, responsive configuration, events, stage updates, and module lifecycle.
