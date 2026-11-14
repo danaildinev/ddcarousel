@@ -333,4 +333,40 @@ describe("Autoplay module", () => {
 
         vi.useRealTimers();
     });
+
+    it("continues autoplay when loop is enabled", async () => {
+        vi.useFakeTimers();
+
+        renderCarousel(3);
+
+        const carousel = new Carousel(baseConfig({
+            autoplay: true,
+            loop: true,
+            autoplaySpeed: 100,
+            slideChangeDuration: 0,
+        }));
+
+        await carousel.ready;
+
+        const stopped = vi.fn();
+        carousel.on(EVENTS_AUTOPLAY.STOPPED, stopped);
+
+        expect(carousel.getCurrentPage()).toBe(0);
+
+        vi.advanceTimersByTime(100);
+        expect(carousel.getCurrentPage()).toBe(1);
+
+        vi.advanceTimersByTime(100);
+        expect(carousel.getCurrentPage()).toBe(2);
+
+        vi.advanceTimersByTime(100);
+        expect(carousel.getCurrentPage()).toBe(0);
+
+        vi.advanceTimersByTime(100);
+        expect(carousel.getCurrentPage()).toBe(1);
+
+        expect(stopped).not.toHaveBeenCalled();
+
+        carousel.destroy();
+    });
 });
