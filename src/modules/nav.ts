@@ -62,11 +62,13 @@ export default class Nav extends BaseModule {
         prevBtn.classList.add(CSS_CLASSES.prev);
         prevBtn.innerHTML = (this.config[this.#navPrevConfigKey] ?? this.#navPrevContentDefault).toString();
         prevBtn.type = "button";
+        prevBtn.dataset.visible = "false";
         prevBtn.addEventListener("click", () => this.events.emit(EVENTS.PAGE_CHANGE_REQUEST, { index: "prev" }));
 
         nextBtn.classList.add(CSS_CLASSES.next);
         nextBtn.innerHTML = (this.config[this.#navNextConfigKey] ?? this.#navNextContentDefault).toString();
         nextBtn.type = "button";
+        nextBtn.dataset.visible = "false";
         nextBtn.addEventListener("click", () => this.events.emit(EVENTS.PAGE_CHANGE_REQUEST, { index: "next" }));
 
         this.container.append(prevBtn, nextBtn);
