@@ -723,4 +723,39 @@ describe("Stage core", () => {
         expect(carousel.getStatus().config.current?.items).toBe(1);
         expect(onConfigApplied).not.toHaveBeenCalled();
     });
+
+    it("clamps current page when responsive config reduces total pages", () => {
+        vi.useFakeTimers();
+        renderCarousel(5, { width: 300 });
+
+        const carousel = new Carousel(baseConfig({
+            items: 3,
+            resizeDebounce: 50,
+            responsive: {
+                400: { items: 1 },
+            } as CarouselConfig["responsive"],
+        }));
+
+        // At 300px, all 5 slides have individual pages.
+        expect(carousel.getTotalPages()).toBe(4);
+
+        carousel.changePage(4, false);
+        expect(carousel.getCurrentPage()).toBe(4);
+
+        const onChanged = vi.fn();
+        carousel.on(EVENTS.PAGE_CHANGED, onChanged);
+
+        // Resize to 900px: items changes from 1 to 3.
+        container()!.style.width = "900px";
+        triggerResizeObservers();
+        vi.advanceTimersByTime(50);
+
+        const status = carousel.getStatus();
+        expect(status.config.current?.items).toBe(3);
+        expect(status.totalPages).toBe(1);
+        expect(status.currentPage).toBe(1);
+        expect(status.visibleSlides).toEqual([2, 3, 4]);
+        expect(visibleSlideIndexes()).toEqual([2, 3, 4]);
+        expect(onChanged).toHaveBeenCalledWith(expect.objectContaining({ currentPage: 1 }));
+    });
 });

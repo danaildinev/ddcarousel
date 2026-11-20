@@ -707,12 +707,9 @@ export default class Stage {
     #onConfigApplied = (e: CarouselEvents[typeof EVENTS.CONFIG_APPLIED]) => {
         this.#update();
 
-        const slide = this.#getSlideDom();
-        if (slide !== null) {
-            this.#scrollToSlide(slide, false);
-        }
+        this.#changePage(Math.min(this.currentPage, this.totalPages), false);
 
-        this.#container.classList.toggle(CSS_CLASSES.autoHeight, e.new.autoHeight)
+        this.#container.classList.toggle(CSS_CLASSES.autoHeight, e.new.autoHeight);
     }
 
     #keyboardHandler = (e: KeyboardEvent) => {
