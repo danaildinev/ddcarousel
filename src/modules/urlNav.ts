@@ -1,0 +1,164 @@
+import { CSS_CLASSES } from "../constants/css-classes";
+import { DATA } from "../constants/data-attrs";
+import { EVENTS } from "../constants/events-list";
+import { BaseModule } from "../core/base-module";
+import type { CarouselConfig } from "../ddcarousel";
+import type { CarouselEvents } from "../types/event.types";
+import type { ModuleContext } from "../types/module.params";
+import { error } from "../utils/error-handler";
+
+export type UrlNavItem = {
+    slideId: number;
+    href: string;
+    title: string;
+    domElement: HTMLElement;
+}
+
+/**
+ * Url navigation module
+ *
+ * @public
+ */
+export default class UrlNav extends BaseModule {
+    static readonly id = "urlNav";
+    id: string = "urlNav";
+
+    configOverride: Partial<CarouselConfig> = {
+        items: 1
+    }
+    configOverrideEmitUpdate: boolean = true;
+
+    #urlNavContainerKey = "urlNavContainer"
+
+    #navItems!: UrlNavItem[];
+    #urlNavList!: HTMLElement;
+
+    constructor(params: ModuleContext) {
+        super(params);
+    }
+
+    initialize() {
+        this.#createNav();
+        this.events.on(EVENTS.PAGE_CHANGED, this.#onPageChange);
+
+        window.addEventListener("hashchange", this.#onHashChange);
+        this.#goToCurrentHash(false);
+    }
+
+    destroy() {
+        this.#urlNavList?.remove();
+
+        this.events.off(EVENTS.PAGE_CHANGED, this.#onPageChange);
+        window.removeEventListener("hashchange", this.#onHashChange);
+    }
+
+    #onHashChange = () => {
+        this.#goToCurrentHash();
+    }
+
+    #createNav() {
+        this.#navItems = [];
+
+        const list = document.createElement("ul");
+        list.classList.add(CSS_CLASSES.urls);
+        const slides = this.getStatus().slides;
+        for (const slide of Object.values(slides)) {
+            const child = slide.firstElementChild as HTMLElement;
+            if (!child) {
+                continue;
+            }
+
+            const slideId = child.dataset[DATA.dataset.id],
+                slideTitle = child.dataset[DATA.dataset.title];
+
+            if (slideId === undefined && slideTitle === undefined) {
+                continue;
+            }
+
+            const item = document.createElement('li'),
+                link = document.createElement('a'),
+                id = Number(slide.dataset[DATA.dataset.slide]),
+                href = "#" + slideId,
+                title = slideTitle ?? "";
+
+            item.classList.add("ddcarousel-module-urlNav__link")
+
+            link.href = href;
+            link.textContent = title;
+
+            // todo fix: This will not work properly when config items > 1. Then pages != slides and slide id's w match (this feature is based on latest v1.4.0)
+            link.addEventListener("click", () => this.events.emit(EVENTS.PAGE_CHANGE_REQUEST, { index: slide.dataset[DATA.dataset.slide], animate: true }));
+
+            item.appendChild(link);
+            list.appendChild(item);
+
+            this.#navItems.push({
+                slideId: id,
+                href,
+                title,
+                domElement: item
+            });
+        }
+
+        let appendContainer = this.container,
+            customContainerKey = this.config[this.#urlNavContainerKey];
+
+        if (customContainerKey) {
+            const container = document.querySelector<HTMLDivElement>(customContainerKey as string);
+            if (container) {
+                appendContainer = container;
+            } else {
+                console.warn(`Error appending url navigation: ${this.config.urlNavContainer} not found!`);
+            }
+        }
+
+        appendContainer.appendChild(list);
+        this.#urlNavList = list;
+
+        this.#updateActiveLink(this.getStatus().currentPage);
+    }
+
+    #goToCurrentHash(animate: boolean = true) {
+        const hash = window.location.hash;
+
+        if (!hash || hash === "#") {
+            return;
+        }
+
+        const name = decodeURIComponent(hash.slice(1));
+        const slide = this.#findSlideByUrl(name);
+        if (!slide) {
+            return;
+        }
+
+        this.goToUrl(name, animate);
+    }
+
+    #findSlideByUrl(name: string): HTMLElement | null {
+        const slides = this.container.querySelectorAll<HTMLElement>(`.${CSS_CLASSES.item} [${DATA.attrs.id}]`);
+        return Array.from(slides).find(slide => slide.dataset[DATA.dataset.id] === name) ?? null;
+    }
+
+    goToUrl(name: string, animate = true) {
+        const slide = this.#findSlideByUrl(name);
+        if (slide == null) {
+            throw error(`Slide ${name} was not found!`);
+        }
+
+        const parent = slide.parentElement;
+        if (parent == null) {
+            return;
+        }
+
+        const id = parent.dataset[DATA.dataset.slide];
+        this.events.emit(EVENTS.PAGE_CHANGE_REQUEST, { index: id, animate });
+    }
+
+    #onPageChange = (e: CarouselEvents[typeof EVENTS.PAGE_CHANGED]) => this.#updateActiveLink(e.currentPage);
+
+    #updateActiveLink(currentPage: number) {
+        for (const item of this.#navItems) {
+            item.domElement.toggleAttribute("data-active", item.slideId === currentPage);
+        }
+    }
+}

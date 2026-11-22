@@ -1,0 +1,43 @@
+.ddcarousel {
+    &-module-autoplay {
+        &__progress {
+            position: absolute;
+            left: 0;
+            bottom: 0;
+            width: 100%;
+            height: 4px;
+            overflow: hidden;
+            visibility: hidden;
+
+            &[data-state="active"] {
+                visibility: visible;
+
+                .ddcarousel-module-autoplay__progress-bar {
+                    animation-name: var(--ddcarousel-autoplay-animation);
+                    animation-timing-function: linear;
+                    animation-fill-mode: forwards;
+                    animation-duration: var(--ddcarousel-autoplay-speed);
+                }
+            }
+        }
+
+        &__progress-bar {
+            width: 100%;
+            height: 100%;
+            background: var(--ddcarousel-autoplay-bar-color);
+            height: var(--ddcarousel-autoplay-bar-height);
+            transform-origin: left;
+            transform: scaleX(0);
+        }
+    }
+}
+
+@keyframes ddcarousel-autoplay-progress {
+    from {
+        transform: scaleX(0);
+    }
+
+    to {
+        transform: scaleX(1);
+    }
+}

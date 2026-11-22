@@ -1,0 +1,94 @@
+@import "./variables";
+
+#theme-toggle {
+    position: absolute;
+    right: 12px;
+    top: 12px;
+    opacity: 0.5;
+
+    @include tablet {
+        position: static;
+        opacity: 1;
+    }
+}
+
+.pills {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 6px;
+    overflow-y: auto;
+    align-items: start;
+    flex-direction: row;
+
+    & > span,
+    & > li {
+        font-size: 0.9rem;
+        /*margin: 0 4px 4px 0;*/
+        padding: 4px 8px;
+        background: var(--color-background-transparent);
+        border: 1px solid var(--color-border);
+        border-radius: $border-radius;
+        transition: background 0.2s ease-in-out;
+        color: var(--color-text-muted);
+
+        &.active {
+            background: var(--color-event-active);
+            color: #fff;
+        }
+    }
+}
+
+.note {
+    padding-left: 12px;
+    border-left: 2px solid var(--color-accent);
+    //background-color: var(--color-background-transparent);
+    color: var(--color-text-muted);
+    font-size: 0.86rem;
+    line-height: 1.6;
+
+    strong {
+        font-family: $font-family-base;
+    }
+}
+
+.panel {
+    display: flex;
+    flex-direction: column;
+    align-items: start;
+    justify-content: center;
+    padding: 24px;
+    border: 1px solid var(--color-border);
+    border-radius: 8px;
+    background: var(--color-background-transparent);
+    box-shadow: 0 6px 12px var(--color-shadow);
+    font-size: 0.84rem;
+}
+
+.command {
+    display: flex;
+    align-items: stretch;
+    width: 100%;
+    border: 1px solid var(--color-border);
+    border-radius: 4px;
+    background: var(--color-background);
+    overflow: hidden;
+    text-align: left;
+
+    code {
+        flex: 1;
+        padding: 12px 14px;
+        color: var(--color-text);
+        font-size: 0.84rem;
+    }
+
+    button {
+        border-width: 0 0 0 1px;
+        border-radius: 0;
+        background: transparent;
+
+        &:hover {
+            background-color: var(--color-background-hover);
+            border-color: inherit;
+        }
+    }
+}

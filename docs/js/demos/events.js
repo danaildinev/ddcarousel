@@ -1,0 +1,30 @@
+export const autoplayEvents = [
+    "module:autoplay:started",
+    "module:autoplay:stopped",
+];
+
+export const carouselEvents = [
+    "carousel:initialize",
+    "carousel:initialized",
+    "carousel:destroy",
+    "carousel:destroyed",
+    "config:applied",
+    "module:loaded",
+    "module:initialized",
+    "module:destroyed",
+    "module:unloaded",
+    "stage:created",
+    "stage:changed",
+    "stage:resized",
+    "page:change:request",
+    "page:change:index",
+    "page:change:scroll:before",
+    "page:change:scroll:after",
+    "page:changed",
+    "slide:scroll",
+    "drag:start:pre",
+    "drag:start",
+    "drag:dragging",
+    "drag:end",
+    "transition:end",
+];

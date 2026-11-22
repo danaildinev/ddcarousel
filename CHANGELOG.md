@@ -1,5 +1,232 @@
 # Changelog
 
+## v2.0.0 (22 November 2026)
+
+Major TypeScript rewrite with a new modular architecture, modern ESM distribution, module lifecycle, and optimized production builds.
+
+### ⚠️ Breaking Changes
+- Replaced the previous v1.x browser files with explicit UMD builds:
+    - `ddcarousel.js` -> `ddcarousel.umd.js`
+    - `ddcarousel.min.js` -> `ddcarousel.umd.min.js`
+- Renamed config options:
+    - `dots` -> `pagination`
+    - `lazyPreload` -> `lazyLoadPreload`
+    - `lazyPreloadSlides` -> `lazyLoadPreloadSlides`
+    - `resizeRefresh` -> `resizeDebounce`
+    - `labelNavPrev` -> `navPrevContent` 
+    - `labelNavNext` -> `navNextContent`
+    - `touchMaxSlideDist` -> `dragMaxDistance`
+    - `touchSwipeThreshold` -> `swipeThreshold`
+- Replaced module-specific methods in favor of the new module API:
+    - `autoplayStart()` -> `module<Autoplay>("autoplay").start()`
+    - `autoplayStop()` -> `module<Autoplay>("autoplay").stop()`
+    - `goToUrl("home")` -> `module<UrlNav>("urlNav").goToUrl("home")`;
+- Replaced the v1.x event system with a new namespaced and strongly typed event API. 
+- Removed the `callbacks` config option and shared callback payload. Events now provide event-specific payloads instead of automatically including the v1.x properties (`container`, `event`, `currentSlides`, `currentPage`, `totalSlides`, and `totalPages`). Use `getStatus()` to access additional carousel state.
+- The `refresh()` method no longer performs layout recalculation. Resizing carousel is handled automatically.
+- Destroyed `Carousel` instances can no longer be initialized again with `init()`. You must create a new carousel instance after calling `destroy()`.
+- `init()` is now asynchronous and returns a `Promise<void>`, allowing initialization and module loading to be awaited.
+- Changed `destroy(true)` behavior. Passing `true` now restores the container to its state before carousel initialization instead of fully clearing it.
+- Changed the default value of `dragMaxDistance` to `0`, allowing unrestricted carousel dragging by default.
+- Changed `getTotalPages()` and `getStatus().totalPages` to return the actual number of pages instead of the last zero-based page index. Page indices remain zero-based, starting from `0`.
+- Pagination (dots in v1.x) is now disabled by default.
+- Changed responsive breakpoint calculations to use the carousel container's width instead of the document body's width. Responsive configurations are now applied based on the available space of each carousel instance.
+- Migrated carousel CSS classes to BEM naming (for example: `.ddcarousel-item` -> `.ddcarousel__item` and etc...)
+- Dropped support for old browsers and Internet Explorer. The JavaScript target is now ES2022, supported by modern browsers.
+
+### Features & Improvements
+- Added a new loop/infinite scrolling feature
+- Added a new `gap` option for controlling spacing between slides
+- Added a new `urlNavContainer` for specifying a custom URL navigation container
+- Added a new `fullPage` mode for viewport-sized carousel layouts
+- Added a new `slideChangeEasing` configuration option for customizing slide transition CSS easing
+- Added new properties to `getStatus()`:
+    - `state` - current carousel state
+    - `slides` - array with carousel slides
+    - `slidesByPage` - slide indexes for every page
+    - `modules` - IDs of currently loaded modules
+    - `closestSlidesIndexes` - closest slide indexes relative to the current stage position
+- Added `carousel.ready` - a promise that resolves after carousel initialization and module loading have completed.
+- Added `data-state` container attribute reflecting the current carousel lifecycle state: `idle`, `initializing`, `ready`, `failed`, `destroying`, and `destroyed`.
+- Added drag activation threshold to prevent accidental dragging during slide interactions such as clicking a link.
+- Fixed the current page index becoming invalid when responsive configuration changes reduce the total number of pages.
+- Fixed a broken stage when `items` was set to `0` or a negative value. Invalid values now fall back to the default `items` value.
+- Fixed `items` being mutated when the configured value exceeded the available slide count. The configured value is now preserved while the stage uses a clamped effective item count internally for layout, pagination, visible slides, and centering.
+- Fixed `destroy()` not restoring the original container styles and inline styles modified during carousel initialization and usage.
+- Fixed links inside slides being unclickable when `mouseDrag` is enabled by delaying pointer capture until dragging begins. Text selection may still be limited because dragging the pointer can move the carousel.
+- Improved resize handling: stage size changes are detected automatically, with layout, slide positions, and responsive configuration recalculated after resizing has stopped to reduce unnecessary updates during continuous resizing.
+- Improved accessibility by marking non-visible slides with `inert` and `aria-hidden`, preventing keyboard focus on hidden content.
+- Removed the requirement to manually disable `autoHeight` when using `vertical`. Only the carousel height needs to be defined; child slide heights are now handled internally by the carousel styles.
+
+### Drag & Interaction
+- Added a new `dragSnapMode` option to control how the target slide is selected after dragging, either based on swipe direction or the slide closest to the center of the stage.
+- Added a new `mouseWheel` option to enable mouse wheel or trackpad page navigation with configurable movement threshold and post-transition delay.
+- Fixed unintended page changes when clicking the stage without dragging.
+- Fixed dragging when `dragMaxDistance` is set to `0` or a negative value. A value of `0` now allows freely scrolling through the slides.
+- Fixed touch dragging not working on touch devices
+- Fixed dragging when using `vertical` and `centerSlide`
+- Fixed multi-touch interactions interrupting an active drag by tracking and responding only to the active pointer.
+- Fixed responsive configuration values not reverting when leaving a breakpoint. Properties defined only within responsive breakpoints now restore their original or default values when the breakpoint is no longer active.
+- Improved drag cancellation handling, ensuring interrupted gestures revert cleanly.
+- Replaced separate mouse and touch handling with the [Pointer Events](https://developer.mozilla.org/en-US/docs/Web/API/PointerEvent) input model, providing a unified implementation for mouse, touch, and pen input.
+- Replaced the internal disabled stage state with the BEM modifier `.ddcarousel__stage--dragging`, which is added during active dragging and removed when it ends, while preserving the existing pointer-interaction behavior.
+
+### Modules
+- Introduced a modular architecture, with plans to support creating and loading external modules in future releases. The following features are now implemented as optional internal modules:
+    - Autoplay
+    - Pagination
+    - Loop
+    - Lazy loading
+    - Mouse Wheel
+    - Navigation
+    - URL navigation
+- Added dynamic loading of optional modules, reducing the core bundle size when those features are not enabled.
+- Added module-level style loading with support for loading external CSS files, inline CSS injecting, or use both.
+- Added module-specific classes with currently loaded modules into carousel container
+- Added `carousel.module("moduleName")` or `carousel.module<ModuleName>("moduleName")` for retrieving loaded module instance
+- Added `carousel.loadModule()` and `carousel.unloadModule()` methods for manually loading and unloading internal modules.
+- Modules are now automatically loaded and unloaded when their related configuration changes, including responsive breakpoint changes.
+- Added priority-based event overrides for modules. Modules can now use `tryOverridePriority()` to claim supported event payloads based on priority. 
+    - Higher-priority handlers override the lower-priority ones
+    - Equal-priority override attempts are ignored with a console warning.
+    - Supported overridable events currently include:
+        - page:change:request
+        - page:change:scroll:before
+        - page:change:scroll:after
+        - page:changed:index
+        - slide:scroll
+    - These events now use the shared `PriorityPayload` structure containing `handled`, `priority`, and an optional `source`. Additional events may support priority-based overrides in future version.
+
+### Events
+- Implemented a new event-driven architecture to improve separation between carousel core and internal components and modules.
+- Added new events:
+    - `module:loaded` - emitted when a module has been loaded.
+    - `module:initialized` - emitted after a module has completed initialization.
+    - `module:unloaded` - emitted when a module has been unloaded.
+    - `module:destroyed` - emitted after a module has been destroyed.
+    - `module:autoplay:started` - emitted when autoplay starts.
+    - `module:autoplay:stopped` - emitted when autoplay stops.
+    - `drag:start:pre` emitted immediately before dragging starts, allowing internal modules to adjust drag-related state such as `currentTranslate`.
+    - `page:change:request` - emitted whenever a user action or internal process requests a page change. `page:changed` is emitted after the page change completes successfully.
+    - `page:changed:index` - emitted immediately before the active page index is changed, allowing modules to intercept and override the requested page.
+    - `page:change:scroll:before` - emitted immediately before the stage scroll position is applied.
+    - `page:change:scroll:after`- emitted after the stage scroll position has been applied, without waiting for the CSS transition to finish.
+    - `config:applied` - emitted when the active configuration changes after initialization, for example when entering or leaving a responsive breakpoint.
+    - `stage:created` - emitted when stage has been created 
+    - `stage:changed` - emitted when changes in DOM structure changes
+    - `slide:scroll` - emitted when slide scrolling begins
+- Fixed `carousel:initialized` emitting too early before loading and initializing all modules 
+- Improved TypeScript event callback typing in carousel configuration, allowing event-specific payload types to be recognized automatically.
+- Renamed events for a more consistent namespaced event system.
+- Event names passed to `carousel.on()` must not include the `on:` prefix. For example: `carousel.on(EVENTS.PAGE_CHANGED, callback)`
+- `stage:resized` is now attached to carousel stage resizing instead of the global `window` resize event. When triggered, it recalculates slide dimensions and positions, updates the stage transform, and reapplies responsive configuration when necessary
+- `drag:dragging` now exposes the current translate position, drag distance, direction, and nearby slide indexes.
+- `carousel:initialized` now provides the current carousel state returned by `getStatus()`.
+- `carousel:initialize` is now emitted before configuration initialization and container validation. Previously, it was emitted after both had already occurred.
+- `carousel:initialize` can no longer be registered through the initial configuration because the event fires before that configuration is initialized. Register it with `carousel.on()` before calling `carousel.init(config)` instead.
+
+### Styling & UI
+- Added new CSS variables:
+    - `--ddcarousel-bg-color`
+    - `--ddcarousel-nav-color`
+    - `--ddcarousel-nav-font-size` - navigation text size when using custom text instead of the default SVG icon
+    - `--ddcarousel-nav-margin`
+    - `--ddcarousel-url-nav-color`
+    - `--ddcarousel-url-nav-color-active`
+    - `--ddcarousel-pagination-bottom`
+    - `--ddcarousel-dot-size`
+    - `--ddcarousel-dot-spacing`
+    - `--ddcarousel-dot-color`
+    - `--ddcarousel-dot-color-active`
+    - `--ddcarousel-dot-radius`
+	- `--ddcarousel-autoplay-animation`
+	- `--ddcarousel-autoplay-bar-color`
+    - `--ddcarousel-autoplay-bar-height`
+    - `--ddcarousel-autoplay-speed` - autoplay progress animation duration, controlled internally by JavaScript
+    - `--ddcarousel-transition-easing` -  CSS variable for styling transition easing
+    - `--ddcarousel-auto-height-duration` - CSS variable for customizing auto-height transition duration.
+    - `--ddcarousel-auto-height-easing` -  CSS variable for customizing auto-height transition easing.
+- Added a default navigation text color and a corresponding CSS variable
+- Added a separate color for inactive pagination dots instead of relying on opacity
+- Added a new design for navigation previous and next buttons
+- Fixed incorrect carousel height when using `centerSlide` together with `autoHeight`
+- Migrated carousel CSS class names to BEM naming for improved consistency and maintainability.
+- Improved autoplay prograss bar animation by using GPU-accelerated `transform` CSS property
+- Improved pagination styling
+- Replaced navigation previous and next button content with SVG chevron icons
+- URL navigation now automatically marks the currently active item and updates it when the active slide changes.
+- Autoplay progress bar animation is now controlled using CSS animation and `data-state` attribute to toggle its visibility;
+- Navigation arrows are now positioned relative to stage and moved to the sides
+- Pagination dots are now placed relative to the stage and moved inside it by default
+- Removed navigation buttons container
+- Removed unnecessary wrapper element for URL navigation module
+
+### Code & Architecture
+- Rewrote the carousel core in TypeScript for improved type safety and maintainability.
+- Improved compatibility with React and Vue applications due to the architectural changes.
+- Refactored internal components and introduced performance improvements.
+- Added public TypeScript exports for carousel configuration, state, events, payloads, and module APIs.
+- Improved module instance typing to support accessing module-specific methods.
+- Added TSDoc annotations
+
+### Performance
+- Improved scaling of carousel initialization and stage updates through the rewritten architecture.
+- Significantly improved performance and scalability compared to v1.x, especially with **larger numbers of slides**.
+- Reduced default configuration initialize times by **40.7% with 20 slides**, **68.4% with 100 slides**, and **91.5% with 500 slides**.
+- Improved performance with all modules enabled, reducing execution times by up to **85.8% with 500 slides**.
+- Reduced resize-triggered stage update times by up to **87.1%** and slide navigation times by up to **59.4% with 500 slides**.
+- Full benchmark results: [v1.x vs. v2](./bench/results/v1-vs-v2.txt) (Benchmarks compare average execution times across 40 measured iterations per scenario. Results may vary depending on the environment.)
+
+
+### Testing
+- Added a Vitest + JSDOM test suite covering core carousel behavior, dragging, responsive configuration, events, stage updates, and module lifecycle.
+- Added automated tests for Autoplay, Pagination, Navigation, URL Navigation, Lazy Load, and Loop modules.
+- Added browser API mocks for `ResizeObserver` and `PointerEvent` to support reliable interaction and resize testing.
+
+### Build & Distribution
+- Added new ESM builds for modern bundlers. The main ESM entry point is now `dist/ddcarousel.esm.js`;
+    - Additional `ddcarousel-*.esm.js` files are internal runtime chunks and should not be imported directly.
+    - When self-hosting the ESM distribution, keep all generated `ddcarousel-*.esm.js` chunks alongside `ddcarousel.esm.js`.
+- Switched to Webpack for building both development and production bundles.
+- Added stronger Terser compression and identifier mangling to reduce production bundle size.
+- Added dedicated production source maps for minified UMD and CSS builds
+- Added a new non-minified CSS build: `ddcarousel.css`
+- Added bundled TypeScript declarations in `dist/ddcarousel.d.ts`. 
+- Added `dist` to `.gitignore`. Production build files must now be explicitly added when needed. This may prevent accidental commits of generated files.
+- Added `unpkg` and `jsdelivr` package entry fields to expose the browser-ready build through CDN services.
+- Added development ESM build for testing
+- Refactored all npm scripts around the new build system:
+    - `build:all` – runs the production build, generates and bundles TypeScript declarations, then removes temporary type files.
+    - `build:prod` – creates the production build;
+    - `build:dev` – starts a development server and watcher serving in-memory ESM module and CSS used by the project's `testing` directory. This replaces the old `testjs` and `watchsass` scripts;
+    - `build:types` – generates TypeScript declaration files
+    - `type-check` – runs TypeScript type checking without emitting files;
+    - `bundle:types` – bundles TypeScript declarations using [API Extractor](https://api-extractor.com/);
+    - `clean:types` – removes temporary TypeScript declaration files;
+    - `site:watch:css` – watches and compiles showcase and demos SCSS files
+    - `site:build` – builds production assets and prepares the showcase website
+    - `check:size` – reports build file sizes.
+- Removed build dependencies, including `uglify-js`, `uglifycss`, `npm-run-all`, `copyfiles` (it wasn't used anyway lol). Minifying, CSS compilation, adding license banners to files and production build file structure are now handled by Webpack bundler.
+- Reduced NPM package size by including only `dist` directory and standard package files such as the README, license, and changelog
+- Improved Webpack configuration for library builds
+
+### Deprecated
+- Removed the functionality of `refresh()`. Carousel layout updates and responsive configuration changes are now handled automatically on stage resize. Calling this method now outputs a console warning and performs no action. The method may be removed in v3;
+- Legacy v1.x event names remain supported for backward compatibility but now use v2 event-specific payloads. Migrate to the new namespaced events, as legacy event names may be removed in v3:
+    - `onInitialize` -> `carousel:initialize`
+    - `onInitialized` -> `carousel:initialized`,
+    - `onDrag` -> `drag:start`
+    - `onDragging` -> `drag:dragging`
+    - `onDragged` -> `drag:end`
+    - `onTransitionend` -> `transition:end`
+    - `onChanged` -> `page:changed`
+    - `onResized` -> `stage:resized`
+    - `onDestroy` -> `carousel:destroy`
+    - `onDestroyed` -> `carousel:destroyed`
+- Renamed the following `getStatus()` properties. Legacy names remain supported for backward compatibility but are deprecated and may be removed in v3:
+    - `created` → `initialized` - better represents completed carousel initialization
+    - `activeSlides` → `visibleSlides`
+
 ## v1.4.3 (2026 August 20)
 - Updated dependencies to address security vulnerabilities
 

@@ -1,0 +1,102 @@
+.ddcarousel {
+    position: relative;
+    background: var(--ddcarousel-bg-color);
+
+    &--full-width {
+        width: 100% !important;
+    }
+
+    &--full-page {
+        position: absolute;
+        left: 0;
+        top: 0;
+        width: 100% !important;
+        height: 100dvh !important;
+        overflow: hidden;
+        transition: none;
+
+        .ddcarousel__item {
+            display: grid;
+            align-items: safe center;
+            min-height: 0;
+            overflow-x: hidden;
+            overflow-y: auto;
+            overscroll-behavior-y: contain;
+        }
+
+        &.ddcarousel--vertical {
+            .ddcarousel__item {
+                > div {
+                    height: auto;
+                }
+            }
+        }
+    }
+
+    &--auto-height {
+        transition: height var(--ddcarousel-auto-height-duration) var(--ddcarousel-auto-height-easing);
+    }
+
+    &--vertical {
+        .ddcarousel__stage {
+            height: auto;
+            flex-direction: column;
+            touch-action: pan-x;
+        }
+
+        .ddcarousel__item {
+            width: 100%;
+
+            > div {
+                height: 100%;
+            }
+        }
+    }
+
+    &__container {
+        position: relative;
+        width: 100%;
+        height: 100%;
+        overflow: hidden;
+    }
+
+    &__stage {
+        display: flex;
+        position: absolute;
+        height: 100%;
+        backface-visibility: hidden;
+        transition-property: transform;
+        transition-timing-function: var(--ddcarousel-transition-easing);
+        touch-action: pan-y;
+
+        &--dragging {
+            user-select: none;
+
+            // > .ddcarousel__item {
+            //     pointer-events: none;
+            // }
+        }
+
+        &--disabled {
+            user-select: none;
+        }
+
+        &[data-ddcarousel-mouse-drag] {
+            user-select: none;
+
+            :where(p, span, h1, h2, h3, h4, h5, h6, strong, em) {
+                cursor: inherit;
+            }
+        }
+    }
+
+    &__item {
+        height: 100%;
+        flex: 0 0 auto;
+
+        img {
+            width: 100%;
+            height: auto;
+        }
+    }
+}

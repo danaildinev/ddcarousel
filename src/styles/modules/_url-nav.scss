@@ -1,0 +1,37 @@
+.ddcarousel {
+    &--full-page {
+        .ddcarousel-module-urlNav__container {
+            position: absolute;
+            top: 12px;
+            left: 50%;
+            transform: translate(-50%);
+        }
+    }
+
+    &-module-urlNav {
+        &__container {
+            display: flex;
+            margin: 16px 0;
+            list-style: none;
+            padding: 0;
+        }
+
+        &__link {
+            margin-right: 14px;
+
+            &:last-child {
+                margin-right: 0;
+            }
+
+            a {
+                color: var(--ddcarousel-url-nav-color);
+            }
+
+            &[data-active] {
+                a {
+                    color: var(--ddcarousel-url-nav-color-active);
+                }
+            }
+        }
+    }
+}
