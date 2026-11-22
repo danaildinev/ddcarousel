@@ -14,7 +14,7 @@ document.addEventListener("DOMContentLoaded", () => {
         nav: true,
         urlNav: true,
         urlNavContainer: ".main-header__links.showcase",
-        touchDrag: false,
+        touchDrag: true,
         slideChangeDuration: 1,
         responsive: {
             1024: {
