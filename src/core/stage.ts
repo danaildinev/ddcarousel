@@ -27,6 +27,7 @@ export default class Stage {
 
     #originalSlides: string = "";
     #originalClasses: string = "";
+    #originalStyle: string | null = null;
     visibleSlides: number[] = [];
     currentTranslate: number = 0;
     currentPage: number = -1;
@@ -43,8 +44,8 @@ export default class Stage {
         }
         this.#container = targetContainer;
         this.#originalClasses = this.#container.className;
-
         this.#originalSlides = this.#container.innerHTML;
+        this.#originalStyle = this.#container.getAttribute("style");
 
         this.initialize();
     }
@@ -223,6 +224,11 @@ export default class Stage {
 
         this.#container.querySelector(`.${CSS_CLASSES.container}`)?.remove();
         this.#container.className = this.#originalClasses;
+        if (this.#originalStyle === null) {
+            this.#container.removeAttribute("style");
+        } else {
+            this.#container.setAttribute("style", this.#originalStyle);
+        }
 
         if (restoreSlides) {
             this.#container.innerHTML = this.#originalSlides;

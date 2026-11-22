@@ -758,4 +758,38 @@ describe("Stage core", () => {
         expect(visibleSlideIndexes()).toEqual([2, 3, 4]);
         expect(onChanged).toHaveBeenCalledWith(expect.objectContaining({ currentPage: 1 }));
     });
+
+
+    it("restores original container styles when destroyed", async () => {
+        renderCarousel(3);
+
+        const el = container()!;
+
+        // set custom styles before init
+        el.style.setProperty("--ddcarousel-transition-easing", "linear");
+        el.style.setProperty("--custom-color", "red");
+
+        const originalStyle = el.getAttribute("style");
+        const originalHTML = el.innerHTML;
+
+        const carousel = new Carousel(baseConfig({
+            autoHeight: true,
+            slideChangeEasing: "ease-in-out",
+        }));
+
+        await carousel.ready;
+
+        expect(el.style.getPropertyValue("--ddcarousel-transition-easing")).toBe("ease-in-out");
+        expect(el.getAttribute("style")).not.toBe(originalStyle);
+
+        carousel.destroy(true);
+
+        expect(el.getAttribute("style")).toBe(originalStyle);
+        expect(el.style.height).toBe("240px");
+        expect(el.style.getPropertyValue("--ddcarousel-transition-easing")).toBe("linear");
+        expect(el.style.getPropertyValue("--custom-color")).toBe("red");
+
+        expect(el.innerHTML).toBe(originalHTML);
+    });
+
 });
