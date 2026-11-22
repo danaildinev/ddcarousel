@@ -48,6 +48,43 @@ const options = {
     warmups: numberFromEnv("PERF_WARMUPS", 5),
 };
 
+const v1DefaultsForV2 = {
+    items: 1,
+    itemPerPage: false,
+    nav: false,
+    pagination: true,
+    autoHeight: true,
+    fullWidth: true,
+    centerSlide: false,
+    startPage: 0,
+    responsive: {},
+    lazyLoad: false,
+    lazyLoadPreload: false,
+    lazyLoadPreloadSlides: 1,
+    urlNav: false,
+    touchDrag: true,
+    mouseDrag: true,
+    keyboardNavigation: false,
+    vertical: false,
+    verticalMaxContentWidth: false,
+    autoplay: false,
+    autoplaySpeed: 5000,
+    autoplayProgress: true,
+    autoplayPauseOnTabHidden: true,
+    autoplayPauseHover: false,
+    navPrevContent: "< Prev",
+    navNextContent: "Next >",
+    swipeThreshold: 60,
+    dragMaxDistance: 500,
+    slideChangeDuration: 0.5,
+    swipeSmooth: 0,
+    resizeDebounce: 200,
+    loop: false,
+    gap: 0,
+    mouseWheel: false,
+};
+
+
 function numberFromEnv(name: string, fallback: number) {
     const value = Number.parseInt(process.env[name] ?? "", 10);
     return Number.isFinite(value) && value > 0 ? value : fallback;
@@ -111,7 +148,7 @@ async function benchmarkInitialization() {
         () => renderCarousel("default"),
         async () => {
             carousel = new Carousel();
-            await carousel.init({ container: ".default" });
+            await carousel.init({ ...v1DefaultsForV2, container: ".default" });
         },
         () => carousel.destroy(false)
     );
@@ -137,6 +174,7 @@ async function benchmarkInitializationWithModules() {
         async () => {
             carousel = new Carousel();
             await carousel.init({
+                ...v1DefaultsForV2,
                 container: ".modules",
                 autoplay: true,
                 lazyLoad: true,
@@ -144,6 +182,7 @@ async function benchmarkInitializationWithModules() {
                 nav: true,
                 pagination: true,
                 urlNav: true,
+                mouseWheel: true
             } as Partial<any>);
         },
         () => carousel.destroy(false)
@@ -175,7 +214,7 @@ async function benchmarkSlideChanges() {
     renderCarousel("slide-change");
 
     const carousel = new Carousel();
-    await carousel.init({ container: ".slide-change" });
+    await carousel.init({ ...v1DefaultsForV2, container: ".slide-change" });
     const totalPages = carousel.getTotalPages();
     let page = 0;
 
@@ -221,7 +260,7 @@ async function benchmarkStageResizeUpdate() {
     resizeObservers.clear();
 
     const carousel = new Carousel();
-    await carousel.init({ container: ".stage-resize", resizeDebounce: 0 });
+    await carousel.init({ ...v1DefaultsForV2, container: ".stage-resize", resizeDebounce: 0 });
 
     const container = document.querySelector(".stage-resize") as HTMLElement;
     let width = options.resizeWidth;
@@ -236,9 +275,10 @@ async function benchmarkStageResizeUpdate() {
         "Carousel - resize-triggered stage update",
         () => { },
         async () => {
+            let timeout: ReturnType<typeof setTimeout>;
             const resized = new Promise<void>((resolve, reject) => {
                 resizeResolved = resolve;
-                setTimeout(() => reject(new Error("Timeout: stage:resized event never fired.")), 2000);
+                timeout = setTimeout(() => reject(new Error("Timeout: stage:resized event never fired.")), 2000);
             });
 
             width = width === options.resizeWidth ? options.resizeWidth - 240 : options.resizeWidth;
@@ -253,13 +293,14 @@ async function benchmarkStageResizeUpdate() {
                 devicePixelContentBoxSize: [{ inlineSize: width, blockSize: 0 }]
             } as unknown as ResizeObserverEntry;
 
-            const resizeEvent = document.createEvent("Event");
-            resizeEvent.initEvent("resize", true, true);
-            //window.dispatchEvent(resizeEvent);
+            resizeObservers.forEach(observer => observer.trigger());
 
-            resizeObservers.forEach(callback => callback([entry], {} as ResizeObserver));
-
-            await resized;
+            try {
+                await resized;
+            } finally {
+                clearTimeout(timeout);
+                resizeResolved = null;
+            }
         },
         () => { }
     );
@@ -298,10 +339,10 @@ async function benchmarkStageResizeUpdateOld() {
         "Carousel (v1.x) - resize-triggered stage update",
         () => { },
         async () => {
+            let timeout: ReturnType<typeof setTimeout>;
             const resized = new Promise<void>((resolve, reject) => {
                 resizeResolved = resolve;
-                // Bumped to 2500ms in case v1.4 has a heavy debounce
-                setTimeout(() => reject(new Error("Timeout: onResized event never fired for v1.4.")), 2500);
+                timeout = setTimeout(() => reject(new Error("Timeout: stage:resized event never fired.")), 2000);
             });
 
             width = width === options.resizeWidth ? options.resizeWidth - 240 : options.resizeWidth;
@@ -323,9 +364,14 @@ async function benchmarkStageResizeUpdateOld() {
             resizeEvent.initEvent("resize", true, true);
             window.dispatchEvent(resizeEvent);
 
-            resizeObservers.forEach(callback => callback([entry], {} as ResizeObserver));
+            resizeObservers.forEach(observer => observer.trigger());
 
-            await resized;
+            try {
+                await resized;
+            } finally {
+                clearTimeout(timeout);
+                resizeResolved = null;
+            }
         },
         () => { }
     );
