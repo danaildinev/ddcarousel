@@ -116,7 +116,7 @@ async function loadDemo(button, configOverrides = {}) {
 			},
 		};
 
-		context.carousel = window.ddcarousel();
+		context.carousel = carousel = window.ddcarousel();
 
 		if (typeof demo.beforeInit === "function") {
 			demo.beforeInit(context);
