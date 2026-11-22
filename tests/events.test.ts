@@ -159,7 +159,7 @@ describe("Carousel events", () => {
         expect(handler).toHaveBeenCalledWith(expect.objectContaining({
             request: "next",
             currentPage: 0,
-            totalPages: 3,
+            totalPages: 4,
         }));
         expect(carousel.getCurrentPage()).toBe(3);
     });

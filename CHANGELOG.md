@@ -1,6 +1,6 @@
 # Changelog
 
-## v2.0.0 (2026 November 22)
+## v2.0.0 (22 November 2026)
 
 Major TypeScript rewrite with a new modular architecture, modern ESM distribution, module lifecycle, and optimized production builds.
 
@@ -28,6 +28,7 @@ Major TypeScript rewrite with a new modular architecture, modern ESM distributio
 - `init()` is now asynchronous and returns a `Promise<void>`, allowing initialization and module loading to be awaited.
 - Changed `destroy(true)` behavior. Passing `true` now restores the container to its state before carousel initialization instead of fully clearing it.
 - Changed the default value of `dragMaxDistance` to `0`, allowing unrestricted carousel dragging by default.
+- Changed `getTotalPages()` and `getStatus().totalPages` to return the actual number of pages instead of the last zero-based page index. Page indices remain zero-based, starting from `0`.
 - Pagination (dots in v1.x) is now disabled by default.
 - Changed responsive breakpoint calculations to use the carousel container's width instead of the document body's width. Responsive configurations are now applied based on the available space of each carousel instance.
 - Migrated carousel CSS classes to BEM naming (for example: `.ddcarousel-item` -> `.ddcarousel__item` and etc...)

@@ -76,7 +76,7 @@ export default class Autoplay extends BaseModule<AutoplayConfig> {
         const status = this.getStatus();
         const isLoopEnabled = status.modules.includes("loop") && status.config.current?.loop === true;
 
-        return status.totalPages <= 0 || (!isLoopEnabled && this.#currentPage >= status.totalPages);
+        return status.totalPages <= 1 || (!isLoopEnabled && this.#currentPage >= status.totalPages - 1);
     }
 
     #onPageChanged = (e: CarouselEvents[typeof EVENTS.PAGE_CHANGED]) => {

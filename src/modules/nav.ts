@@ -104,6 +104,6 @@ export default class Nav extends BaseModule {
         const isLoopEnabled = status.modules.includes("loop") && status.config.current?.loop === true;
 
         this.#prevBtn?.setAttribute("data-visible", isLoopEnabled || this.#currentPage > 0 ? "true" : "false");
-        this.#nextBtn?.setAttribute("data-visible", isLoopEnabled || this.#currentPage < this.#totalPages ? "true" : "false");
+        this.#nextBtn?.setAttribute("data-visible", isLoopEnabled || this.#currentPage < this.#totalPages - 1 ? "true" : "false");
     }
 }

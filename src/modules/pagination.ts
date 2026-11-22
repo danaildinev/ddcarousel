@@ -41,7 +41,7 @@ export default class Pagination extends BaseModule {
         this.#removePagination();
 
         const status = this.getStatus();
-        if (status.totalPages == 0) {
+        if (status.totalPages == 1) {
             return;
         }
 

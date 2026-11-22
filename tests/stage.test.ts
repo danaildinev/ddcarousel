@@ -84,7 +84,7 @@ describe("Stage core", () => {
 
         const carousel = new Carousel(baseConfig({ pagination: false, items: 3 }));
 
-        expect(carousel.getTotalPages()).toBe(2);
+        expect(carousel.getTotalPages()).toBe(3);
         expect(carousel.getStatus().slidesByPage).toEqual([
             [0, 1, 2],
             [3, 4, 5],
@@ -97,7 +97,7 @@ describe("Stage core", () => {
 
         const carousel = new Carousel(baseConfig({ pagination: false, items: 3 }));
 
-        expect(carousel.getTotalPages()).toBe(0);
+        expect(carousel.getTotalPages()).toBe(1);
         expect(carousel.getStatus().slidesByPage).toEqual([[0, 1, 2]]);
         expect(carousel.getStatus().visibleSlides).toEqual([0, 1, 2]);
     });
@@ -403,7 +403,7 @@ describe("Stage core", () => {
 
         const carousel = new Carousel(baseConfig({ items: 2 }));
 
-        expect(carousel.getTotalPages()).toBe(2);
+        expect(carousel.getTotalPages()).toBe(3);
         expect(carousel.getStatus().slidesByPage).toEqual([[0, 1], [2, 3], [3, 4]]);
     });
 
@@ -412,7 +412,7 @@ describe("Stage core", () => {
 
         const carousel = new Carousel(baseConfig({ items: 3, itemPerPage: true }));
 
-        expect(carousel.getTotalPages()).toBe(2);
+        expect(carousel.getTotalPages()).toBe(3);
         expect(carousel.getStatus().slidesByPage).toEqual([
             [0, 1, 2],
             [1, 2, 3],
@@ -428,7 +428,7 @@ describe("Stage core", () => {
 
         const carousel = new Carousel(baseConfig({ items: 3, centerSlide: true }));
 
-        expect(carousel.getTotalPages()).toBe(4);
+        expect(carousel.getTotalPages()).toBe(5);
         expect(carousel.getStatus().slidesByPage).toEqual([
             [-1, 0, 1],
             [0, 1, 2],
@@ -499,7 +499,7 @@ describe("Stage core", () => {
         const carousel = new Carousel(baseConfig({ items: 5 }));
 
         expect(carousel.getStatus().config.current?.items).toBe(5);
-        expect(carousel.getTotalPages()).toBe(0);
+        expect(carousel.getTotalPages()).toBe(1);
         expect(carousel.getStatus().slidesByPage).toEqual([[0, 1]]);
     });
 
@@ -675,7 +675,7 @@ describe("Stage core", () => {
         expect(status.config.current?.items).toBe(5);
 
         // Stage internally clamps it to the available 3 slides
-        expect(status.totalPages).toBe(0);
+        expect(status.totalPages).toBe(1);
         expect(status.slidesByPage).toEqual([
             [0, 1, 2]
         ]);
@@ -737,7 +737,7 @@ describe("Stage core", () => {
         }));
 
         // At 300px, all 5 slides have individual pages.
-        expect(carousel.getTotalPages()).toBe(4);
+        expect(carousel.getTotalPages()).toBe(5);
 
         carousel.changePage(4, false);
         expect(carousel.getCurrentPage()).toBe(4);
@@ -752,7 +752,7 @@ describe("Stage core", () => {
 
         const status = carousel.getStatus();
         expect(status.config.current?.items).toBe(3);
-        expect(status.totalPages).toBe(1);
+        expect(status.totalPages).toBe(2);
         expect(status.currentPage).toBe(1);
         expect(status.visibleSlides).toEqual([2, 3, 4]);
         expect(visibleSlideIndexes()).toEqual([2, 3, 4]);

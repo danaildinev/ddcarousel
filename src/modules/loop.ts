@@ -94,7 +94,7 @@ export default class Loop extends BaseModule {
         }
 
         const isPrevWrap = e.request === "prev" && e.currentPage === 0;
-        const isNextWrap = e.request === "next" && e.currentPage === e.totalPages;
+        const isNextWrap = e.request === "next" && e.currentPage === e.totalPages - 1;
         if (!isPrevWrap && !isNextWrap) {
             return;
         }
@@ -104,7 +104,7 @@ export default class Loop extends BaseModule {
             return;
         }
 
-        e.page = isPrevWrap ? e.totalPages : 0;
+        e.page = isPrevWrap ? e.totalPages - 1 : 0;
     }
 
     #onChangePageScrollBefore = (e: CarouselEvents[typeof EVENTS.PAGE_CHANGE_SCROLL_BEFORE]) => {

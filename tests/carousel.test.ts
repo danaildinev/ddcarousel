@@ -73,7 +73,7 @@ describe("Carousel core", () => {
         expect(items()).toHaveLength(3);
         expect(items().map(item => item.dataset.slide)).toEqual(["0", "1", "2"]);
         expect(status.currentPage).toBe(0);
-        expect(status.totalPages).toBe(2);
+        expect(status.totalPages).toBe(3);
         expect(status.totalSlides).toBe(3);
         expect(status.slidesByPage).toEqual([[0], [1], [2]]);
         expect(status.visibleSlides).toEqual([0]);
@@ -91,7 +91,7 @@ describe("Carousel core", () => {
         expect(items()).toHaveLength(3);
         expect(items().map(item => item.dataset.slide)).toEqual(["0", "1", "2"]);
         expect(status.currentPage).toBe(0);
-        expect(status.totalPages).toBe(2);
+        expect(status.totalPages).toBe(3);
         expect(status.totalSlides).toBe(3);
         expect(status.slidesByPage).toEqual([[0], [1], [2]]);
         expect(status.visibleSlides).toEqual([0]);
@@ -116,7 +116,7 @@ describe("Carousel core", () => {
         expect(items()).toHaveLength(4);
         expect(items().map(item => item.dataset.slide)).toEqual(["0", "1", "2", "3"]);
         expect(status.currentPage).toBe(0);
-        expect(status.totalPages).toBe(1);
+        expect(status.totalPages).toBe(2);
         expect(status.totalSlides).toBe(4);
         expect(status.slidesByPage).toEqual([[0, 1], [2, 3]]);
         expect(status.visibleSlides).toEqual([0, 1]);
@@ -350,7 +350,7 @@ describe("Carousel core", () => {
         expect(status.state).toBe("ready");
         expect(status.initialized).toBe(true);
         expect(status.currentPage).toBe(0);
-        expect(status.totalPages).toBe(12);
+        expect(status.totalPages).toBe(13);
         expect(status.slides).toHaveLength(13);
         expect(status.totalSlides).toBe(13);
         expect(status.slidesByPage).toEqual([

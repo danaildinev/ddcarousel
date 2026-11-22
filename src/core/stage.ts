@@ -302,8 +302,7 @@ export default class Stage {
             return;
         }
 
-        let pages;
-        const slidesByPage = [];
+        const slidesByPage: number[][] = [];
         const slidesLength = this.#slides.length;
         const slidesPerPage = this.#effectiveItems;
 
@@ -314,8 +313,6 @@ export default class Stage {
         }
 
         if (this.#config.centerSlide) {
-            pages = slidesLength - 1;
-
             const half = Math.floor(slidesPerPage / 2);
 
             for (let page = 0; page < slidesLength; page++) {
@@ -328,9 +325,9 @@ export default class Stage {
             }
         }
         else if (this.#config.itemPerPage) {
-            pages = slidesLength - slidesPerPage;
+            const lastPageIndex = slidesLength - slidesPerPage;
 
-            for (let i = 0; i <= pages; i++) {
+            for (let i = 0; i <= lastPageIndex; i++) {
                 const slides = [];
 
                 for (let j = 0; j < slidesPerPage; j++) {
@@ -341,8 +338,6 @@ export default class Stage {
             }
         }
         else {
-            pages = Math.ceil(slidesLength / slidesPerPage) - 1;
-
             const slideCount = slidesLength;
             const totalPages = Math.ceil(slideCount / slidesPerPage);
 
@@ -363,7 +358,7 @@ export default class Stage {
         }
 
         this.slidesByPage = slidesByPage;
-        this.totalPages = pages;
+        this.totalPages = slidesByPage.length;
     }
 
     getSlidesCount = () => this.#slides?.length;
@@ -517,7 +512,7 @@ export default class Stage {
             return;
         }
 
-        if (index >= 0 && index <= this.totalPages) {
+        if (index >= 0 && index < this.totalPages) {
             this.#changePage(index, e.animate)
         }
     };
@@ -539,11 +534,11 @@ export default class Stage {
         if (!payload.handled) {
             if (index === "prev" && this.currentPage > 0) {
                 payload.page = this.currentPage - 1;
-            } else if (index === "next" && this.currentPage < this.totalPages) {
+            } else if (index === "next" && this.currentPage < this.totalPages - 1) {
                 payload.page = this.currentPage + 1;
             } else {
                 const number = parseInt(String(index), 10);
-                if (number > -1 && number <= this.totalPages) {
+                if (number >= 0 && number < this.totalPages) {
                     payload.page = number;
                 }
             }
@@ -567,7 +562,7 @@ export default class Stage {
         }
 
         const isForward = index > this.currentPage ||
-            (index === 0 && this.currentPage === this.totalPages);
+            (this.totalPages > 1 && index === 0 && this.currentPage === this.totalPages - 1);
 
         this.currentPage = index;
 
@@ -713,7 +708,7 @@ export default class Stage {
     #onConfigApplied = (e: CarouselEvents[typeof EVENTS.CONFIG_APPLIED]) => {
         this.#update();
 
-        this.#changePage(Math.min(this.currentPage, this.totalPages), false);
+        this.#changePage(Math.max(0, Math.min(this.currentPage, this.totalPages - 1)), false);
 
         this.#container.classList.toggle(CSS_CLASSES.autoHeight, e.new.autoHeight);
     }

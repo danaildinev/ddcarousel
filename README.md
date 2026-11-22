@@ -526,7 +526,7 @@ Navigate between carousel pages using the mouse wheel or trackpad.
 
 - `nextPage()` - Go to the next page
 
-- `changePage(id, animate);` - Go to a specified page index. The optional second parameter controls whether the page change is animated.
+- `changePage(id, animate);` - Go to a specified zero-based page index. The optional second parameter controls whether the page change is animated.
 
 - `on(event, callback)` - Register an event listener. Supports built-in, legacy and custom event names.
 
@@ -538,11 +538,13 @@ Navigate between carousel pages using the mouse wheel or trackpad.
 
 - `getStatus()` - Get detailed information about the current carousel state. See [Events](#events) section for a full `CarouselStatus` breakdown
 
-- `getCurrentPage()` - Get the current page index
+- `getCurrentPage()` - Get the current zero-based page index (`0` is the first page).
 
-- `getTotalPages()` - Get the last valid page index
+- `getTotalPages()` - Get the total number of pages (not the last page index).
 
 - `getTotalSlides()` - Get the total number of slides
+
+**Info about page indexing:** Page indexes are zero-based, while `totalPages` represents the actual page count. For example, if a carousel with 8 pages has valid page indexes from `0` to `7`, then `getTotalPages()` returns `8`.
 
 ### Ready promise
 
@@ -626,8 +628,8 @@ await carousel.init({
   **Callback:** Returns the full `CarouselStatus` object:
     - `state` - Current carousel lifecycle state `CarouselState`: `idle`, `initializing`, `ready`, `failed`, `destroying` or `destroyed`
     - `initialized` - Whether initialization has completed successfully
-    - `currentPage` - Current page index
-    - `totalPages` - Last valid page index (zero-based)
+    - `currentPage` - Current zero-based page index, starting at `0`
+    - `totalPages` - Total number of pages, starting at `1` when slides are available
     - `slides` - Array of carousel slide elements
     - `totalSlides` - Total number of slides
     - `slidesByPage` - Slide indexes associated with each page
