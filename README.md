@@ -817,20 +817,30 @@ For new projects, use the v2 namespaced events instead. When upgrading, make sur
 ## Building
 
 1. Install dependencies
-```
+```bash
 npm install
 ```
 2. Use available npm scripts:
-- `npm run build:all` - Create the full production build, generate and bundle TypeScript declarations, then clean up temporary type files
-- `npm run build:prod` - Create the production JavaScript and CSS builds with Webpack
-- `npm run build:dev` - Start the development server and watcher using the testing directory
-- `npm run build:types` - Generate TypeScript declaration files
-- `npm run type-check` - Run TypeScript type checking without emitting files
-- `npm run bundle:types` - Bundle TypeScript declarations using API Extractor
-- `npm run clean:types` - Remove temporary generated type files
-- `npm test` - Run the Vitest test suite
 
-Production builds are generated in the dist directory.
+    Build & Development: 
+    - `npm run build:all` - Create the full production build, generate and bundle TypeScript declarations, then clean up temporary type files
+    - `npm run build:prod` - Create the production JavaScript and CSS builds with Webpack
+    - `npm run build:dev` - Start the development server and watcher using the testing directory
+    - `npm run build:types` - Generate TypeScript declaration files
+    - `npm run type-check` - Run TypeScript type checking without emitting files
+    - `npm run bundle:types` - Bundle TypeScript declarations using API Extractor
+    - `npm run clean:types` - Remove temporary generated type files
+
+    Production builds are generated in the dist directory.
+
+    Showcase:
+    - `npm run site:watch:css` - Watch and compile showcase and demos SCSS files
+    - `npm run site:build` - Build production assets and prepare the showcase website
+
+    Testing:
+    - `npm test` - Run the Vitest test suite
+    - `npm run check:size` - Check generated build file sizes
+
 
 ### Bundle size
 
