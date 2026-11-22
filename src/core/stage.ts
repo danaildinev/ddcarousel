@@ -486,7 +486,11 @@ export default class Stage {
         }
 
         const maxHeight = Math.max(...heights);
-        this.#container.style.height = `${maxHeight}px`;
+        const height = `${maxHeight}px`;
+
+        if (this.#container.style.height !== height) {
+            this.#container.style.height = height;
+        }
     }
 
     #getSlidesByPage(page: number | null = null): number[] {
@@ -624,10 +628,9 @@ export default class Stage {
             return;
         }
 
-        const currentSlide = this.#getSlideDom(),
-            err = "Error scrolling: ",
-            config = this.#config,
-            targetSlide = slide ?? currentSlide;
+        const config = this.#config;
+        const err = "Error scrolling: ";
+        const targetSlide = slide ?? this.#getSlideDom();
 
         if (targetSlide === null) {
             throw error(`${err} target slide not found!`);
