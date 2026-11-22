@@ -34,7 +34,7 @@
 		"bundle:types": "api-extractor run --local",
 		"clean:types": "node utils/clean-types.js",
 		"site:watch:css": "sass --watch --no-source-map ./docs/styles/showcase.scss:./docs/dist/showcase.css ./docs/styles/demos.scss:./docs/dist/demos.css",
-		"site:build": "npm run build:prod && node ./utils/setup-showcase.js",
+		"site:build:css": "sass --no-source-map ./docs/styles/showcase.scss:./docs/dist/showcase.css ./docs/styles/demos.scss:./docs/dist/demos.css",
 		"check:size": "node ./utils/size.js"
 	},
 	"repository": {
