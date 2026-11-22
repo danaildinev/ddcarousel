@@ -613,11 +613,8 @@ export default class Stage {
     }
 
     #getSlideDom = (index = -1): HTMLDivElement | null => {
-        if (index >= 0) {
-            return this.#slides[index] ?? null;
-        }
-
-        return this.#slides.find(slide => slide.classList.contains(CSS_CLASSES.slideVisible)) ?? null;
+        const slideIndex = index >= 0 ? index : this.visibleSlides[0];
+        return slideIndex === undefined ? null : this.#slides[slideIndex] ?? null;
     }
 
     #onSlideScroll = (e: CarouselEvents[typeof EVENTS.SLIDE_SCROLL]) => this.#scrollToSlide(e.slide, e.animate, e.specifiedPosition);
