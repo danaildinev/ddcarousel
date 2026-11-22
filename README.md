@@ -5,6 +5,8 @@
 
 Lightweight, dependency-free carousel written in TypeScript and built for the modern web.
 
+See it in action on [ddcarousel showcase page](https://danaildinev.github.io/ddcarousel/) or [ddcarousel demos](https://danaildinev.github.io/ddcarousel/demos.html)
+
 **Browser compatibility**: Modern browsers with ES2022 support.
 
 ## Features
