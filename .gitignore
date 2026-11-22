@@ -1,9 +1,7 @@
 node_modules/
-dist/
+/dist/
 testing/
 NOTES.md
-
-docs/dist
 
 # Windows
 Thumbs.db
