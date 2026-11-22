@@ -89,6 +89,24 @@ ddcarousel.min.css.map
 
 Readable non-minified builds and ESM files do not include source maps.
 
+
+### Performance
+
+The new version 2 of ddcarousel delivers significant performance improvements over the v1.x, particularly when handling large numbers of slides. The rewritten architecture scales more efficiently, reducing execution times by **up to 92%** in benchmarks with 500 slides.
+
+**Performance improvements compared to v1.x:**
+
+| Benchmark | 20 slides | 50 slides | 100 slides | 200 slides | 500 slides |
+|---|---:|---:|---:|---:|---:|
+| Initialize with default configuration | 40.7% | 56.9% | 68.4% | 80.8% | 91.5% |
+| Initialize with all modules enabled | 19.5% | 41.2% | 57.4% | 73.2% | 85.8% |
+| Changing slides | -19.8% | 12.2% | 16.3% | 33.8% | 59.4% |
+| Resize-triggered updates | -3.0% | 32.6% | 52.5% | 71.5% | 87.1% |
+
+*Percentages represent reductions in average execution time. Negative values indicate slower execution. Benchmarks used 5 warmups and 40 measured iterations per scenario. Results may vary depending on the environment and configuration.*
+
+[View full benchmark results](./bench/results/v1-vs-v2.txt)
+
 ## Usage
 
 ### HTML structure

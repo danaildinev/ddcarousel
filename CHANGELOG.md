@@ -169,6 +169,15 @@ Major TypeScript rewrite with a new modular architecture, modern ESM distributio
 - Improved module instance typing to support accessing module-specific methods.
 - Added TSDoc annotations
 
+### Performance
+- Improved scaling of carousel initialization and stage updates through the rewritten architecture.
+- Significantly improved performance and scalability compared to v1.x, especially with **larger numbers of slides**.
+- Reduced default configuration initialize times by **40.7% with 20 slides**, **68.4% with 100 slides**, and **91.5% with 500 slides**.
+- Improved performance with all modules enabled, reducing execution times by up to **85.8% with 500 slides**.
+- Reduced resize-triggered stage update times by up to **87.1%** and slide navigation times by up to **59.4% with 500 slides**.
+- Full benchmark results: [v1.x vs. v2](./bench/results/v1-vs-v2.txt) (Benchmarks compare average execution times across 40 measured iterations per scenario. Results may vary depending on the environment.)
+
+
 ### Testing
 - Added a Vitest + JSDOM test suite covering core carousel behavior, dragging, responsive configuration, events, stage updates, and module lifecycle.
 - Added automated tests for Autoplay, Pagination, Navigation, URL Navigation, Lazy Load, and Loop modules.
