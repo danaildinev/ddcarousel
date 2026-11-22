@@ -96,7 +96,7 @@ Readable non-minified builds and ESM files do not include source maps.
 Create a container with `ddcarousel` class and place your slides directly inside it:
 
 ```html
-<div class="ddcarousel">
+<div class="ddcarousel my-carousel">
     <div>Slide 1</div>
     <div>Slide 2</div>
     <div>Slide 3</div>
@@ -115,7 +115,7 @@ When using ddcarousel through npm or a modern bundler:
 import ddcarousel from "ddcarousel";
 
 const carousel = ddcarousel({
-    container: ".carousel",
+    container: ".my-carousel",
     items: 3,
 });
 ```
@@ -126,7 +126,7 @@ You can also import and create the `Carousel` class directly:
 import { Carousel } from "ddcarousel";
 
 const carousel = new Carousel({
-    container: ".carousel",
+    container: ".my-carousel",
     items: 3,
 });
 ```
@@ -156,20 +156,7 @@ Then initialize the carousel:
 ```html
 <script>
     const carousel = ddcarousel({
-        container: ".carousel",
-        items: 3,
-    });
-
-    carousel.ready.catch(console.error);
-</script>
-```
-
-You can also create a `Carousel` instance directly:
-
-```html
-<script>
-    const carousel = new Carousel({
-        container: ".carousel",
+        container: ".my-carousel",
         items: 3,
     });
 
@@ -190,7 +177,7 @@ This is useful when you want to self-host ddcarousel, quickly test it in the bro
     import ddcarousel from "./ddcarousel.esm.js";
 
     const carousel = ddcarousel({
-        container: ".carousel",
+        container: ".my-carousel",
     });
 
     await carousel.ready;
@@ -207,7 +194,7 @@ import { Carousel } from "ddcarousel";
 
 const carousel = new Carousel();
 carousel.init({
-    container: ".carousel",
+    container: ".my-carousel",
     items: 3,
 });
 ```
@@ -224,7 +211,7 @@ carousel.on(EVENTS.INITIALIZE, () => {
 });
 
 carousel.init({
-    container: ".carousel",
+    container: ".my-carousel",
     items: 3,
 });
 ```
@@ -235,7 +222,7 @@ Optional modules may be loaded asynchronously. Use `carousel.ready` when you nee
 
 ```ts
 const carousel = ddcarousel({
-    container: ".carousel",
+    container: ".my-carousel",
     items: 3,
     autoplay: true,
 });
@@ -321,13 +308,13 @@ import ddcarousel, {
 
 - `fullWidth` - Expand the carousel to the full available width (boolean, default: `true`)
 
-- `fullPage` - Turn a carousel into a full screen viewport-sized layout, useful for single-page websites.
+- `fullPage` - Turn a carousel into a full screen viewport-sized layout, useful for single-page websites. (boolean, default: `false`)
 
 - `centerSlide` - Center the active slide (boolean, default: `false`)
 
 - `startPage` - Set starting page (number, default: `0`)
 
-- `responsive` - Breakpoint-specific configuration options. When leaving a responsive breakpoint, options defined only for that breakpoint are restored to their original or default values. (object, default: empty object)
+- `responsive` - Breakpoint-specific configuration options. When leaving a responsive breakpoint, options defined only for that breakpoint are restored to their original or default values. Breakpoints are evaluated against the carousel container's width rather than the viewport width. (object, default: empty object)
 
 - `gap` - Space between slides (number, default: `0`)
 
@@ -335,7 +322,7 @@ import ddcarousel, {
 
 - `mouseDrag` - Enable dragging with mouse input (boolean, default: `true`)
 
-- `dragSnapMode` - Control how the target slide is selected after dragging, either based on swipe direction or the slide closest to the center of the stage.
+- `dragSnapMode` - Control how the target slide is selected after dragging, either based on swipe direction or the slide closest to the center of the stage. (default: `swipe`)
     - `swipe` - navigate based on swipe direction
     - `closest` - snap to the slide closest to the drag's ending position
     - Using `closest` automatically enables `centerSlide` and works best with `dragMaxDistance: 0`
@@ -431,7 +418,7 @@ await carousel.unloadModule("autoplay");
 Note: `carousel.module()` returns an existing module instance and throws an error if the module is not loaded. 
 It does not load modules automatically. Use `loadModule()` to load a module at runtime.
 
-Modules enabled through configuration are loaded automatically (for example: `nav: true`). They may also be loaded or unloaded automatically when related configuration changes, for example responsive breakpoint changes on page resize.
+Modules enabled through configuration are loaded automatically (for example: `nav: true`). They may also be loaded or destroyed automatically when related configuration changes, for example responsive breakpoint changes on page resize.
 
 Module-specific configuration options use the module ID as a prefix, for example `autoplaySpeed`, `lazyLoadPreload` and `navPrevContent`.
 
@@ -562,7 +549,7 @@ Navigate between carousel pages using the mouse wheel or trackpad.
 - `ready` - Promise that resolves when carousel initialization and module loading are complete.
 ```ts
 const carousel = ddcarousel({
-    container: ".carousel"
+    container: ".my-carousel"
 });
 
 await carousel.ready;
@@ -573,7 +560,7 @@ You can also initialize a carousel async:
 const carousel = new Carousel();
 
 await carousel.init({
-    container: ".carousel"
+    container: ".my-carousel"
 });
 ```
 
@@ -607,7 +594,7 @@ Events can also be registered through the carousel configuration using the `on:`
 
 ```ts
 const carousel = ddcarousel({
-    container: ".carousel",
+    container: ".my-carousel",
     "on:page:changed": (event) => {
         console.log(event.currentPage);
     }
@@ -640,7 +627,7 @@ await carousel.init({
     - `state` - Current carousel lifecycle state `CarouselState`: `idle`, `initializing`, `ready`, `failed`, `destroying` or `destroyed`
     - `initialized` - Whether initialization has completed successfully
     - `currentPage` - Current page index
-    - `totalPages` - Total number of pages
+    - `totalPages` - Last valid page index (zero-based)
     - `slides` - Array of carousel slide elements
     - `totalSlides` - Total number of slides
     - `slidesByPage` - Slide indexes associated with each page
@@ -831,7 +818,7 @@ npm install
     - `npm run bundle:types` - Bundle TypeScript declarations using API Extractor
     - `npm run clean:types` - Remove temporary generated type files
 
-    Production builds are generated in the dist directory.
+    Production builds are generated in the `dist` directory.
 
     Showcase:
     - `npm run site:watch:css` - Watch and compile showcase and demos SCSS files
