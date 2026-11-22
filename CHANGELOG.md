@@ -1,6 +1,6 @@
 # Changelog
 
-## v2.0.0 (2026 November)
+## v2.0.0 (2026 November 22)
 
 Major TypeScript rewrite with a new modular architecture, modern ESM distribution, module lifecycle, and optimized production builds.
 
@@ -23,10 +23,13 @@ Major TypeScript rewrite with a new modular architecture, modern ESM distributio
     - `goToUrl("home")` -> `module<UrlNav>("urlNav").goToUrl("home")`;
 - Replaced the v1.x event system with a new namespaced and strongly typed event API. 
 - Removed the `callbacks` config option and shared callback payload. Events now provide event-specific payloads instead of automatically including the v1.x properties (`container`, `event`, `currentSlides`, `currentPage`, `totalSlides`, and `totalPages`). Use `getStatus()` to access additional carousel state.
+- The `refresh()` method no longer performs layout recalculation. Resizing carousel is handled automatically.
 - Destroyed `Carousel` instances can no longer be initialized again with `init()`. You must create a new carousel instance after calling `destroy()`.
 - `init()` is now asynchronous and returns a `Promise<void>`, allowing initialization and module loading to be awaited.
 - Changed `destroy(true)` behavior. Passing `true` now restores the container to its state before carousel initialization instead of fully clearing it.
 - Changed the default value of `dragMaxDistance` to `0`, allowing unrestricted carousel dragging by default.
+- Pagination (dots in v1.x) is now disabled by default.
+- Changed responsive breakpoint calculations to use the carousel container's width instead of the document body's width. Responsive configurations are now applied based on the available space of each carousel instance.
 - Migrated carousel CSS classes to BEM naming (for example: `.ddcarousel-item` -> `.ddcarousel__item` and etc...)
 - Dropped support for old browsers and Internet Explorer. The JavaScript target is now ES2022, supported by modern browsers.
 
@@ -44,12 +47,14 @@ Major TypeScript rewrite with a new modular architecture, modern ESM distributio
     - `closestSlidesIndexes` - closest slide indexes relative to the current stage position
 - Added `carousel.ready` - a promise that resolves after carousel initialization and module loading have completed.
 - Added `data-state` container attribute reflecting the current carousel lifecycle state: `idle`, `initializing`, `ready`, `failed`, `destroying`, and `destroyed`.
-- Added drag activation threshold to prevent accidental dragging during slide interactions such as clicking link.
+- Added drag activation threshold to prevent accidental dragging during slide interactions such as clicking a link.
 - Fixed the current page index becoming invalid when responsive configuration changes reduce the total number of pages.
 - Fixed a broken stage when `items` was set to `0` or a negative value. Invalid values now fall back to the default `items` value.
 - Fixed `items` being mutated when the configured value exceeded the available slide count. The configured value is now preserved while the stage uses a clamped effective item count internally for layout, pagination, visible slides, and centering.
-- Fixed links inside slides being unclickable being blocked when `mouseDrag` is enabled by delaying pointer capture until dragging begins. Text selection may still be limited because dragging the pointer can move the carousel.
+- Fixed `destroy()` not restoring the original container styles and inline styles modified during carousel initialization and usage.
+- Fixed links inside slides being unclickable when `mouseDrag` is enabled by delaying pointer capture until dragging begins. Text selection may still be limited because dragging the pointer can move the carousel.
 - Improved resize handling: stage size changes are detected automatically, with layout, slide positions, and responsive configuration recalculated after resizing has stopped to reduce unnecessary updates during continuous resizing.
+- Improved accessibility by marking non-visible slides with `inert` and `aria-hidden`, preventing keyboard focus on hidden content.
 - Removed the requirement to manually disable `autoHeight` when using `vertical`. Only the carousel height needs to be defined; child slide heights are now handled internally by the carousel styles.
 
 ### Drag & Interaction
@@ -107,9 +112,10 @@ Major TypeScript rewrite with a new modular architecture, modern ESM distributio
     - `page:change:scroll:after`- emitted after the stage scroll position has been applied, without waiting for the CSS transition to finish.
     - `config:applied` - emitted when the active configuration changes after initialization, for example when entering or leaving a responsive breakpoint.
     - `stage:created` - emitted when stage has been created 
-    - `stage:changed` - emitted when changes in DOM structure
-    - `slide:scroll` - emitted when starts slide scrolling
+    - `stage:changed` - emitted when changes in DOM structure changes
+    - `slide:scroll` - emitted when slide scrolling begins
 - Fixed `carousel:initialized` emitting too early before loading and initializing all modules 
+- Improved TypeScript event callback typing in carousel configuration, allowing event-specific payload types to be recognized automatically.
 - Renamed events for a more consistent namespaced event system.
 - Event names passed to `carousel.on()` must not include the `on:` prefix. For example: `carousel.on(EVENTS.PAGE_CHANGED, callback)`
 - `stage:resized` is now attached to carousel stage resizing instead of the global `window` resize event. When triggered, it recalculates slide dimensions and positions, updates the stage transform, and reapplies responsive configuration when necessary
@@ -123,6 +129,7 @@ Major TypeScript rewrite with a new modular architecture, modern ESM distributio
     - `--ddcarousel-bg-color`
     - `--ddcarousel-nav-color`
     - `--ddcarousel-nav-font-size` - navigation text size when using custom text instead of the default SVG icon
+    - `--ddcarousel-nav-margin`
     - `--ddcarousel-url-nav-color`
     - `--ddcarousel-url-nav-color-active`
     - `--ddcarousel-pagination-bottom`
@@ -179,13 +186,16 @@ Major TypeScript rewrite with a new modular architecture, modern ESM distributio
 - Added `unpkg` and `jsdelivr` package entry fields to expose the browser-ready build through CDN services.
 - Added development ESM build for testing
 - Refactored all npm scripts around the new build system:
-    - `build:all` – runs the production build, generates and bundles TypeScript declarations, then cleans up removes temporary type files.
+    - `build:all` – runs the production build, generates and bundles TypeScript declarations, then removes temporary type files.
     - `build:prod` – creates the production build;
     - `build:dev` – starts a development server and watcher serving in-memory ESM module and CSS used by the project's `testing` directory. This replaces the old `testjs` and `watchsass` scripts;
     - `build:types` – generates TypeScript declaration files
     - `type-check` – runs TypeScript type checking without emitting files;
     - `bundle:types` – bundles TypeScript declarations using [API Extractor](https://api-extractor.com/);
     - `clean:types` – removes temporary TypeScript declaration files;
+    - `site:watch:css` – watches and compiles showcase and demos SCSS files
+    - `site:build` – builds production assets and prepares the showcase website
+    - `check:size` – reports build file sizes.
 - Removed build dependencies, including `uglify-js`, `uglifycss`, `npm-run-all`, `copyfiles` (it wasn't used anyway lol). Minifying, CSS compilation, adding license banners to files and production build file structure are now handled by Webpack bundler.
 - Reduced NPM package size by including only `dist` directory and standard package files such as the README, license, and changelog
 - Improved Webpack configuration for library builds
